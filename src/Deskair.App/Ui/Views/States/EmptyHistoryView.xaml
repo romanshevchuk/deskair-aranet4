@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.States.EmptyHistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(STATE-01c) [S, haiku]
+       Spec: docs/design/screens-and-states.md "Live conditions" (First run: Collecting your first data)
+       Input : None.
+       Output: An EmptyStateCard saying the first data is being collected, with an import button.
+       Rules : Add the string keys (en and uk) for the text.
+       Edge  : None.
+       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+  <Grid>
+  </Grid>
+</UserControl>

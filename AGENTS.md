@@ -21,7 +21,7 @@ Deskair is a Windows desktop app (WPF, .NET 10) that shows live and historical C
 
 Area rules live in `.claude/rules/` (one file per project or folder). Claude Code loads them automatically when you read, edit or create a file in that area. In other tools, read the matching rule file before editing there.
 
-## Commands (valid once the skeleton exists; windows only)
+## Commands (Windows only)
 
 | Task | Command |
 |---|---|
@@ -29,7 +29,7 @@ Area rules live in `.claude/rules/` (one file per project or folder). Claude Cod
 | Test | `dotnet test tests/Deskair.Tests` |
 | Format check | `dotnet format Deskair.sln --verify-no-changes` |
 | Run app | `dotnet run --project src/Deskair.App` |
-| Run control gallery (Debug) | `dotnet run --project src/Deskair.App -- --gallery` |
+| Run control gallery | `dotnet run --project src/Deskair.App -- --gallery` |
 
 WPF cannot be built or run on Linux or macOS. If a command here is wrong, fix it in this file.
 

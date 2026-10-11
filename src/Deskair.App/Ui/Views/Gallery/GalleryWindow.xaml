@@ -1,0 +1,60 @@
+<Window x:Class="Deskair.App.Ui.Views.Gallery.GalleryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+        xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+        xmlns:gallery="clr-namespace:Deskair.App.Ui.Views.Gallery"
+        xmlns:settings="clr-namespace:Deskair.Services.Settings;assembly=Deskair.Services"
+        Style="{StaticResource Window.Base}"
+        Title="{loc:T Gallery_Title}"
+        Width="1200"
+        Height="728">
+  <!-- Every control in all its states. Use the switches to check light, dark, English and Ukrainian. -->
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="{StaticResource Grid.Header.Height}" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <Border Grid.Row="0"
+            Background="{DynamicResource Surface.Brush}"
+            BorderBrush="{DynamicResource Divider.Brush}"
+            BorderThickness="0,0,0,1"
+            Padding="{StaticResource Space.Bar.Padding}">
+      <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+        <TextBlock VerticalAlignment="Center"
+                   Style="{StaticResource Text.Secondary}"
+                   Text="{loc:T Settings_Theme}" />
+        <controls:SegmentedControl Margin="{StaticResource Space.Inline}"
+                                   AutomationProperties.Name="{loc:T Settings_Theme}"
+                                   SelectedIndex="0"
+                                   SelectionChanged="OnThemeSelected">
+          <ListBoxItem Content="{loc:T Theme_Light}" Tag="{x:Static settings:ThemeChoice.Light}" />
+          <ListBoxItem Content="{loc:T Theme_Dark}" Tag="{x:Static settings:ThemeChoice.Dark}" />
+        </controls:SegmentedControl>
+
+        <TextBlock Margin="{StaticResource Space.Inline.Wide}"
+                   VerticalAlignment="Center"
+                   Style="{StaticResource Text.Secondary}"
+                   Text="{loc:T Settings_Language}" />
+        <controls:SegmentedControl Margin="{StaticResource Space.Inline}"
+                                   AutomationProperties.Name="{loc:T Settings_Language}"
+                                   SelectedIndex="0"
+                                   SelectionChanged="OnLanguageSelected">
+          <ListBoxItem Content="{loc:T Language_English}" Tag="{x:Static settings:LanguageChoice.English}" />
+          <ListBoxItem Content="{loc:T Language_Ukrainian}" Tag="{x:Static settings:LanguageChoice.Ukrainian}" />
+        </controls:SegmentedControl>
+      </StackPanel>
+    </Border>
+
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+      <StackPanel Margin="{StaticResource Space.Page.Padding}">
+        <gallery:CardSection />
+        <gallery:PillSection />
+        <gallery:StatusDotSection />
+        <gallery:ToggleSwitchSection />
+        <gallery:SegmentedControlSection />
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</Window>

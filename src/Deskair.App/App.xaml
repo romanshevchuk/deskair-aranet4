@@ -1,0 +1,15 @@
+<Application x:Class="Deskair.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Ui/Theme/Tokens/Typography.xaml" />
+        <ResourceDictionary Source="Ui/Theme/Tokens/Spacing.xaml" />
+        <ResourceDictionary Source="Ui/Theme/Tokens/Radii.xaml" />
+        <ResourceDictionary Source="Ui/Controls/Focus/FocusVisuals.xaml" />
+        <ResourceDictionary Source="Ui/Theme/Styles/BaseStyles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+</Application>

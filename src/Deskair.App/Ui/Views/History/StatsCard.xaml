@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.History.StatsCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(HIST-06c) [M, haiku]
+       Spec: docs/design/components.md "Stats card"; docs/design/design-tokens.md "Spacing" (stats card 360 px wide)
+       Input : StatsViewModel.
+       Output: Average, change, coverage chip, highest and lowest, best and worst period, zone share, insight.
+       Rules : Uses KeyValueCell, CoverageChip, ZoneShareBar and InsightBox.
+       Edge  : No earlier data says so (behaviour-rules.md "Aggregation" rule 3).
+       Done  : The gallery shows full and sparse data. -->
+  <Grid>
+  </Grid>
+</UserControl>

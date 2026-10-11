@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav_Live" xml:space="preserve"><value>Live</value></data>
+  <data name="Nav_History" xml:space="preserve"><value>History</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Metric_Co2" xml:space="preserve"><value>CO₂</value></data>
+  <data name="Metric_Temperature" xml:space="preserve"><value>Temperature</value></data>
+  <data name="Metric_Humidity" xml:space="preserve"><value>Humidity</value></data>
+  <data name="Metric_Pressure" xml:space="preserve"><value>Pressure</value></data>
+  <data name="Zone_Good" xml:space="preserve"><value>Good</value></data>
+  <data name="Zone_Elevated" xml:space="preserve"><value>Elevated</value></data>
+  <data name="Zone_High" xml:space="preserve"><value>High</value></data>
+  <data name="Trend_Falling" xml:space="preserve"><value>Falling</value></data>
+  <data name="Trend_Rising" xml:space="preserve"><value>Rising</value></data>
+  <data name="Trend_Steady" xml:space="preserve"><value>Steady</value></data>
+  <data name="Trend_Detail" xml:space="preserve"><value>{ppm} ppm over {min} min</value></data>
+  <data name="Advice_Good_Title" xml:space="preserve"><value>Air is fresh, nothing to do</value></data>
+  <data name="Advice_Good_Text" xml:space="preserve"><value>Below 1,000 ppm, so focus and sleep quality are not affected.</value></data>
+  <data name="Advice_Elevated_Title" xml:space="preserve"><value>Open a window for about 10 minutes</value></data>
+  <data name="Advice_Elevated_Text" xml:space="preserve"><value>Above the ideal level. Should drop below 1,000 ppm in about {min} min.</value></data>
+  <data name="Advice_High_Title" xml:space="preserve"><value>Ventilate now: open windows fully</value></data>
+  <data name="Advice_High_Text" xml:space="preserve"><value>Above 1,400 ppm, concentration and sleep suffer. Needs about {min} min to drop below 1,000 ppm.</value></data>
+  <data name="Stat_GoodShare" xml:space="preserve"><value>Good in last 24 h</value></data>
+  <data name="Stat_Peak" xml:space="preserve"><value>Peak at {time}</value></data>
+  <data name="Range_Day" xml:space="preserve"><value>Day</value></data>
+  <data name="Range_Week" xml:space="preserve"><value>Week</value></data>
+  <data name="Range_Month" xml:space="preserve"><value>Month</value></data>
+  <data name="Range_Year" xml:space="preserve"><value>Year</value></data>
+  <data name="Hours_AllDay" xml:space="preserve"><value>All day</value></data>
+  <data name="Hours_Night" xml:space="preserve"><value>Night</value></data>
+  <data name="Group_ByDay" xml:space="preserve"><value>By day</value></data>
+  <data name="Group_ByWeek" xml:space="preserve"><value>By week</value></data>
+  <data name="Group_ByMonth" xml:space="preserve"><value>By month</value></data>
+  <data name="Chart_NoData" xml:space="preserve"><value>No data</value></data>
+  <data name="Chart_TypicalDay" xml:space="preserve"><value>Typical day</value></data>
+  <data name="Stats_Average" xml:space="preserve"><value>Average</value></data>
+  <data name="Stats_Highest" xml:space="preserve"><value>Highest reading</value></data>
+  <data name="Stats_Lowest" xml:space="preserve"><value>Lowest reading</value></data>
+  <data name="Stats_ZoneShare" xml:space="preserve"><value>Time in each zone</value></data>
+  <data name="Gap_DaysNoData_One" xml:space="preserve"><value>{count} day with no data</value></data>
+  <data name="Gap_DaysNoData_Other" xml:space="preserve"><value>{count} days with no data</value></data>
+  <data name="Banner_Stale" xml:space="preserve"><value>Last reading {min} min ago</value></data>
+  <data name="Offline_Title" xml:space="preserve"><value>Can&apos;t reach your Aranet4</value></data>
+  <data name="Offline_Bluetooth" xml:space="preserve"><value>Turn on Bluetooth</value></data>
+  <data name="Action_Retry" xml:space="preserve"><value>Try again</value></data>
+  <data name="Footer_Connected" xml:space="preserve"><value>Connected · updated {sec} s ago</value></data>
+  <data name="Footer_NoSensor" xml:space="preserve"><value>No sensor connected</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Language</value></data>
+  <data name="Settings_Theme" xml:space="preserve"><value>Theme</value></data>
+  <data name="Theme_Light" xml:space="preserve"><value>Light</value></data>
+  <data name="Theme_Dark" xml:space="preserve"><value>Dark</value></data>
+  <data name="Theme_System" xml:space="preserve"><value>System</value></data>
+  <data name="Language_System" xml:space="preserve"><value>System</value></data>
+  <data name="Language_English" xml:space="preserve"><value>English</value></data>
+  <data name="Language_Ukrainian" xml:space="preserve"><value>Українська</value></data>
+  <data name="Settings_Alerts" xml:space="preserve"><value>Alerts</value></data>
+  <data name="Settings_QuietHours" xml:space="preserve"><value>Quiet hours</value></data>
+  <data name="Settings_Devices" xml:space="preserve"><value>Devices</value></data>
+  <data name="Settings_Data" xml:space="preserve"><value>Data and storage</value></data>
+  <data name="Settings_Startup" xml:space="preserve"><value>Start-up</value></data>
+  <data name="Toast_Elevated_Title" xml:space="preserve"><value>CO₂ is elevated · {room}</value></data>
+  <data name="Toast_Snooze" xml:space="preserve"><value>Snooze 1 h</value></data>
+  <data name="Toast_Dismiss" xml:space="preserve"><value>Dismiss</value></data>
+  <data name="Action_OpenApp" xml:space="preserve"><value>Open Deskair</value></data>
+  <data name="Sensor_Simulated_Name" xml:space="preserve"><value>Simulated sensor</value></data>
+  <data name="Sensor_Simulated_Step1" xml:space="preserve"><value>Nothing to set up: the simulated sensor is always available.</value></data>
+  <data name="Sensor_Aranet4_Name" xml:space="preserve"><value>Aranet4</value></data>
+  <data name="Sensor_Aranet4_Step1" xml:space="preserve"><value>Place the sensor close to your PC.</value></data>
+  <data name="Sensor_Aranet4_Step2" xml:space="preserve"><value>Make sure Bluetooth is on.</value></data>
+  <data name="Import_PhoneExport_Name" xml:space="preserve"><value>Phone app export</value></data>
+  <data name="Gallery_Title" xml:space="preserve"><value>Control gallery</value></data>
+  <data name="Gallery_Section_Card" xml:space="preserve"><value>Card</value></data>
+  <data name="Gallery_Section_SegmentedControl" xml:space="preserve"><value>Segmented control</value></data>
+  <data name="Gallery_Section_ToggleSwitch" xml:space="preserve"><value>Toggle switch</value></data>
+  <data name="Gallery_Section_Pill" xml:space="preserve"><value>Pill</value></data>
+  <data name="Gallery_Section_StatusDot" xml:space="preserve"><value>Status dot</value></data>
+  <data name="Gallery_Sample_CardText" xml:space="preserve"><value>Card content</value></data>
+  <data name="Gallery_Sample_Disabled" xml:space="preserve"><value>Disabled</value></data>
+  <data name="Nav_Main" xml:space="preserve"><value>Main navigation</value></data>
+</root>

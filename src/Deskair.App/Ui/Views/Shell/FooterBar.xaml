@@ -1,0 +1,25 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Shell.FooterBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(SHELL-01b) [M, haiku]
+       Spec: docs/design/components.md "Footer"; docs/design/screens-and-states.md "Live conditions".
+       Input : connection state, room, sensor ID, signal and battery from a FooterViewModel (to be created).
+       Output: status dot, room, sensor ID, signal, battery icon and percent; the text "Connected - updated N s ago".
+       Rules : amber dot when data is stale; battery icon red at 10 % or below, amber at 20 % or below.
+       Edge  : no sensor shows Footer_NoSensor and a neutral dot.
+       Done  : add a FooterViewModel test with fake services; the gallery shows each state. -->
+  <Border Background="{DynamicResource Surface.Brush}"
+          BorderBrush="{DynamicResource Divider.Brush}"
+          BorderThickness="0,1,0,0"
+          Padding="{StaticResource Space.Bar.Padding}">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+      <controls:StatusDot VerticalAlignment="Center" />
+      <TextBlock Margin="{StaticResource Space.Inline}"
+                 VerticalAlignment="Center"
+                 Style="{StaticResource Text.Secondary}"
+                 Text="{loc:T Footer_NoSensor}" />
+    </StackPanel>
+  </Border>
+</UserControl>

@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Onboarding.OnboardingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(FIRST-01b) [L, sonnet]
+       Spec: docs/design/screens-and-states.md "Live conditions" (First run); docs/plans/open-questions.md
+       Input : OnboardingViewModel.
+       Output: Steps, nearby sensors, room name and type, import from the phone app.
+       Rules : Step texts come from the provider OnboardingStepKeys.
+       Edge  : No sensor found shows retry and the Bluetooth hint.
+       Done  : The gallery shows each step. -->
+  <Grid>
+  </Grid>
+</UserControl>

@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
+  <!-- TODO(CTRL-16) [S, haiku]
+       Spec: docs/design/screens-and-states.md "Screens" (filled Open Deskair button); docs/design/accessibility.md
+       Input : Content (text).
+       Output: A filled button with hover, pressed, disabled and keyboard focus states.
+       Rules : Fill colour is undecided (questions.md Q15); use Toggle.On until answered.
+       Edge  : Disabled state at 50 % opacity.
+       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+  <Style TargetType="{x:Type local:PrimaryButton}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:PrimaryButton}">
+          <Border />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

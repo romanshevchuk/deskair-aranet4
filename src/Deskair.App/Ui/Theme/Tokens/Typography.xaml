@@ -1,0 +1,19 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+  <!-- Typography tokens (docs/design/design-tokens.md). Minimum size 12 px. -->
+  <FontFamily x:Key="Font.Family">Segoe UI Variable Text, Segoe UI</FontFamily>
+
+  <sys:Double x:Key="Font.Size.Hero">80</sys:Double>
+  <sys:Double x:Key="Font.Size.HistoryAverage">44</sys:Double>
+  <sys:Double x:Key="Font.Size.MiniValue">32</sys:Double>
+  <sys:Double x:Key="Font.Size.Title">16</sys:Double>
+  <sys:Double x:Key="Font.Size.Body">14</sys:Double>
+  <sys:Double x:Key="Font.Size.Secondary">13</sys:Double>
+  <sys:Double x:Key="Font.Size.Caption">12</sys:Double>
+
+  <FontWeight x:Key="Font.Weight.Light">Light</FontWeight>
+  <FontWeight x:Key="Font.Weight.Normal">Normal</FontWeight>
+  <FontWeight x:Key="Font.Weight.Medium">Medium</FontWeight>
+  <FontWeight x:Key="Font.Weight.SemiBold">SemiBold</FontWeight>
+</ResourceDictionary>

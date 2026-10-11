@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
+  <!-- TODO(CTRL-12) [S, haiku]
+       Spec: docs/design/components.md "Stats card" (insight); docs/design/design-tokens.md "Neutrals" (insight.bg)
+       Input : Content (usually text).
+       Output: A panel with Insight.Bg, radius 10 and Secondary text.
+       Rules : No border.
+       Edge  : Empty content collapses the box.
+       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+  <Style TargetType="{x:Type local:InsightBox}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:InsightBox}">
+          <Border />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

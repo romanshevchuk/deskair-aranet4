@@ -8,18 +8,18 @@ Status: `todo`, `doing`, `done`. Update this file in the same change as the work
 
 | ID | Item | Milestone | Status |
 |---|---|---|---|
-| ARCH-01 | Solution skeleton, repo files, DI composition root | M1 | todo |
-| ARCH-02 | Dependency-rules tests | M1 | todo |
-| ARCH-03 | Control gallery (`--gallery` option, Debug builds) | M1 | todo |
-| ARCH-04 | Simulated sensor module | M1 | todo |
-| DATA-01 | Monthly CSV readings store | M1 | todo |
+| ARCH-01 | Solution skeleton, repo files, DI composition root | M1 | done |
+| ARCH-02 | Dependency-rules tests | M1 | done |
+| ARCH-03 | Control gallery (`--gallery` option, all builds; reference controls only so far) | M1 | doing |
+| ARCH-04 | Simulated sensor module | M1 | done |
+| DATA-01 | Monthly CSV readings store (row format done; store is TODO STORE-01a to 01d) | M1 | doing |
 | DATA-02 | Sensor history sync | M0/M1 | todo |
 | DATA-03 | Merge and dedupe by interval slot | M1 | todo |
 | DATA-04 | Import from phone app (.xlsx) with preview | M5 | todo |
 | DATA-05 | Export CSV | M5 | todo |
-| I18N-01 | Localization infrastructure (resx, runtime switch, plurals) | M1 | todo |
+| I18N-01 | Localization infrastructure (resx, runtime switch, plurals) | M1 | done |
 | I18N-02 | Ukrainian translation and native review | M6 | todo |
-| THEME-01 | Light, dark, system themes and tokens | M1 | todo |
+| THEME-01 | Light, dark, system themes and tokens | M1 | done |
 | LIVE-01 | Hero card with zones | M2 | todo |
 | LIVE-02 | Mini cards and metric tabs | M2 | todo |
 | LIVE-03 | Live chart, ranges, hover | M2 | todo |

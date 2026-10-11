@@ -110,3 +110,13 @@ An earlier draft put a `CLAUDE.md` in every project folder. Claude Code loads ne
 
 **Consequences:** rules load on read, edit and create; one folder to audit; no nested `CLAUDE.md` files. Maintenance guide: `docs/guides/maintaining-agent-instructions.md`.
 
+
+## D-0012 The control gallery is part of every build
+
+**Status:** accepted · Oct 2026
+
+The first plan opened the gallery only in Debug builds. That needs conditional compilation or a build check in the startup code.
+
+**Decision:** `--gallery` works in every build. There are no `#if DEBUG` blocks and no extra branches; the option is read in one place (`Composition/AppOptions`).
+
+**Consequences:** simpler code. The gallery uses the simulated sensor only, never touches storage or Bluetooth, and a normal launch never opens it. If a Store build should not expose it, remove the option in the packaging step instead of in the code.

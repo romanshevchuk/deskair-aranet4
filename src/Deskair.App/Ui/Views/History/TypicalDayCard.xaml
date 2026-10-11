@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.History.TypicalDayCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(HIST-05d) [S, haiku]
+       Spec: docs/design/components.md "Typical-day chart"
+       Input : TypicalDayViewModel.
+       Output: A Card with the title Chart_TypicalDay and the TypicalDayChart.
+       Rules : None.
+       Edge  : No data shows Chart_NoData.
+       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+  <Grid>
+  </Grid>
+</UserControl>

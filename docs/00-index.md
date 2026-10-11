@@ -10,7 +10,7 @@ Agents start at `AGENTS.md` (shared) or `CLAUDE.md` (Claude Code). Area rules ar
 | `decisions.md` | One log of decisions and their reasons |
 | `guides/` | How to do common tasks (add a sensor, control, setting, translation; run the gallery) |
 | `features/` | One folder per shipped feature (created as features are built) |
-| `plans/` | Roadmap, backlog, spikes, open questions |
+| `plans/` | Roadmap, backlog, spikes, open questions, skeleton questions (`questions.md`), TODO index (`todo-index.md`) |
 
 ## Reading order for a new contributor
 
@@ -20,9 +20,6 @@ Agents start at `AGENTS.md` (shared) or `CLAUDE.md` (Claude Code). Area rules ar
 4. `engineering/data-model.md`
 5. `plans/roadmap.md`
 
-## Not written yet
-
-- `engineering/csharp-instructions.md` exists but is empty; the project owner fills it in.
 
 ## Architecture
 

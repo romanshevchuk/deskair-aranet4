@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Settings.AppearanceSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(SET-01j) [S, haiku]
+       Spec: docs/design/screens-and-states.md "Settings"; docs/guides/add-a-setting.md
+       Input : AppearanceSettingsViewModel.
+       Output: Language, theme and temperature unit rows.
+       Rules : Changes apply immediately.
+       Edge  : None.
+       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+  <Grid>
+  </Grid>
+</UserControl>

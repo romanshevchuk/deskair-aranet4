@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Flyout.FlyoutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(TRAY-02b) [M, haiku]
+       Spec: docs/design/screens-and-states.md "Screens" (Flyout); docs/design/design-tokens.md "Spacing" (flyout 360 px, radius 12)
+       Input : FlyoutViewModel.
+       Output: Room, value, zone, advice, 24 h ribbon at native size, other readings, Snooze, Open Deskair and Settings buttons.
+       Rules : Window hosting and positioning are separate (TRAY-02a, TRAY-02d).
+       Edge  : Not connected shows the grey state.
+       Done  : The gallery shows the flyout content. -->
+  <Grid>
+  </Grid>
+</UserControl>

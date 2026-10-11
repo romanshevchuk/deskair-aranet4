@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
+  <!-- TODO(CTRL-17) [S, haiku]
+       Spec: docs/design/screens-and-states.md "Screens" (Snooze, Settings buttons)
+       Input : Content (text).
+       Output: An outlined button: Surface background, Border outline, hover, pressed, disabled and focus states.
+       Rules : Same shape and height as PrimaryButton.
+       Edge  : Disabled state at 50 % opacity.
+       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+  <Style TargetType="{x:Type local:SecondaryButton}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:SecondaryButton}">
+          <Border />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

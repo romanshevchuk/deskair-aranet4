@@ -63,11 +63,12 @@ src/Deskair.Services/
   Connection/     ConnectionMonitor.cs  ConnectionState.cs
   Alerts/         AlertEngine.cs  AlertPolicy.cs  INotifier.cs  IDoNotDisturb.cs
   Queries/        ReadingQueryService.cs  (the only way view models get data)
-  Import/         ImportService.cs  ExportService.cs
-  Devices/        DeviceRegistry.cs
+  Import/         ImportService.cs  ExportService.cs  IReadingExporter.cs
+  Devices/        DeviceRegistry.cs  IDeviceStore.cs
   Settings/       AppSettings.cs  SettingsService.cs  ISettingsStore.cs
   Storage/        IReadingStore.cs
-  Platform/       IBluetoothRadio.cs  IStartupRegistration.cs  IKnownFolders.cs  ISystemTheme.cs
+  Messages/       ReadingReceived.cs  ZoneChanged.cs  ConnectionStateChanged.cs  SettingsChanged.cs  LanguageChanged.cs
+  Platform/       IBluetoothRadio.cs  IStartupRegistration.cs  IKnownFolders.cs  ISystemTheme.cs  IUiDispatcher.cs
 
 src/Deskair.Sensors/
   Aranet4/    Aranet4Provider.cs  Aranet4Sensor.cs  Aranet4Protocol.cs  Aranet4Parser.cs
@@ -83,9 +84,10 @@ src/Deskair.Storage/
 src/Deskair.App/
   ViewModels/    Shell/  Live/  History/  Settings/  Onboarding/  Connection/  Flyout/  ChartModels/
   Localization/  Strings.resx  Strings.uk.resx  Localizer.cs  LanguageService.cs  PluralRules.cs
-  Ui/            Theme/  Controls/  Charts/  Views/  Markup/ (the {loc:T} extension, converters)
-  Platform/      Bluetooth/  Tray/  Notifications/  Theming/  Startup/  Power/  KnownFolders/
-  Composition/   ServiceRegistration.cs  StartupSequence.cs  SingleInstance.cs
+  Ui/            Theme/  Controls/  Charts/ (Layers/)  Views/ (includes Gallery/)  Markup/ (the {loc:T} extension, converters)
+  Platform/      Bluetooth/  Tray/  Notifications/  Theming/  Startup/  Power/  KnownFolders/  Threading/
+  Composition/   ServiceRegistration.cs  StartupSequence.cs  SingleInstance.cs  AppOptions.cs
+  Themes/        Generic.xaml (registers every control template)
   App.xaml  Program.cs
 ```
 
@@ -173,7 +175,7 @@ Events between services and view models use `CommunityToolkit.Mvvm` `IMessenger`
 
 ## 8. UI structure (`App/Ui`)
 
-**Theme:** `Tokens/` (Colors.Light/Dark, Zones.Light/Dark, Metrics, Typography, Spacing, Radii), base `Styles/`, `ThemeService`. Token names follow `docs/design/design-tokens.md`. Controls use `DynamicResource` only.
+**Theme:** `Tokens/` (Colors, Zones and Metrics each as a Light and a Dark dictionary; Typography, Spacing, Radii), base `Styles/`, `ThemeService`. Token names follow `docs/design/design-tokens.md`. Controls use `DynamicResource` only.
 
 **Controls:** one folder per control (`SegmentedControl/` with `.cs` and `.xaml`), a template in its own XAML file, no business logic. Catalogue: `Card`, `Pill`, `StatusDot`, `SegmentedControl`, `ToggleSwitch`, `Gauge`, `AdviceCard`, `StatTriple`, `MetricCard`, `Banner`, `EmptyStateCard`, `RoomChip`, `RoomMenu`, `BatteryIcon`, `CoverageChip`, `ZoneShareBar`, `InsightBox`, `KeyValueCell`, `SettingsCard`, `SettingsRow`, `HeaderBar`, `FooterBar`, `PrimaryButton`, `SecondaryButton`.
 
@@ -181,7 +183,7 @@ Events between services and view models use `CommunityToolkit.Mvvm` `IMessenger`
 
 **Views:** screens built from controls: `Shell/` (MainWindow, header, footer, tabs), `Live/` (LiveView, HeroCard, MetricTabs, ChartCard, MiniCardsRow), `History/` (HistoryView, HistoryToolbar, StatsCard, TypicalDayCard, SleepCard), `Settings/` (one view per section), `Onboarding/`, `States/` (offline, empty history), `Flyout/`, `Tray/`. Code-behind is empty except for view-only behaviour.
 
-**Control gallery:** in Debug builds, starting with `--gallery` opens a window listing every control and chart in all states, in light and dark and in both languages, using the simulated sensor. Use it to build and review UI in isolation.
+**Control gallery:** starting with `--gallery` opens a window listing every control and chart in all states, with switches for light and dark and for both languages, using the simulated sensor. It is available in every build (no conditional code; see D-0012). Use it to build and review UI in isolation.
 
 ## 9. Localization (`App/Localization`)
 
@@ -225,6 +227,8 @@ Each class implements an interface from `Services`. Store (packaged) and non-Sto
 | `Storage/` | Monthly files, merge and dedupe, index, golden CSV round trip, interrupted writes |
 | `ViewModels/` | State transitions and commands with fake services |
 | `Localization/` | Plural forms; every English key has a Ukrainian key |
+| `Ui/` | Token dictionaries (light and dark have the same keys), control templates, the `{loc:T}` extension, windows load. Runs on one STA thread (`UiHost`) |
+| `Platform/` | Pure helpers in `App/Platform` (flyout positioning, log file writer) |
 | `Architecture/` | The dependency rules in section 3 |
 
 ## 13. First skeleton (milestone M1)

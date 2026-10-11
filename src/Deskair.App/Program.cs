@@ -1,0 +1,32 @@
+using Deskair.App.Composition;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+namespace Deskair.App;
+
+public static class Program
+{
+    [STAThread]
+    public static int Main(string[] args)
+    {
+        var options = AppOptions.Parse(args);
+
+        // The gallery is a development tool, so it may run next to the real app.
+        using var instance = new SingleInstance(options.Gallery ? "Deskair.Gallery" : "Deskair");
+
+        if (!instance.IsFirst)
+        {
+            return 0;
+        }
+
+        var builder = Host.CreateApplicationBuilder(args);
+        builder.Services.AddDeskair(options);
+
+        using var host = builder.Build();
+
+        var app = new App(host.Services);
+        app.InitializeComponent();
+
+        return app.Run();
+    }
+}

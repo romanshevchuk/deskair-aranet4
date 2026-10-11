@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Settings.DataSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(SET-01m) [M, haiku]
+       Spec: docs/design/screens-and-states.md "Settings"; docs/engineering/sync-and-import.md
+       Input : DataSettingsViewModel.
+       Output: Data folder (open, change), import from the phone app, export CSV.
+       Rules : Import shows a preview before writing.
+       Edge  : None.
+       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+  <Grid>
+  </Grid>
+</UserControl>

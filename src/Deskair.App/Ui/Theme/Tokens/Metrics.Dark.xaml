@@ -1,0 +1,28 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Metric tokens, Dark (docs/design/design-tokens.md) -->
+  <Color x:Key="Metric.Co2.Color">#D4961A</Color>
+  <SolidColorBrush x:Key="Metric.Co2.Brush" Color="{StaticResource Metric.Co2.Color}" />
+  <Color x:Key="Metric.Co2.Fill.Color">#12D4961A</Color>
+  <SolidColorBrush x:Key="Metric.Co2.Fill.Brush" Color="{StaticResource Metric.Co2.Fill.Color}" />
+  <Color x:Key="Metric.Co2.Ideal.Color">#2BD4961A</Color>
+  <SolidColorBrush x:Key="Metric.Co2.Ideal.Brush" Color="{StaticResource Metric.Co2.Ideal.Color}" />
+  <Color x:Key="Metric.Temperature.Color">#F2A15E</Color>
+  <SolidColorBrush x:Key="Metric.Temperature.Brush" Color="{StaticResource Metric.Temperature.Color}" />
+  <Color x:Key="Metric.Temperature.Fill.Color">#12F2A15E</Color>
+  <SolidColorBrush x:Key="Metric.Temperature.Fill.Brush" Color="{StaticResource Metric.Temperature.Fill.Color}" />
+  <Color x:Key="Metric.Temperature.Ideal.Color">#2BF2A15E</Color>
+  <SolidColorBrush x:Key="Metric.Temperature.Ideal.Brush" Color="{StaticResource Metric.Temperature.Ideal.Color}" />
+  <Color x:Key="Metric.Humidity.Color">#6E9BE0</Color>
+  <SolidColorBrush x:Key="Metric.Humidity.Brush" Color="{StaticResource Metric.Humidity.Color}" />
+  <Color x:Key="Metric.Humidity.Fill.Color">#126E9BE0</Color>
+  <SolidColorBrush x:Key="Metric.Humidity.Fill.Brush" Color="{StaticResource Metric.Humidity.Fill.Color}" />
+  <Color x:Key="Metric.Humidity.Ideal.Color">#2B6E9BE0</Color>
+  <SolidColorBrush x:Key="Metric.Humidity.Ideal.Brush" Color="{StaticResource Metric.Humidity.Ideal.Color}" />
+  <Color x:Key="Metric.Pressure.Color">#A58DF0</Color>
+  <SolidColorBrush x:Key="Metric.Pressure.Brush" Color="{StaticResource Metric.Pressure.Color}" />
+  <Color x:Key="Metric.Pressure.Fill.Color">#12A58DF0</Color>
+  <SolidColorBrush x:Key="Metric.Pressure.Fill.Brush" Color="{StaticResource Metric.Pressure.Fill.Color}" />
+  <Color x:Key="Metric.Pressure.Ideal.Color">#2BA58DF0</Color>
+  <SolidColorBrush x:Key="Metric.Pressure.Ideal.Brush" Color="{StaticResource Metric.Pressure.Ideal.Color}" />
+</ResourceDictionary>

@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Settings.DevicesSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(SET-01l) [M, haiku]
+       Spec: docs/design/screens-and-states.md "Settings" (Devices: rename, add)
+       Input : DevicesSettingsViewModel.
+       Output: A list of devices with rename and an Add button that starts onboarding.
+       Rules : None.
+       Edge  : No devices shows the first-run prompt.
+       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+  <Grid>
+  </Grid>
+</UserControl>

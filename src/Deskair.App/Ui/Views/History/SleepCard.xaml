@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.History.SleepCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(SLEEP-01a) [M, haiku]
+       Spec: docs/product/behaviour-rules.md "Later features" (sleep verdict); docs/plans/backlog.md (SLEEP-01, later)
+       Input : A night of readings.
+       Output: The sleep verdict card shown for Day plus Night.
+       Rules : Later feature: do not build before it is scheduled.
+       Edge  : None.
+       Done  : Scheduled in the backlog. -->
+  <Grid>
+  </Grid>
+</UserControl>

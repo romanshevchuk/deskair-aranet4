@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Live.HeroCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(LIVE-01e) [M, haiku]
+       Spec: docs/design/components.md "Hero card"; docs/design/design-tokens.md "Typography" (hero value 80 px, weight 300)
+       Input : HeroViewModel (zone, CO2, trend, advice).
+       Output: A Card in the zone tint with a Pill, the value, trend text, Gauge, AdviceCard and StatTriple.
+       Rules : Hero padding 22 / 24 / 20 px (Space.Hero.Padding); stale data draws at 55 % opacity.
+       Edge  : No reading shows the empty value state.
+       Done  : The gallery shows Good, Elevated, High and stale in light and dark. -->
+  <Grid>
+  </Grid>
+</UserControl>

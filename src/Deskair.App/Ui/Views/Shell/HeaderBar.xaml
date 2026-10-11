@@ -1,0 +1,36 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Shell.HeaderBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:vm="clr-namespace:Deskair.App.ViewModels.Shell">
+  <!-- TODO(SHELL-01a) [S, haiku]
+       Spec: docs/design/components.md "Window chrome" (logo, nav, room chip, caption buttons).
+       Input : none yet.
+       Output: the logo (ring from design-tokens.md "Icons") left of the navigation, and the room chip on the right.
+       Rules : the room chip needs RoomChip and DeviceRegistry; keep the navigation as it is.
+       Edge  : the native title bar stays until the title bar question is answered (questions.md Q14).
+       Done  : the gallery or main window shows the logo and the room chip in light and dark. -->
+  <Grid Margin="{StaticResource Space.Bar.Padding}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <TextBlock Grid.Column="0"
+               VerticalAlignment="Center"
+               Style="{StaticResource Text.Title}"
+               Text="Deskair" />
+
+    <controls:SegmentedControl Grid.Column="1"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               AutomationProperties.Name="{loc:T Nav_Main}"
+                               SelectedValuePath="Tag"
+                               SelectedValue="{Binding Section, Mode=TwoWay}">
+      <ListBoxItem Content="{loc:T Nav_Live}" Tag="{x:Static vm:ShellSection.Live}" />
+      <ListBoxItem Content="{loc:T Nav_History}" Tag="{x:Static vm:ShellSection.History}" />
+      <ListBoxItem Content="{loc:T Nav_Settings}" Tag="{x:Static vm:ShellSection.Settings}" />
+    </controls:SegmentedControl>
+  </Grid>
+</UserControl>

@@ -1,0 +1,32 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Registers every control template (docs/guides/add-a-control.md, step 3). -->
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Theme/Tokens/Typography.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Theme/Tokens/Spacing.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Theme/Tokens/Radii.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/Focus/FocusVisuals.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/Card/Card.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/Pill/Pill.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/StatusDot/StatusDot.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/SegmentedControl/SegmentedControl.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/ToggleSwitch/ToggleSwitch.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/Gauge/Gauge.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/AdviceCard/AdviceCard.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/StatTriple/StatTriple.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/MetricCard/MetricCard.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/Banner/Banner.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/EmptyStateCard/EmptyStateCard.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/RoomChip/RoomChip.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/RoomMenu/RoomMenu.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/BatteryIcon/BatteryIcon.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/CoverageChip/CoverageChip.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/ZoneShareBar/ZoneShareBar.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/InsightBox/InsightBox.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/KeyValueCell/KeyValueCell.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/SettingsCard/SettingsCard.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/SettingsRow/SettingsRow.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/PrimaryButton/PrimaryButton.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/SecondaryButton/SecondaryButton.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

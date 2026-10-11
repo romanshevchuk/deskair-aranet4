@@ -1,0 +1,6 @@
+[*.cs]
+# Test code builds small arrays inline and ignores some results on purpose.
+dotnet_diagnostic.CA1861.severity = none
+dotnet_diagnostic.CA1806.severity = none
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1515.severity = none

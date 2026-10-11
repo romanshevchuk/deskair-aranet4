@@ -1,0 +1,35 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Gallery.SegmentedControlSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <StackPanel>
+    <TextBlock Margin="{StaticResource Space.SectionLabel}"
+               Style="{StaticResource Text.SectionLabel}"
+               Text="{loc:T Gallery_Section_SegmentedControl}" />
+    <WrapPanel>
+      <controls:SegmentedControl Margin="{StaticResource Space.Item}"
+                                 AutomationProperties.Name="{loc:T Gallery_Section_SegmentedControl}"
+                                 SelectedIndex="1">
+        <ListBoxItem Content="{loc:T Range_Day}" />
+        <ListBoxItem Content="{loc:T Range_Week}" />
+        <ListBoxItem Content="{loc:T Range_Month}" />
+        <ListBoxItem Content="{loc:T Range_Year}" />
+      </controls:SegmentedControl>
+      <controls:SegmentedControl Margin="{StaticResource Space.Item}"
+                                 AutomationProperties.Name="{loc:T Gallery_Section_SegmentedControl}"
+                                 SelectedIndex="0">
+        <ListBoxItem Content="{loc:T Hours_AllDay}" />
+        <ListBoxItem Content="{loc:T Hours_Night}" />
+      </controls:SegmentedControl>
+      <controls:SegmentedControl Margin="{StaticResource Space.Item}"
+                                 IsEnabled="False"
+                                 AutomationProperties.Name="{loc:T Gallery_Sample_Disabled}"
+                                 SelectedIndex="0">
+        <ListBoxItem Content="{loc:T Group_ByDay}" />
+        <ListBoxItem Content="{loc:T Group_ByWeek}" />
+        <ListBoxItem Content="{loc:T Group_ByMonth}" />
+      </controls:SegmentedControl>
+    </WrapPanel>
+  </StackPanel>
+</UserControl>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <!-- Every Ukrainian string is a draft and needs native review (docs/plans/open-questions.md, question 6). -->
+  <data name="Nav_Live" xml:space="preserve"><value>Наживо</value><comment>Draft: needs native review.</comment></data>
+  <data name="Nav_History" xml:space="preserve"><value>Історія</value><comment>Draft: needs native review.</comment></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>Налаштування</value><comment>Draft: needs native review.</comment></data>
+  <data name="Metric_Co2" xml:space="preserve"><value>CO₂</value><comment>Draft: needs native review.</comment></data>
+  <data name="Metric_Temperature" xml:space="preserve"><value>Температура</value><comment>Draft: needs native review.</comment></data>
+  <data name="Metric_Humidity" xml:space="preserve"><value>Вологість</value><comment>Draft: needs native review.</comment></data>
+  <data name="Metric_Pressure" xml:space="preserve"><value>Тиск</value><comment>Draft: needs native review.</comment></data>
+  <data name="Zone_Good" xml:space="preserve"><value>Добре</value><comment>Draft: needs native review.</comment></data>
+  <data name="Zone_Elevated" xml:space="preserve"><value>Підвищений</value><comment>Draft: needs native review.</comment></data>
+  <data name="Zone_High" xml:space="preserve"><value>Високий</value><comment>Draft: needs native review.</comment></data>
+  <data name="Trend_Falling" xml:space="preserve"><value>Знижується</value><comment>Draft: needs native review.</comment></data>
+  <data name="Trend_Rising" xml:space="preserve"><value>Зростає</value><comment>Draft: needs native review.</comment></data>
+  <data name="Trend_Steady" xml:space="preserve"><value>Стабільно</value><comment>Draft: needs native review.</comment></data>
+  <data name="Trend_Detail" xml:space="preserve"><value>{ppm} ppm за {min} хв</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Good_Title" xml:space="preserve"><value>Повітря свіже, нічого робити не потрібно</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Good_Text" xml:space="preserve"><value>Нижче 1 000 ppm, тож концентрація та якість сну не страждають.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Elevated_Title" xml:space="preserve"><value>Відчиніть вікно приблизно на 10 хвилин</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Elevated_Text" xml:space="preserve"><value>Вище за ідеальний рівень. Має опуститися нижче 1 000 ppm приблизно за {min} хв.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_High_Title" xml:space="preserve"><value>Провітріть зараз: відчиніть вікна навстіж</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_High_Text" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон. Потрібно приблизно {min} хв, щоб опуститися нижче 1 000 ppm.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stat_GoodShare" xml:space="preserve"><value>Добре за останні 24 год</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stat_Peak" xml:space="preserve"><value>Пік о {time}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Range_Day" xml:space="preserve"><value>День</value><comment>Draft: needs native review.</comment></data>
+  <data name="Range_Week" xml:space="preserve"><value>Тиждень</value><comment>Draft: needs native review.</comment></data>
+  <data name="Range_Month" xml:space="preserve"><value>Місяць</value><comment>Draft: needs native review.</comment></data>
+  <data name="Range_Year" xml:space="preserve"><value>Рік</value><comment>Draft: needs native review.</comment></data>
+  <data name="Hours_AllDay" xml:space="preserve"><value>Увесь день</value><comment>Draft: needs native review.</comment></data>
+  <data name="Hours_Night" xml:space="preserve"><value>Ніч</value><comment>Draft: needs native review.</comment></data>
+  <data name="Group_ByDay" xml:space="preserve"><value>За днями</value><comment>Draft: needs native review.</comment></data>
+  <data name="Group_ByWeek" xml:space="preserve"><value>За тижнями</value><comment>Draft: needs native review.</comment></data>
+  <data name="Group_ByMonth" xml:space="preserve"><value>За місяцями</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_NoData" xml:space="preserve"><value>Немає даних</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_TypicalDay" xml:space="preserve"><value>Типова доба</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Average" xml:space="preserve"><value>Середнє</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Highest" xml:space="preserve"><value>Найвище значення</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Lowest" xml:space="preserve"><value>Найнижче значення</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_ZoneShare" xml:space="preserve"><value>Час у кожній зоні</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gap_DaysNoData_One" xml:space="preserve"><value>{count} день без даних</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gap_DaysNoData_Few" xml:space="preserve"><value>{count} дні без даних</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gap_DaysNoData_Many" xml:space="preserve"><value>{count} днів без даних</value><comment>Draft: needs native review.</comment></data>
+  <data name="Banner_Stale" xml:space="preserve"><value>Останнє значення {min} хв тому</value><comment>Draft: needs native review.</comment></data>
+  <data name="Offline_Title" xml:space="preserve"><value>Не вдається зв&apos;язатися з Aranet4</value><comment>Draft: needs native review.</comment></data>
+  <data name="Offline_Bluetooth" xml:space="preserve"><value>Увімкнути Bluetooth</value><comment>Draft: needs native review.</comment></data>
+  <data name="Action_Retry" xml:space="preserve"><value>Спробувати ще раз</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_Connected" xml:space="preserve"><value>Підключено · оновлено {sec} с тому</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_NoSensor" xml:space="preserve"><value>Датчик не підключено</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Мова</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Theme" xml:space="preserve"><value>Тема</value><comment>Draft: needs native review.</comment></data>
+  <data name="Theme_Light" xml:space="preserve"><value>Світла</value><comment>Draft: needs native review.</comment></data>
+  <data name="Theme_Dark" xml:space="preserve"><value>Темна</value><comment>Draft: needs native review.</comment></data>
+  <data name="Theme_System" xml:space="preserve"><value>Системна</value><comment>Draft: needs native review.</comment></data>
+  <data name="Language_System" xml:space="preserve"><value>Системна</value><comment>Draft: needs native review.</comment></data>
+  <data name="Language_English" xml:space="preserve"><value>English</value><comment>Draft: needs native review.</comment></data>
+  <data name="Language_Ukrainian" xml:space="preserve"><value>Українська</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Alerts" xml:space="preserve"><value>Сповіщення</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_QuietHours" xml:space="preserve"><value>Тихі години</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Devices" xml:space="preserve"><value>Пристрої</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data" xml:space="preserve"><value>Дані та сховище</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Startup" xml:space="preserve"><value>Запуск</value><comment>Draft: needs native review.</comment></data>
+  <data name="Toast_Elevated_Title" xml:space="preserve"><value>Рівень CO₂ підвищений · {room}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Toast_Snooze" xml:space="preserve"><value>Відкласти на 1 год</value><comment>Draft: needs native review.</comment></data>
+  <data name="Toast_Dismiss" xml:space="preserve"><value>Закрити</value><comment>Draft: needs native review.</comment></data>
+  <data name="Action_OpenApp" xml:space="preserve"><value>Відкрити Deskair</value><comment>Draft: needs native review.</comment></data>
+  <data name="Sensor_Simulated_Name" xml:space="preserve"><value>Імітований датчик</value><comment>Draft: needs native review.</comment></data>
+  <data name="Sensor_Simulated_Step1" xml:space="preserve"><value>Налаштовувати нічого не потрібно: імітований датчик завжди доступний.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Sensor_Aranet4_Name" xml:space="preserve"><value>Aranet4</value><comment>Draft: needs native review.</comment></data>
+  <data name="Sensor_Aranet4_Step1" xml:space="preserve"><value>Покладіть датчик поруч із комп&apos;ютером.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Sensor_Aranet4_Step2" xml:space="preserve"><value>Переконайтеся, що Bluetooth увімкнено.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_PhoneExport_Name" xml:space="preserve"><value>Експорт із мобільного застосунку</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Title" xml:space="preserve"><value>Галерея елементів</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_Card" xml:space="preserve"><value>Картка</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_SegmentedControl" xml:space="preserve"><value>Сегментований перемикач</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_ToggleSwitch" xml:space="preserve"><value>Перемикач</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_Pill" xml:space="preserve"><value>Мітка</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_StatusDot" xml:space="preserve"><value>Індикатор стану</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_CardText" xml:space="preserve"><value>Вміст картки</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_Disabled" xml:space="preserve"><value>Вимкнено</value><comment>Draft: needs native review.</comment></data>
+  <data name="Nav_Main" xml:space="preserve"><value>Основна навігація</value><comment>Draft: needs native review.</comment></data>
+</root>

@@ -1,0 +1,15 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Live.LiveView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(LIVE-00b) [S, haiku]
+       Spec: docs/design/screens-and-states.md "Screens" (Live); docs/design/design-tokens.md "Spacing, radius, elevation" (live grid)
+       Input : LiveViewModel (to be created with the view models).
+       Output: Hero card left, chart card right, three mini cards below: 3 equal columns, rows 1 fr and 132 px, card gap 16 px.
+       Rules : Code-behind stays empty.
+       Edge  : Stale and not-connected states swap in the State views.
+       Done  : The main window Live section shows the layout with sample data. -->
+  <Grid>
+    <TextBlock Style="{StaticResource Text.Title}" Text="{loc:T Nav_Live}" />
+  </Grid>
+</UserControl>

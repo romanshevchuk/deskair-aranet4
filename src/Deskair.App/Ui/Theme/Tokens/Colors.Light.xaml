@@ -1,0 +1,38 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Neutral tokens, Light (docs/design/design-tokens.md) -->
+  <Color x:Key="Window.Bg.Color">#EEF1F3</Color>
+  <SolidColorBrush x:Key="Window.Bg.Brush" Color="{StaticResource Window.Bg.Color}" />
+  <Color x:Key="Surface.Color">#FFFFFF</Color>
+  <SolidColorBrush x:Key="Surface.Brush" Color="{StaticResource Surface.Color}" />
+  <Color x:Key="Border.Color">#DCE2E6</Color>
+  <SolidColorBrush x:Key="Border.Brush" Color="{StaticResource Border.Color}" />
+  <Color x:Key="Divider.Color">#E6EAED</Color>
+  <SolidColorBrush x:Key="Divider.Brush" Color="{StaticResource Divider.Color}" />
+  <Color x:Key="Grid.Color">#E3E8EB</Color>
+  <SolidColorBrush x:Key="Grid.Brush" Color="{StaticResource Grid.Color}" />
+  <Color x:Key="Segment.Bg.Color">#E4E9EC</Color>
+  <SolidColorBrush x:Key="Segment.Bg.Brush" Color="{StaticResource Segment.Bg.Color}" />
+  <Color x:Key="Segment.Selected.Color">#FFFFFF</Color>
+  <SolidColorBrush x:Key="Segment.Selected.Brush" Color="{StaticResource Segment.Selected.Color}" />
+  <Color x:Key="Text.Primary.Color">#182026</Color>
+  <SolidColorBrush x:Key="Text.Primary.Brush" Color="{StaticResource Text.Primary.Color}" />
+  <Color x:Key="Text.Secondary.Color">#5A6670</Color>
+  <SolidColorBrush x:Key="Text.Secondary.Brush" Color="{StaticResource Text.Secondary.Color}" />
+  <Color x:Key="Text.Tertiary.Color">#5B6771</Color>
+  <SolidColorBrush x:Key="Text.Tertiary.Brush" Color="{StaticResource Text.Tertiary.Color}" />
+  <Color x:Key="Text.Strong2.Color">#35414A</Color>
+  <SolidColorBrush x:Key="Text.Strong2.Brush" Color="{StaticResource Text.Strong2.Color}" />
+  <Color x:Key="Insight.Bg.Color">#F1F4F5</Color>
+  <SolidColorBrush x:Key="Insight.Bg.Brush" Color="{StaticResource Insight.Bg.Color}" />
+  <Color x:Key="Toggle.Off.Color">#C3CBD1</Color>
+  <SolidColorBrush x:Key="Toggle.Off.Brush" Color="{StaticResource Toggle.Off.Color}" />
+  <Color x:Key="Toggle.On.Color">#1E8A5C</Color>
+  <SolidColorBrush x:Key="Toggle.On.Brush" Color="{StaticResource Toggle.On.Color}" />
+  <Color x:Key="Toggle.Knob.Color">#FFFFFF</Color>
+  <SolidColorBrush x:Key="Toggle.Knob.Brush" Color="{StaticResource Toggle.Knob.Color}" />
+  <Color x:Key="Focus.Ring.Color">#182026</Color>
+  <SolidColorBrush x:Key="Focus.Ring.Brush" Color="{StaticResource Focus.Ring.Color}" />
+  <Color x:Key="Border.Window.Color">#4D808080</Color>
+  <SolidColorBrush x:Key="Border.Window.Brush" Color="{StaticResource Border.Window.Color}" />
+</ResourceDictionary>

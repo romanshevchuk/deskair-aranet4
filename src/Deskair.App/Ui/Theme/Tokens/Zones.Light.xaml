@@ -1,0 +1,80 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Zone tokens, Light (docs/design/design-tokens.md) -->
+  <Color x:Key="Zone.Good.CardBg.Color">#F2FBF6</Color>
+  <SolidColorBrush x:Key="Zone.Good.CardBg.Brush" Color="{StaticResource Zone.Good.CardBg.Color}" />
+  <Color x:Key="Zone.Good.CardBorder.Color">#7CC7A0</Color>
+  <SolidColorBrush x:Key="Zone.Good.CardBorder.Brush" Color="{StaticResource Zone.Good.CardBorder.Color}" />
+  <Color x:Key="Zone.Good.PillBg.Color">#D3EFE1</Color>
+  <SolidColorBrush x:Key="Zone.Good.PillBg.Brush" Color="{StaticResource Zone.Good.PillBg.Color}" />
+  <Color x:Key="Zone.Good.PillText.Color">#14573A</Color>
+  <SolidColorBrush x:Key="Zone.Good.PillText.Brush" Color="{StaticResource Zone.Good.PillText.Color}" />
+  <Color x:Key="Zone.Good.Dot.Color">#1E8A5C</Color>
+  <SolidColorBrush x:Key="Zone.Good.Dot.Brush" Color="{StaticResource Zone.Good.Dot.Color}" />
+  <Color x:Key="Zone.Good.AdviceBg.Color">#DDF2E7</Color>
+  <SolidColorBrush x:Key="Zone.Good.AdviceBg.Brush" Color="{StaticResource Zone.Good.AdviceBg.Color}" />
+  <Color x:Key="Zone.Good.AdviceBorder.Color">#B3DCC4</Color>
+  <SolidColorBrush x:Key="Zone.Good.AdviceBorder.Brush" Color="{StaticResource Zone.Good.AdviceBorder.Color}" />
+  <Color x:Key="Zone.Good.Divider.Color">#CBE6D8</Color>
+  <SolidColorBrush x:Key="Zone.Good.Divider.Brush" Color="{StaticResource Zone.Good.Divider.Color}" />
+  <Color x:Key="Zone.Good.AdviceIcon.Color">#14573A</Color>
+  <SolidColorBrush x:Key="Zone.Good.AdviceIcon.Brush" Color="{StaticResource Zone.Good.AdviceIcon.Color}" />
+  <Color x:Key="Zone.Good.Segment.Color">#3FA77E</Color>
+  <SolidColorBrush x:Key="Zone.Good.Segment.Brush" Color="{StaticResource Zone.Good.Segment.Color}" />
+  <Color x:Key="Zone.Good.Line.Color">#1E8A5C</Color>
+  <SolidColorBrush x:Key="Zone.Good.Line.Brush" Color="{StaticResource Zone.Good.Line.Color}" />
+  <Color x:Key="Chart.Band.Good.Color">#1A3FA77E</Color>
+  <SolidColorBrush x:Key="Chart.Band.Good.Brush" Color="{StaticResource Chart.Band.Good.Color}" />
+  <Color x:Key="Zone.Elevated.CardBg.Color">#FFFBF1</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.CardBg.Brush" Color="{StaticResource Zone.Elevated.CardBg.Color}" />
+  <Color x:Key="Zone.Elevated.CardBorder.Color">#E3B552</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.CardBorder.Brush" Color="{StaticResource Zone.Elevated.CardBorder.Color}" />
+  <Color x:Key="Zone.Elevated.PillBg.Color">#FCEBC4</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.PillBg.Brush" Color="{StaticResource Zone.Elevated.PillBg.Color}" />
+  <Color x:Key="Zone.Elevated.PillText.Color">#7A4800</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.PillText.Brush" Color="{StaticResource Zone.Elevated.PillText.Color}" />
+  <Color x:Key="Zone.Elevated.Dot.Color">#D4961A</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.Dot.Brush" Color="{StaticResource Zone.Elevated.Dot.Color}" />
+  <Color x:Key="Zone.Elevated.AdviceBg.Color">#FBEFD0</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.AdviceBg.Brush" Color="{StaticResource Zone.Elevated.AdviceBg.Color}" />
+  <Color x:Key="Zone.Elevated.AdviceBorder.Color">#EFD596</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.AdviceBorder.Brush" Color="{StaticResource Zone.Elevated.AdviceBorder.Color}" />
+  <Color x:Key="Zone.Elevated.Divider.Color">#EADFC6</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.Divider.Brush" Color="{StaticResource Zone.Elevated.Divider.Color}" />
+  <Color x:Key="Zone.Elevated.AdviceIcon.Color">#8A5300</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.AdviceIcon.Brush" Color="{StaticResource Zone.Elevated.AdviceIcon.Color}" />
+  <Color x:Key="Zone.Elevated.Segment.Color">#E6B04B</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.Segment.Brush" Color="{StaticResource Zone.Elevated.Segment.Color}" />
+  <Color x:Key="Zone.Elevated.Line.Color">#C47F00</Color>
+  <SolidColorBrush x:Key="Zone.Elevated.Line.Brush" Color="{StaticResource Zone.Elevated.Line.Color}" />
+  <Color x:Key="Chart.Band.Elevated.Color">#24E6B04B</Color>
+  <SolidColorBrush x:Key="Chart.Band.Elevated.Brush" Color="{StaticResource Chart.Band.Elevated.Color}" />
+  <Color x:Key="Zone.High.CardBg.Color">#FFF5F3</Color>
+  <SolidColorBrush x:Key="Zone.High.CardBg.Brush" Color="{StaticResource Zone.High.CardBg.Color}" />
+  <Color x:Key="Zone.High.CardBorder.Color">#D9776D</Color>
+  <SolidColorBrush x:Key="Zone.High.CardBorder.Brush" Color="{StaticResource Zone.High.CardBorder.Color}" />
+  <Color x:Key="Zone.High.PillBg.Color">#F9D9D4</Color>
+  <SolidColorBrush x:Key="Zone.High.PillBg.Brush" Color="{StaticResource Zone.High.PillBg.Color}" />
+  <Color x:Key="Zone.High.PillText.Color">#8E241A</Color>
+  <SolidColorBrush x:Key="Zone.High.PillText.Brush" Color="{StaticResource Zone.High.PillText.Color}" />
+  <Color x:Key="Zone.High.Dot.Color">#C7453A</Color>
+  <SolidColorBrush x:Key="Zone.High.Dot.Brush" Color="{StaticResource Zone.High.Dot.Color}" />
+  <Color x:Key="Zone.High.AdviceBg.Color">#FCE2DD</Color>
+  <SolidColorBrush x:Key="Zone.High.AdviceBg.Brush" Color="{StaticResource Zone.High.AdviceBg.Color}" />
+  <Color x:Key="Zone.High.AdviceBorder.Color">#EFB4AB</Color>
+  <SolidColorBrush x:Key="Zone.High.AdviceBorder.Brush" Color="{StaticResource Zone.High.AdviceBorder.Color}" />
+  <Color x:Key="Zone.High.Divider.Color">#F0D3CE</Color>
+  <SolidColorBrush x:Key="Zone.High.Divider.Brush" Color="{StaticResource Zone.High.Divider.Color}" />
+  <Color x:Key="Zone.High.AdviceIcon.Color">#8E241A</Color>
+  <SolidColorBrush x:Key="Zone.High.AdviceIcon.Brush" Color="{StaticResource Zone.High.AdviceIcon.Color}" />
+  <Color x:Key="Zone.High.Segment.Color">#C7453A</Color>
+  <SolidColorBrush x:Key="Zone.High.Segment.Brush" Color="{StaticResource Zone.High.Segment.Color}" />
+  <Color x:Key="Zone.High.Line.Color">#C23B2B</Color>
+  <SolidColorBrush x:Key="Zone.High.Line.Brush" Color="{StaticResource Zone.High.Line.Color}" />
+  <Color x:Key="Chart.Band.High.Color">#14C7453A</Color>
+  <SolidColorBrush x:Key="Chart.Band.High.Brush" Color="{StaticResource Chart.Band.High.Color}" />
+  <Color x:Key="Trend.Falling.Color">#1B7A53</Color>
+  <SolidColorBrush x:Key="Trend.Falling.Brush" Color="{StaticResource Trend.Falling.Color}" />
+  <Color x:Key="Trend.Rising.Color">#B3342A</Color>
+  <SolidColorBrush x:Key="Trend.Rising.Brush" Color="{StaticResource Trend.Rising.Color}" />
+</ResourceDictionary>

@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
+  <!-- TODO(CTRL-10) [S, haiku]
+       Spec: docs/product/behaviour-rules.md "Aggregation" rule 5; docs/design/components.md "Stats card"
+       Input : Coverage fraction from 0 to 1.
+       Output: A Pill reading "Based on N % of expected readings".
+       Rules : Add the string key Coverage_Chip (en and uk) with a {percent} placeholder; the view model decides visibility with CoverageCalculator.ShouldShowChip.
+       Edge  : Null fraction shows nothing.
+       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+  <Style TargetType="{x:Type local:CoverageChip}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:CoverageChip}">
+          <Border />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

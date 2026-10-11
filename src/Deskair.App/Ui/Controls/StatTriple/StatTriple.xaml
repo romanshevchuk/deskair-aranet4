@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
+  <!-- TODO(CTRL-03) [S, haiku]
+       Spec: docs/design/components.md "Hero card" (three stats)
+       Input : Items (three objects shown as KeyValueCell) and an optional Zone.
+       Output: The items side by side, separated by 1 px lines in the Zone.*.Divider colour.
+       Rules : Equal columns; no fixed widths (Ukrainian text is longer).
+       Edge  : Fewer than three items still lay out evenly.
+       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+  <Style TargetType="{x:Type local:StatTriple}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:StatTriple}">
+          <Border />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

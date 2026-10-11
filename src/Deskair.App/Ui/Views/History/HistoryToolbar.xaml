@@ -1,0 +1,14 @@
+<UserControl x:Class="Deskair.App.Ui.Views.History.HistoryToolbar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- TODO(HIST-01c) [M, haiku]
+       Spec: docs/design/screens-and-states.md "History controls"
+       Input : HistoryToolbarViewModel.
+       Output: Segmented controls for metric, hours filter, group by and range, plus the export button; 40 px high.
+       Rules : Group by shows only the options allowed for the range; it must still fit in Ukrainian.
+       Edge  : Day range hides group by.
+       Done  : The gallery shows the toolbar in English and Ukrainian. -->
+  <Grid>
+  </Grid>
+</UserControl>
