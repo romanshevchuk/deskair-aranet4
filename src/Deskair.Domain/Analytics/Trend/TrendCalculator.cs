@@ -9,8 +9,8 @@ public static class TrendCalculator
     // Spec: docs/product/behaviour-rules.md "Live values" (Trend).
     // Input : recent readings (any order), the current instant.
     // Output: TrendResult for CO₂.
-    // Rules : average of the last 6 min minus the average 30 min earlier; under 30 ppm is Steady; Window is 30 min.
-    // Edge  : if either average has no readings, return Steady with Change 0 (see questions.md Q1).
+    // Rules : average of the last 6 min minus the average of the 6 min window ending 30 min earlier; under 30 ppm is Steady; Window is 30 min.
+    // Edge  : if either window has no readings, return Steady with Change 0.
     // Done  : unskip tests Domain/Analytics/TrendCalculatorTests.Co2_* and make them pass.
     public static TrendResult Co2(IReadOnlyList<Reading> readings, DateTimeOffset now)
         => throw new NotImplementedException("TODO(LIVE-01a)");

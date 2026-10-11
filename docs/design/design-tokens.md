@@ -61,7 +61,7 @@ Segoe UI Variable Text, falling back to Segoe UI. Minimum size 12 px. Tabular fi
 | Titles | 16 px, 600 |
 | Body | 14 px |
 | Secondary, controls | 13 px |
-| Captions, chart text, section labels | 12 px (labels uppercase, .06 em spacing) |
+| Captions, chart text, section labels | 12 px. The HTML prototype shows labels uppercase with .06 em spacing; WPF has neither, so labels use normal case and spacing |
 
 ## Spacing, radius, elevation
 

@@ -7,7 +7,7 @@ namespace Deskair.App.Ui.Controls;
 // Spec: docs/design/design-tokens.md "Icons" (battery 26 x 12); docs/design/screens-and-states.md "Live conditions"
 // Input : Battery percent (null = unknown).
 // Output: A 26 x 12 battery drawn with a fill proportional to Percent.
-// Rules : Green above 20 %, amber at 20 % or below, red at 10 % or below; use the Zone.*.Dot tokens (questions.md Q15).
+// Rules : Fill green above 20 %, amber at 20 % or below, red at 10 % or below, using Zone.Good, Elevated and High .Segment colours (prototype). Outline and terminal in the current text colour at 60 % opacity; fill width 19 * percent / 100, at least 2.
 // Edge  : Null draws an empty outline with no fill; values clamp to 0 to 100.
 // Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass.
 public class BatteryIcon : Control

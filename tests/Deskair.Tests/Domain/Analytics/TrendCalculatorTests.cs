@@ -9,7 +9,7 @@ public class TrendCalculatorTests
 {
     private static readonly DateTimeOffset now = Samples.Utc(2026, 10, 9, 12);
 
-    // Assumption recorded in docs/plans/questions.md Q1: "30 minutes earlier" is the 6 minute window ending 30 minutes before now.
+    // docs/product/behaviour-rules.md: "30 minutes earlier" is the 6 minute window that ends 30 minutes before now.
     private static List<Reading> Co2Readings(double earlier, double latest)
     {
         var readings = new List<Reading>();

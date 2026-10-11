@@ -7,7 +7,7 @@ namespace Deskair.App.Ui.Controls;
 // TODO(CTRL-04) [M, haiku]
 // Spec: docs/design/components.md "Metric mini card"; docs/design/design-tokens.md "Metric colours", "Typography"
 // Input : Metric, title, value text, subtitle, selected flag; content slot for a Sparkline.
-// Output: Name, value (32 px, weight 500), subtitle and sparkline; when selected, an outline in the Metric.*.Brush colour.
+// Output: Name, value (32 px, weight 500), subtitle and sparkline; when selected, a 1 px outline plus 1 px ring in the Text.Primary colour (prototype).
 // Rules : Template of a Button so it is keyboard and screen reader operable.
 // Edge  : A missing value shows empty text, never 0.
 // Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass.

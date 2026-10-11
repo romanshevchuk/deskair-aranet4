@@ -17,7 +17,7 @@ public class DependencyRulesTests
 
     private static IEnumerable<Assembly> LowerLayers => [domain, services, sensors, storage];
 
-    private static void AssertPasses(TestResult result, string rule)
+    private static void AssertPasses(NetArchTest.Rules.TestResult result, string rule)
     {
         var offenders = result.FailingTypeNames ?? [];
 
@@ -183,3 +183,4 @@ public class DependencyRulesTests
         return offenders;
     }
 }
+

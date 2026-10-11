@@ -1,17 +1,18 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <!-- Radius and elevation tokens (docs/design/design-tokens.md). Q12 covers the advice, banner and insight split. -->
+  <!-- Radius and elevation tokens (docs/design/design-tokens.md). Advice 12 and banner 10 follow the prototype. -->
   <CornerRadius x:Key="Radius.Card">16</CornerRadius>
   <CornerRadius x:Key="Radius.Hero">16</CornerRadius>
   <CornerRadius x:Key="Radius.Advice">12</CornerRadius>
-  <CornerRadius x:Key="Radius.Banner">12</CornerRadius>
+  <CornerRadius x:Key="Radius.Banner">10</CornerRadius>
+  <CornerRadius x:Key="Radius.Button">6</CornerRadius>
   <CornerRadius x:Key="Radius.Insight">10</CornerRadius>
   <CornerRadius x:Key="Radius.SegmentTrack">10</CornerRadius>
   <CornerRadius x:Key="Radius.Segment">8</CornerRadius>
   <CornerRadius x:Key="Radius.Window">10</CornerRadius>
   <CornerRadius x:Key="Radius.Flyout">12</CornerRadius>
   <CornerRadius x:Key="Radius.Toast">8</CornerRadius>
-  <!-- Q11: the pill shape is not in the token table; fully rounded. -->
+  <!-- Pill: fully rounded (prototype border-radius 999). Banner 10 and buttons 6 come from the prototype. -->
   <CornerRadius x:Key="Radius.Pill">999</CornerRadius>
 
   <DropShadowEffect x:Key="Shadow.Flyout" Color="#000000" Opacity="0.35" BlurRadius="36" ShadowDepth="12" Direction="270" />

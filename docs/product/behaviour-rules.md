@@ -15,7 +15,7 @@ Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 3
 ## Sync and data
 
 1. Sync on launch and on every reconnect. Read the sensor's stored history (up to about 7 days) and merge it by timestamp.
-2. Existing readings are never deleted. Sensor values win over imported values.
+2. Existing readings are never deleted or changed. The first reading stored for a slot stays; a later reading for the same slot, from the sensor or from an import, is ignored (D-0013).
 3. Missing readings stay missing. Never interpolate in History.
 4. After a sync, Live shows the last 24 h.
 
@@ -38,7 +38,7 @@ Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 3
 
 ## Live values
 
-- **Trend:** compare the average of the last 6 minutes with the average 30 minutes earlier. A change under 30 ppm is "Steady"; otherwise "Rising" or "Falling" with the ppm change over 30 min. Temperature, humidity and pressure are "Steady" unless they change by 0.5 °C, 3 % or 1 hPa over the last hour. Tune with real data.
+- **Trend:** compare the average of the last 6 minutes with the average of the 6 minute window that ends 30 minutes before now. If either window has no readings, the trend is "Steady". A change under 30 ppm is "Steady"; otherwise "Rising" or "Falling" with the ppm change over 30 min. Temperature, humidity and pressure are "Steady" unless they change by 0.5 °C, 3 % or 1 hPa over the last hour. Tune with real data.
 - "Good in last 24 h": share of time under 1,000 ppm. "Peak": the maximum in 24 h. "In the X zone": time since the zone last changed.
 
 ## Connection states
@@ -49,6 +49,8 @@ Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 3
 | Not connected | No reading for 10 minutes, or Bluetooth is off |
 | Low battery | Sensor at 10 % or below (the footer icon turns amber at 20 %) |
 | First run | No paired sensor |
+
+When several apply, the first of this list wins: First run, Not connected, Stale, Low battery. A stale sensor therefore hides the low battery banner; the banner shows again once readings arrive. Stale starts after 3 missed intervals (about 5 minutes at the usual 2 minute interval).
 
 ## Alerts
 

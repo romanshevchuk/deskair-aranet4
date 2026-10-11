@@ -25,6 +25,7 @@
             <Trigger Property="IsSelected" Value="True">
               <Setter TargetName="Item" Property="Background" Value="{DynamicResource Segment.Selected.Brush}" />
               <Setter TargetName="Item" Property="BorderBrush" Value="{DynamicResource Border.Brush}" />
+              <Setter Property="FontWeight" Value="{DynamicResource Font.Weight.SemiBold}" />
               <Setter Property="Foreground" Value="{DynamicResource Text.Primary.Brush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">

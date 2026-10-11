@@ -15,9 +15,9 @@ Readings columns: `ts_utc, co2_ppm, temp_c, rh_pct, pres_hpa, src`. `src` is `de
 - **Size:** a year at a 2-minute interval is about 263,000 rows (about 12 MB). Load everything into memory at start and aggregate on demand.
 - **Location:** default `Documents\Deskair\`, not private app storage. A Store (MSIX) app's private data is deleted on uninstall. A visible folder survives reinstalling, can be backed up, and is the same for Store, GitHub and winget installs.
 - **Time:** store UTC, show local time. Calendar days follow local time; a day is 23 or 25 hours when daylight saving changes.
-- **Merge rule:** snap each reading to the sensor's interval grid (within half an interval) and treat the slot as one reading. Sensor values win. Imports only fill empty slots.
+- **Merge rule:** snap each reading to the sensor's interval grid (within half an interval) and treat the slot as one reading. History is append-only: the first valid reading stored for a slot stays, and later readings for that slot (sensor or import) are ignored. A reading with a missing or non-finite value does not count, so its slot stays empty. See D-0013.
 - **Interval changes:** keep the interval history in `device.json`. Coverage is readings divided by expected slots.
-- **Safety:** append to the current month's file. When rewriting, write a temp file and rename. Allow one app instance.
+- **Safety:** append to the month's file; readings files are never rewritten. A half-written last line is ignored when loading. `device.json` and settings are rewritten through a temp file and a rename. Allow one app instance.
 - **Units:** °C and hPa as received. Files use the invariant culture.
 
 ## Export CSV

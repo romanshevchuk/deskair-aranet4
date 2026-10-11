@@ -10,7 +10,7 @@ public sealed class BackdropService
     // Input : a window, whether the theme is dark.
     // Output: the title bar and backdrop match the theme.
     // Rules : DWM attributes on Windows 11 only; keep snap layouts; Windows 10 falls back to the window.bg token.
-    // Edge  : decide native title bar versus custom chrome first (questions.md Q14).
+    // Edge  : the prototype puts logo, navigation and room chip in the title bar, so use WindowChrome (CaptionHeight 52, UseAeroCaptionButtons) to keep the native caption buttons and snap layouts; confirm in spike S3 (questions.md Q14).
     // Done  : manual check on Windows 10 and 11 in both themes.
     public void Apply(Window window, bool dark)
         => throw new NotImplementedException("TODO(WIN-01a)");

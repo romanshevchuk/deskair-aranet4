@@ -5,7 +5,7 @@
 | Component | Purpose and states | WPF approach |
 |---|---|---|
 | Window chrome | Logo, nav (Live, History, Settings), room chip, caption buttons | Custom or native title bar; DWM backdrop on Windows 11 |
-| Segmented control | One selected option; tabs, ranges, filters, settings | Restyled RadioButton group; arrow-key navigation |
+| Segmented control | One selected option; tabs, ranges, filters, settings | Restyled single-selection `ListBox` (arrow keys move the selection; announced as a selectable list) |
 | Toggle switch | 38 × 22 px, knob slides in 0.15 s | ToggleButton template |
 | Card | Surface, border, radius 16 | Border style |
 | Hero card | Zone tint, pill, value, trend, gauge, advice, three stats | UserControl bound to a zone state |

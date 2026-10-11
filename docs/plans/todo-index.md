@@ -9,7 +9,7 @@ Every TODO card in the code, with its size and the model that should take it. Fo
 - **Test:** `skipped test` means a skipped test with reason `TODO(ID)` already exists; unskip it and make it pass. `manual / gallery` means the card is done when the gallery or a manual check shows it.
 - Controls, views and Windows glue are stubs too: an empty control template, an empty view, or a method that throws `NotImplementedException("TODO(ID)")`. The card sits above the stub (in the XAML file for templates and views; for controls, in both the `.cs` and the `.xaml` file).
 
-Totals: 146 cards. Sizes: L: 22, M: 57, S: 67. Suggested models: haiku: 99, sonnet: 47.
+Totals: 147 cards. Sizes: L: 21, M: 59, S: 67. Suggested models: haiku: 101, sonnet: 46.
 
 | ID | File | Size | Suggested model | Status | Test |
 |---|---|---|---|---|---|
@@ -92,6 +92,7 @@ Totals: 146 cards. Sizes: L: 22, M: 57, S: 67. Suggested models: haiku: 99, sonn
 | IMPORT-01a | src/Deskair.Services/Import/ImportService.cs | M | sonnet | todo | skipped test |
 | IMPORT-01b | src/Deskair.Services/Import/ImportService.cs | M | sonnet | todo | skipped test |
 | IMPORT-02a | src/Deskair.Sensors/Aranet4/PhoneExportImporter.cs | M | haiku | todo | skipped test |
+| IMPORT-02b | src/Deskair.Sensors/Aranet4/PhoneExportImporter.cs | M | haiku | todo | skipped test |
 | LIVE-00a | src/Deskair.App/ViewModels/Live/LiveViewModel.cs | M | sonnet | todo | skipped test |
 | LIVE-00b | src/Deskair.App/Ui/Views/Live/LiveView.xaml | S | haiku | todo | manual / gallery |
 | LIVE-01a | src/Deskair.Domain/Analytics/Trend/TrendCalculator.cs | M | haiku | todo | skipped test |
@@ -138,7 +139,7 @@ Totals: 146 cards. Sizes: L: 22, M: 57, S: 67. Suggested models: haiku: 99, sonn
 | STORE-01a | src/Deskair.Storage/Readings/MonthlyCsvStore.cs | M | haiku | todo | skipped test |
 | STORE-01b | src/Deskair.Storage/Readings/MonthlyCsvStore.cs | S | haiku | todo | skipped test |
 | STORE-01c | src/Deskair.Storage/Readings/MonthlyCsvStore.cs | S | haiku | todo | skipped test |
-| STORE-01d | src/Deskair.Storage/Readings/MonthlyCsvStore.cs | L | sonnet | todo | skipped test |
+| STORE-01d | src/Deskair.Storage/Readings/MonthlyCsvStore.cs | M | haiku | todo | skipped test |
 | STORE-02a | src/Deskair.Storage/Readings/ReadingIndex.cs | M | haiku | todo | skipped test |
 | STORE-02b | src/Deskair.Storage/Readings/ReadingIndex.cs | S | haiku | todo | skipped test |
 | STORE-02c | src/Deskair.Storage/Readings/ReadingIndex.cs | S | haiku | todo | skipped test |

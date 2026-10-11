@@ -10,7 +10,7 @@ Agents start at `AGENTS.md` (shared) or `CLAUDE.md` (Claude Code). Area rules ar
 | `decisions.md` | One log of decisions and their reasons |
 | `guides/` | How to do common tasks (add a sensor, control, setting, translation; run the gallery) |
 | `features/` | One folder per shipped feature (created as features are built) |
-| `plans/` | Roadmap, backlog, spikes, open questions, skeleton questions (`questions.md`), TODO index (`todo-index.md`) |
+| `plans/` | Roadmap, backlog, spikes, open questions, skeleton questions (`questions.md`), TODO index (`todo-index.md`), handoff (`handoff.md`) |
 
 ## Reading order for a new contributor
 

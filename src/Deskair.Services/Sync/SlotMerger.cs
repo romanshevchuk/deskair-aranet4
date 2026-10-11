@@ -1,5 +1,4 @@
 using Deskair.Domain.Readings;
-using Deskair.Services.Storage;
 
 namespace Deskair.Services.Sync;
 
@@ -17,15 +16,14 @@ public static class SlotMerger
 
     // TODO(SYNC-01b) [M, sonnet]
     // Spec: docs/engineering/data-model.md "Merge rule"; docs/product/behaviour-rules.md "Sync and data" rule 2.
-    // Input : existing readings, incoming readings with their source, interval.
+    // Input : existing readings, incoming readings, interval.
     // Output: the readings to add (one per newly filled slot), sorted by time, timestamps snapped.
-    // Rules : sensor values win; imports only fill empty slots; an incoming duplicate slot keeps the first; never delete.
-    // Edge  : empty incoming returns empty; a Device reading for a slot already filled by an Import is not handled here (questions.md Q2).
+    // Rules : history is append-only (D-0013): a slot that already has a reading is never filled again, whatever the source; of two incoming readings for one slot the first stays.
+    // Edge  : empty incoming returns empty; a reading with a non-finite value does not fill its slot.
     // Done  : unskip tests Services/SlotMergerTests.Merge_* and make them pass.
     public static IReadOnlyList<Reading> Merge(
         IReadOnlyList<Reading> existing,
         IReadOnlyList<Reading> incoming,
-        ReadingSource source,
         TimeSpan interval)
         => throw new NotImplementedException("TODO(SYNC-01b)");
 }

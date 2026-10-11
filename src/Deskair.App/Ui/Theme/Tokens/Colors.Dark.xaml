@@ -31,8 +31,12 @@
   <SolidColorBrush x:Key="Toggle.On.Brush" Color="{StaticResource Toggle.On.Color}" />
   <Color x:Key="Toggle.Knob.Color">#FFFFFF</Color>
   <SolidColorBrush x:Key="Toggle.Knob.Brush" Color="{StaticResource Toggle.Knob.Color}" />
-  <Color x:Key="Focus.Ring.Color">#EEF2F5</Color>
+  <Color x:Key="Focus.Ring.Color">#6E9BE0</Color>
   <SolidColorBrush x:Key="Focus.Ring.Brush" Color="{StaticResource Focus.Ring.Color}" />
+  <Color x:Key="Caption.Hover.Color">#2E7F7F7F</Color>
+  <SolidColorBrush x:Key="Caption.Hover.Brush" Color="{StaticResource Caption.Hover.Color}" />
+  <Color x:Key="Caption.CloseHover.Color">#C42B1C</Color>
+  <SolidColorBrush x:Key="Caption.CloseHover.Brush" Color="{StaticResource Caption.CloseHover.Color}" />
   <Color x:Key="Border.Window.Color">#4D808080</Color>
   <SolidColorBrush x:Key="Border.Window.Brush" Color="{StaticResource Border.Window.Color}" />
 </ResourceDictionary>

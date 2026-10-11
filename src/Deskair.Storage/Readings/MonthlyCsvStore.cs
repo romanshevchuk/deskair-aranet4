@@ -6,7 +6,7 @@ namespace Deskair.Storage.Readings;
 
 /// <summary>
 /// Stores readings in <c>devices/&lt;id&gt;/readings-YYYY-MM.csv</c> under the data folder.
-/// Appends to the current month; rewrites go through a temp file and a rename.
+/// History is append-only: rows are only ever added to a month file (docs/decisions.md D-0013).
 /// </summary>
 public sealed class MonthlyCsvStore : IReadingStore
 {
@@ -52,14 +52,13 @@ public sealed class MonthlyCsvStore : IReadingStore
     public Task<DateTimeOffset?> GetLastReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
         => throw new NotImplementedException("TODO(STORE-01c)");
 
-    // TODO(STORE-01d) [L, sonnet]
-    // Spec: docs/engineering/data-model.md "Merge rule" and "Safety"; AGENTS.md (never delete a reading).
+    // TODO(STORE-01d) [M, haiku]
+    // Spec: docs/engineering/data-model.md "Merge rule" and "Safety"; docs/decisions.md D-0013 (history is append-only).
     // Input : device, readings, source, interval.
     // Output: the number of newly filled slots.
-    // Rules : use SlotMerger rules (sensor wins, imports fill empty slots only); append new rows to the month file;
-    //         when a Device reading replaces an Import row, rewrite that month through a temp file and rename.
-    // Edge  : an interrupted write must leave the previous file intact; readings spanning two months go to two files.
-    // Done  : add Storage/MonthlyCsvStoreTests.Merge_* including an interrupted-write test, and make them pass.
+    // Rules : keep only readings SlotMerger.Merge returns; append one line per reading to its month file (src column from source); update the index.
+    // Edge  : never rewrite a readings file; readings spanning two months go to two files; an append that stops half way leaves a last line that loading ignores.
+    // Done  : add Storage/MonthlyCsvStoreTests.Merge_* including a half-written last line, and make them pass.
     public Task<int> MergeAsync(
         DeviceId device,
         IReadOnlyList<Reading> readings,

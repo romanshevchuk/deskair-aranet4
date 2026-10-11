@@ -120,3 +120,23 @@ The first plan opened the gallery only in Debug builds. That needs conditional c
 **Decision:** `--gallery` works in every build. There are no `#if DEBUG` blocks and no extra branches; the option is read in one place (`Composition/AppOptions`).
 
 **Consequences:** simpler code. The gallery uses the simulated sensor only, never touches storage or Bluetooth, and a normal launch never opens it. If a Store build should not expose it, remove the option in the packaging step instead of in the code.
+
+## D-0013 Readings history is append-only
+
+**Status:** accepted · Oct 2026
+
+The earlier rule was "sensor values win over imports", which means rewriting an imported row when the sensor later delivers the same slot. Rewrites are slower, riskier (interrupted writes) and the values come from the same sensor.
+
+**Decision:** the first valid reading stored for an interval slot stays. Later readings for that slot are ignored, whether they come from a sensor sync or an import. A reading with a missing or non-finite value does not fill a slot.
+
+**Consequences:** monthly CSV files are only ever appended to, so the store needs no rewrite or temp-file logic; merging is a set difference by slot; sync and import are idempotent. If an import contains wrong values for a slot, they stay (a repair tool would be a separate feature).
+
+## D-0014 Tests use xunit v3 on Microsoft.Testing.Platform
+
+**Status:** accepted · Oct 2026
+
+The .NET 10 SDK no longer runs VSTest-based test projects through `dotnet test` unless MTP is chosen, and xunit v3 is the current line.
+
+**Decision:** `xunit.v3` in `tests/Deskair.Tests` (an executable project) and `"test": { "runner": "Microsoft.Testing.Platform" }` in `global.json`. No `Microsoft.NET.Test.Sdk` or `xunit.runner.visualstudio`.
+
+**Consequences:** `dotnet test tests/Deskair.Tests` is unchanged for contributors. Test Explorer in Visual Studio and VS Code needs a version that supports MTP.

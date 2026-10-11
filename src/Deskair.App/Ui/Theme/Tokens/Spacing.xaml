@@ -14,7 +14,7 @@
   <Thickness x:Key="Space.SectionLabel">0,0,0,8</Thickness>
   <Thickness x:Key="Space.Card.Padding">16</Thickness>
   <sys:Double x:Key="Space.Card.Gap">16</sys:Double>
-  <!-- Q12: the doc says "22 / 24 / 20 px"; read as top 22, sides 24, bottom 20. -->
+  <!-- Confirmed by the prototype: top 22, sides 24, bottom 20. -->
   <Thickness x:Key="Space.Hero.Padding">24,22,24,20</Thickness>
   <sys:Double x:Key="Size.Live.MiniRow.Height">132</sys:Double>
   <sys:Double x:Key="Size.History.Toolbar.Height">40</sys:Double>
@@ -23,15 +23,15 @@
   <sys:Double x:Key="Size.Toast.Edge">4</sys:Double>
   <sys:Double x:Key="Size.Toggle.Width">38</sys:Double>
   <sys:Double x:Key="Size.Toggle.Height">22</sys:Double>
-  <!-- Q11: knob and dot sizes are not in the token table. -->
-  <sys:Double x:Key="Size.Toggle.Knob">16</sys:Double>
+  <!-- Not in the token table: taken from design/prototype/index.html. -->
+  <sys:Double x:Key="Size.Toggle.Knob">18</sys:Double>
   <sys:Double x:Key="Size.StatusDot">8</sys:Double>
-  <Thickness x:Key="Space.Toggle.KnobOff">3,0,0,0</Thickness>
-  <Thickness x:Key="Space.Toggle.KnobOn">19,0,0,0</Thickness>
+  <Thickness x:Key="Space.Toggle.KnobOff">2,0,0,0</Thickness>
+  <Thickness x:Key="Space.Toggle.KnobOn">18,0,0,0</Thickness>
   <Thickness x:Key="Space.Toggle.Label">10,0,0,0</Thickness>
-  <Thickness x:Key="Space.Segment.Padding">2</Thickness>
-  <Thickness x:Key="Space.Segment.Item.Padding">12,5,12,5</Thickness>
-  <Thickness x:Key="Space.Pill.Padding">10,2,10,2</Thickness>
+  <Thickness x:Key="Space.Segment.Padding">3</Thickness>
+  <Thickness x:Key="Space.Segment.Item.Padding">14,5,14,5</Thickness>
+  <Thickness x:Key="Space.Pill.Padding">9,4,11,4</Thickness>
 
   <Duration x:Key="Motion.Toggle">0:0:0.15</Duration>
 </ResourceDictionary>

@@ -1,5 +1,4 @@
 using Deskair.Domain.Readings;
-using Deskair.Services.Storage;
 using Deskair.Services.Sync;
 using Deskair.Tests.Fakes;
 
@@ -40,7 +39,7 @@ public class SlotMergerTests
             Samples.Co2(noon.AddMinutes(2), 850)
         };
 
-        var added = SlotMerger.Merge(existing, incoming, ReadingSource.Device, interval);
+        var added = SlotMerger.Merge(existing, incoming, interval);
 
         Assert.Equal(new[] { 850.0, 900.0 }, added.Select(reading => reading.Co2Ppm));
     }
@@ -54,7 +53,7 @@ public class SlotMergerTests
             Samples.Co2(noon.AddSeconds(50), 710)
         };
 
-        var added = SlotMerger.Merge([], incoming, ReadingSource.Device, interval);
+        var added = SlotMerger.Merge([], incoming, interval);
 
         Assert.Single(added);
         Assert.Equal(700, added[0].Co2Ppm);
@@ -65,7 +64,7 @@ public class SlotMergerTests
     {
         var incoming = new List<Reading> { Samples.Co2(noon.AddSeconds(50), 700) };
 
-        var added = SlotMerger.Merge([], incoming, ReadingSource.Import, interval);
+        var added = SlotMerger.Merge([], incoming, interval);
 
         Assert.Equal(noon, added[0].Timestamp);
     }
@@ -73,6 +72,16 @@ public class SlotMergerTests
     [Fact(Skip = "TODO(SYNC-01b)")]
     public void Merge_of_nothing_adds_nothing()
     {
-        Assert.Empty(SlotMerger.Merge([Samples.Co2(noon, 800)], [], ReadingSource.Device, interval));
+        Assert.Empty(SlotMerger.Merge([Samples.Co2(noon, 800)], [], interval));
+    }
+
+    [Fact(Skip = "TODO(SYNC-01b)")]
+    public void Merge_does_not_let_a_reading_with_a_missing_value_fill_a_slot()
+    {
+        var incoming = new List<Reading> { Samples.Co2(noon, double.NaN), Samples.Co2(noon.AddSeconds(30), 700) };
+
+        var added = SlotMerger.Merge([], incoming, interval);
+
+        Assert.Equal(700, Assert.Single(added).Co2Ppm);
     }
 }
