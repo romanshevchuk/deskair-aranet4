@@ -7,9 +7,12 @@ public sealed class FakeBluetoothRadio : IBluetoothRadio
 {
     private bool isOn = true;
 
+    /// <summary>Makes reading <see cref="IsOn"/> throw, like a radio API that fails.</summary>
+    public bool FailReads { get; set; }
+
     public bool IsOn
     {
-        get => isOn;
+        get => FailReads ? throw new InvalidOperationException("radio unavailable") : isOn;
         set
         {
             if (isOn == value)

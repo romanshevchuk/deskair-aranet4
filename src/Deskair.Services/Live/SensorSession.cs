@@ -57,7 +57,10 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
         }
 
         running = new CancellationTokenSource();
-        loop = RunAsync(provider, device, running.Token);
+        var token = running.Token;
+
+        // On the thread pool, so the loop never resumes on the UI thread (which may be busy or shutting down).
+        loop = Task.Run(() => RunAsync(provider, device, token));
     }
 
     public async Task StopAsync()

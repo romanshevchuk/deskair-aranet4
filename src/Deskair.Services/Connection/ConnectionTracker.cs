@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
 using Deskair.Services.Platform;
+using Microsoft.Extensions.Logging;
 
 namespace Deskair.Services.Connection;
 
@@ -17,12 +18,14 @@ public sealed class ConnectionTracker
     private readonly IBluetoothRadio radio;
     private readonly IMessenger messenger;
     private readonly TimeProvider timeProvider;
+    private readonly ILogger<ConnectionTracker> logger;
     private readonly Lock gate = new();
     private DateTimeOffset? lastReadingAt;
     private int? batteryPercent;
 
-    public ConnectionTracker(DeviceRegistry devices, IBluetoothRadio radio, IMessenger messenger, TimeProvider timeProvider)
+    public ConnectionTracker(DeviceRegistry devices, IBluetoothRadio radio, IMessenger messenger, TimeProvider timeProvider, ILogger<ConnectionTracker> logger)
     {
+        this.logger = logger;
         this.devices = devices;
         this.radio = radio;
         this.messenger = messenger;
@@ -31,7 +34,10 @@ public sealed class ConnectionTracker
 
     public ConnectionState Current { get; private set; } = ConnectionState.FirstRun;
 
-    /// <summary>Starts listening and works out the first state. Listening stops when <paramref name="cancellationToken"/> is cancelled.</summary>
+    /// <summary>
+    /// Works out the first state, starts listening and starts the background check that notices silence. Everything stops when
+    /// <paramref name="cancellationToken"/> is cancelled.
+    /// </summary>
     public Task StartAsync(DateTimeOffset? lastReading, CancellationToken cancellationToken)
     {
         lock (gate)
@@ -52,26 +58,11 @@ public sealed class ConnectionTracker
 
         Evaluate();
 
+        // The loop runs until the first wait here, so its timer exists when this returns; after that it continues on the thread pool.
+        // Failures are logged inside the loop, so nothing is lost by not awaiting it.
+        _ = WatchAsync(cancellationToken);
+
         return Task.CompletedTask;
-    }
-
-    /// <summary>Starts, then checks every 15 seconds until cancelled.</summary>
-    public async Task RunAsync(DateTimeOffset? lastReading, CancellationToken cancellationToken)
-    {
-        await StartAsync(lastReading, cancellationToken);
-
-        try
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(checkEvery, timeProvider, cancellationToken);
-                Evaluate();
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            // Cancelling is how the loop is stopped; it is not an error.
-        }
     }
 
     public void Evaluate()
@@ -95,6 +86,37 @@ public sealed class ConnectionTracker
         }
 
         messenger.Send(new ConnectionStateChanged(state));
+    }
+
+    private async Task WatchAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(checkEvery, timeProvider, cancellationToken).ConfigureAwait(false);
+                CheckSafely();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancelling is how the loop is stopped; it is not an error.
+        }
+    }
+
+    private void CheckSafely()
+    {
+        try
+        {
+            Evaluate();
+        }
+        catch (Exception exception)
+        {
+            if (logger.IsEnabled(LogLevel.Warning))
+            {
+                logger.LogWarning(exception, "Checking the connection state failed; trying again in {Seconds} s.", checkEvery.TotalSeconds);
+            }
+        }
     }
 
     private void OnRadioChanged(object? sender, EventArgs args) => Evaluate();

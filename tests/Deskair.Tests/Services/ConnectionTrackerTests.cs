@@ -19,13 +19,14 @@ public sealed class ConnectionTrackerTests : IDisposable
     private readonly FakeDeviceStore deviceStore = new();
     private readonly DeviceRegistry registry;
     private readonly ConnectionTracker tracker;
+    private readonly ListLogger<ConnectionTracker> logger = new();
     private readonly List<ConnectionState> changes = [];
     private readonly CancellationTokenSource cts = new();
 
     public ConnectionTrackerTests()
     {
         registry = new DeviceRegistry(deviceStore);
-        tracker = new ConnectionTracker(registry, radio, messenger, clock);
+        tracker = new ConnectionTracker(registry, radio, messenger, clock, logger);
         messenger.Register<ConnectionStateChanged>(this, (_, message) => changes.Add(message.State));
     }
 
@@ -91,7 +92,8 @@ public sealed class ConnectionTrackerTests : IDisposable
         Reading(clock.GetUtcNow());
 
         Assert.Equal(ConnectionState.Normal, tracker.Current);
-        Assert.Equal([ConnectionState.Normal, ConnectionState.NotConnected, ConnectionState.Normal], changes);
+        // The background check runs while the clock moves, so the state passes through stale on the way to not connected.
+        Assert.Equal([ConnectionState.Normal, ConnectionState.Stale, ConnectionState.NotConnected, ConnectionState.Normal], changes);
     }
 
     [Fact]
@@ -158,13 +160,27 @@ public sealed class ConnectionTrackerTests : IDisposable
     public async Task The_background_check_notices_silence_on_its_own()
     {
         await SelectDeviceAsync();
-        var run = tracker.RunAsync(start, cts.Token);
+        await tracker.StartAsync(start, cts.Token);
 
         clock.Advance(TimeSpan.FromMinutes(7));
-        await Wait.Until(() => tracker.Current == ConnectionState.Stale);
 
-        await cts.CancelAsync();
-        await run;
+        await Wait.Until(() => tracker.Current == ConnectionState.Stale);
+    }
+
+    [Fact]
+    public async Task A_failing_check_is_logged_and_the_background_check_carries_on()
+    {
+        await SelectDeviceAsync();
+        await tracker.StartAsync(start, cts.Token);
+
+        radio.FailReads = true;
+        clock.Advance(TimeSpan.FromSeconds(15));
+        await Wait.Until(() => logger.Entries.Any(entry => entry.Level == Microsoft.Extensions.Logging.LogLevel.Warning));
+
+        radio.FailReads = false;
+        clock.Advance(TimeSpan.FromMinutes(7));
+
+        await Wait.Until(() => tracker.Current == ConnectionState.Stale);
     }
 
     [Fact]

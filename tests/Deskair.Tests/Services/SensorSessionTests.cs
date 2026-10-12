@@ -150,6 +150,36 @@ public sealed class SensorSessionTests : IAsyncDisposable
         Assert.Equal(count, messages.OfType<ReadingReceived>().Count());
     }
 
+    [Fact(Timeout = 20000)]
+    public async Task The_session_never_depends_on_the_thread_that_started_it()
+    {
+        // Like a UI thread that is busy or shutting down: posted work never runs.
+        var starter = new Thread(() =>
+        {
+            SynchronizationContext.SetSynchronizationContext(new NeverRunsContext());
+            session.StartAsync(device).Wait();
+        });
+        starter.Start();
+        starter.Join();
+
+        await Wait.Until(() => messages.OfType<ReadingReceived>().Any());
+        var stop = session.StopAsync();
+
+        await stop.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
+        Assert.True(stop.IsCompletedSuccessfully);
+    }
+
+    private sealed class NeverRunsContext : SynchronizationContext
+    {
+        public override void Post(SendOrPostCallback d, object? state)
+        {
+        }
+
+        public override void Send(SendOrPostCallback d, object? state)
+        {
+        }
+    }
+
     private sealed class TestProvider : ISensorProvider
     {
         private readonly FakeSensor sensor;

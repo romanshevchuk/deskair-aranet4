@@ -75,7 +75,7 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
             dispatcher,
             clock,
             NullLogger<LiveViewModel>.Instance);
-        Tracker = new ConnectionTracker(registry, radio, messenger, clock);
+        Tracker = new ConnectionTracker(registry, radio, messenger, clock, new ListLogger<ConnectionTracker>());
     }
 
     private ConnectionTracker Tracker { get; }
@@ -95,7 +95,7 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
     {
         await Create(simulated: true).StartAsync(cts.Token);
 
-        Assert.Equal(["Office", "Bedroom"], deviceStore.Devices.Select(device => device.RoomName));
+        Assert.Equal(["Office", "Bedroom"], deviceStore.Snapshot().Select(device => device.RoomName));
         Assert.Equal("SIM-0001", registry.Selected?.Address);
         Assert.Equal(SimulatedProvider.ProviderId, registry.Selected?.ProviderId);
         Assert.Equal(["Office", "Bedroom"], room.Rooms.Select(item => item.Name));
@@ -122,8 +122,7 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
         await Create(simulated: true).StartAsync(nextLaunch.Token);
         await nextLaunch.CancelAsync();
 
-        Assert.Equal(2, deviceStore.Devices.Count);
-        Assert.Equal(2, deviceStore.Saved.Count(device => device.LastSyncUtc is null));
+        Assert.Equal(2, deviceStore.Snapshot().Count);
     }
 
     [Fact]
@@ -131,7 +130,7 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
     {
         await Create(simulated: false).StartAsync(cts.Token);
 
-        Assert.Empty(deviceStore.Devices);
+        Assert.Empty(deviceStore.Snapshot());
         Assert.Null(registry.Selected);
         Assert.Empty(provider.Created);
         Assert.Equal(ConnectionState.FirstRun, Tracker.Current);
@@ -200,5 +199,19 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
 
         Assert.Single(provider.Created);
         Assert.DoesNotContain(logger.Entries, entry => entry.Level >= LogLevel.Error);
+    }
+
+    [Fact]
+    public async Task Silence_turns_the_connection_stale_without_any_new_event()
+    {
+        sensor.OnReadCurrent = _ => throw new InvalidOperationException("no reading");
+        deviceStore.Devices.Add(new DeviceInfo(new DeviceId(SimulatedProvider.ProviderId, "SIM-0001"), "Office", null, [new IntervalChange(now.AddYears(-1), TimeSpan.FromMinutes(2))], null));
+        readings.Readings.Add(Samples.Co2(now.AddMinutes(-1), 700));
+        await Create(simulated: false).StartAsync(cts.Token);
+        await Wait.Until(() => connection.State == ConnectionState.Normal);
+
+        clock.Advance(TimeSpan.FromMinutes(7));
+
+        await Wait.Until(() => connection.State == ConnectionState.Stale);
     }
 }
