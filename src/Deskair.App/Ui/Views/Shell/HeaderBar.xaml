@@ -4,26 +4,26 @@
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
              xmlns:vm="clr-namespace:Deskair.App.ViewModels.Shell">
-  <!-- TODO(SHELL-01a) [S, haiku]
-       Spec: docs/design/components.md "Window chrome" (logo, nav, room chip, caption buttons).
-       Input : none yet.
-       Output: the logo (ring from design-tokens.md "Icons") left of the navigation, and the room chip on the right.
-       Rules : the room chip needs RoomChip and DeviceRegistry; keep the navigation as it is.
-       Edge  : the native title bar stays until the title bar question is answered (questions.md Q14).
-       Done  : the gallery or main window shows the logo and the room chip in light and dark. -->
+  <!-- DataContext: ShellViewModel. The logo and name on the left, the navigation in the middle, the room chip on the right.
+       The native title bar stays until the title bar question is answered (questions.md Q14). -->
   <Grid Margin="{StaticResource Space.Bar.Padding}">
     <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
-    <TextBlock Grid.Column="0"
-               VerticalAlignment="Center"
-               Style="{StaticResource Text.Title}"
-               Text="Deskair" />
+    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+      <controls:LogoRing Width="{StaticResource Size.Logo}"
+                         Height="{StaticResource Size.Logo}"
+                         Zone="{Binding Live.Hero.Zone}" />
+      <TextBlock Margin="{StaticResource Space.Inline}"
+                 VerticalAlignment="Center"
+                 Style="{StaticResource Text.Title}"
+                 Text="Deskair" />
+    </StackPanel>
 
     <controls:SegmentedControl Grid.Column="1"
-                               HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                AutomationProperties.Name="{loc:T Nav_Main}"
                                SelectedValuePath="Tag"
@@ -32,5 +32,14 @@
       <ListBoxItem Content="{loc:T Nav_History}" Tag="{x:Static vm:ShellSection.History}" />
       <ListBoxItem Content="{loc:T Nav_Settings}" Tag="{x:Static vm:ShellSection.Settings}" />
     </controls:SegmentedControl>
+
+    <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" DataContext="{Binding Room}">
+      <controls:RoomChip IsOpen="{Binding IsOpen, Mode=TwoWay}"
+                         RoomName="{Binding SelectedRoom.Name}"
+                         Zone="{Binding SelectedRoom.Zone}" />
+      <controls:RoomMenu IsOpen="{Binding IsOpen, Mode=TwoWay}"
+                         ItemsSource="{Binding Rooms}"
+                         RoomChosenCommand="{Binding ChooseRoomCommand}" />
+    </StackPanel>
   </Grid>
 </UserControl>

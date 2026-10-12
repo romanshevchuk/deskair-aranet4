@@ -20,13 +20,18 @@ public sealed partial class DataSettingsViewModel : ObservableObject
         this.folders = folders;
     }
 
-    // TODO(SET-01g) [M, haiku]
-    // Spec: docs/design/screens-and-states.md "Settings" (Data folder, Import, Export)
-    // Input : A CancellationToken.
-    // Output: DataFolder text and the import and export commands (preview then import).
+    // TODO(SET-01g2) [M, haiku]
+    // Spec: docs/design/screens-and-states.md "Settings" (Import from phone app, Export CSV)
+    // Input : A file chosen through a view-side file dialog service, the device, the export range.
+    // Output: Import commands (preview, then import) and an export command that use import and export.
     // Rules : File dialogs go through a view-side service, not System.Windows in the view model.
     // Edge  : Cancelling the dialog does nothing.
-    // Done  : Add Tests/ViewModels/DataSettingsViewModelTests with fakes.
+    // Done  : Add tests in Tests/ViewModels/DataSettingsViewModelTests with fakes.
+    // Needs : questions.md Q28 (file dialog service, device and range for export).
     public Task LoadAsync(CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(SET-01g)");
+    {
+        DataFolder = folders.DataFolder;
+
+        return Task.CompletedTask;
+    }
 }

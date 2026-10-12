@@ -10,18 +10,50 @@ public sealed partial class AlertsSettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool alertsEnabled;
 
+    [ObservableProperty]
+    private bool notifyAtElevated;
+
+    [ObservableProperty]
+    private bool notifyAtHigh;
+
+    [ObservableProperty]
+    private bool quietHoursEnabled;
+
+    [ObservableProperty]
+    private TimeOnly quietHoursStart;
+
+    [ObservableProperty]
+    private TimeOnly quietHoursEnd;
+
     public AlertsSettingsViewModel(SettingsService settings)
     {
         this.settings = settings;
     }
 
-    // TODO(SET-01e) [S, haiku]
-    // Spec: docs/guides/add-a-setting.md; docs/product/behaviour-rules.md "Alerts"
-    // Input : The alert switches.
-    // Output: SettingsService.UpdateAsync with the new values.
-    // Rules : More fields (notify at Elevated and High, quiet hours) arrive with the settings list (questions.md Q6).
-    // Edge  : Unchanged values do nothing.
-    // Done  : Add Tests/ViewModels/AlertsSettingsViewModelTests.
+    public void Load()
+    {
+        var current = settings.Current;
+
+        AlertsEnabled = current.AlertsEnabled;
+        NotifyAtElevated = current.NotifyAtElevated;
+        NotifyAtHigh = current.NotifyAtHigh;
+        QuietHoursEnabled = current.QuietHoursEnabled;
+        QuietHoursStart = current.QuietHoursStart;
+        QuietHoursEnd = current.QuietHoursEnd;
+    }
+
     public Task ApplyAsync(CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(SET-01e)");
+    {
+        return settings.UpdateAsync(
+            current => current with
+            {
+                AlertsEnabled = AlertsEnabled,
+                NotifyAtElevated = NotifyAtElevated,
+                NotifyAtHigh = NotifyAtHigh,
+                QuietHoursEnabled = QuietHoursEnabled,
+                QuietHoursStart = QuietHoursStart,
+                QuietHoursEnd = QuietHoursEnd
+            },
+            cancellationToken);
+    }
 }

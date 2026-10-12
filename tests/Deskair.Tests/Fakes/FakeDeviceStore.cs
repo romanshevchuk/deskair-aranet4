@@ -3,7 +3,7 @@ using Deskair.Services.Devices;
 
 namespace Deskair.Tests.Fakes;
 
-/// <summary>An in-memory device store. Saving replaces the device with the same id.</summary>
+/// <summary>An in-memory device store. Saving replaces the device with the same id and keeps its place in the list.</summary>
 public sealed class FakeDeviceStore : IDeviceStore
 {
     public List<DeviceInfo> Devices { get; } = [];
@@ -22,8 +22,17 @@ public sealed class FakeDeviceStore : IDeviceStore
     public Task SaveAsync(DeviceInfo device, CancellationToken cancellationToken)
     {
         Saved.Add(device);
-        Devices.RemoveAll(existing => existing.Id == device.Id);
-        Devices.Add(device);
+
+        var index = Devices.FindIndex(existing => existing.Id == device.Id);
+
+        if (index >= 0)
+        {
+            Devices[index] = device;
+        }
+        else
+        {
+            Devices.Add(device);
+        }
 
         return Task.CompletedTask;
     }

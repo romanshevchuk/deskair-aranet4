@@ -1,18 +1,89 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
-  <!-- TODO(CTRL-08) [M, haiku]
-       Spec: docs/design/components.md "Room menu"; docs/design/accessibility.md (Esc closes popups)
-       Input : Rooms (items with name, value and zone) and IsOpen.
-       Output: A Popup below the chip listing rooms with value and a StatusDot; choosing a room closes it.
-       Rules : Esc and click-away close it; arrow keys move between rooms.
-       Edge  : One room still shows the menu; no rooms shows nothing.
-       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls"
+                    xmlns:shell="clr-namespace:Deskair.App.ViewModels.Shell">
+  <Style x:Key="RoomMenu.ItemButton" TargetType="{x:Type Button}">
+    <Setter Property="Foreground" Value="{DynamicResource Text.Primary.Brush}" />
+    <Setter Property="FontSize" Value="{DynamicResource Font.Size.Secondary}" />
+    <Setter Property="Padding" Value="{DynamicResource Space.Menu.Item.Padding}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="FocusVisualStyle" Value="{DynamicResource Focus.Ring.Button}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Border x:Name="Frame"
+                  Background="Transparent"
+                  CornerRadius="{DynamicResource Radius.Button}"
+                  Padding="{TemplateBinding Padding}">
+            <ContentPresenter />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Frame" Property="Background" Value="{DynamicResource Segment.Bg.Brush}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+              <Setter TargetName="Frame" Property="Background" Value="{DynamicResource Segment.Bg.Brush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <Style TargetType="{x:Type local:RoomMenu}">
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="ItemTemplate">
+      <Setter.Value>
+        <DataTemplate DataType="{x:Type shell:RoomItem}">
+          <Button Style="{StaticResource RoomMenu.ItemButton}">
+            <DockPanel LastChildFill="True">
+              <local:StatusDot DockPanel.Dock="Left" Zone="{Binding Zone}" VerticalAlignment="Center" />
+              <TextBlock DockPanel.Dock="Right"
+                         Margin="{DynamicResource Space.Chip.Gap}"
+                         Style="{DynamicResource Text.Number}"
+                         Foreground="{DynamicResource Text.Secondary.Brush}"
+                         Text="{Binding ValueText}" />
+              <TextBlock Margin="{DynamicResource Space.Chip.Gap}"
+                         Style="{DynamicResource Text.Body}"
+                         FontSize="{DynamicResource Font.Size.Secondary}"
+                         TextTrimming="CharacterEllipsis"
+                         Text="{Binding Name}" />
+            </DockPanel>
+          </Button>
+        </DataTemplate>
+      </Setter.Value>
+    </Setter>
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:RoomMenu}">
-          <Border />
+          <Popup x:Name="PART_Popup"
+                 AllowsTransparency="True"
+                 IsOpen="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                 Placement="Bottom"
+                 PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                 PopupAnimation="Fade"
+                 StaysOpen="False">
+            <Border x:Name="Menu"
+                    Margin="{DynamicResource Space.Menu.Shadow}"
+                    Background="{DynamicResource Surface.Brush}"
+                    BorderBrush="{DynamicResource Border.Brush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius.Flyout}"
+                    Effect="{DynamicResource Shadow.Flyout}"
+                    MinWidth="{DynamicResource Size.Menu.MinWidth}"
+                    Padding="{DynamicResource Space.Menu.Padding}"
+                    KeyboardNavigation.DirectionalNavigation="Cycle"
+                    KeyboardNavigation.TabNavigation="Cycle">
+              <ItemsPresenter />
+            </Border>
+          </Popup>
+          <ControlTemplate.Triggers>
+            <Trigger Property="HasItems" Value="False">
+              <Setter TargetName="PART_Popup" Property="IsOpen" Value="False" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

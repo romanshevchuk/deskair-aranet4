@@ -1,0 +1,23 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Gallery.BannerSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:gallery="clr-namespace:Deskair.App.Ui.Views.Gallery"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <StackPanel>
+    <TextBlock Margin="{StaticResource Space.SectionLabel}"
+               Style="{StaticResource Text.SectionLabel}"
+               Text="{loc:T Gallery_Section_Banner}" />
+    <StackPanel Width="720" HorizontalAlignment="Left">
+      <controls:Banner Margin="{StaticResource Space.Item}"
+                       Message="{loc:T Gallery_Sample_BannerStale}"
+                       ActionText="{loc:T Action_Retry}"
+                       ActionCommand="{x:Static gallery:GalleryCommand.Instance}" />
+      <controls:Banner Margin="{StaticResource Space.Item}"
+                       Message="{loc:T Gallery_Sample_BannerLow}"
+                       DismissCommand="{x:Static gallery:GalleryCommand.Instance}" />
+      <controls:Banner Margin="{StaticResource Space.Item}"
+                       Message="{loc:T Gallery_Sample_BannerStale}" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>

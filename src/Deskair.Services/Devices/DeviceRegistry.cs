@@ -17,13 +17,22 @@ public sealed class DeviceRegistry
 
     public DeviceId? Selected { get; private set; }
 
-    public async Task<IReadOnlyList<DeviceInfo>> LoadAsync(CancellationToken cancellationToken)
+    /// <summary>The devices from the last load.</summary>
+    public IReadOnlyList<DeviceInfo> Known => known;
+
+    public Task<IReadOnlyList<DeviceInfo>> LoadAsync(CancellationToken cancellationToken)
+        => LoadAsync(null, cancellationToken);
+
+    /// <summary>Loads the known devices. A device already selected stays selected; otherwise the preferred one (the one remembered from the last run) is chosen if it is known, else the first.</summary>
+    public async Task<IReadOnlyList<DeviceInfo>> LoadAsync(DeviceId? preferred, CancellationToken cancellationToken)
     {
         known = await store.ListAsync(cancellationToken);
 
         if (Selected is not { } selected || known.All(device => device.Id != selected))
         {
-            Selected = known.Count > 0 ? known[0].Id : null;
+            Selected = preferred is { } wanted && known.Any(device => device.Id == wanted)
+                ? wanted
+                : known.Count > 0 ? known[0].Id : null;
         }
 
         return known;
@@ -42,6 +51,9 @@ public sealed class DeviceRegistry
 
         return (inEffect ?? history.MinBy(change => change.From)!).Interval;
     }
+
+    /// <summary>What is known about a device (room name and so on), or null for an unknown device.</summary>
+    public DeviceInfo? Info(DeviceId id) => known.FirstOrDefault(device => device.Id == id);
 
     public void Select(DeviceId id)
     {

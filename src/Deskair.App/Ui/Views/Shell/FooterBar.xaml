@@ -3,23 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(SHELL-01b) [M, haiku]
-       Spec: docs/design/components.md "Footer"; docs/design/screens-and-states.md "Live conditions".
-       Input : connection state, room, sensor ID, signal and battery from a FooterViewModel (to be created).
-       Output: status dot, room, sensor ID, signal, battery icon and percent; the text "Connected - updated N s ago".
-       Rules : amber dot when data is stale; battery icon red at 10 % or below, amber at 20 % or below.
-       Edge  : no sensor shows Footer_NoSensor and a neutral dot.
-       Done  : add a FooterViewModel test with fake services; the gallery shows each state. -->
+  <!-- DataContext: ShellViewModel; the footer view model is its Footer. Status on the left; room, sensor id, signal and battery on the right. -->
   <Border Background="{DynamicResource Surface.Brush}"
           BorderBrush="{DynamicResource Divider.Brush}"
           BorderThickness="0,1,0,0"
-          Padding="{StaticResource Space.Bar.Padding}">
-    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-      <controls:StatusDot VerticalAlignment="Center" />
-      <TextBlock Margin="{StaticResource Space.Inline}"
-                 VerticalAlignment="Center"
-                 Style="{StaticResource Text.Secondary}"
-                 Text="{loc:T Footer_NoSensor}" />
-    </StackPanel>
+          Padding="{StaticResource Space.Bar.Padding}"
+          DataContext="{Binding Footer}">
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+
+      <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+        <controls:StatusDot Zone="{Binding DotZone}" VerticalAlignment="Center" />
+        <TextBlock Margin="{StaticResource Space.Inline}"
+                   VerticalAlignment="Center"
+                   Style="{StaticResource Text.Secondary}"
+                   Text="{Binding StatusText}" />
+      </StackPanel>
+
+      <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+        <TextBlock VerticalAlignment="Center"
+                   Style="{StaticResource Text.Secondary}"
+                   Text="{Binding DetailText}" />
+        <controls:BatteryIcon Margin="{StaticResource Space.Inline}" Percent="{Binding BatteryPercent}" VerticalAlignment="Center" />
+        <TextBlock Margin="{StaticResource Space.Inline}"
+                   VerticalAlignment="Center"
+                   Style="{StaticResource Text.Secondary}"
+                   Text="{Binding BatteryText}" />
+      </StackPanel>
+    </Grid>
   </Border>
 </UserControl>

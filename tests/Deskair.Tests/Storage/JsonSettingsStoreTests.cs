@@ -35,6 +35,8 @@ public sealed class JsonSettingsStoreTests : IDisposable
     {
         var saved = new AppSettings(LanguageChoice.Ukrainian, ThemeChoice.Dark, false)
         {
+            TemperatureUnit = Deskair.Domain.Metrics.TemperatureUnit.Fahrenheit,
+            SelectedDevice = new Deskair.Domain.Readings.DeviceId("aranet4", "AA:02"),
             NotifyAtElevated = false,
             NotifyAtHigh = false,
             QuietHoursEnabled = true,

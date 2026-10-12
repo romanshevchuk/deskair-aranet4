@@ -1,0 +1,19 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Gallery.GaugeSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <StackPanel>
+    <TextBlock Margin="{StaticResource Space.SectionLabel}"
+               Style="{StaticResource Text.SectionLabel}"
+               Text="{loc:T Gallery_Section_Gauge}" />
+    <WrapPanel>
+      <controls:Gauge Width="340" Margin="{StaticResource Space.Item}" Value="612" />
+      <controls:Gauge Width="340" Margin="{StaticResource Space.Item}" Value="1068" />
+      <controls:Gauge Width="340" Margin="{StaticResource Space.Item}" Value="1732" />
+      <controls:Gauge Width="340" Margin="{StaticResource Space.Item}" Value="3000" />
+      <controls:Gauge Width="340" Margin="{StaticResource Space.Item}" Value="100" />
+      <controls:Gauge Width="340" Margin="{StaticResource Space.Item}" />
+    </WrapPanel>
+  </StackPanel>
+</UserControl>

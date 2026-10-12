@@ -1,0 +1,22 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Gallery.AdviceCardSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:zones="clr-namespace:Deskair.Domain.Zones;assembly=Deskair.Domain">
+  <StackPanel>
+    <TextBlock Margin="{StaticResource Space.SectionLabel}"
+               Style="{StaticResource Text.SectionLabel}"
+               Text="{loc:T Gallery_Section_AdviceCard}" />
+    <WrapPanel>
+      <controls:AdviceCard Width="340" Margin="{StaticResource Space.Item}" Zone="{x:Static zones:Zone.Good}"
+                           Title="{loc:T Advice_Good_Title}" Text="{loc:T Advice_Good_Text}" />
+      <controls:AdviceCard Width="340" Margin="{StaticResource Space.Item}" Zone="{x:Static zones:Zone.Elevated}"
+                           Title="{loc:T Advice_Elevated_Title}" Text="{loc:T Advice_Elevated_Text_Falling}" />
+      <controls:AdviceCard Width="340" Margin="{StaticResource Space.Item}" Zone="{x:Static zones:Zone.High}"
+                           Title="{loc:T Advice_High_Title}" Text="{loc:T Advice_High_Text_Rising}" />
+      <controls:AdviceCard Width="340" Margin="{StaticResource Space.Item}"
+                           Title="{loc:T Chart_NoData}" Text="{loc:T Footer_NoSensor}" />
+    </WrapPanel>
+  </StackPanel>
+</UserControl>

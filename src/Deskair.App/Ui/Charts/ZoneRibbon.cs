@@ -1,9 +1,10 @@
 using System.Windows;
+using Deskair.App.Ui.Charts.Layers;
 using Deskair.App.ViewModels.ChartModels;
-using Deskair.Domain.Zones;
 
 namespace Deskair.App.Ui.Charts;
 
+/// <summary>The 24 h ribbon of zone-coloured segments. It draws at the size it is given (the flyout uses a 22 px tall one), never a scaled-down copy.</summary>
 public sealed class ZoneRibbon : ChartBase
 {
     public static readonly DependencyProperty SegmentsProperty = DependencyProperty.Register(
@@ -12,6 +13,17 @@ public sealed class ZoneRibbon : ChartBase
         typeof(ZoneRibbon),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
 
+    public static readonly DependencyProperty WindowProperty = DependencyProperty.Register(
+        nameof(Window),
+        typeof(TimeSpan),
+        typeof(ZoneRibbon),
+        new FrameworkPropertyMetadata(TimeSpan.FromHours(24), FrameworkPropertyMetadataOptions.AffectsRender));
+
+    public static readonly DependencyProperty EndTimeProperty = DependencyProperty.Register(
+        nameof(EndTime),
+        typeof(DateTimeOffset?),
+        typeof(ZoneRibbon),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
 
     public IReadOnlyList<ChartZoneSegment>? Segments
     {
@@ -19,13 +31,28 @@ public sealed class ZoneRibbon : ChartBase
         set => SetValue(SegmentsProperty, value);
     }
 
-    // TODO(CHART-23) [M, sonnet]
-    // Spec: docs/design/components.md "24 h ribbon"; docs/design/screens-and-states.md "Screens" (Flyout: drawn at native size)
-    // Input : Zone segments for the last 24 hours (144 of 10 minutes).
-    // Output: A ribbon of zone-coloured segments; a window glyph at airing events is a later feature.
-    // Rules : Draw at the size it is given; the flyout uses a 22 px tall version, never a scaled-down copy.
-    // Edge  : Missing segments draw as a gap.
-    // Done  : The gallery shows the ribbon at Live size and at flyout size.
-    protected override IReadOnlyList<IChartLayer> CreateLayers()
-        => throw new NotImplementedException("TODO(CHART-23)");
+    /// <summary>The time the ribbon covers, ending at the latest segment.</summary>
+    public TimeSpan Window
+    {
+        get => (TimeSpan)GetValue(WindowProperty);
+        set => SetValue(WindowProperty, value);
+    }
+
+    /// <summary>The right end of the ribbon, normally "now" from the clock. When null it ends at the latest segment.</summary>
+    public DateTimeOffset? EndTime
+    {
+        get => (DateTimeOffset?)GetValue(EndTimeProperty);
+        set => SetValue(EndTimeProperty, value);
+    }
+
+    protected override Thickness PlotMargin => new(0);
+
+    protected override ChartRanges GetDataRanges()
+    {
+        var end = EndTime?.UtcTicks ?? (Segments is { Count: > 0 } segments ? segments.Max(segment => segment.End).UtcTicks : DateTimeOffset.UnixEpoch.UtcTicks + Window.Ticks);
+
+        return new ChartRanges(end - Window.Ticks, end, 0, 1);
+    }
+
+    protected override IReadOnlyList<IChartLayer> CreateLayers() => [new RibbonLayer { Segments = Segments }];
 }

@@ -1,18 +1,25 @@
+using System.Windows;
 using System.Windows.Media;
 
 namespace Deskair.App.Ui.Charts.Layers;
 
+/// <summary>Horizontal gridlines (1 px, pixel aligned) at <see cref="YTicks"/>, or at <see cref="YTickCount"/> evenly spaced values when no ticks are given.</summary>
 public sealed class GridLayer : IChartLayer
 {
     public int YTickCount { get; set; } = 4;
 
-    // TODO(CHART-11) [S, haiku]
-    // Spec: docs/design/design-tokens.md "Neutrals" (grid)
-    // Input : Tick count and the chart area.
-    // Output: Horizontal gridlines in the Grid brush at evenly spaced values.
-    // Rules : 1 px lines, pixel aligned.
-    // Edge  : Tick count of 0 draws nothing.
-    // Done  : The gallery chart sample shows the grid.
+    public IReadOnlyList<double>? YTicks { get; set; }
+
     public void Draw(DrawingContext context, ChartArea area)
-        => throw new NotImplementedException("TODO(CHART-11)");
+    {
+        var ticks = YTicks ?? ChartTicks.Even(area.YMin, area.YMax, YTickCount);
+        var pen = new Pen(area.Brush("Grid.Brush"), 1 / area.PixelsPerDip);
+
+        foreach (var tick in ticks.Where(tick => tick >= area.YMin && tick <= area.YMax))
+        {
+            var y = area.Snap(area.Y(tick));
+
+            context.DrawLine(pen, new Point(area.Plot.Left, y), new Point(area.Plot.Right, y));
+        }
+    }
 }

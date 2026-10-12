@@ -3,55 +3,71 @@ using Deskair.App.Localization;
 using Deskair.App.Ui.Theme;
 using Deskair.App.Ui.Views.Gallery;
 using Deskair.App.Ui.Views.Shell;
+using Deskair.Services.Live;
 using Deskair.Services.Settings;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Deskair.App.Composition;
 
 /// <summary>
-/// Startup order (docs/engineering/architecture.md section 11). The skeleton runs the parts that exist:
-/// localization, theme and the first window, using default settings.
+/// Startup order (docs/engineering/architecture.md section 11): settings, localization and theme first so the window opens in the right
+/// language and colours, then the window, then the services that fill it (devices, readings, sensor). The tray comes with its own cards.
+/// A sync failure never blocks the window: the services start after it is shown and report problems as connection states.
 /// </summary>
-public sealed class StartupSequence
+public sealed class StartupSequence : IDisposable
 {
     private readonly IServiceProvider services;
     private readonly AppOptions options;
     private readonly LanguageService language;
     private readonly ThemeService theme;
+    private readonly SettingsService settings;
+    private CancellationTokenSource? running;
 
     public StartupSequence(
         IServiceProvider services,
         AppOptions options,
         LanguageService language,
-        ThemeService theme)
+        ThemeService theme,
+        SettingsService settings)
     {
         this.services = services;
         this.options = options;
         this.language = language;
         this.theme = theme;
+        this.settings = settings;
     }
 
-    public void Run()
+    public async Task RunAsync()
     {
-        var settings = AppSettings.Default;
+        await settings.LoadAsync(CancellationToken.None);
+        language.Apply(settings.Current.Language);
+        theme.Apply(settings.Current.Theme);
 
-        language.Apply(settings.Language);
-        theme.Apply(settings.Theme);
+        if (options.Gallery)
+        {
+            services.GetRequiredService<GalleryWindow>().Show();
+            return;
+        }
 
-        Window window = options.Gallery
-            ? services.GetRequiredService<GalleryWindow>()
-            : services.GetRequiredService<MainWindow>();
+        services.GetRequiredService<MainWindow>().Show();
 
-        window.Show();
+        running = new CancellationTokenSource();
+        await services.GetRequiredService<AppServicesStarter>().StartAsync(running.Token);
     }
 
-    // TODO(STARTUP-01a) [L, sonnet]
-    // Spec: docs/engineering/architecture.md section 11 (startup order); docs/product/behaviour-rules.md "Sync and data".
-    // Input : a CancellationToken.
-    // Output: settings loaded, storage opened and indexed, tray started, LiveFeed and SyncService running for the selected device.
-    // Rules : follow the documented order; the window is shown unless "start in tray"; cancellation stops sensor loops.
-    // Edge  : first run has no device (show onboarding); a sync failure must not block the window.
-    // Done  : manual check with the simulated sensor; add a test for the order with fake services if practical.
-    public Task StartServicesAsync(CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(STARTUP-01a)");
+    public void Dispose()
+    {
+        running?.Dispose();
+    }
+
+    /// <summary>Stops the background work: the live feed, the sync and the listeners. Called when the app exits.</summary>
+    public async Task StopAsync()
+    {
+        if (running is not null)
+        {
+            await running.CancelAsync();
+        }
+
+        await services.GetRequiredService<SensorSession>().StopAsync();
+    }
 }

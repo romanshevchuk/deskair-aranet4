@@ -1,15 +1,75 @@
 <UserControl x:Class="Deskair.App.Ui.Views.Live.LiveView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:live="clr-namespace:Deskair.App.Ui.Views.Live"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(LIVE-00b) [S, haiku]
-       Spec: docs/design/screens-and-states.md "Screens" (Live); docs/design/design-tokens.md "Spacing, radius, elevation" (live grid)
-       Input : LiveViewModel (to be created with the view models).
-       Output: Hero card left, chart card right, three mini cards below: 3 equal columns, rows 1 fr and 132 px, card gap 16 px.
-       Rules : Code-behind stays empty.
-       Edge  : Stale and not-connected states swap in the State views.
-       Done  : The main window Live section shows the layout with sample data. -->
+  <!-- DataContext: ShellViewModel. Hero left, chart right, three mini cards below: 3 equal columns, rows 1 fr and 132 px, gap 16. -->
   <Grid>
-    <TextBlock Style="{StaticResource Text.Title}" Text="{loc:T Nav_Live}" />
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <StackPanel Grid.Row="0">
+      <controls:Banner Margin="{StaticResource Space.Banner.Below}"
+                       Message="{Binding Footer.StatusText}"
+                       ActionText="{loc:T Action_Retry}"
+                       ActionCommand="{Binding Connection.RetryCommand}">
+        <controls:Banner.Style>
+          <Style TargetType="{x:Type controls:Banner}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Connection.ShowStaleBanner}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </controls:Banner.Style>
+      </controls:Banner>
+      <controls:Banner Margin="{StaticResource Space.Banner.Below}"
+                       Message="{Binding Footer.LowBatteryText}"
+                       DismissCommand="{Binding Connection.DismissLowBatteryCommand}">
+        <controls:Banner.Style>
+          <Style TargetType="{x:Type controls:Banner}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Connection.ShowLowBatteryBanner}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </controls:Banner.Style>
+      </controls:Banner>
+    </StackPanel>
+
+    <Grid Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="{StaticResource Grid.Card.Gap}" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="{StaticResource Grid.Card.Gap}" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+        <RowDefinition Height="{StaticResource Grid.Card.Gap}" />
+        <RowDefinition Height="{StaticResource Grid.Live.MiniRow}" />
+      </Grid.RowDefinitions>
+
+      <live:HeroCard Grid.Column="0" Grid.Row="0" DataContext="{Binding Live.Hero}">
+        <live:HeroCard.Style>
+          <Style TargetType="{x:Type live:HeroCard}">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding DataContext.Connection.ShowStaleBanner, RelativeSource={RelativeSource AncestorType={x:Type live:LiveView}}}" Value="True">
+                <Setter Property="Opacity" Value="0.55" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </live:HeroCard.Style>
+      </live:HeroCard>
+      <live:ChartCard Grid.Column="2" Grid.ColumnSpan="3" Grid.Row="0" DataContext="{Binding Live}" />
+      <live:MiniCardsRow Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="2" DataContext="{Binding Live}" />
+    </Grid>
   </Grid>
 </UserControl>

@@ -20,7 +20,7 @@ The phone export columns are: Time (DD/MM/YYYY H:mm:ss), Carbon dioxide (ppm), T
 ```
 
 1. Match columns by position; headers may be translated.
-2. Parse the date format explicitly. If no day in the file is above 12, ask the user to confirm day-first or month-first.
+2. Parse the date format explicitly. The phone app writes its format in the header (for example `Time(DD/MM/YYYY H:mm:ss)`) and uses the format of its own settings, so read the order from the header. Only when the header is missing or unreadable, ask the user to confirm day-first or month-first. (Today only day-first is read; see questions.md Q7.)
 3. Times are local without an offset. Convert with the PC's time zone and flag the repeated hour at the autumn daylight-saving change.
 4. Show a preview before importing, for example "64,000 readings, 12 Jul to 9 Oct 2026 · 62,500 new · 1,500 already present".
 5. Offer import on first run and in Settings → Data and storage. Also accept CSV or tab-separated text with the same layout.

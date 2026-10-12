@@ -45,11 +45,37 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Advice_Good_Title | Air is fresh, nothing to do | Повітря свіже, нічого робити не потрібно |
 | Advice_Good_Text | Below 1,000 ppm, so focus and sleep quality are not affected. | Нижче 1 000 ppm, тож концентрація та якість сну не страждають. |
 | Advice_Elevated_Title | Open a window for about 10 minutes | Відчиніть вікно приблизно на 10 хвилин |
-| Advice_Elevated_Text | Above the ideal level. Should drop below 1,000 ppm in about {min} min. | Вище за ідеальний рівень. Має опуститися нижче 1 000 ppm приблизно за {min} хв. |
+| Advice_Elevated_Text_Falling | Above the ideal level, but dropping. | Вище за ідеальний рівень, але знижується. |
+| Advice_Elevated_Text_Steady | Above the ideal level. Ventilating will help. | Вище за ідеальний рівень. Провітрювання допоможе. |
+| Advice_Elevated_Text_Rising | Above the ideal level and still rising. Ventilate soon. | Вище за ідеальний рівень і ще зростає. Провітріть незабаром. |
 | Advice_High_Title | Ventilate now: open windows fully | Провітріть зараз: відчиніть вікна навстіж |
-| Advice_High_Text | Above 1,400 ppm, concentration and sleep suffer. Needs about {min} min to drop below 1,000 ppm. | Понад 1 400 ppm страждають концентрація і сон. Потрібно приблизно {min} хв, щоб опуститися нижче 1 000 ppm. |
+| Advice_High_Text_Falling | Above 1,400 ppm, concentration and sleep suffer. It is dropping now. | Понад 1 400 ppm страждають концентрація і сон. Зараз знижується. |
+| Advice_High_Text_Steady | Above 1,400 ppm, concentration and sleep suffer. | Понад 1 400 ppm страждають концентрація і сон. |
+| Advice_High_Text_Rising | Above 1,400 ppm and still rising. Concentration and sleep suffer. | Понад 1 400 ppm і ще зростає. Страждають концентрація і сон. |
+| Mini_Temperature_Low | Too cool · ideal {min}–{max} {unit} | Занадто прохолодно · ідеально {min}–{max} {unit} |
+| Mini_Temperature_High | Too warm · ideal {min}–{max} {unit} | Занадто тепло · ідеально {min}–{max} {unit} |
+| Mini_Humidity_Low | Too dry · ideal {min}–{max} {unit} | Занадто сухо · ідеально {min}–{max} {unit} |
+| Mini_Humidity_High | Too humid · ideal {min}–{max} {unit} | Занадто волого · ідеально {min}–{max} {unit} |
 | Stat_GoodShare | Good in last 24 h | Добре за останні 24 год |
 | Stat_Peak | Peak at {time} | Пік о {time} |
+| Stat_PeakNow | Peak right now | Пік зараз |
+| Stat_InZone_Good | In the Good zone | У зоні «Добре» |
+| Stat_InZone_Elevated | In the Elevated zone | У зоні «Підвищений» |
+| Stat_InZone_High | In the High zone | У зоні «Високий» |
+| Duration_Minutes | {min} min | {min} хв |
+| Duration_HoursMinutes | {h} h {min} min | {h} год {min} хв |
+| Chart_Now | Now | Зараз |
+| Chart_Ideal | ideal {min}–{max} | ідеально {min}–{max} |
+| Chart_Summary_OneHour | Last hour · Low {low} · Avg {avg} · High {high} {unit} | Остання година · Мін. {low} · Сер. {avg} · Макс. {high} {unit} |
+| Chart_Summary_SixHours | Last 6 hours · Low {low} · Avg {avg} · High {high} {unit} | Останні 6 годин · Мін. {low} · Сер. {avg} · Макс. {high} {unit} |
+| Chart_Summary_TwentyFourHours | Last 24 hours · Low {low} · Avg {avg} · High {high} {unit} | Останні 24 години · Мін. {low} · Сер. {avg} · Макс. {high} {unit} |
+| Range_1h / Range_6h / Range_24h | 1h / 6h / 24h | 1 год / 6 год / 24 год |
+| Footer_ConnectedMinutes | Connected · updated {min} min ago | Підключено · оновлено {min} хв тому |
+| Footer_NotConnected | Not connected | Не підключено |
+| Footer_Signal_Good / Fair / Weak | Signal good / fair / weak | Сигнал хороший / середній / слабкий |
+| Banner_LowBattery | Sensor battery is low ({percent}) | Низький заряд датчика ({percent}) |
+| Action_Dismiss | Dismiss | Закрити |
+| Startup_Failed | Deskair could not start: {message} | Не вдалося запустити Deskair: {message} |
 | Range_Day / Week / Month / Year | Day / Week / Month / Year | День / Тиждень / Місяць / Рік |
 | Hours_AllDay / Hours_Night | All day / Night | Увесь день / Ніч |
 | Group_ByDay / ByWeek / ByMonth | By day / By week / By month | За днями / За тижнями / За місяцями |

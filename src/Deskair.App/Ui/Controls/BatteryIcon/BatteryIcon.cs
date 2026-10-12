@@ -3,20 +3,33 @@ using System.Windows.Controls;
 
 namespace Deskair.App.Ui.Controls;
 
-// TODO(CTRL-09) [M, haiku]
-// Spec: docs/design/design-tokens.md "Icons" (battery 26 x 12); docs/design/screens-and-states.md "Live conditions"
-// Input : Battery percent (null = unknown).
-// Output: A 26 x 12 battery drawn with a fill proportional to Percent.
-// Rules : Fill green above 20 %, amber at 20 % or below, red at 10 % or below, using Zone.Good, Elevated and High .Segment colours (prototype). Outline and terminal in the current text colour at 60 % opacity; fill width 19 * percent / 100, at least 2.
-// Edge  : Null draws an empty outline with no fill; values clamp to 0 to 100.
-// Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass.
+/// <summary>A 26 x 12 battery with a fill proportional to <see cref="Percent"/>. Unknown draws an empty outline.</summary>
 public class BatteryIcon : Control
 {
+    public const double FillMaximum = 19;
+    public const double FillMinimum = 2;
+
     public static readonly DependencyProperty PercentProperty = DependencyProperty.Register(
         nameof(Percent),
         typeof(int?),
         typeof(BatteryIcon),
-        new PropertyMetadata(null));
+        new PropertyMetadata(null, OnPercentChanged));
+
+    private static readonly DependencyPropertyKey fillWidthKey = DependencyProperty.RegisterReadOnly(
+        nameof(FillWidth),
+        typeof(double),
+        typeof(BatteryIcon),
+        new PropertyMetadata(0.0));
+
+    private static readonly DependencyPropertyKey levelKey = DependencyProperty.RegisterReadOnly(
+        nameof(Level),
+        typeof(BatteryLevel),
+        typeof(BatteryIcon),
+        new PropertyMetadata(BatteryLevel.Unknown));
+
+    public static readonly DependencyProperty FillWidthProperty = fillWidthKey.DependencyProperty;
+
+    public static readonly DependencyProperty LevelProperty = levelKey.DependencyProperty;
 
     static BatteryIcon()
     {
@@ -27,5 +40,26 @@ public class BatteryIcon : Control
     {
         get => (int?)GetValue(PercentProperty);
         set => SetValue(PercentProperty, value);
+    }
+
+    public double FillWidth => (double)GetValue(FillWidthProperty);
+
+    public BatteryLevel Level => (BatteryLevel)GetValue(LevelProperty);
+
+    private static void OnPercentChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+    {
+        var icon = (BatteryIcon)sender;
+
+        if (args.NewValue is not int percent)
+        {
+            icon.SetValue(fillWidthKey, 0.0);
+            icon.SetValue(levelKey, BatteryLevel.Unknown);
+            return;
+        }
+
+        var clamped = Math.Clamp(percent, 0, 100);
+
+        icon.SetValue(fillWidthKey, Math.Max(FillMinimum, FillMaximum * clamped / 100));
+        icon.SetValue(levelKey, clamped <= 10 ? BatteryLevel.Critical : clamped <= 20 ? BatteryLevel.Low : BatteryLevel.Good);
     }
 }

@@ -1,27 +1,57 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Deskair.Services.Platform;
+using Microsoft.Extensions.Logging;
 
 namespace Deskair.App.ViewModels.Settings;
 
 public sealed partial class StartupSettingsViewModel : ObservableObject
 {
     private readonly IStartupRegistration registration;
+    private readonly ILogger<StartupSettingsViewModel> logger;
+    private bool applying;
 
     [ObservableProperty]
     private bool startWithWindows;
 
-    public StartupSettingsViewModel(IStartupRegistration registration)
+    public StartupSettingsViewModel(IStartupRegistration registration, ILogger<StartupSettingsViewModel> logger)
     {
         this.registration = registration;
+        this.logger = logger;
     }
 
-    // TODO(SET-01h) [S, haiku]
-    // Spec: docs/design/screens-and-states.md "Settings" (Start with Windows / Keep in tray)
-    // Input : A CancellationToken.
-    // Output: StartWithWindows from IStartupRegistration.IsEnabled; changing it calls SetEnabledAsync.
-    // Rules : Keep in tray and Show CO2 on tray icon arrive with the settings list (questions.md Q6).
-    // Edge  : A failing registration reverts the switch.
-    // Done  : Add Tests/ViewModels/StartupSettingsViewModelTests with a fake registration.
     public Task LoadAsync(CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(SET-01h)");
+    {
+        applying = true;
+        StartWithWindows = registration.IsEnabled;
+        applying = false;
+
+        return Task.CompletedTask;
+    }
+
+    partial void OnStartWithWindowsChanged(bool value)
+    {
+        if (!applying)
+        {
+            _ = ApplyAsync(value);
+        }
+    }
+
+    private async Task ApplyAsync(bool enabled)
+    {
+        try
+        {
+            await registration.SetEnabledAsync(enabled, CancellationToken.None);
+        }
+        catch (Exception exception)
+        {
+            if (logger.IsEnabled(LogLevel.Warning))
+            {
+                logger.LogWarning(exception, "Changing start with Windows to {Enabled} failed.", enabled);
+            }
+
+            applying = true;
+            StartWithWindows = !enabled;
+            applying = false;
+        }
+    }
 }

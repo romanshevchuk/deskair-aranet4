@@ -1,5 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Deskair.Domain.Metrics;
+using Deskair.Domain.Readings;
 using Deskair.Services.Platform;
 using Deskair.Services.Settings;
 
@@ -83,6 +85,10 @@ public sealed class JsonSettingsStore : ISettingsStore
 
         public bool? AlertsEnabled { get; init; }
 
+        public TemperatureUnit? TemperatureUnit { get; init; }
+
+        public DeviceId? SelectedDevice { get; init; }
+
         public bool? NotifyAtElevated { get; init; }
 
         public bool? NotifyAtHigh { get; init; }
@@ -99,6 +105,8 @@ public sealed class JsonSettingsStore : ISettingsStore
             Language = settings.Language,
             Theme = settings.Theme,
             AlertsEnabled = settings.AlertsEnabled,
+            TemperatureUnit = settings.TemperatureUnit,
+            SelectedDevice = settings.SelectedDevice,
             NotifyAtElevated = settings.NotifyAtElevated,
             NotifyAtHigh = settings.NotifyAtHigh,
             QuietHoursEnabled = settings.QuietHoursEnabled,
@@ -111,6 +119,8 @@ public sealed class JsonSettingsStore : ISettingsStore
             Language = Language ?? defaults.Language,
             Theme = Theme ?? defaults.Theme,
             AlertsEnabled = AlertsEnabled ?? defaults.AlertsEnabled,
+            TemperatureUnit = TemperatureUnit ?? defaults.TemperatureUnit,
+            SelectedDevice = SelectedDevice ?? defaults.SelectedDevice,
             NotifyAtElevated = NotifyAtElevated ?? defaults.NotifyAtElevated,
             NotifyAtHigh = NotifyAtHigh ?? defaults.NotifyAtHigh,
             QuietHoursEnabled = QuietHoursEnabled ?? defaults.QuietHoursEnabled,

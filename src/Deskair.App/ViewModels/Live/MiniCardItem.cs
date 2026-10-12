@@ -9,4 +9,5 @@ public sealed record MiniCardItem(
     string Title,
     string? ValueText,
     string? SubtitleText,
-    IReadOnlyList<ChartPoint> Sparkline);
+    IReadOnlyList<ChartPoint> Sparkline,
+    string? UnitText = null);

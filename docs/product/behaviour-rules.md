@@ -40,6 +40,7 @@ Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 3
 
 - **Trend:** compare the average of the last 6 minutes with the average of the 6 minute window that ends 30 minutes before now. If either window has no readings, the trend is "Steady". A change under 30 ppm is "Steady"; otherwise "Rising" or "Falling" with the ppm change over 30 min. Temperature, humidity and pressure are "Steady" unless they change by 0.5 °C, 3 % or 1 hPa over the last hour, measured from the oldest to the newest reading in that hour. If those readings cover less than 30 minutes (for example just after start-up), the trend is "Steady". Tune with real data.
 - "Good in last 24 h": share of time under 1,000 ppm. "Peak": the maximum in 24 h. "In the X zone": time since the zone last changed.
+- **Advice and mini cards:** no time estimates (D-0015). The hero advice text follows the zone and the CO₂ trend. A mini card shows the metric's trend; temperature and humidity replace it with a "too cool / warm / dry / humid" label and the ideal range only when the value is outside it. Pressure never shows a comfort label.
 
 ## Connection states
 

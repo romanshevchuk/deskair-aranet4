@@ -30,6 +30,8 @@ Area rules live in `.claude/rules/` (one file per project or folder). Claude Cod
 | Format check | `dotnet format Deskair.sln --verify-no-changes` |
 | Run app | `dotnet run --project src/Deskair.App` |
 | Run control gallery | `dotnet run --project src/Deskair.App -- --gallery` |
+| Run the app on a simulated sensor (temp data folder, no hardware) | `dotnet run --project src/Deskair.App -- --simulated` |
+| Render gallery images (light, dark, English, Ukrainian) to `artifacts/visual/` | `$env:DESKAIR_RENDER=1; dotnet test tests/Deskair.Tests --filter "FullyQualifiedName~GalleryRenderTests"` |
 
 WPF cannot be built or run on Linux or macOS. If a command here is wrong, fix it in this file.
 

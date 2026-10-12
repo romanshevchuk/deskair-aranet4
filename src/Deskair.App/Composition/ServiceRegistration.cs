@@ -9,11 +9,15 @@ using Deskair.App.Platform.Threading;
 using Deskair.App.Ui.Theme;
 using Deskair.App.Ui.Views.Gallery;
 using Deskair.App.Ui.Views.Shell;
+using Deskair.App.ViewModels.Connection;
+using Deskair.App.ViewModels.Live;
 using Deskair.App.ViewModels.Shell;
 using Deskair.Sensors.Aranet4;
 using Deskair.Sensors.Simulated;
 using Deskair.Services;
 using Deskair.Services.Alerts;
+using Deskair.Services.Connection;
+using Deskair.Services.Live;
 using Deskair.Services.Platform;
 using Deskair.Services.Sensors;
 using Deskair.Storage;
@@ -33,19 +37,28 @@ public static class ServiceRegistration
         services.AddSimulated();
         services.AddAranet4();
 
-        services.AddWindowsPlatform();
+        services.AddWindowsPlatform(options);
         services.AddLocalization();
         services.AddUi();
 
         return services;
     }
 
-    private static IServiceCollection AddWindowsPlatform(this IServiceCollection services)
+    private static IServiceCollection AddWindowsPlatform(this IServiceCollection services, AppOptions options)
     {
         services.AddSingleton<IKnownFolders, KnownFolders>();
         services.AddSingleton<ISystemTheme, SystemThemeSource>();
         services.AddSingleton<IUiDispatcher, WpfUiDispatcher>();
-        services.AddSingleton<IBluetoothRadio, BluetoothRadioMonitor>();
+        // The simulated app needs no Bluetooth hardware.
+        if (options.Simulated)
+        {
+            services.AddSingleton<IBluetoothRadio, SimulatedRadio>();
+        }
+        else
+        {
+            services.AddSingleton<IBluetoothRadio, BluetoothRadioMonitor>();
+        }
+
         services.AddSingleton<IBleScanner, WindowsBleScanner>();
         services.AddTransient<IBleConnection, WindowsBleConnection>();
         services.AddSingleton<INotifier, ToastNotifier>();
@@ -71,7 +84,27 @@ public static class ServiceRegistration
     {
         services.AddSingleton<ThemeService>();
         services.AddSingleton<StartupSequence>();
-        services.AddSingleton<ShellViewModel>();
+        services.AddSingleton<MetricFormatter>();
+        services.AddSingleton<HeroStatsBuilder>();
+        services.AddSingleton<HeroViewModel>();
+        services.AddSingleton<GaugeViewModel>();
+        services.AddSingleton<MetricTabsViewModel>();
+        services.AddSingleton<ChartCardViewModel>();
+        services.AddSingleton<MiniCardsViewModel>();
+        services.AddSingleton<LiveViewModel>();
+        services.AddSingleton<ConnectionViewModel>();
+        services.AddSingleton<FooterViewModel>();
+        services.AddSingleton<RoomChipViewModel>();
+        services.AddSingleton(provider => new ShellViewModel
+        {
+            Live = provider.GetRequiredService<LiveViewModel>(),
+            Connection = provider.GetRequiredService<ConnectionViewModel>(),
+            Footer = provider.GetRequiredService<FooterViewModel>(),
+            Room = provider.GetRequiredService<RoomChipViewModel>()
+        });
+        services.AddSingleton<SensorSession>();
+        services.AddSingleton<ConnectionTracker>();
+        services.AddSingleton<AppServicesStarter>();
         services.AddTransient<MainWindow>();
         services.AddTransient<GalleryWindow>();
 

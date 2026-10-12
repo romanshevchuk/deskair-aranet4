@@ -3,13 +3,7 @@ using System.Windows.Controls;
 
 namespace Deskair.App.Ui.Controls;
 
-// TODO(CTRL-13) [S, haiku]
-// Spec: docs/design/components.md "Hero card", "Stats card"
-// Input : Label and value text.
-// Output: A caption label (12 px, secondary) above the value (14 px, tabular figures).
-// Rules : Text wraps; no fixed width.
-// Edge  : A missing value leaves the value line empty.
-// Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass.
+/// <summary>A caption and a value. By default the caption is above the value; with <see cref="ValueFirst"/> the value is above the caption (the three hero stats).</summary>
 public class KeyValueCell : Control
 {
     public static readonly DependencyProperty LabelProperty = DependencyProperty.Register(
@@ -23,6 +17,12 @@ public class KeyValueCell : Control
         typeof(string),
         typeof(KeyValueCell),
         new PropertyMetadata(null));
+
+    public static readonly DependencyProperty ValueFirstProperty = DependencyProperty.Register(
+        nameof(ValueFirst),
+        typeof(bool),
+        typeof(KeyValueCell),
+        new PropertyMetadata(false));
 
     static KeyValueCell()
     {
@@ -39,5 +39,11 @@ public class KeyValueCell : Control
     {
         get => (string?)GetValue(ValueProperty);
         set => SetValue(ValueProperty, value);
+    }
+
+    public bool ValueFirst
+    {
+        get => (bool)GetValue(ValueFirstProperty);
+        set => SetValue(ValueFirstProperty, value);
     }
 }

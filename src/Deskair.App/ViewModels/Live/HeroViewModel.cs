@@ -8,7 +8,10 @@ namespace Deskair.App.ViewModels.Live;
 
 public sealed partial class HeroViewModel : ObservableObject
 {
+    private readonly AirSummaryBuilder summaries;
+    private readonly HeroStatsBuilder statsBuilder;
     private readonly ILocalizer localizer;
+    private readonly MetricFormatter formatter;
 
     [ObservableProperty]
     private Zone? zone;
@@ -16,11 +19,26 @@ public sealed partial class HeroViewModel : ObservableObject
     [ObservableProperty]
     private double? co2Ppm;
 
+    /// <summary>The value as text in the selected language ("1,068"). Null without a reading.</summary>
+    [ObservableProperty]
+    private string? valueText;
+
+    [ObservableProperty]
+    private string? unitText;
+
+    /// <summary>The zone in words, for the pill ("Elevated").</summary>
+    [ObservableProperty]
+    private string? zoneText;
+
     [ObservableProperty]
     private TrendDirection trend;
 
     [ObservableProperty]
     private string? trendText;
+
+    /// <summary>The observed change, for example "254 ppm over 30 min". Null when the trend is steady.</summary>
+    [ObservableProperty]
+    private string? trendDetail;
 
     [ObservableProperty]
     private string? adviceTitle;
@@ -28,18 +46,51 @@ public sealed partial class HeroViewModel : ObservableObject
     [ObservableProperty]
     private string? adviceText;
 
-    public HeroViewModel(ILocalizer localizer)
+    [ObservableProperty]
+    private IReadOnlyList<StatItem> stats = [];
+
+    public HeroViewModel(ILocalizer localizer, HeroStatsBuilder statsBuilder, MetricFormatter formatter)
     {
+        summaries = new AirSummaryBuilder(localizer);
+        this.statsBuilder = statsBuilder;
         this.localizer = localizer;
+        this.formatter = formatter;
+        UnitText = formatter.Unit(Domain.Metrics.Metric.Co2);
     }
 
-    // TODO(LIVE-01c) [M, haiku]
-    // Spec: docs/product/behaviour-rules.md "Live values"; docs/design/localization.md (Advice_*, Trend_* keys)
-    // Input : The latest reading, recent readings, the current instant.
-    // Output: Zone from ZoneClassifier, trend from TrendCalculator, and localized trend and advice text.
-    // Rules : No calculation here beyond calling Domain; text only through ILocalizer.
-    // Edge  : No reading clears all fields.
-    // Done  : Add Tests/ViewModels/HeroViewModelTests with a fake localizer.
-    public void Update(Reading reading, IReadOnlyList<Reading> recent, DateTimeOffset now)
-        => throw new NotImplementedException("TODO(LIVE-01c)");
+    public void Update(Reading? reading, IReadOnlyList<Reading> recent, DateTimeOffset now)
+    {
+        if (reading is not { } latest)
+        {
+            Clear();
+            return;
+        }
+
+        var summary = summaries.Build(latest, recent, now);
+
+        Zone = summary.Zone;
+        Co2Ppm = summary.Co2Ppm;
+        ValueText = formatter.Value(Domain.Metrics.Metric.Co2, summary.Co2Ppm);
+        ZoneText = localizer.Get($"Zone_{summary.Zone}");
+        Trend = summary.Trend;
+        TrendText = summary.TrendText;
+        TrendDetail = summary.TrendDetail;
+        AdviceTitle = summary.AdviceTitle;
+        AdviceText = summary.AdviceText;
+        Stats = statsBuilder.Build(recent, now);
+    }
+
+    private void Clear()
+    {
+        Zone = null;
+        Co2Ppm = null;
+        ValueText = null;
+        ZoneText = null;
+        Trend = TrendDirection.Steady;
+        TrendText = null;
+        TrendDetail = null;
+        AdviceTitle = null;
+        AdviceText = null;
+        Stats = [];
+    }
 }

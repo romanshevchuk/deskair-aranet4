@@ -4,13 +4,6 @@ using System.Windows.Input;
 
 namespace Deskair.App.Ui.Controls;
 
-// TODO(CTRL-05) [S, haiku]
-// Spec: docs/design/components.md "Banner"; docs/design/screens-and-states.md "Live conditions"
-// Input : Message, optional action (text and command), optional dismiss command.
-// Output: A Border row with radius 10 (Radius.Banner): message left; action button and dismiss button right.
-// Rules : Prototype: Zone.Elevated.AdviceBg and AdviceBorder, radius 10, padding 7 / 14, 13 px text; the action and dismiss buttons are outlined with the advice border colour.
-// Edge  : No action and no dismiss shows just the message.
-// Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass.
 public class Banner : ContentControl
 {
     public static readonly DependencyProperty MessageProperty = DependencyProperty.Register(

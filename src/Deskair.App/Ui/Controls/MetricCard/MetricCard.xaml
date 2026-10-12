@@ -1,18 +1,86 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
-  <!-- TODO(CTRL-04) [M, haiku]
-       Spec: docs/design/components.md "Metric mini card"; docs/design/design-tokens.md "Metric colours", "Typography"
-       Input : Metric, title, value text, subtitle, selected flag; content slot for a Sparkline.
-       Output: Name, value (32 px, weight 500), subtitle and sparkline; when selected, a 1 px outline plus 1 px ring in the Text.Primary colour (prototype).
-       Rules : Template of a Button so it is keyboard and screen reader operable.
-       Edge  : A missing value shows empty text, never 0.
-       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
   <Style TargetType="{x:Type local:MetricCard}">
+    <Setter Property="Background" Value="{DynamicResource Surface.Brush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Border.Brush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="{DynamicResource Space.Mini.Padding}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="FocusVisualStyle" Value="{DynamicResource Focus.Ring.Card}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:MetricCard}">
-          <Border />
+          <Border x:Name="Frame"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{DynamicResource Radius.Card}"
+                  Padding="{TemplateBinding Padding}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+
+              <StackPanel Orientation="Horizontal" Grid.Row="0">
+                <Ellipse x:Name="Dot"
+                         Width="{DynamicResource Size.StatusDot}"
+                         Height="{DynamicResource Size.StatusDot}"
+                         Fill="{DynamicResource Text.Tertiary.Brush}"
+                         VerticalAlignment="Center" />
+                <TextBlock Margin="{DynamicResource Space.Chip.Gap}"
+                           Style="{DynamicResource Text.Secondary}"
+                           FontWeight="{DynamicResource Font.Weight.SemiBold}"
+                           Text="{TemplateBinding Title}" />
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center">
+                <TextBlock Style="{DynamicResource Text.MiniValue}" Text="{TemplateBinding Value}" />
+                <TextBlock x:Name="Unit"
+                           Margin="{DynamicResource Space.Mini.Unit}"
+                           VerticalAlignment="Bottom"
+                           Style="{DynamicResource Text.Secondary}"
+                           Text="{TemplateBinding Unit}" />
+              </StackPanel>
+
+              <TextBlock Grid.Row="2" Style="{DynamicResource Text.Caption}" Foreground="{DynamicResource Text.Secondary.Brush}" Text="{TemplateBinding Subtitle}" />
+
+              <ContentPresenter Grid.Column="1" Grid.RowSpan="3" VerticalAlignment="Center" Margin="{DynamicResource Space.Mini.Sparkline}" />
+            </Grid>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Value" Value="{x:Null}">
+              <Setter TargetName="Unit" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="Metric" Value="Co2">
+              <Setter TargetName="Dot" Property="Fill" Value="{DynamicResource Metric.Co2.Brush}" />
+            </Trigger>
+            <Trigger Property="Metric" Value="Temperature">
+              <Setter TargetName="Dot" Property="Fill" Value="{DynamicResource Metric.Temperature.Brush}" />
+            </Trigger>
+            <Trigger Property="Metric" Value="Humidity">
+              <Setter TargetName="Dot" Property="Fill" Value="{DynamicResource Metric.Humidity.Brush}" />
+            </Trigger>
+            <Trigger Property="Metric" Value="Pressure">
+              <Setter TargetName="Dot" Property="Fill" Value="{DynamicResource Metric.Pressure.Brush}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Text.Tertiary.Brush}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Text.Primary.Brush}" />
+              <Setter TargetName="Frame" Property="BorderThickness" Value="2" />
+              <Setter TargetName="Frame" Property="Padding" Value="{DynamicResource Space.Mini.Padding.Selected}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

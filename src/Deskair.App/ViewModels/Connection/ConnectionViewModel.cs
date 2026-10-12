@@ -1,20 +1,65 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Services.Connection;
+using Deskair.Services.Messages;
+using Deskair.Services.Platform;
 
 namespace Deskair.App.ViewModels.Connection;
 
 public sealed partial class ConnectionViewModel : ObservableObject
 {
+    private readonly IMessenger? messenger;
+
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowStaleBanner))]
+    [NotifyPropertyChangedFor(nameof(ShowLowBatteryBanner))]
+    [NotifyPropertyChangedFor(nameof(ShowOfflineView))]
+    [NotifyPropertyChangedFor(nameof(ShowFirstRunView))]
     private ConnectionState state;
 
-    // TODO(STATE-01a) [M, haiku]
-    // Spec: docs/product/behaviour-rules.md "Connection states"; docs/design/screens-and-states.md "Live conditions"
-    // Input : The new connection state.
-    // Output: State plus flags for the stale banner, low battery banner, offline view and first-run view.
-    // Rules : Flags are derived from State only.
-    // Edge  : Normal clears every flag.
-    // Done  : Add Tests/ViewModels/ConnectionViewModelTests.
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowLowBatteryBanner))]
+    private bool lowBatteryDismissed;
+
+    public ConnectionViewModel()
+    {
+    }
+
+    /// <summary>Follows <see cref="ConnectionStateChanged"/> messages, on the UI thread, and can ask for a retry.</summary>
+    public ConnectionViewModel(IMessenger messenger, IUiDispatcher dispatcher)
+    {
+        this.messenger = messenger;
+        messenger.Register<ConnectionViewModel, ConnectionStateChanged>(this, (self, message) => dispatcher.Post(() => self.Update(message.State)));
+    }
+
+    public bool ShowStaleBanner => State == ConnectionState.Stale;
+
+    public bool ShowLowBatteryBanner => State == ConnectionState.LowBattery && !LowBatteryDismissed;
+
+    public bool ShowOfflineView => State == ConnectionState.NotConnected;
+
+    public bool ShowFirstRunView => State == ConnectionState.FirstRun;
+
     public void Update(ConnectionState newState)
-        => throw new NotImplementedException("TODO(STATE-01a)");
+    {
+        if (newState != State)
+        {
+            LowBatteryDismissed = false;
+        }
+
+        State = newState;
+    }
+
+    [RelayCommand]
+    private void Retry()
+    {
+        messenger?.Send(new RetryRequested());
+    }
+
+    [RelayCommand]
+    private void DismissLowBattery()
+    {
+        LowBatteryDismissed = true;
+    }
 }

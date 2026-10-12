@@ -1,14 +1,56 @@
 <UserControl x:Class="Deskair.App.Ui.Views.Live.ChartCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:charts="clr-namespace:Deskair.App.Ui.Charts"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:live="clr-namespace:Deskair.App.Ui.Views.Live"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(LIVE-03b) [M, haiku]
-       Spec: docs/design/screens-and-states.md "Screens" (Live), "Live conditions" (ribbon on 1h and 6h for CO2)
-       Input : ChartCardViewModel.
-       Output: A Card with the metric tabs, the range control (1h, 6h, 24h), the LiveChart and, for CO2 on 1h and 6h, the ZoneRibbon.
-       Rules : Code-behind empty.
-       Edge  : The ribbon is hidden for other metrics and for 24h.
-       Done  : The main window Live section shows it with simulated data. -->
-  <Grid>
-  </Grid>
+  <!-- DataContext: LiveViewModel (the tabs and the chart card). The 24 h ribbon shows for CO2 on 1h and 6h only. -->
+  <controls:Card Padding="{StaticResource Space.Chart.Card}">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <live:MetricTabs Grid.Row="0" DataContext="{Binding Tabs}" />
+
+      <TextBlock Grid.Row="1"
+                 Margin="{StaticResource Space.Chart.Caption}"
+                 Style="{StaticResource Text.Caption}"
+                 Foreground="{DynamicResource Text.Secondary.Brush}"
+                 Text="{Binding ChartCard.SummaryText}" />
+
+      <charts:LiveChart Grid.Row="2"
+                        Metric="{Binding Tabs.SelectedMetric}"
+                        Points="{Binding ChartCard.Points}"
+                        Unit="{Binding ChartCard.Unit}"
+                        IdealMin="{Binding ChartCard.IdealMin}"
+                        IdealMax="{Binding ChartCard.IdealMax}"
+                        IdealLabel="{Binding ChartCard.IdealLabel}"
+                        Window="{Binding ChartCard.Window}"
+                        EndTime="{Binding ChartCard.EndTime}"
+                        NowLabel="{loc:T Chart_Now}"
+                        NoDataText="{loc:T Chart_NoData}" />
+
+      <charts:ZoneRibbon Grid.Row="3"
+                         Margin="{StaticResource Space.Chart.Ribbon}"
+                         Height="{StaticResource Size.Ribbon.Height}"
+                         Segments="{Binding ChartCard.RibbonSegments}"
+                         EndTime="{Binding ChartCard.EndTime}">
+        <charts:ZoneRibbon.Style>
+          <Style TargetType="{x:Type charts:ZoneRibbon}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Tabs.ShowRibbon}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </charts:ZoneRibbon.Style>
+      </charts:ZoneRibbon>
+    </Grid>
+  </controls:Card>
 </UserControl>

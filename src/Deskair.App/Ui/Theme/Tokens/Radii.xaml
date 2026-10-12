@@ -14,6 +14,10 @@
   <CornerRadius x:Key="Radius.Toast">8</CornerRadius>
   <!-- Pill: fully rounded (prototype border-radius 999). Banner 10 and buttons 6 come from the prototype. -->
   <CornerRadius x:Key="Radius.Pill">999</CornerRadius>
+  <CornerRadius x:Key="Radius.Chip">10</CornerRadius>
+  <CornerRadius x:Key="Radius.Battery">3</CornerRadius>
+  <CornerRadius x:Key="Radius.Gauge.Start">4,0,0,4</CornerRadius>
+  <CornerRadius x:Key="Radius.Gauge.End">0,4,4,0</CornerRadius>
 
   <DropShadowEffect x:Key="Shadow.Flyout" Color="#000000" Opacity="0.35" BlurRadius="36" ShadowDepth="12" Direction="270" />
 </ResourceDictionary>

@@ -17,13 +17,21 @@ public class ChartCardViewModelTests
     private readonly FakeReadingStore store = new();
     private readonly FakeDeviceStore deviceStore = new();
     private readonly DeviceRegistry registry;
+    private readonly FakeLocalizer localizer = new();
     private readonly ChartCardViewModel viewModel;
 
     public ChartCardViewModelTests()
     {
         registry = new DeviceRegistry(deviceStore);
-        var query = new ReadingQueryService(store, registry, new FakeClock(now), new LocalCalendar(TimeZoneInfo.Utc));
-        viewModel = new ChartCardViewModel(query, registry);
+        viewModel = Create(Deskair.Domain.Metrics.TemperatureUnit.Celsius);
+    }
+
+    private ChartCardViewModel Create(TemperatureUnit unit)
+    {
+        var clock = new FakeClock(now);
+        var query = new ReadingQueryService(store, registry, clock, new LocalCalendar(TimeZoneInfo.Utc));
+
+        return new ChartCardViewModel(query, registry, TestFormatter.Create(localizer, unit), localizer, clock);
     }
 
     private async Task SelectDeviceAsync()
@@ -41,6 +49,7 @@ public class ChartCardViewModelTests
 
         Assert.NotNull(viewModel.Points);
         Assert.Empty(viewModel.Points);
+        Assert.Null(viewModel.SummaryText);
     }
 
     [Fact]
@@ -68,6 +77,8 @@ public class ChartCardViewModelTests
 
         Assert.Equal(now.AddHours(-hours), store.Requested!.Value.Start);
         Assert.Equal(now, store.Requested!.Value.End);
+        Assert.Equal(TimeSpan.FromHours(hours), viewModel.Window);
+        Assert.Equal(now, viewModel.EndTime);
     }
 
     [Fact]
@@ -94,5 +105,79 @@ public class ChartCardViewModelTests
 
         Assert.Equal(5, viewModel.Points!.Count);
         Assert.All(viewModel.Points, point => Assert.NotNull(point.Value));
+    }
+
+    [Fact]
+    public async Task Temperature_points_and_the_ideal_range_are_in_the_selected_unit()
+    {
+        await SelectDeviceAsync();
+        store.Readings.Add(Samples.Climate(now.AddMinutes(-2), 22.0, 40, 1000));
+        var fahrenheit = Create(Deskair.Domain.Metrics.TemperatureUnit.Fahrenheit);
+
+        await fahrenheit.RefreshAsync(Metric.Temperature, LiveRange.OneHour, TestContext.Current.CancellationToken);
+
+        Assert.Equal(71.6, fahrenheit.Points![0].Value!.Value, 6);
+        Assert.Equal("°F", fahrenheit.Unit);
+        Assert.Equal(68, fahrenheit.IdealMin);
+        Assert.Equal(75.2, fahrenheit.IdealMax!.Value, 6);
+    }
+
+    [Theory]
+    [InlineData(Metric.Co2, null, null)]
+    [InlineData(Metric.Pressure, null, null)]
+    [InlineData(Metric.Humidity, 30.0, 50.0)]
+    public async Task The_ideal_range_comes_from_the_metric(Metric metric, double? min, double? max)
+    {
+        await SelectDeviceAsync();
+
+        await viewModel.RefreshAsync(metric, LiveRange.OneHour, TestContext.Current.CancellationToken);
+
+        Assert.Equal(min, viewModel.IdealMin);
+        Assert.Equal(max, viewModel.IdealMax);
+        Assert.Equal(min is null ? null : "Chart_Ideal(min=30, max=50)", viewModel.IdealLabel);
+    }
+
+    [Fact]
+    public async Task The_summary_has_low_average_and_high_with_the_unit()
+    {
+        await SelectDeviceAsync();
+        store.Readings.AddRange([Samples.Co2(now.AddMinutes(-6), 1000), Samples.Co2(now.AddMinutes(-4), 1500), Samples.Co2(now.AddMinutes(-2), 1100)]);
+
+        await viewModel.RefreshAsync(Metric.Co2, LiveRange.SixHours, TestContext.Current.CancellationToken);
+
+        Assert.Equal("Chart_Summary_SixHours(low=1,000, avg=1,200, high=1,500, unit=ppm)", viewModel.SummaryText);
+    }
+
+    [Fact]
+    public async Task The_ribbon_shows_the_last_day_whatever_range_is_selected()
+    {
+        await SelectDeviceAsync();
+        store.Readings.AddRange([Samples.Co2(now.AddHours(-20), 700), Samples.Co2(now.AddMinutes(-5), 1500)]);
+
+        await viewModel.RefreshAsync(Metric.Co2, LiveRange.OneHour, TestContext.Current.CancellationToken);
+
+        Assert.Equal(2, viewModel.RibbonSegments.Count);
+        Assert.Equal(Deskair.Domain.Zones.Zone.Good, viewModel.RibbonSegments[0].Zone);
+        Assert.Equal(Deskair.Domain.Zones.Zone.High, viewModel.RibbonSegments[1].Zone);
+        Assert.Equal(1, viewModel.Points!.Count(point => point.Value is not null));
+    }
+
+    [Fact]
+    public async Task Without_a_device_the_ribbon_is_empty()
+    {
+        await viewModel.RefreshAsync(Metric.Co2, LiveRange.OneHour, TestContext.Current.CancellationToken);
+
+        Assert.Empty(viewModel.RibbonSegments);
+    }
+
+    [Fact]
+    public async Task No_readings_give_no_summary()
+    {
+        await SelectDeviceAsync();
+
+        await viewModel.RefreshAsync(Metric.Co2, LiveRange.OneHour, TestContext.Current.CancellationToken);
+
+        Assert.Empty(viewModel.Points!);
+        Assert.Null(viewModel.SummaryText);
     }
 }

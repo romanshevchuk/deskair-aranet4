@@ -138,4 +138,40 @@ public class DeviceRegistryTests
         Assert.Throws<KeyNotFoundException>(() => registry.Select(second));
         Assert.Equal(first, registry.Selected);
     }
+
+    [Fact]
+    public async Task Load_selects_the_preferred_device_when_it_is_known()
+    {
+        var store = new FakeDeviceStore();
+        store.Devices.AddRange([Device(first, "Office"), Device(second, "Bedroom")]);
+        var registry = new DeviceRegistry(store);
+
+        await registry.LoadAsync(second, CancellationToken.None);
+
+        Assert.Equal(second, registry.Selected);
+    }
+
+    [Fact]
+    public async Task Load_falls_back_to_the_first_device_when_the_preferred_one_is_unknown()
+    {
+        var store = new FakeDeviceStore();
+        store.Devices.AddRange([Device(first, "Office"), Device(second, "Bedroom")]);
+        var registry = new DeviceRegistry(store);
+
+        await registry.LoadAsync(new DeviceId("aranet4", "AA:99"), CancellationToken.None);
+
+        Assert.Equal(first, registry.Selected);
+    }
+
+    [Fact]
+    public async Task Info_returns_what_is_known_about_a_device()
+    {
+        var store = new FakeDeviceStore();
+        store.Devices.AddRange([Device(first, "Office"), Device(second, "Bedroom")]);
+        var registry = new DeviceRegistry(store);
+        await registry.LoadAsync(CancellationToken.None);
+
+        Assert.Equal("Bedroom", registry.Info(second)?.RoomName);
+        Assert.Null(registry.Info(new DeviceId("aranet4", "AA:99")));
+    }
 }

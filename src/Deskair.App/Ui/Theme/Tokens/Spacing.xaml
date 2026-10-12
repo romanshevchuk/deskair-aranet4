@@ -33,5 +33,59 @@
   <Thickness x:Key="Space.Segment.Item.Padding">14,5,14,5</Thickness>
   <Thickness x:Key="Space.Pill.Padding">9,4,11,4</Thickness>
 
+  <!-- Gauge (CTRL-01): sizes taken from design/prototype/index.html. -->
+  <sys:Double x:Key="Size.Gauge.Bar">8</sys:Double>
+  <sys:Double x:Key="Size.Gauge.Marker">16</sys:Double>
+  <sys:Double x:Key="Size.Gauge.Ticks">16</sys:Double>
+  <sys:Double x:Key="Size.Gauge.MarkerBorder">3</sys:Double>
+  <Thickness x:Key="Space.Gauge.SegmentGap">1,0,1,0</Thickness>
+  <Thickness x:Key="Space.Gauge.SegmentGap.First">0,0,1,0</Thickness>
+  <Thickness x:Key="Space.Gauge.SegmentGap.Last">1,0,0,0</Thickness>
+
+  <!-- Advice card, stats, chips, battery (prototype values). -->
+  <sys:Double x:Key="Size.Advice.Badge">30</sys:Double>
+  <sys:Double x:Key="Size.Advice.Icon">18</sys:Double>
+  <sys:Double x:Key="Size.Advice.IconStroke">1.6</sys:Double>
+  <Thickness x:Key="Space.Advice.Padding">14,12,16,12</Thickness>
+  <Thickness x:Key="Space.Advice.Badge">0,0,12,0</Thickness>
+  <Thickness x:Key="Space.Stats.Padding">0,12,0,0</Thickness>
+  <Thickness x:Key="Space.Stat.Padding">0,0,8,0</Thickness>
+  <Thickness x:Key="Space.Banner.Padding">14,7,14,7</Thickness>
+  <Thickness x:Key="Space.Button.Padding">14,8,14,8</Thickness>
+  <Thickness x:Key="Space.Button.Small.Padding">10,4,10,4</Thickness>
+  <Thickness x:Key="Space.Chip.Padding">12,6,10,6</Thickness>
+  <Thickness x:Key="Space.Chip.Gap">8,0,0,0</Thickness>
+  <Thickness x:Key="Space.Mini.Padding">16,16,20,16</Thickness>
+  <Thickness x:Key="Space.Mini.Padding.Selected">15,15,19,15</Thickness>
+  <Thickness x:Key="Space.Mini.Unit">4,0,0,4</Thickness>
+  <Thickness x:Key="Space.Mini.Sparkline">12,0,0,0</Thickness>
+  <Thickness x:Key="Space.Banner.Buttons">8,0,0,0</Thickness>
+  <Thickness x:Key="Space.Chart.Margin">44,8,14,24</Thickness>
+  <!-- Live screen layout (prototype). -->
+  <GridLength x:Key="Grid.Card.Gap">16</GridLength>
+  <GridLength x:Key="Grid.Live.MiniRow">132</GridLength>
+  <Thickness x:Key="Space.Hero.Trend">0,4,0,0</Thickness>
+  <Thickness x:Key="Space.Hero.Gauge">0,16,0,0</Thickness>
+  <Thickness x:Key="Space.Hero.Advice">0,18,0,0</Thickness>
+  <Thickness x:Key="Space.Hero.Stats">0,16,0,0</Thickness>
+  <Thickness x:Key="Space.Hero.Unit">8,0,0,16</Thickness>
+  <Thickness x:Key="Space.Mini.Gap">8,0,8,0</Thickness>
+  <Thickness x:Key="Space.Mini.Row">-8,0,-8,0</Thickness>
+  <Thickness x:Key="Space.Chart.Card">24,20,24,16</Thickness>
+  <Thickness x:Key="Space.Chart.Caption">0,10,0,0</Thickness>
+  <Thickness x:Key="Space.Chart.Ribbon">0,8,0,0</Thickness>
+  <Thickness x:Key="Space.Banner.Below">0,0,0,12</Thickness>
+  <sys:Double x:Key="Size.Ribbon.Height">14</sys:Double>
+  <sys:Double x:Key="Size.Logo">28</sys:Double>
+  <Thickness x:Key="Space.Menu.Padding">6</Thickness>
+  <Thickness x:Key="Space.Menu.Shadow">16,4,16,28</Thickness>
+  <sys:Double x:Key="Size.Menu.MinWidth">220</sys:Double>
+  <Thickness x:Key="Space.Menu.Item.Padding">10,8,10,8</Thickness>
+  <sys:Double x:Key="Size.Chip.MaxName">160</sys:Double>
+  <sys:Double x:Key="Size.Mini.Sparkline.Width">104</sys:Double>
+  <sys:Double x:Key="Size.Mini.Sparkline.Height">56</sys:Double>
+  <sys:Double x:Key="Size.Battery.Width">26</sys:Double>
+  <sys:Double x:Key="Size.Battery.Height">12</sys:Double>
+
   <Duration x:Key="Motion.Toggle">0:0:0.15</Duration>
 </ResourceDictionary>

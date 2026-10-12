@@ -1,14 +1,33 @@
 <UserControl x:Class="Deskair.App.Ui.Views.Live.MiniCardsRow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(LIVE-02d) [S, haiku]
-       Spec: docs/design/screens-and-states.md "Screens" (Live: three mini cards)
-       Input : MiniCardsViewModel.
-       Output: Three MetricCards in equal columns.
-       Rules : Clicking a card selects that metric.
-       Edge  : None.
-       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
-  <Grid>
-  </Grid>
+             xmlns:charts="clr-namespace:Deskair.App.Ui.Charts"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls">
+  <!-- DataContext: LiveViewModel. The three metrics that are not on the chart; clicking one shows it on the chart. -->
+  <ItemsControl Margin="{StaticResource Space.Mini.Row}"
+                ItemsSource="{Binding MiniCards.Items}"
+                Focusable="False">
+    <ItemsControl.ItemsPanel>
+      <ItemsPanelTemplate>
+        <UniformGrid Rows="1" />
+      </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+    <ItemsControl.ItemTemplate>
+      <DataTemplate>
+        <controls:MetricCard Margin="{StaticResource Space.Mini.Gap}"
+                             Metric="{Binding Metric}"
+                             Title="{Binding Title}"
+                             Value="{Binding ValueText}"
+                             Unit="{Binding UnitText}"
+                             Subtitle="{Binding SubtitleText}"
+                             Command="{Binding DataContext.Tabs.SelectMetricCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                             CommandParameter="{Binding Metric}">
+          <charts:Sparkline Width="{StaticResource Size.Mini.Sparkline.Width}"
+                            Height="{StaticResource Size.Mini.Sparkline.Height}"
+                            Metric="{Binding Metric}"
+                            Points="{Binding Sparkline}" />
+        </controls:MetricCard>
+      </DataTemplate>
+    </ItemsControl.ItemTemplate>
+  </ItemsControl>
 </UserControl>

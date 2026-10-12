@@ -1,18 +1,39 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
-  <!-- TODO(CTRL-09) [M, haiku]
-       Spec: docs/design/design-tokens.md "Icons" (battery 26 x 12); docs/design/screens-and-states.md "Live conditions"
-       Input : Battery percent (null = unknown).
-       Output: A 26 x 12 battery drawn with a fill proportional to Percent.
-       Rules : Fill green above 20 %, amber at 20 % or below, red at 10 % or below, using Zone.Good, Elevated and High .Segment colours (prototype). Outline and terminal in the current text colour at 60 % opacity; fill width 19 * percent / 100, at least 2.
-       Edge  : Null draws an empty outline with no fill; values clamp to 0 to 100.
-       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
   <Style TargetType="{x:Type local:BatteryIcon}">
+    <Setter Property="Width" Value="{DynamicResource Size.Battery.Width}" />
+    <Setter Property="Height" Value="{DynamicResource Size.Battery.Height}" />
+    <Setter Property="Foreground" Value="{DynamicResource Text.Secondary.Brush}" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Focusable" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:BatteryIcon}">
-          <Border />
+          <Canvas Width="26" Height="12">
+            <!-- Outline and terminal in the text colour at 60 % opacity (glyph geometry, like the advice icons). -->
+            <Border Canvas.Left="0" Canvas.Top="0" Width="23" Height="12"
+                    BorderBrush="{TemplateBinding Foreground}" BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius.Battery}" Opacity="0.6" />
+            <Border Canvas.Left="24" Canvas.Top="3.5" Width="2" Height="5"
+                    Background="{TemplateBinding Foreground}" CornerRadius="0,1,1,0" Opacity="0.6" />
+            <Border x:Name="Fill" Canvas.Left="2" Canvas.Top="2" Height="8"
+                    Width="{Binding FillWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                    Background="{DynamicResource Zone.Good.Segment.Brush}" CornerRadius="1.5" Visibility="Collapsed" />
+          </Canvas>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Level" Value="Good">
+              <Setter TargetName="Fill" Property="Visibility" Value="Visible" />
+            </Trigger>
+            <Trigger Property="Level" Value="Low">
+              <Setter TargetName="Fill" Property="Visibility" Value="Visible" />
+              <Setter TargetName="Fill" Property="Background" Value="{DynamicResource Zone.Elevated.Segment.Brush}" />
+            </Trigger>
+            <Trigger Property="Level" Value="Critical">
+              <Setter TargetName="Fill" Property="Visibility" Value="Visible" />
+              <Setter TargetName="Fill" Property="Background" Value="{DynamicResource Zone.High.Segment.Brush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

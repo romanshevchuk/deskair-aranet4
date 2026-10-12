@@ -51,6 +51,15 @@
       <StackPanel Margin="{StaticResource Space.Page.Padding}">
         <gallery:CardSection />
         <gallery:PillSection />
+        <gallery:GaugeSection />
+        <gallery:AdviceCardSection />
+        <gallery:StatTripleSection />
+        <gallery:MetricCardSection />
+        <gallery:BannerSection />
+        <gallery:RoomChipSection />
+        <gallery:BatteryIconSection />
+        <gallery:ButtonSection />
+        <gallery:ChartSection />
         <gallery:StatusDotSection />
         <gallery:ToggleSwitchSection />
         <gallery:SegmentedControlSection />

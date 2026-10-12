@@ -4,13 +4,6 @@ using Deskair.Domain.Zones;
 
 namespace Deskair.App.Ui.Controls;
 
-// TODO(CTRL-07) [M, haiku]
-// Spec: docs/design/components.md "Window chrome" (room chip), "Room menu"
-// Input : Room name, value text, zone, open state.
-// Output: A rounded chip with a StatusDot, room name and value; clicking toggles IsOpen.
-// Rules : Uses StatusDot and Pill tokens; opens RoomMenu.
-// Edge  : Long room names trim with an ellipsis and show a tooltip.
-// Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass.
 public class RoomChip : Button
 {
     public static readonly DependencyProperty RoomNameProperty = DependencyProperty.Register(
@@ -58,6 +51,12 @@ public class RoomChip : Button
     {
         get => (Zone?)GetValue(ZoneProperty);
         set => SetValue(ZoneProperty, value);
+    }
+
+    protected override void OnClick()
+    {
+        IsOpen = !IsOpen;
+        base.OnClick();
     }
 
     public bool IsOpen

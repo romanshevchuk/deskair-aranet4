@@ -1,0 +1,20 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Gallery.RoomChipSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:zones="clr-namespace:Deskair.Domain.Zones;assembly=Deskair.Domain">
+  <StackPanel>
+    <TextBlock Margin="{StaticResource Space.SectionLabel}"
+               Style="{StaticResource Text.SectionLabel}"
+               Text="{loc:T Gallery_Section_RoomChip}" />
+    <WrapPanel>
+      <controls:RoomChip Margin="{StaticResource Space.Item}" RoomName="Office" Zone="{x:Static zones:Zone.Elevated}" />
+      <controls:RoomChip Margin="{StaticResource Space.Item}" RoomName="Bedroom" ValueText="612 ppm" Zone="{x:Static zones:Zone.Good}" />
+      <controls:RoomChip Margin="{StaticResource Space.Item}" RoomName="Living room with a very long name that has to be trimmed" Zone="{x:Static zones:Zone.High}" />
+      <controls:RoomChip Margin="{StaticResource Space.Item}" RoomName="Hallway" />
+      <!-- The menu is a popup: it is not drawn in the gallery pictures. Click a chip in the running gallery to see it. -->
+      <controls:RoomMenu x:Name="Menu" />
+    </WrapPanel>
+  </StackPanel>
+</UserControl>

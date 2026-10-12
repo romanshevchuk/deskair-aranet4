@@ -1,18 +1,57 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
-  <!-- TODO(CTRL-01) [M, haiku]
-       Spec: docs/design/components.md "Gauge"; docs/design/design-tokens.md "Zone colours" (gauge segments, scale 400 to 2,000 ppm)
-       Input : Value in ppm (null = no marker), scale limits, the two zone limits.
-       Output: Three segments in the Zone.*.Segment colours with widths proportional to the scale, ticks at the two limits, a round marker at Value.
-       Rules : Grid with proportional columns (wpf-mapping.md); clamp the marker to the scale.
-       Edge  : Value outside the scale clamps to the ends; null hides the marker.
-       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
   <Style TargetType="{x:Type local:Gauge}">
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Foreground" Value="{DynamicResource Text.Tertiary.Brush}" />
+    <Setter Property="FontSize" Value="{DynamicResource Font.Size.Caption}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:Gauge}">
-          <Border />
+          <Grid>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Height="{DynamicResource Size.Gauge.Marker}">
+              <Grid Height="{DynamicResource Size.Gauge.Bar}" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition x:Name="PART_Good" Width="3*" />
+                  <ColumnDefinition x:Name="PART_Elevated" Width="2*" />
+                  <ColumnDefinition x:Name="PART_High" Width="3*" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0"
+                        Background="{DynamicResource Zone.Good.Segment.Brush}"
+                        CornerRadius="{DynamicResource Radius.Gauge.Start}"
+                        Margin="{DynamicResource Space.Gauge.SegmentGap.First}" />
+                <Border Grid.Column="1" Background="{DynamicResource Zone.Elevated.Segment.Brush}" Margin="{DynamicResource Space.Gauge.SegmentGap}" />
+                <Border Grid.Column="2"
+                        Background="{DynamicResource Zone.High.Segment.Brush}"
+                        CornerRadius="{DynamicResource Radius.Gauge.End}"
+                        Margin="{DynamicResource Space.Gauge.SegmentGap.Last}" />
+              </Grid>
+
+              <Canvas x:Name="PART_Marker">
+                <Ellipse x:Name="PART_MarkerDot"
+                         Width="{DynamicResource Size.Gauge.Marker}"
+                         Height="{DynamicResource Size.Gauge.Marker}"
+                         Fill="{DynamicResource Surface.Brush}"
+                         Stroke="{DynamicResource Text.Primary.Brush}"
+                         StrokeThickness="{DynamicResource Size.Gauge.MarkerBorder}" />
+              </Canvas>
+            </Grid>
+
+            <Canvas x:Name="PART_Ticks" Grid.Row="1" Height="{DynamicResource Size.Gauge.Ticks}">
+              <TextBlock x:Name="PART_ElevatedTick" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" />
+              <TextBlock x:Name="PART_HighTick" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" />
+            </Canvas>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Value" Value="{x:Null}">
+              <Setter TargetName="PART_Marker" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

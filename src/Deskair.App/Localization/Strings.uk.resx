@@ -22,9 +22,17 @@
   <data name="Advice_Good_Title" xml:space="preserve"><value>Повітря свіже, нічого робити не потрібно</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_Good_Text" xml:space="preserve"><value>Нижче 1 000 ppm, тож концентрація та якість сну не страждають.</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_Elevated_Title" xml:space="preserve"><value>Відчиніть вікно приблизно на 10 хвилин</value><comment>Draft: needs native review.</comment></data>
-  <data name="Advice_Elevated_Text" xml:space="preserve"><value>Вище за ідеальний рівень. Має опуститися нижче 1 000 ppm приблизно за {min} хв.</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_High_Title" xml:space="preserve"><value>Провітріть зараз: відчиніть вікна навстіж</value><comment>Draft: needs native review.</comment></data>
-  <data name="Advice_High_Text" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон. Потрібно приблизно {min} хв, щоб опуститися нижче 1 000 ppm.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Elevated_Text_Falling" xml:space="preserve"><value>Вище за ідеальний рівень, але знижується.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Elevated_Text_Steady" xml:space="preserve"><value>Вище за ідеальний рівень. Провітрювання допоможе.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Elevated_Text_Rising" xml:space="preserve"><value>Вище за ідеальний рівень і ще зростає. Провітріть незабаром.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_High_Text_Falling" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон. Зараз знижується.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_High_Text_Steady" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_High_Text_Rising" xml:space="preserve"><value>Понад 1 400 ppm і ще зростає. Страждають концентрація і сон.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Temperature_Low" xml:space="preserve"><value>Занадто прохолодно · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Temperature_High" xml:space="preserve"><value>Занадто тепло · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Humidity_Low" xml:space="preserve"><value>Занадто сухо · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Humidity_High" xml:space="preserve"><value>Занадто волого · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_GoodShare" xml:space="preserve"><value>Добре за останні 24 год</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_Peak" xml:space="preserve"><value>Пік о {time}</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_Day" xml:space="preserve"><value>День</value><comment>Draft: needs native review.</comment></data>
@@ -79,6 +87,46 @@
   <data name="Gallery_Section_SegmentedControl" xml:space="preserve"><value>Сегментований перемикач</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_ToggleSwitch" xml:space="preserve"><value>Перемикач</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_Pill" xml:space="preserve"><value>Мітка</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_Gauge" xml:space="preserve"><value>Шкала</value><comment>Draft: needs native review.</comment></data>
+  <data name="Action_Dismiss" xml:space="preserve"><value>Закрити</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_AdviceCard" xml:space="preserve"><value>Картка поради</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_StatTriple" xml:space="preserve"><value>Три показники</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_MetricCard" xml:space="preserve"><value>Картка показника</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_Banner" xml:space="preserve"><value>Банер</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_RoomChip" xml:space="preserve"><value>Кімната та меню</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_BatteryIcon" xml:space="preserve"><value>Індикатор батареї</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_Button" xml:space="preserve"><value>Кнопки</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_BannerStale" xml:space="preserve"><value>Останнє значення 12 хв тому</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_BannerLow" xml:space="preserve"><value>Низький заряд датчика (8 %)</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_Peak" xml:space="preserve"><value>Пік о 15:12</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_InZone" xml:space="preserve"><value>У зоні «Добре»</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_Primary" xml:space="preserve"><value>Відкрити Deskair</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_Secondary" xml:space="preserve"><value>Відкласти на 1 год</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_Chart" xml:space="preserve"><value>Графік наживо</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_ZoneRibbon" xml:space="preserve"><value>24-годинна стрічка</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Now" xml:space="preserve"><value>Зараз</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ідеально 20–24</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_IdealHumidity" xml:space="preserve"><value>ідеально 30–50</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stat_PeakNow" xml:space="preserve"><value>Пік зараз</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stat_InZone_Good" xml:space="preserve"><value>У зоні «Добре»</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stat_InZone_Elevated" xml:space="preserve"><value>У зоні «Підвищений»</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stat_InZone_High" xml:space="preserve"><value>У зоні «Високий»</value><comment>Draft: needs native review.</comment></data>
+  <data name="Duration_Minutes" xml:space="preserve"><value>{min} хв</value><comment>Draft: needs native review.</comment></data>
+  <data name="Duration_HoursMinutes" xml:space="preserve"><value>{h} год {min} хв</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Ideal" xml:space="preserve"><value>ідеально {min}–{max}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Summary_OneHour" xml:space="preserve"><value>Остання година · Мін. {low} · Сер. {avg} · Макс. {high} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Summary_SixHours" xml:space="preserve"><value>Останні 6 годин · Мін. {low} · Сер. {avg} · Макс. {high} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Summary_TwentyFourHours" xml:space="preserve"><value>Останні 24 години · Мін. {low} · Сер. {avg} · Макс. {high} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Range_1h" xml:space="preserve"><value>1 год</value><comment>Draft: needs native review.</comment></data>
+  <data name="Range_6h" xml:space="preserve"><value>6 год</value><comment>Draft: needs native review.</comment></data>
+  <data name="Range_24h" xml:space="preserve"><value>24 год</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_ConnectedMinutes" xml:space="preserve"><value>Підключено · оновлено {min} хв тому</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_NotConnected" xml:space="preserve"><value>Не підключено</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_Signal_Good" xml:space="preserve"><value>Сигнал хороший</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_Signal_Fair" xml:space="preserve"><value>Сигнал середній</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_Signal_Weak" xml:space="preserve"><value>Сигнал слабкий</value><comment>Draft: needs native review.</comment></data>
+  <data name="Banner_LowBattery" xml:space="preserve"><value>Низький заряд датчика ({percent})</value><comment>Draft: needs native review.</comment></data>
+  <data name="Startup_Failed" xml:space="preserve"><value>Не вдалося запустити Deskair: {message}</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_StatusDot" xml:space="preserve"><value>Індикатор стану</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_CardText" xml:space="preserve"><value>Вміст картки</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_Disabled" xml:space="preserve"><value>Вимкнено</value><comment>Draft: needs native review.</comment></data>

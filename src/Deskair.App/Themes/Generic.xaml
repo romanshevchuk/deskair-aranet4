@@ -8,6 +8,7 @@
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/Focus/FocusVisuals.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/Card/Card.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/Pill/Pill.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/LogoRing/LogoRing.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/StatusDot/StatusDot.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/SegmentedControl/SegmentedControl.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/ToggleSwitch/ToggleSwitch.xaml" />

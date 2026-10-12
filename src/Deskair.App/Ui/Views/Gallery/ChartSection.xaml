@@ -1,0 +1,57 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Gallery.ChartSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:charts="clr-namespace:Deskair.App.Ui.Charts"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:gallery="clr-namespace:Deskair.App.Ui.Views.Gallery"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:metrics="clr-namespace:Deskair.Domain.Metrics;assembly=Deskair.Domain"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+  <StackPanel>
+    <TextBlock Margin="{StaticResource Space.SectionLabel}"
+               Style="{StaticResource Text.SectionLabel}"
+               Text="{loc:T Gallery_Section_Chart}" />
+    <WrapPanel>
+      <controls:Card Width="560" Height="260" Margin="{StaticResource Space.Item}" Padding="{StaticResource Space.Card.Padding}">
+        <charts:LiveChart Metric="Co2" Unit="ppm" Window="01:00:00" EndTime="{x:Static gallery:GallerySamples.End}" TimeZone="{x:Static sys:TimeZoneInfo.Utc}"
+                          Points="{x:Static gallery:GallerySamples.Co2Falling}"
+                          NowLabel="{loc:T Chart_Now}" NoDataText="{loc:T Chart_NoData}" />
+      </controls:Card>
+      <controls:Card Width="560" Height="260" Margin="{StaticResource Space.Item}" Padding="{StaticResource Space.Card.Padding}">
+        <charts:LiveChart Metric="Co2" Unit="ppm" Window="01:00:00" EndTime="{x:Static gallery:GallerySamples.End}" TimeZone="{x:Static sys:TimeZoneInfo.Utc}"
+                          Points="{x:Static gallery:GallerySamples.Co2WithGap}"
+                          NowLabel="{loc:T Chart_Now}" NoDataText="{loc:T Chart_NoData}" />
+      </controls:Card>
+      <controls:Card Width="560" Height="260" Margin="{StaticResource Space.Item}" Padding="{StaticResource Space.Card.Padding}">
+        <charts:LiveChart Metric="Temperature" Unit="°C" Window="01:00:00" EndTime="{x:Static gallery:GallerySamples.End}" TimeZone="{x:Static sys:TimeZoneInfo.Utc}"
+                          IdealMin="20" IdealMax="24" IdealLabel="{loc:T Gallery_Sample_IdealTemperature}"
+                          Points="{x:Static gallery:GallerySamples.Temperature}"
+                          NowLabel="{loc:T Chart_Now}" NoDataText="{loc:T Chart_NoData}" />
+      </controls:Card>
+      <controls:Card Width="560" Height="260" Margin="{StaticResource Space.Item}" Padding="{StaticResource Space.Card.Padding}">
+        <charts:LiveChart Metric="Humidity" Unit="%" Window="01:00:00" EndTime="{x:Static gallery:GallerySamples.End}" TimeZone="{x:Static sys:TimeZoneInfo.Utc}"
+                          IdealMin="30" IdealMax="50" IdealLabel="{loc:T Gallery_Sample_IdealHumidity}"
+                          Points="{x:Static gallery:GallerySamples.Humidity}"
+                          NowLabel="{loc:T Chart_Now}" NoDataText="{loc:T Chart_NoData}" />
+      </controls:Card>
+      <controls:Card Width="560" Height="260" Margin="{StaticResource Space.Item}" Padding="{StaticResource Space.Card.Padding}">
+        <charts:LiveChart Metric="Pressure" Unit="hPa" Window="01:00:00" EndTime="{x:Static gallery:GallerySamples.End}" TimeZone="{x:Static sys:TimeZoneInfo.Utc}"
+                          Points="{x:Static gallery:GallerySamples.Pressure}"
+                          NowLabel="{loc:T Chart_Now}" NoDataText="{loc:T Chart_NoData}" />
+      </controls:Card>
+      <controls:Card Width="560" Height="260" Margin="{StaticResource Space.Item}" Padding="{StaticResource Space.Card.Padding}">
+        <charts:LiveChart Metric="Co2" Unit="ppm" Window="01:00:00" EndTime="{x:Static gallery:GallerySamples.End}" TimeZone="{x:Static sys:TimeZoneInfo.Utc}"
+                          Points="{x:Static gallery:GallerySamples.NoPoints}"
+                          NowLabel="{loc:T Chart_Now}" NoDataText="{loc:T Chart_NoData}" />
+      </controls:Card>
+    </WrapPanel>
+
+    <TextBlock Margin="{StaticResource Space.SectionLabel}"
+               Style="{StaticResource Text.SectionLabel}"
+               Text="{loc:T Gallery_Section_ZoneRibbon}" />
+    <WrapPanel>
+      <charts:ZoneRibbon EndTime="{x:Static gallery:GallerySamples.End}" Width="560" Height="14" Margin="{StaticResource Space.Item}" Segments="{x:Static gallery:GallerySamples.Day}" />
+      <charts:ZoneRibbon EndTime="{x:Static gallery:GallerySamples.End}" Width="340" Height="22" Margin="{StaticResource Space.Item}" Segments="{x:Static gallery:GallerySamples.Day}" />
+    </WrapPanel>
+  </StackPanel>
+</UserControl>

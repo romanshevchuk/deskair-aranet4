@@ -21,9 +21,17 @@
   <data name="Advice_Good_Title" xml:space="preserve"><value>Air is fresh, nothing to do</value></data>
   <data name="Advice_Good_Text" xml:space="preserve"><value>Below 1,000 ppm, so focus and sleep quality are not affected.</value></data>
   <data name="Advice_Elevated_Title" xml:space="preserve"><value>Open a window for about 10 minutes</value></data>
-  <data name="Advice_Elevated_Text" xml:space="preserve"><value>Above the ideal level. Should drop below 1,000 ppm in about {min} min.</value></data>
   <data name="Advice_High_Title" xml:space="preserve"><value>Ventilate now: open windows fully</value></data>
-  <data name="Advice_High_Text" xml:space="preserve"><value>Above 1,400 ppm, concentration and sleep suffer. Needs about {min} min to drop below 1,000 ppm.</value></data>
+  <data name="Advice_Elevated_Text_Falling" xml:space="preserve"><value>Above the ideal level, but dropping.</value></data>
+  <data name="Advice_Elevated_Text_Steady" xml:space="preserve"><value>Above the ideal level. Ventilating will help.</value></data>
+  <data name="Advice_Elevated_Text_Rising" xml:space="preserve"><value>Above the ideal level and still rising. Ventilate soon.</value></data>
+  <data name="Advice_High_Text_Falling" xml:space="preserve"><value>Above 1,400 ppm, concentration and sleep suffer. It is dropping now.</value></data>
+  <data name="Advice_High_Text_Steady" xml:space="preserve"><value>Above 1,400 ppm, concentration and sleep suffer.</value></data>
+  <data name="Advice_High_Text_Rising" xml:space="preserve"><value>Above 1,400 ppm and still rising. Concentration and sleep suffer.</value></data>
+  <data name="Mini_Temperature_Low" xml:space="preserve"><value>Too cool · ideal {min}–{max} {unit}</value></data>
+  <data name="Mini_Temperature_High" xml:space="preserve"><value>Too warm · ideal {min}–{max} {unit}</value></data>
+  <data name="Mini_Humidity_Low" xml:space="preserve"><value>Too dry · ideal {min}–{max} {unit}</value></data>
+  <data name="Mini_Humidity_High" xml:space="preserve"><value>Too humid · ideal {min}–{max} {unit}</value></data>
   <data name="Stat_GoodShare" xml:space="preserve"><value>Good in last 24 h</value></data>
   <data name="Stat_Peak" xml:space="preserve"><value>Peak at {time}</value></data>
   <data name="Range_Day" xml:space="preserve"><value>Day</value></data>
@@ -77,6 +85,46 @@
   <data name="Gallery_Section_SegmentedControl" xml:space="preserve"><value>Segmented control</value></data>
   <data name="Gallery_Section_ToggleSwitch" xml:space="preserve"><value>Toggle switch</value></data>
   <data name="Gallery_Section_Pill" xml:space="preserve"><value>Pill</value></data>
+  <data name="Gallery_Section_Gauge" xml:space="preserve"><value>Gauge</value></data>
+  <data name="Action_Dismiss" xml:space="preserve"><value>Dismiss</value></data>
+  <data name="Gallery_Section_AdviceCard" xml:space="preserve"><value>Advice card</value></data>
+  <data name="Gallery_Section_StatTriple" xml:space="preserve"><value>Stat triple</value></data>
+  <data name="Gallery_Section_MetricCard" xml:space="preserve"><value>Metric card</value></data>
+  <data name="Gallery_Section_Banner" xml:space="preserve"><value>Banner</value></data>
+  <data name="Gallery_Section_RoomChip" xml:space="preserve"><value>Room chip and menu</value></data>
+  <data name="Gallery_Section_BatteryIcon" xml:space="preserve"><value>Battery icon</value></data>
+  <data name="Gallery_Section_Button" xml:space="preserve"><value>Buttons</value></data>
+  <data name="Gallery_Sample_BannerStale" xml:space="preserve"><value>Last reading 12 min ago</value></data>
+  <data name="Gallery_Sample_BannerLow" xml:space="preserve"><value>Sensor battery is low (8 %)</value></data>
+  <data name="Gallery_Sample_Peak" xml:space="preserve"><value>Peak at 15:12</value></data>
+  <data name="Gallery_Sample_InZone" xml:space="preserve"><value>In the Good zone</value></data>
+  <data name="Gallery_Sample_Primary" xml:space="preserve"><value>Open Deskair</value></data>
+  <data name="Gallery_Sample_Secondary" xml:space="preserve"><value>Snooze 1 h</value></data>
+  <data name="Gallery_Section_Chart" xml:space="preserve"><value>Live chart</value></data>
+  <data name="Gallery_Section_ZoneRibbon" xml:space="preserve"><value>24 h ribbon</value></data>
+  <data name="Chart_Now" xml:space="preserve"><value>Now</value></data>
+  <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ideal 20–24</value></data>
+  <data name="Gallery_Sample_IdealHumidity" xml:space="preserve"><value>ideal 30–50</value></data>
+  <data name="Stat_PeakNow" xml:space="preserve"><value>Peak right now</value></data>
+  <data name="Stat_InZone_Good" xml:space="preserve"><value>In the Good zone</value></data>
+  <data name="Stat_InZone_Elevated" xml:space="preserve"><value>In the Elevated zone</value></data>
+  <data name="Stat_InZone_High" xml:space="preserve"><value>In the High zone</value></data>
+  <data name="Duration_Minutes" xml:space="preserve"><value>{min} min</value></data>
+  <data name="Duration_HoursMinutes" xml:space="preserve"><value>{h} h {min} min</value></data>
+  <data name="Chart_Ideal" xml:space="preserve"><value>ideal {min}–{max}</value></data>
+  <data name="Chart_Summary_OneHour" xml:space="preserve"><value>Last hour · Low {low} · Avg {avg} · High {high} {unit}</value></data>
+  <data name="Chart_Summary_SixHours" xml:space="preserve"><value>Last 6 hours · Low {low} · Avg {avg} · High {high} {unit}</value></data>
+  <data name="Chart_Summary_TwentyFourHours" xml:space="preserve"><value>Last 24 hours · Low {low} · Avg {avg} · High {high} {unit}</value></data>
+  <data name="Range_1h" xml:space="preserve"><value>1h</value></data>
+  <data name="Range_6h" xml:space="preserve"><value>6h</value></data>
+  <data name="Range_24h" xml:space="preserve"><value>24h</value></data>
+  <data name="Footer_ConnectedMinutes" xml:space="preserve"><value>Connected · updated {min} min ago</value></data>
+  <data name="Footer_NotConnected" xml:space="preserve"><value>Not connected</value></data>
+  <data name="Footer_Signal_Good" xml:space="preserve"><value>Signal good</value></data>
+  <data name="Footer_Signal_Fair" xml:space="preserve"><value>Signal fair</value></data>
+  <data name="Footer_Signal_Weak" xml:space="preserve"><value>Signal weak</value></data>
+  <data name="Banner_LowBattery" xml:space="preserve"><value>Sensor battery is low ({percent})</value></data>
+  <data name="Startup_Failed" xml:space="preserve"><value>Deskair could not start: {message}</value></data>
   <data name="Gallery_Section_StatusDot" xml:space="preserve"><value>Status dot</value></data>
   <data name="Gallery_Sample_CardText" xml:space="preserve"><value>Card content</value></data>
   <data name="Gallery_Sample_Disabled" xml:space="preserve"><value>Disabled</value></data>

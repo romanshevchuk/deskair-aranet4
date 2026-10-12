@@ -1,19 +1,35 @@
+using System.Windows;
 using System.Windows.Media;
 
 namespace Deskair.App.Ui.Charts.Layers;
 
+/// <summary>Dashed horizontal lines at the two zone limits, in the zone line colours. A limit outside the visible range is skipped.</summary>
 public sealed class DashedZoneLinesLayer : IChartLayer
 {
+    private const double LineOpacity = 0.55;
+
     public double ElevatedFrom { get; set; } = 1000.0;
+
     public double HighAbove { get; set; } = 1400.0;
 
-    // TODO(CHART-19) [S, haiku]
-    // Spec: docs/design/components.md "Live chart" (dashed zone lines)
-    // Input : The two zone limits and the chart area.
-    // Output: Dashed horizontal lines at both limits in the Zone.*.Line colours.
-    // Rules : 1 px dashed lines.
-    // Edge  : Limits outside the visible range are skipped.
-    // Done  : The gallery chart sample shows the dashed lines.
     public void Draw(DrawingContext context, ChartArea area)
-        => throw new NotImplementedException("TODO(CHART-19)");
+    {
+        context.PushOpacity(LineOpacity);
+        DrawLimit(context, area, ElevatedFrom, "Zone.Elevated.Line.Brush");
+        DrawLimit(context, area, HighAbove, "Zone.High.Line.Brush");
+        context.Pop();
+    }
+
+    private static void DrawLimit(DrawingContext context, ChartArea area, double limit, string brushKey)
+    {
+        if (limit < area.YMin || limit > area.YMax)
+        {
+            return;
+        }
+
+        var pen = new Pen(area.Brush(brushKey), 1 / area.PixelsPerDip) { DashStyle = new DashStyle([4, 4], 0) };
+        var y = area.Snap(area.Y(limit));
+
+        context.DrawLine(pen, new Point(area.Plot.Left, y), new Point(area.Plot.Right, y));
+    }
 }

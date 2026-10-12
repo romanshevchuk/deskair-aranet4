@@ -23,6 +23,8 @@
   <SolidColorBrush x:Key="Text.Tertiary.Brush" Color="{StaticResource Text.Tertiary.Color}" />
   <Color x:Key="Text.Strong2.Color">#CBD3DA</Color>
   <SolidColorBrush x:Key="Text.Strong2.Brush" Color="{StaticResource Text.Strong2.Color}" />
+  <Color x:Key="Advice.IconBadge.Color">#12161A</Color>
+  <SolidColorBrush x:Key="Advice.IconBadge.Brush" Color="{StaticResource Advice.IconBadge.Color}" />
   <Color x:Key="Insight.Bg.Color">#222930</Color>
   <SolidColorBrush x:Key="Insight.Bg.Brush" Color="{StaticResource Insight.Bg.Color}" />
   <Color x:Key="Toggle.Off.Color">#3E4852</Color>

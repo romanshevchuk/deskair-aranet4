@@ -1,18 +1,36 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
-  <!-- TODO(CTRL-13) [S, haiku]
-       Spec: docs/design/components.md "Hero card", "Stats card"
-       Input : Label and value text.
-       Output: A caption label (12 px, secondary) above the value (14 px, tabular figures).
-       Rules : Text wraps; no fixed width.
-       Edge  : A missing value leaves the value line empty.
-       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
   <Style TargetType="{x:Type local:KeyValueCell}">
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Focusable" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:KeyValueCell}">
-          <Border />
+          <Grid>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="Label"
+                       Grid.Row="0"
+                       Style="{DynamicResource Text.Caption}"
+                       Foreground="{DynamicResource Text.Secondary.Brush}"
+                       Text="{TemplateBinding Label}" />
+            <TextBlock x:Name="Value"
+                       Grid.Row="1"
+                       Style="{DynamicResource Text.Number}"
+                       TextWrapping="Wrap"
+                       FontWeight="{DynamicResource Font.Weight.SemiBold}"
+                       Text="{TemplateBinding Value}" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="ValueFirst" Value="True">
+              <Setter TargetName="Value" Property="Grid.Row" Value="0" />
+              <Setter TargetName="Value" Property="FontSize" Value="{DynamicResource Font.Size.Title}" />
+              <Setter TargetName="Label" Property="Grid.Row" Value="1" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

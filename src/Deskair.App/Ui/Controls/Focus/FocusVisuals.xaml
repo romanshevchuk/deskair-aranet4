@@ -27,4 +27,45 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style x:Key="Focus.Ring.Button">
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate>
+          <Border Margin="-2"
+                  BorderBrush="{DynamicResource Focus.Ring.Brush}"
+                  BorderThickness="2"
+                  CornerRadius="{DynamicResource Radius.Button}"
+                  IsHitTestVisible="False" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="Focus.Ring.Card">
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate>
+          <Border Margin="-2"
+                  BorderBrush="{DynamicResource Focus.Ring.Brush}"
+                  BorderThickness="2"
+                  CornerRadius="{DynamicResource Radius.Card}"
+                  IsHitTestVisible="False" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="Focus.Ring.Chip">
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate>
+          <Border Margin="-2"
+                  BorderBrush="{DynamicResource Focus.Ring.Brush}"
+                  BorderThickness="2"
+                  CornerRadius="{DynamicResource Radius.Chip}"
+                  IsHitTestVisible="False" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

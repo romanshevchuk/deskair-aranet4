@@ -56,4 +56,16 @@ public class MetricTabsViewModelTests
 
         Assert.Contains(nameof(MetricTabsViewModel.ShowRibbon), raised);
     }
+
+    [Fact]
+    public void Selecting_a_metric_by_command_keeps_the_range()
+    {
+        var viewModel = new MetricTabsViewModel();
+        viewModel.Select(Metric.Co2, LiveRange.SixHours);
+
+        viewModel.SelectMetricCommand.Execute(Metric.Pressure);
+
+        Assert.Equal(Metric.Pressure, viewModel.SelectedMetric);
+        Assert.Equal(LiveRange.SixHours, viewModel.SelectedRange);
+    }
 }

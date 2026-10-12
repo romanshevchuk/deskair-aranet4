@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Deskair.Domain.Metrics;
 using Deskair.Services.Settings;
 
 namespace Deskair.App.ViewModels.Settings;
@@ -13,18 +14,25 @@ public sealed partial class AppearanceSettingsViewModel : ObservableObject
     [ObservableProperty]
     private ThemeChoice theme;
 
+    [ObservableProperty]
+    private TemperatureUnit temperatureUnit;
+
     public AppearanceSettingsViewModel(SettingsService settings)
     {
         this.settings = settings;
     }
 
-    // TODO(SET-01d) [S, haiku]
-    // Spec: docs/guides/add-a-setting.md; docs/design/screens-and-states.md "Settings"
-    // Input : The chosen language and theme.
-    // Output: SettingsService.UpdateAsync with the new values.
-    // Rules : Language and theme apply immediately through SettingsChanged.
-    // Edge  : Unchanged values do nothing.
-    // Done  : Add Tests/ViewModels/AppearanceSettingsViewModelTests.
+    public void Load()
+    {
+        var current = settings.Current;
+
+        Language = current.Language;
+        Theme = current.Theme;
+        TemperatureUnit = current.TemperatureUnit;
+    }
+
     public Task ApplyAsync(CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(SET-01d)");
+    {
+        return settings.UpdateAsync(current => current with { Language = Language, Theme = Theme, TemperatureUnit = TemperatureUnit }, cancellationToken);
+    }
 }

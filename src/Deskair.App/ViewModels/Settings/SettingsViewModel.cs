@@ -19,13 +19,27 @@ public sealed partial class SettingsViewModel : ObservableObject
         this.startup = startup;
     }
 
-    // TODO(SET-01c) [S, haiku]
-    // Spec: docs/design/screens-and-states.md "Settings"
-    // Input : A CancellationToken.
-    // Output: Loads all section view models.
-    // Rules : Sections load independently; one failure must not stop the others.
-    // Edge  : None.
-    // Done  : Add Tests/ViewModels/SettingsViewModelTests.
+    /// <summary>Loads every section. A section that fails does not stop the others; the failures are rethrown together at the end.</summary>
     public Task LoadAsync(CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(SET-01c)");
+    {
+        return Task.WhenAll(
+            Run(() =>
+            {
+                appearance.Load();
+                return Task.CompletedTask;
+            }),
+            Run(() =>
+            {
+                alerts.Load();
+                return Task.CompletedTask;
+            }),
+            Run(() => devices.LoadAsync(cancellationToken)),
+            Run(() => data.LoadAsync(cancellationToken)),
+            Run(() => startup.LoadAsync(cancellationToken)));
+    }
+
+    private static async Task Run(Func<Task> load)
+    {
+        await load();
+    }
 }

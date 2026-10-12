@@ -4,13 +4,6 @@ using Deskair.Domain.Metrics;
 
 namespace Deskair.App.Ui.Controls;
 
-// TODO(CTRL-04) [M, haiku]
-// Spec: docs/design/components.md "Metric mini card"; docs/design/design-tokens.md "Metric colours", "Typography"
-// Input : Metric, title, value text, subtitle, selected flag; content slot for a Sparkline.
-// Output: Name, value (32 px, weight 500), subtitle and sparkline; when selected, a 1 px outline plus 1 px ring in the Text.Primary colour (prototype).
-// Rules : Template of a Button so it is keyboard and screen reader operable.
-// Edge  : A missing value shows empty text, never 0.
-// Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass.
 public class MetricCard : Button
 {
     public static readonly DependencyProperty MetricProperty = DependencyProperty.Register(
@@ -27,6 +20,12 @@ public class MetricCard : Button
 
     public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
         nameof(Value),
+        typeof(string),
+        typeof(MetricCard),
+        new PropertyMetadata(null));
+
+    public static readonly DependencyProperty UnitProperty = DependencyProperty.Register(
+        nameof(Unit),
         typeof(string),
         typeof(MetricCard),
         new PropertyMetadata(null));
@@ -64,6 +63,12 @@ public class MetricCard : Button
     {
         get => (string?)GetValue(ValueProperty);
         set => SetValue(ValueProperty, value);
+    }
+
+    public string? Unit
+    {
+        get => (string?)GetValue(UnitProperty);
+        set => SetValue(UnitProperty, value);
     }
 
     public string? Subtitle

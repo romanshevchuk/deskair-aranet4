@@ -15,13 +15,8 @@ public sealed partial class DevicesSettingsViewModel : ObservableObject
         this.devices = devices;
     }
 
-    // TODO(SET-01f) [M, haiku]
-    // Spec: docs/design/screens-and-states.md "Settings" (Devices)
-    // Input : A CancellationToken.
-    // Output: The list of known devices from DeviceRegistry.
-    // Rules : Rename and add commands are separate cards once DeviceRegistry supports them.
-    // Edge  : No devices gives an empty list.
-    // Done  : Add Tests/ViewModels/DevicesSettingsViewModelTests.
-    public Task LoadAsync(CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(SET-01f)");
+    public async Task LoadAsync(CancellationToken cancellationToken)
+    {
+        Items = await devices.LoadAsync(cancellationToken);
+    }
 }

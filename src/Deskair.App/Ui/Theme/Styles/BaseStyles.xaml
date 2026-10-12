@@ -43,16 +43,22 @@
 
   <Style x:Key="Text.HeroValue" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Number}">
     <Setter Property="FontSize" Value="{DynamicResource Font.Size.Hero}" />
+    <Setter Property="LineHeight" Value="{DynamicResource Font.Size.Hero}" />
+    <Setter Property="LineStackingStrategy" Value="BlockLineHeight" />
     <Setter Property="FontWeight" Value="{DynamicResource Font.Weight.Light}" />
   </Style>
 
   <Style x:Key="Text.MiniValue" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Number}">
     <Setter Property="FontSize" Value="{DynamicResource Font.Size.MiniValue}" />
+    <Setter Property="LineHeight" Value="{DynamicResource Font.Size.MiniValue}" />
+    <Setter Property="LineStackingStrategy" Value="BlockLineHeight" />
     <Setter Property="FontWeight" Value="{DynamicResource Font.Weight.Medium}" />
   </Style>
 
   <Style x:Key="Text.HistoryAverage" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Number}">
     <Setter Property="FontSize" Value="{DynamicResource Font.Size.HistoryAverage}" />
+    <Setter Property="LineHeight" Value="{DynamicResource Font.Size.HistoryAverage}" />
+    <Setter Property="LineStackingStrategy" Value="BlockLineHeight" />
     <Setter Property="FontWeight" Value="{DynamicResource Font.Weight.Light}" />
   </Style>
 </ResourceDictionary>

@@ -1,18 +1,54 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
-  <!-- TODO(CTRL-05) [S, haiku]
-       Spec: docs/design/components.md "Banner"; docs/design/screens-and-states.md "Live conditions"
-       Input : Message, optional action (text and command), optional dismiss command.
-       Output: A Border row with radius 10 (Radius.Banner): message left; action button and dismiss button right.
-       Rules : Prototype: Zone.Elevated.AdviceBg and AdviceBorder, radius 10, padding 7 / 14, 13 px text; the action and dismiss buttons are outlined with the advice border colour.
-       Edge  : No action and no dismiss shows just the message.
-       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
+                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls"
+                    xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
   <Style TargetType="{x:Type local:Banner}">
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Focusable" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:Banner}">
-          <Border />
+          <Border Background="{DynamicResource Zone.Elevated.AdviceBg.Brush}"
+                  BorderBrush="{DynamicResource Zone.Elevated.AdviceBorder.Brush}"
+                  BorderThickness="1"
+                  CornerRadius="{DynamicResource Radius.Banner}"
+                  Padding="{DynamicResource Space.Banner.Padding}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <TextBlock Style="{DynamicResource Text.Secondary}"
+                         Foreground="{DynamicResource Text.Primary.Brush}"
+                         VerticalAlignment="Center"
+                         Text="{TemplateBinding Message}" />
+              <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <local:SecondaryButton x:Name="Action"
+                                       Margin="{DynamicResource Space.Banner.Buttons}"
+                                       Padding="{DynamicResource Space.Button.Small.Padding}"
+                                       Background="Transparent"
+                                       BorderBrush="{DynamicResource Zone.Elevated.AdviceBorder.Brush}"
+                                       Command="{TemplateBinding ActionCommand}"
+                                       Content="{TemplateBinding ActionText}" />
+                <local:SecondaryButton x:Name="Dismiss"
+                                       Margin="{DynamicResource Space.Banner.Buttons}"
+                                       Padding="{DynamicResource Space.Button.Small.Padding}"
+                                       Background="Transparent"
+                                       BorderBrush="{DynamicResource Zone.Elevated.AdviceBorder.Brush}"
+                                       AutomationProperties.Name="{loc:T Action_Dismiss}"
+                                       Command="{TemplateBinding DismissCommand}"
+                                       Content="{loc:T Action_Dismiss}" />
+              </StackPanel>
+            </Grid>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="ActionCommand" Value="{x:Null}">
+              <Setter TargetName="Action" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="DismissCommand" Value="{x:Null}">
+              <Setter TargetName="Dismiss" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
