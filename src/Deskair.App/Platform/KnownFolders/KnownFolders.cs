@@ -8,10 +8,12 @@ public sealed class KnownFolders : IKnownFolders
 {
     public KnownFolders(AppOptions options)
     {
-        // The simulated app never writes to Documents.
+        // The simulated app and the single-sensor test run never write to Documents.
         DataFolder = options.Simulated
             ? Path.Combine(Path.GetTempPath(), "Deskair-simulated")
-            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Deskair");
+            : options.Sensor is not null
+                ? Path.Combine(Path.GetTempPath(), "Deskair-sensor-test")
+                : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Deskair");
     }
 
     public string DataFolder { get; }

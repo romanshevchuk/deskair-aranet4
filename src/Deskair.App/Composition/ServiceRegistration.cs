@@ -22,6 +22,7 @@ using Deskair.Services.Platform;
 using Deskair.Services.Sensors;
 using Deskair.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Deskair.App.Composition;
 
@@ -47,6 +48,7 @@ public static class ServiceRegistration
     private static IServiceCollection AddWindowsPlatform(this IServiceCollection services, AppOptions options)
     {
         services.AddSingleton<IKnownFolders, KnownFolders>();
+        services.AddSingleton<ILoggerProvider>(provider => new RollingFileLoggerProvider(provider.GetRequiredService<IKnownFolders>().LogFolder, provider.GetRequiredService<TimeProvider>()));
         services.AddSingleton<ISystemTheme, SystemThemeSource>();
         services.AddSingleton<IUiDispatcher, WpfUiDispatcher>();
         // The simulated app needs no Bluetooth hardware.

@@ -99,9 +99,19 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
                 await using var sensor = provider.Create(device);
                 var status = await sensor.ConnectAsync(cancellationToken);
 
+                if (logger.IsEnabled(LogLevel.Information))
+                {
+                    logger.LogInformation("Connected to {Address}; interval {Interval}, battery {Battery} %.", device.Address, status.Interval, status.BatteryPercent);
+                }
+
                 messenger.Send(new SensorStatusUpdated(device, status));
 
                 var result = await sync.SyncAsync(sensor, device, status.Interval, cancellationToken);
+
+                if (logger.IsEnabled(LogLevel.Information))
+                {
+                    logger.LogInformation("History sync for {Address} finished: {Added} readings added, complete {Complete}.", device.Address, result.ReadingsAdded, result.Complete);
+                }
 
                 messenger.Send(new SyncCompleted(device, result.ReadingsAdded));
 

@@ -1,8 +1,10 @@
 using CommunityToolkit.Mvvm.Messaging;
+using Deskair.App.Platform.Bluetooth;
 using Deskair.App.ViewModels.Connection;
 using Deskair.App.ViewModels.Live;
 using Deskair.App.ViewModels.Shell;
 using Deskair.Domain.Readings;
+using Deskair.Sensors.Aranet4;
 using Deskair.Sensors.Simulated;
 using Deskair.Services.Connection;
 using Deskair.Services.Devices;
@@ -68,6 +70,11 @@ public sealed class AppServicesStarter
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("Deskair started (simulated {Simulated}, sensor option {Sensor}).", options.Simulated, options.Sensor);
+        }
+
         await LoadDevicesAsync(cancellationToken);
 
         room.Load();
@@ -99,6 +106,19 @@ public sealed class AppServicesStarter
         {
             await SeedSimulatedRoomsAsync(cancellationToken);
             await registry.LoadAsync(settings.Current.SelectedDevice, cancellationToken);
+        }
+        else if (options.Sensor is not null && BleAddress.TryParse(options.Sensor, out var address))
+        {
+            var id = new DeviceId(Aranet4Provider.ProviderId, BleAddress.Format(address));
+
+            if (!known.Any(device => device.Id == id))
+            {
+                var interval = new IntervalChange(DateTimeOffset.UnixEpoch, simulatedInterval);
+                await deviceStore.SaveAsync(new DeviceInfo(id, "Test sensor", null, [interval], null), cancellationToken);
+            }
+
+            await registry.LoadAsync(id, cancellationToken);
+            registry.Select(id);
         }
     }
 

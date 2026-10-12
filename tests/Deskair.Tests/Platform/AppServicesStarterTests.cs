@@ -87,8 +87,8 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
         cts.Dispose();
     }
 
-    private AppServicesStarter Create(bool simulated)
-        => new(new AppOptions(false, simulated), settings, registry, deviceStore, readings, messenger, session, Tracker, live, footer, room, connection, logger);
+    private AppServicesStarter Create(bool simulated, string? sensor = null)
+        => new(new AppOptions(false, simulated, Sensor: sensor), settings, registry, deviceStore, readings, messenger, session, Tracker, live, footer, room, connection, logger);
 
     [Fact]
     public async Task The_simulated_app_creates_two_rooms_on_first_run_and_shows_the_first()
@@ -99,6 +99,50 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
         Assert.Equal("SIM-0001", registry.Selected?.Address);
         Assert.Equal(SimulatedProvider.ProviderId, registry.Selected?.ProviderId);
         Assert.Equal(["Office", "Bedroom"], room.Rooms.Select(item => item.Name));
+    }
+
+    [Fact]
+    public async Task A_named_sensor_is_registered_selected_and_started()
+    {
+        await Create(simulated: false, sensor: "c3:de:c8:fc:c7:c6").StartAsync(cts.Token);
+
+        var device = Assert.Single(deviceStore.Snapshot());
+        Assert.Equal(new DeviceId("aranet4", "C3DEC8FCC7C6"), device.Id);
+        Assert.Equal(device.Id, registry.Selected);
+    }
+
+    [Fact]
+    public async Task A_named_sensor_wins_over_a_device_remembered_from_an_earlier_run()
+    {
+        var earlier = new DeviceId("aranet4", "000000000001");
+        await deviceStore.SaveAsync(new DeviceInfo(earlier, "Earlier", null, [new IntervalChange(DateTimeOffset.UnixEpoch, TimeSpan.FromMinutes(2))], null), cts.Token);
+        await settings.UpdateAsync(current => current with { SelectedDevice = earlier }, cts.Token);
+
+        await Create(simulated: false, sensor: "C3DEC8FCC7C6").StartAsync(cts.Token);
+
+        Assert.Equal(new DeviceId("aranet4", "C3DEC8FCC7C6"), registry.Selected);
+    }
+
+    [Fact]
+    public async Task A_named_sensor_is_registered_only_once()
+    {
+        await Create(simulated: false, sensor: "C3DEC8FCC7C6").StartAsync(cts.Token);
+        await cts.CancelAsync();
+        await session.StopAsync();
+
+        using var nextLaunch = new CancellationTokenSource();
+        await Create(simulated: false, sensor: "C3DEC8FCC7C6").StartAsync(nextLaunch.Token);
+        await nextLaunch.CancelAsync();
+
+        Assert.Single(deviceStore.Snapshot());
+    }
+
+    [Fact]
+    public async Task A_sensor_address_that_is_not_an_address_registers_nothing()
+    {
+        await Create(simulated: false, sensor: "SIM-0001").StartAsync(cts.Token);
+
+        Assert.Empty(deviceStore.Snapshot());
     }
 
     [Fact]

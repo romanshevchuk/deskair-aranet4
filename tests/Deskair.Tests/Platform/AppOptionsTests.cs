@@ -42,6 +42,23 @@ public class AppOptionsTests
     }
 
     [Fact]
+    public void A_single_sensor_test_run_keeps_its_data_in_the_temp_folder_never_in_documents()
+    {
+        var folders = new KnownFolders(new AppOptions(false, Sensor: "C3DEC8FCC7C6"));
+        var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+        Assert.StartsWith(System.IO.Path.GetTempPath(), folders.DataFolder);
+        Assert.DoesNotContain(documents, folders.DataFolder);
+    }
+
+    [Fact]
+    public void The_sensor_option_is_read_with_its_value()
+    {
+        Assert.Equal("C3DEC8FCC7C6", AppOptions.Parse(["--sensor", "C3DEC8FCC7C6"]).Sensor);
+        Assert.Null(AppOptions.Parse(["--sensor"]).Sensor);
+    }
+
+    [Fact]
     public void The_real_app_keeps_its_data_in_documents()
     {
         var folders = new KnownFolders(new AppOptions(false));

@@ -1,4 +1,5 @@
 using Deskair.App.Composition;
+using Deskair.App.Composition.Spikes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -10,6 +11,11 @@ public static class Program
     public static int Main(string[] args)
     {
         var options = AppOptions.Parse(args);
+
+        if (options.SpikeS1)
+        {
+            return SpikeS1.Run(options);
+        }
 
         // The gallery is a development tool, so it may run next to the real app.
         using var instance = new SingleInstance(options.Gallery ? "Deskair.Gallery" : "Deskair");

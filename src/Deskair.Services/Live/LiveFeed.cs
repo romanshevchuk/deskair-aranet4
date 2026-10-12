@@ -55,6 +55,11 @@ public sealed class LiveFeed
 
             await readings.MergeAsync(device, [reading], ReadingSource.Device, interval, cancellationToken);
             messenger.Send(new ReadingReceived(device, reading));
+
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Live reading from {Address}: {Co2} ppm at {Time:HH:mm:ss}.", device.Address, reading.Co2Ppm, reading.Timestamp);
+            }
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {

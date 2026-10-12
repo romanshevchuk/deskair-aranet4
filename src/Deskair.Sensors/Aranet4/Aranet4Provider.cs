@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Deskair.Domain.Readings;
 using Deskair.Services.Sensors;
 
@@ -9,14 +10,17 @@ public sealed class Aranet4Provider : ISensorProvider
 
     private readonly IBleScanner scanner;
     private readonly Func<IBleConnection> connectionFactory;
+    private readonly TimeProvider timeProvider;
 
     public Aranet4Provider(
         IBleScanner scanner,
         Func<IBleConnection> connectionFactory,
-        PhoneExportImporter phoneExport)
+        PhoneExportImporter phoneExport,
+        TimeProvider timeProvider)
     {
         this.scanner = scanner;
         this.connectionFactory = connectionFactory;
+        this.timeProvider = timeProvider;
         Importers = [phoneExport];
     }
 
@@ -32,15 +36,24 @@ public sealed class Aranet4Provider : ISensorProvider
 
     public IReadOnlyList<IReadingImporter> Importers { get; }
 
-    // TODO(ARANET-04a) [M, sonnet]
-    // Spec: docs/plans/spikes.md S1; docs/engineering/architecture.md section 5.
-    // Input : a CancellationToken.
-    // Output: DiscoveredSensor for each advertisement that looks like this sensor.
-    // Rules : filter IBleScanner advertisements with a pure check on name or manufacturer data (from the spike).
-    // Edge  : the same address is reported once.
-    // Done  : unskip Sensors/Aranet4ProviderTests.Scan_* with a fake IBleScanner.
-    public IAsyncEnumerable<DiscoveredSensor> ScanAsync(CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(ARANET-04a)");
+    /// <summary>True when the advertisement names an Aranet4 or carries the manufacturer's data block (both seen in the spike scan).</summary>
+    public static bool IsAranet4(BleAdvertisement advertisement)
+        => advertisement.LocalName?.StartsWith(Aranet4Protocol.NamePrefix, StringComparison.OrdinalIgnoreCase) == true
+            || advertisement.ManufacturerData.ContainsKey(Aranet4Protocol.ManufacturerId);
 
-    public ISensor Create(DeviceId id) => new Aranet4Sensor(connectionFactory(), id);
+    /// <summary>Reports each Aranet4 address once, with the name and signal of the first advertisement seen.</summary>
+    public async IAsyncEnumerable<DiscoveredSensor> ScanAsync([EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        await foreach (var advertisement in scanner.ScanAsync(cancellationToken).WithCancellation(cancellationToken))
+        {
+            if (IsAranet4(advertisement) && seen.Add(advertisement.Address))
+            {
+                yield return new DiscoveredSensor(new DeviceId(ProviderId, advertisement.Address), advertisement.LocalName, advertisement.SignalDbm);
+            }
+        }
+    }
+
+    public ISensor Create(DeviceId id) => new Aranet4Sensor(connectionFactory(), id, timeProvider);
 }

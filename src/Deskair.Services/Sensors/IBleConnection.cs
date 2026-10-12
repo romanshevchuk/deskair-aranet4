@@ -7,5 +7,7 @@ public interface IBleConnection : IAsyncDisposable
 
     Task<byte[]> ReadAsync(Guid service, Guid characteristic, CancellationToken cancellationToken);
 
+    Task WriteAsync(Guid service, Guid characteristic, byte[] value, CancellationToken cancellationToken);
+
     IAsyncEnumerable<byte[]> SubscribeAsync(Guid service, Guid characteristic, CancellationToken cancellationToken);
 }
