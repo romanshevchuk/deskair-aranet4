@@ -5,25 +5,52 @@ namespace Deskair.Domain.Analytics.TypicalDay;
 
 public static class TypicalDayCalculator
 {
-    // TODO(HIST-05a) [M, sonnet]
-    // Spec: docs/product/behaviour-rules.md "Aggregation" rule 6.
-    // Input : CO₂ readings in the chosen range, LocalCalendar.
-    // Output: 24 HourOfDayAverage entries, hour 0 to 23, in local time.
-    // Rules : mean of existing readings per local hour; DST hours merge into the same hour number.
-    // Edge  : an hour with no readings has Average null and count 0.
-    // Done  : unskip tests Domain/Analytics/TypicalDayCalculatorTests.Hourly_* and make them pass.
     public static IReadOnlyList<HourOfDayAverage> HourlyAverages(
         IReadOnlyList<Reading> readings,
         LocalCalendar calendar)
-        => throw new NotImplementedException("TODO(HIST-05a)");
+    {
+        var byHour = readings
+            .ToLookup(reading => TimeZoneInfo.ConvertTime(reading.Timestamp, calendar.Zone).Hour, reading => reading.Co2Ppm);
 
-    // TODO(HIST-05b) [S, haiku]
-    // Spec: docs/product/behaviour-rules.md "Aggregation" rule 6 (worst three-hour window).
-    // Input : the 24 hourly averages.
-    // Output: start hour (0 to 23) of the three consecutive hours with the highest mean, or null.
-    // Rules : windows wrap past midnight (22, 23, 0); hours without data are skipped; ties pick the earliest start.
-    // Edge  : fewer than three hours with data returns null.
-    // Done  : unskip tests Domain/Analytics/TypicalDayCalculatorTests.Worst_* and make them pass.
+        return Enumerable.Range(0, 24)
+            .Select(hour => byHour[hour].Any()
+                ? new HourOfDayAverage(hour, byHour[hour].Average(), byHour[hour].Count())
+                : new HourOfDayAverage(hour, null, 0))
+            .ToList();
+    }
+
     public static int? WorstWindowStartHour(IReadOnlyList<HourOfDayAverage> hours)
-        => throw new NotImplementedException("TODO(HIST-05b)");
+    {
+        var averages = new double?[24];
+
+        foreach (var hour in hours)
+        {
+            averages[hour.Hour] = hour.Average;
+        }
+
+        int? worstStart = null;
+        var worstMean = double.MinValue;
+
+        for (var start = 0; start < 24; start++)
+        {
+            var first = averages[start];
+            var second = averages[(start + 1) % 24];
+            var third = averages[(start + 2) % 24];
+
+            if (first is null || second is null || third is null)
+            {
+                continue;
+            }
+
+            var mean = (first.Value + second.Value + third.Value) / 3;
+
+            if (mean > worstMean)
+            {
+                worstMean = mean;
+                worstStart = start;
+            }
+        }
+
+        return worstStart;
+    }
 }

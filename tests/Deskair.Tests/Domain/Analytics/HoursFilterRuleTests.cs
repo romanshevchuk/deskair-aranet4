@@ -8,13 +8,13 @@ public class HoursFilterRuleTests
 {
     private static readonly LocalCalendar utc = new(TimeZoneInfo.Utc);
 
-    [Fact(Skip = "TODO(HIST-02a)")]
+    [Fact]
     public void Includes_everything_for_AllDay()
     {
         Assert.True(HoursFilterRule.Includes(Samples.Utc(2026, 10, 9, 13), HoursFilterMode.AllDay, utc));
     }
 
-    [Theory(Skip = "TODO(HIST-02a)")]
+    [Theory]
     [InlineData(22, 0, true)]
     [InlineData(23, 30, true)]
     [InlineData(3, 0, true)]
@@ -29,7 +29,7 @@ public class HoursFilterRuleTests
         Assert.Equal(expected, HoursFilterRule.Includes(instant, HoursFilterMode.Night, utc));
     }
 
-    [Fact(Skip = "TODO(HIST-02a)")]
+    [Fact]
     public void Includes_Night_follows_local_time()
     {
         var calendar = new LocalCalendar(Samples.Kyiv);
@@ -38,14 +38,14 @@ public class HoursFilterRuleTests
         Assert.True(HoursFilterRule.Includes(Samples.Utc(2026, 1, 15, 20, 30), HoursFilterMode.Night, calendar));
     }
 
-    [Fact(Skip = "TODO(HIST-02b)")]
+    [Fact]
     public void NightOwner_is_the_evening_the_night_started_on()
     {
         Assert.Equal(new DateOnly(2025, 12, 31), HoursFilterRule.NightOwner(Samples.Utc(2026, 1, 1, 3), utc));
         Assert.Equal(new DateOnly(2026, 1, 1), HoursFilterRule.NightOwner(Samples.Utc(2026, 1, 1, 23), utc));
     }
 
-    [Fact(Skip = "TODO(HIST-02c)")]
+    [Fact]
     public void Apply_keeps_the_order_and_does_not_change_the_input()
     {
         var readings = new[]
@@ -61,7 +61,7 @@ public class HoursFilterRuleTests
         Assert.Equal(3, readings.Length);
     }
 
-    [Fact(Skip = "TODO(HIST-02c)")]
+    [Fact]
     public void Apply_returns_an_empty_list_for_empty_input()
     {
         Assert.Empty(HoursFilterRule.Apply([], HoursFilterMode.Night, utc));

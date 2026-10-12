@@ -8,7 +8,7 @@ public class ReadingIndexTests
 {
     private static readonly DateTimeOffset noon = Samples.Utc(2026, 10, 9, 12);
 
-    [Fact(Skip = "TODO(STORE-02a)")]
+    [Fact]
     public void Add_keeps_readings_sorted_by_time()
     {
         var index = new ReadingIndex();
@@ -20,7 +20,7 @@ public class ReadingIndexTests
         Assert.Equal(new[] { 1.0, 2.0, 3.0 }, all.Select(reading => reading.Co2Ppm));
     }
 
-    [Fact(Skip = "TODO(STORE-02a)")]
+    [Fact]
     public void Add_keeps_the_existing_reading_for_a_duplicate_timestamp()
     {
         var index = new ReadingIndex();
@@ -31,7 +31,7 @@ public class ReadingIndexTests
         Assert.Equal(1, index.Range(noon, noon.AddMinutes(1)).Single().Co2Ppm);
     }
 
-    [Fact(Skip = "TODO(STORE-02b)")]
+    [Fact]
     public void Range_is_start_inclusive_and_end_exclusive()
     {
         var index = new ReadingIndex();
@@ -42,7 +42,7 @@ public class ReadingIndexTests
         Assert.Equal(new[] { 1.0, 2.0 }, range.Select(reading => reading.Co2Ppm));
     }
 
-    [Fact(Skip = "TODO(STORE-02b)")]
+    [Fact]
     public void Range_of_an_empty_or_reversed_span_is_empty()
     {
         var index = new ReadingIndex();
@@ -52,7 +52,7 @@ public class ReadingIndexTests
         Assert.Empty(index.Range(noon.AddHours(1), noon));
     }
 
-    [Fact(Skip = "TODO(STORE-02c)")]
+    [Fact]
     public void Last_is_the_newest_timestamp_or_null()
     {
         var index = new ReadingIndex();

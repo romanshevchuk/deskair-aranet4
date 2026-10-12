@@ -7,7 +7,22 @@ public class LocalCalendarTests
 {
     private static readonly LocalCalendar kyiv = new(Samples.Kyiv);
 
-    [Fact(Skip = "TODO(TIME-01a)")]
+    [Fact]
+    public void StartOfLocalDay_for_a_date_follows_the_offset_of_that_date()
+    {
+        // Summer time starts at 03:00 on 29 March 2026, so 29 March begins at UTC+2 and 30 March at UTC+3.
+        Assert.Equal(Samples.Utc(2026, 3, 28, 22), kyiv.StartOfLocalDay(new DateOnly(2026, 3, 29)));
+        Assert.Equal(Samples.Utc(2026, 3, 29, 21), kyiv.StartOfLocalDay(new DateOnly(2026, 3, 30)));
+    }
+
+    [Fact]
+    public void LocalDateOf_gives_the_calendar_date_in_the_zone()
+    {
+        // 22:30 UTC on 29 March is 01:30 on 30 March in Kyiv (UTC+3).
+        Assert.Equal(new DateOnly(2026, 3, 30), kyiv.LocalDateOf(Samples.Utc(2026, 3, 29, 22, 30)));
+    }
+
+    [Fact]
     public void StartOfLocalDay_uses_the_offset_at_local_midnight()
     {
         // 13:00 local on 29 March 2026: summer time has just started, but local midnight was still UTC+2.
@@ -16,7 +31,7 @@ public class LocalCalendarTests
         Assert.Equal(Samples.Utc(2026, 3, 28, 22), kyiv.StartOfLocalDay(instant));
     }
 
-    [Fact(Skip = "TODO(TIME-01a)")]
+    [Fact]
     public void StartOfLocalDay_is_stable_for_any_instant_in_the_same_local_day()
     {
         var morning = kyiv.StartOfLocalDay(Samples.Utc(2026, 10, 9, 5));
@@ -25,7 +40,7 @@ public class LocalCalendarTests
         Assert.Equal(morning, evening);
     }
 
-    [Theory(Skip = "TODO(TIME-01b)")]
+    [Theory]
     [InlineData(2026, 10, 9, 24)]
     [InlineData(2026, 3, 29, 23)]
     [InlineData(2026, 10, 25, 25)]
@@ -34,7 +49,7 @@ public class LocalCalendarTests
         Assert.Equal(TimeSpan.FromHours(hours), kyiv.DayLength(new DateOnly(year, month, day)));
     }
 
-    [Theory(Skip = "TODO(TIME-01c)")]
+    [Theory]
     [InlineData(60, 2, 30)]
     [InlineData(61, 2, 30)]
     [InlineData(0, 2, 0)]
@@ -48,7 +63,7 @@ public class LocalCalendarTests
         Assert.Equal(expected, slots);
     }
 
-    [Fact(Skip = "TODO(TIME-01c)")]
+    [Fact]
     public void ExpectedSlots_rejects_an_interval_of_zero()
     {
         var start = Samples.Utc(2026, 10, 9, 12);

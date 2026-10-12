@@ -22,7 +22,7 @@ Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 3
 ## Aggregation
 
 1. Averages use only existing readings.
-2. Calendar days and months use the user's local time. Weeks end today. The current month is marked "so far".
+2. Calendar days and months use the user's local time. Weeks end today: a week is 7 local days counted back from the end of the range. The current month is marked "so far". The first and last bucket are clipped to the range, and their expected readings are counted only inside it, so today or the current month is not "partial" just because it is not over. A year is a range, not a grouping: it is grouped by week or by month.
 3. Comparison with the previous period uses the same length and filter. If there is no earlier data, say so.
 4. A bucket with under 80 % of its expected readings is "partial" (dashed, lighter). A bucket with none is "no data" (hatched).
 5. The coverage chip shows "Based on N % of expected readings" and is hidden at 98 % or more with no empty buckets.
@@ -38,7 +38,7 @@ Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 3
 
 ## Live values
 
-- **Trend:** compare the average of the last 6 minutes with the average of the 6 minute window that ends 30 minutes before now. If either window has no readings, the trend is "Steady". A change under 30 ppm is "Steady"; otherwise "Rising" or "Falling" with the ppm change over 30 min. Temperature, humidity and pressure are "Steady" unless they change by 0.5 °C, 3 % or 1 hPa over the last hour. Tune with real data.
+- **Trend:** compare the average of the last 6 minutes with the average of the 6 minute window that ends 30 minutes before now. If either window has no readings, the trend is "Steady". A change under 30 ppm is "Steady"; otherwise "Rising" or "Falling" with the ppm change over 30 min. Temperature, humidity and pressure are "Steady" unless they change by 0.5 °C, 3 % or 1 hPa over the last hour, measured from the oldest to the newest reading in that hour. If those readings cover less than 30 minutes (for example just after start-up), the trend is "Steady". Tune with real data.
 - "Good in last 24 h": share of time under 1,000 ppm. "Peak": the maximum in 24 h. "In the X zone": time since the zone last changed.
 
 ## Connection states
@@ -46,16 +46,19 @@ Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 3
 | State | Trigger |
 |---|---|
 | Stale | No reading for about 5 minutes (3 or more intervals) |
-| Not connected | No reading for 10 minutes, or Bluetooth is off |
+| Not connected | No reading for 10 minutes (or 5 intervals, if that is longer), or Bluetooth is off |
 | Low battery | Sensor at 10 % or below (the footer icon turns amber at 20 %) |
 | First run | No paired sensor |
 
-When several apply, the first of this list wins: First run, Not connected, Stale, Low battery. A stale sensor therefore hides the low battery banner; the banner shows again once readings arrive. Stale starts after 3 missed intervals (about 5 minutes at the usual 2 minute interval).
+When several apply, the first of this list wins: First run, Not connected, Stale, Low battery. A stale sensor therefore hides the low battery banner; the banner shows again once readings arrive. Stale starts after 3 missed intervals (about 5 minutes at the usual 2 minute interval). Not connected waits for 5 intervals when the sensor is slower than the usual interval, so a sensor that reports every 5 or 10 minutes can still show Stale and does not flip to Not connected just before its next reading.
 
 ## Alerts
 
 - Notify on entering Elevated or High after a 5 minute dwell.
 - One toast per episode. Notify again only on escalation to High, or if still High after 60 minutes.
+- The dwell counts from the start of the episode (first reading outside Good). After a toast at Elevated, escalation to High needs 5 minutes in High before the second toast, so a value hovering at the boundary does not repeat it. Each device has its own episode. A reading at Good ends the episode.
+- A toast that is held back (alerts off, Notify at Elevated or High off, quiet hours, Snooze, Do Not Disturb) is not stored. If the air is still Elevated or High when the hold ends, the toast is sent then; if it became Good meanwhile, there is none.
+- Quiet hours use the local time. Equal start and end mean no quiet hours.
 - Respect quiet hours, Snooze, and Windows Do Not Disturb. Never override Do Not Disturb. Show "Alerts paused by Windows" in the tray tooltip and in Settings.
 - The tray icon colour always updates, even when toasts are off.
 

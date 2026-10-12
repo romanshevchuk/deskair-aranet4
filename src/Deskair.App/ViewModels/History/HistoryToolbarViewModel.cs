@@ -19,13 +19,22 @@ public sealed partial class HistoryToolbarViewModel : ObservableObject
     [ObservableProperty]
     private Period grouping;
 
-    // TODO(HIST-01b) [S, haiku]
-    // Spec: docs/design/screens-and-states.md "History controls" (Group by)
-    // Input : The current Range.
-    // Output: The groupings allowed: Month gives day and week; Year gives week and month; Day and Week give none.
-    // Rules : Pure function of Range.
-    // Edge  : If the current Grouping is not allowed after a range change, the first allowed one is chosen.
-    // Done  : Add Tests/ViewModels/HistoryToolbarViewModelTests.
     public IReadOnlyList<Period> GroupingOptions()
-        => throw new NotImplementedException("TODO(HIST-01b)");
+    {
+        return Range switch
+        {
+            Period.Month => [Period.Day, Period.Week],
+            Period.Year => [Period.Week, Period.Month],
+            _ => []
+        };
+    }
+
+    partial void OnRangeChanged(Period value)
+    {
+        var options = GroupingOptions();
+        if (options.Count > 0 && !options.Contains(Grouping))
+        {
+            Grouping = options[0];
+        }
+    }
 }

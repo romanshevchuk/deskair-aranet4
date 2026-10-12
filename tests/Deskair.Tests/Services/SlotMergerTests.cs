@@ -9,7 +9,7 @@ public class SlotMergerTests
     private static readonly TimeSpan interval = TimeSpan.FromMinutes(2);
     private static readonly DateTimeOffset noon = Samples.Utc(2026, 10, 9, 12);
 
-    [Theory(Skip = "TODO(SYNC-01a)")]
+    [Theory]
     [InlineData(0, 0, 0)]
     [InlineData(0, 59, 0)]
     [InlineData(1, 0, 2)]
@@ -22,13 +22,13 @@ public class SlotMergerTests
         Assert.Equal(noon.AddMinutes(expectedMinute), SlotMerger.Snap(timestamp, interval));
     }
 
-    [Fact(Skip = "TODO(SYNC-01a)")]
+    [Fact]
     public void Snap_rejects_an_interval_of_zero()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => SlotMerger.Snap(noon, TimeSpan.Zero));
     }
 
-    [Fact(Skip = "TODO(SYNC-01b)")]
+    [Fact]
     public void Merge_adds_only_readings_for_empty_slots_sorted_by_time()
     {
         var existing = new List<Reading> { Samples.Co2(noon, 800) };
@@ -44,7 +44,7 @@ public class SlotMergerTests
         Assert.Equal(new[] { 850.0, 900.0 }, added.Select(reading => reading.Co2Ppm));
     }
 
-    [Fact(Skip = "TODO(SYNC-01b)")]
+    [Fact]
     public void Merge_keeps_the_first_of_two_incoming_readings_in_the_same_slot()
     {
         var incoming = new List<Reading>
@@ -59,7 +59,7 @@ public class SlotMergerTests
         Assert.Equal(700, added[0].Co2Ppm);
     }
 
-    [Fact(Skip = "TODO(SYNC-01b)")]
+    [Fact]
     public void Merge_snaps_timestamps_to_the_slot_start()
     {
         var incoming = new List<Reading> { Samples.Co2(noon.AddSeconds(50), 700) };
@@ -69,13 +69,13 @@ public class SlotMergerTests
         Assert.Equal(noon, added[0].Timestamp);
     }
 
-    [Fact(Skip = "TODO(SYNC-01b)")]
+    [Fact]
     public void Merge_of_nothing_adds_nothing()
     {
         Assert.Empty(SlotMerger.Merge([Samples.Co2(noon, 800)], [], interval));
     }
 
-    [Fact(Skip = "TODO(SYNC-01b)")]
+    [Fact]
     public void Merge_does_not_let_a_reading_with_a_missing_value_fill_a_slot()
     {
         var incoming = new List<Reading> { Samples.Co2(noon, double.NaN), Samples.Co2(noon.AddSeconds(30), 700) };

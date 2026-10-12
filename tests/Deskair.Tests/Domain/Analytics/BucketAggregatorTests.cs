@@ -11,7 +11,7 @@ public class BucketAggregatorTests
     private static readonly DateTimeOffset end = start.AddMinutes(10);
     private static readonly TimeSpan interval = TimeSpan.FromMinutes(2);
 
-    [Fact(Skip = "TODO(HIST-01a)")]
+    [Fact]
     public void Aggregate_uses_the_mean_of_existing_readings()
     {
         var readings = new List<Reading>
@@ -30,7 +30,7 @@ public class BucketAggregatorTests
         Assert.Equal(BucketState.Partial, bucket.State);
     }
 
-    [Fact(Skip = "TODO(HIST-01a)")]
+    [Fact]
     public void Aggregate_is_half_open_so_a_reading_at_the_end_belongs_to_the_next_bucket()
     {
         var readings = new List<Reading>
@@ -45,7 +45,7 @@ public class BucketAggregatorTests
         Assert.Equal(700, bucket.Maximum);
     }
 
-    [Fact(Skip = "TODO(HIST-01a)")]
+    [Fact]
     public void Aggregate_returns_NoData_without_inventing_values()
     {
         var bucket = BucketAggregator.Aggregate([], Metric.Co2, start, end, interval);
@@ -56,7 +56,7 @@ public class BucketAggregatorTests
         Assert.Null(bucket.Maximum);
     }
 
-    [Fact(Skip = "TODO(HIST-01a)")]
+    [Fact]
     public void Aggregate_reads_the_requested_metric()
     {
         var readings = new List<Reading> { Samples.Climate(start, 22.0, 40, 1010) };

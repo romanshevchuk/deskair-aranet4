@@ -26,19 +26,85 @@ public sealed class SyncService
         this.logger = logger;
     }
 
-    // TODO(SYNC-02a) [L, sonnet]
-    // Spec: docs/engineering/sync-and-import.md "Sensor sync"; docs/product/behaviour-rules.md "Sync and data".
-    // Input : a connected sensor, its device, the interval from ConnectAsync, a CancellationToken.
-    // Output: SyncResult with the number of newly filled slots.
-    // Rules : read history since the last stored slot (or 7 days back), merge through IReadingStore.MergeAsync
-    //         with ReadingSource.Device, then save LastSyncUtc through IDeviceStore.
-    // Edge  : cancellation or a sensor error mid-download returns Complete = false and must NOT advance LastSyncUtc;
-    //         a sensor without History capability returns Complete = true with 0 added.
-    // Done  : add Services/SyncServiceTests (fake sensor, store, clock), including the cancellation case.
-    public Task<SyncResult> SyncAsync(
+    private static readonly TimeSpan sensorMemory = TimeSpan.FromDays(7);
+
+    public async Task<SyncResult> SyncAsync(
         ISensor sensor,
         DeviceId device,
         TimeSpan interval,
         CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(SYNC-02a)");
+    {
+        if (!sensor.Capabilities.History)
+        {
+            return new SyncResult(true, 0);
+        }
+
+        var now = timeProvider.GetUtcNow();
+
+        try
+        {
+            var since = await readings.GetLastReadingTimeAsync(device, cancellationToken) ?? now - sensorMemory;
+            var downloaded = await DownloadAsync(sensor, device, since, cancellationToken);
+
+            if (downloaded is null)
+            {
+                return new SyncResult(false, 0);
+            }
+
+            var added = downloaded.Count == 0
+                ? 0
+                : await readings.MergeAsync(device, downloaded, ReadingSource.Device, interval, cancellationToken);
+
+            await SaveSyncTimeAsync(device, now, cancellationToken);
+
+            return new SyncResult(true, added);
+        }
+        catch (OperationCanceledException)
+        {
+            return new SyncResult(false, 0);
+        }
+    }
+
+    private async Task<List<Reading>?> DownloadAsync(
+        ISensor sensor,
+        DeviceId device,
+        DateTimeOffset since,
+        CancellationToken cancellationToken)
+    {
+        var downloaded = new List<Reading>();
+
+        try
+        {
+            await foreach (var reading in sensor.ReadHistoryAsync(since, cancellationToken).WithCancellation(cancellationToken))
+            {
+                downloaded.Add(reading);
+            }
+
+            return downloaded;
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            logger.LogWarning(exception, "Downloading the history of {Provider} {Address} stopped early; nothing was stored.", device.ProviderId, device.Address);
+
+            return null;
+        }
+    }
+
+    private async Task SaveSyncTimeAsync(DeviceId device, DateTimeOffset syncedAt, CancellationToken cancellationToken)
+    {
+        var known = await devices.ListAsync(cancellationToken);
+        var info = known.FirstOrDefault(candidate => candidate.Id == device);
+
+        if (info is null)
+        {
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("{Provider} {Address} has no device file yet, so the sync time was not saved.", device.ProviderId, device.Address);
+            }
+
+            return;
+        }
+
+        await devices.SaveAsync(info with { LastSyncUtc = syncedAt }, cancellationToken);
+    }
 }

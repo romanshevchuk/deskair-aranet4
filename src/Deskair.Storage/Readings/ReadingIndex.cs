@@ -5,33 +5,87 @@ namespace Deskair.Storage.Readings;
 /// <summary>All readings of one device held in memory, sorted by time, so aggregation never touches the disk.</summary>
 public sealed class ReadingIndex
 {
-    // TODO(STORE-02a) [M, haiku]
-    // Spec: docs/engineering/data-model.md "Size" (load everything into memory).
-    // Input : readings in any order.
-    // Output: the index holds them sorted by timestamp, one per timestamp.
-    // Rules : keep a sorted list; adding an existing timestamp keeps the existing reading.
-    // Edge  : adding an empty list changes nothing.
-    // Done  : unskip tests Storage/ReadingIndexTests.Add_* and make them pass.
+    private readonly Lock gate = new();
+    private List<Reading> items = [];
+
     public void Add(IReadOnlyList<Reading> readings)
-        => throw new NotImplementedException("TODO(STORE-02a)");
+    {
+        if (readings.Count == 0)
+        {
+            return;
+        }
 
-    // TODO(STORE-02b) [S, haiku]
-    // Spec: docs/product/behaviour-rules.md "Semantics" (half-open ranges).
-    // Input : start (inclusive) and end (exclusive).
-    // Output: readings in the range, oldest first.
-    // Rules : binary search for the first reading at or after start.
-    // Edge  : empty or reversed range returns an empty list.
-    // Done  : unskip tests Storage/ReadingIndexTests.Range_* and make them pass.
+        var incoming = readings.OrderBy(reading => reading.Timestamp).ToList();
+
+        lock (gate)
+        {
+            var merged = new List<Reading>(items.Count + incoming.Count);
+            var existing = 0;
+            var added = 0;
+
+            while (existing < items.Count || added < incoming.Count)
+            {
+                if (added >= incoming.Count || (existing < items.Count && items[existing].Timestamp <= incoming[added].Timestamp))
+                {
+                    merged.Add(items[existing++]);
+                    continue;
+                }
+
+                var candidate = incoming[added++];
+
+                if (merged.Count == 0 || merged[^1].Timestamp != candidate.Timestamp)
+                {
+                    merged.Add(candidate);
+                }
+            }
+
+            items = merged;
+        }
+    }
+
     public IReadOnlyList<Reading> Range(DateTimeOffset start, DateTimeOffset end)
-        => throw new NotImplementedException("TODO(STORE-02b)");
+    {
+        if (end <= start)
+        {
+            return [];
+        }
 
-    // TODO(STORE-02c) [S, haiku]
-    // Spec: docs/engineering/sync-and-import.md "Sensor sync" (read since the last stored slot).
-    // Input : none.
-    // Output: the newest timestamp, or null when empty.
-    // Rules : O(1).
-    // Edge  : empty index returns null.
-    // Done  : unskip tests Storage/ReadingIndexTests.Last_* and make them pass.
+        lock (gate)
+        {
+            var first = FirstAtOrAfter(start);
+            var last = FirstAtOrAfter(end);
+
+            return items.GetRange(first, last - first);
+        }
+    }
+
     public DateTimeOffset? Last()
-        => throw new NotImplementedException("TODO(STORE-02c)");
+    {
+        lock (gate)
+        {
+            return items.Count == 0 ? null : items[^1].Timestamp;
+        }
+    }
+
+    private int FirstAtOrAfter(DateTimeOffset moment)
+    {
+        var low = 0;
+        var high = items.Count;
+
+        while (low < high)
+        {
+            var middle = low + ((high - low) / 2);
+
+            if (items[middle].Timestamp < moment)
+            {
+                low = middle + 1;
+            }
+            else
+            {
+                high = middle;
+            }
+        }
+
+        return low;
+    }
 }

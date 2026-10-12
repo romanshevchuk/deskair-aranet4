@@ -6,5 +6,15 @@ public sealed record AppSettings(
     ThemeChoice Theme,
     bool AlertsEnabled)
 {
+    public bool NotifyAtElevated { get; init; } = true;
+
+    public bool NotifyAtHigh { get; init; } = true;
+
+    public bool QuietHoursEnabled { get; init; }
+
+    public TimeOnly QuietHoursStart { get; init; } = new(22, 0);
+
+    public TimeOnly QuietHoursEnd { get; init; } = new(7, 0);
+
     public static AppSettings Default { get; } = new(LanguageChoice.System, ThemeChoice.System, true);
 }

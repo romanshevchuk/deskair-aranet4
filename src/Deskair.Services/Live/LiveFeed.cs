@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Domain.Readings;
+using Deskair.Services.Messages;
 using Deskair.Services.Sensors;
 using Deskair.Services.Storage;
 using Microsoft.Extensions.Logging;
@@ -26,17 +27,38 @@ public sealed class LiveFeed
         this.logger = logger;
     }
 
-    // TODO(LIVE-05a) [L, sonnet]
-    // Spec: docs/engineering/architecture.md section 6 (LiveFeed); docs/engineering/sync-and-import.md.
-    // Input : a connected sensor, its device, the interval, a CancellationToken.
-    // Output: runs until cancelled; each poll stores the reading (ReadingSource.Device) and sends ReadingReceived.
-    // Rules : wait one interval between polls using TimeProvider (so tests can advance time); a failed poll is logged and retried.
-    // Edge  : cancellation ends the loop without throwing to the caller; never two polls in parallel.
-    // Done  : add Services/LiveFeedTests with a fake sensor and FakeTimeProvider-style clock.
-    public Task RunAsync(
+    public async Task RunAsync(
         ISensor sensor,
         DeviceId device,
         TimeSpan interval,
         CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(LIVE-05a)");
+    {
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await PollAsync(sensor, device, interval, cancellationToken);
+                await Task.Delay(interval, timeProvider, cancellationToken);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancelling is how the loop is stopped; it is not an error.
+        }
+    }
+
+    private async Task PollAsync(ISensor sensor, DeviceId device, TimeSpan interval, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var reading = await sensor.ReadCurrentAsync(cancellationToken);
+
+            await readings.MergeAsync(device, [reading], ReadingSource.Device, interval, cancellationToken);
+            messenger.Send(new ReadingReceived(device, reading));
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            logger.LogWarning(exception, "Reading the current values of {Provider} {Address} failed; trying again in {Interval}.", device.ProviderId, device.Address, interval);
+        }
+    }
 }

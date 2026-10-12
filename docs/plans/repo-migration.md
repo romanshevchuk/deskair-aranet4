@@ -7,7 +7,7 @@ Goal: turn the existing `aranet4-monitor` repository into `deskair`, start the r
 ## Steps
 
 1. **Rename on GitHub:** Settings, General, Repository name, `deskair`. Old links redirect. Do not create another repository called `aranet4-monitor`.
-2. **Tag the old code** in your existing local clone, then update its remote:
+2. **Tag the old code** in your existing local clone (`..\Dev\Projects\AranetHomeDesktop`), then update its remote:
    ```
    git remote set-url origin https://github.com/romanshevchuk/deskair.git
    git tag legacy-v0

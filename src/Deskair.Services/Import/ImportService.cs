@@ -1,6 +1,7 @@
 using Deskair.Domain.Readings;
 using Deskair.Services.Sensors;
 using Deskair.Services.Storage;
+using Deskair.Services.Sync;
 
 namespace Deskair.Services.Import;
 
@@ -15,33 +16,57 @@ public sealed class ImportService
         this.zone = zone;
     }
 
-    // TODO(IMPORT-01a) [M, sonnet]
-    // Spec: docs/engineering/sync-and-import.md "Import from the phone app" rules 3 to 4.
-    // Input : importer, file stream, target device, sensor interval.
-    // Output: ImportPreview (counts and date range) without writing anything.
-    // Rules : count new versus already present by interval slot (SlotMerger rules).
-    // Edge  : an empty file returns zeros with null dates.
-    // Done  : add Services/ImportServiceTests.Preview_* with a fake importer and store.
-    public Task<ImportPreview> PreviewAsync(
+    public async Task<ImportPreview> PreviewAsync(
         IReadingImporter importer,
         Stream source,
         DeviceId device,
         TimeSpan interval,
         CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(IMPORT-01a)");
+    {
+        var fileReadings = await ReadAllAsync(importer, source, cancellationToken);
+        var slots = SlotMerger.Merge([], fileReadings, interval);
 
-    // TODO(IMPORT-01b) [M, sonnet]
-    // Spec: docs/engineering/sync-and-import.md; docs/engineering/data-model.md "Merge rule".
-    // Input : importer, file stream, target device, sensor interval.
-    // Output: the number of newly filled slots.
-    // Rules : merge through IReadingStore.MergeAsync with ReadingSource.Import (imports only fill empty slots).
-    // Edge  : cancellation stops without a partial claim of success.
-    // Done  : add Services/ImportServiceTests.Import_* with a fake importer and store.
-    public Task<int> ImportAsync(
+        if (slots.Count == 0)
+        {
+            return new ImportPreview(0, 0, 0, null, null);
+        }
+
+        var existing = await readings.ReadRangeAsync(
+            device,
+            slots[0].Timestamp - interval,
+            slots[^1].Timestamp + interval + TimeSpan.FromTicks(1),
+            cancellationToken);
+        var newSlots = SlotMerger.Merge(existing, slots, interval).Count;
+
+        return new ImportPreview(slots.Count, newSlots, slots.Count - newSlots, slots[0].Timestamp, slots[^1].Timestamp);
+    }
+
+    public async Task<int> ImportAsync(
         IReadingImporter importer,
         Stream source,
         DeviceId device,
         TimeSpan interval,
         CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(IMPORT-01b)");
+    {
+        var fileReadings = await ReadAllAsync(importer, source, cancellationToken);
+
+        if (fileReadings.Count == 0)
+        {
+            return 0;
+        }
+
+        return await readings.MergeAsync(device, fileReadings, ReadingSource.Import, interval, cancellationToken);
+    }
+
+    private async Task<List<Reading>> ReadAllAsync(IReadingImporter importer, Stream source, CancellationToken cancellationToken)
+    {
+        var all = new List<Reading>();
+
+        await foreach (var reading in importer.ReadAsync(source, zone, cancellationToken).WithCancellation(cancellationToken))
+        {
+            all.Add(reading);
+        }
+
+        return all;
+    }
 }

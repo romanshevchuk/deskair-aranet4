@@ -4,7 +4,7 @@ namespace Deskair.Tests.Domain.Analytics;
 
 public class CoverageCalculatorTests
 {
-    [Theory(Skip = "TODO(HIST-04b)")]
+    [Theory]
     [InlineData(50, 100, 0.5)]
     [InlineData(100, 100, 1.0)]
     [InlineData(120, 100, 1.0)]
@@ -15,7 +15,7 @@ public class CoverageCalculatorTests
         Assert.Equal(fraction, CoverageCalculator.Fraction(present, expected), 6);
     }
 
-    [Theory(Skip = "TODO(HIST-04c)")]
+    [Theory]
     [InlineData(0.98, 0, false)]
     [InlineData(1.0, 0, false)]
     [InlineData(0.979, 0, true)]

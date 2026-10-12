@@ -5,7 +5,10 @@ namespace Deskair.Services.Devices;
 /// <summary>Known devices, names, room types and the selected device.</summary>
 public sealed class DeviceRegistry
 {
+    private static readonly TimeSpan defaultInterval = TimeSpan.FromMinutes(2);
+
     private readonly IDeviceStore store;
+    private IReadOnlyList<DeviceInfo> known = [];
 
     public DeviceRegistry(IDeviceStore store)
     {
@@ -14,23 +17,39 @@ public sealed class DeviceRegistry
 
     public DeviceId? Selected { get; private set; }
 
-    // TODO(DEV-01a) [S, haiku]
-    // Spec: docs/engineering/architecture.md section 6 (DeviceRegistry); docs/engineering/data-model.md.
-    // Input : none (reads through IDeviceStore).
-    // Output: all known devices; the first becomes Selected when none is selected yet.
-    // Rules : keep a cached copy; do not call the store twice for the same load.
-    // Edge  : no devices returns an empty list and Selected stays null (First run state).
-    // Done  : add Services/DeviceRegistryTests with a fake IDeviceStore and make them pass.
-    public Task<IReadOnlyList<DeviceInfo>> LoadAsync(CancellationToken cancellationToken)
-        => throw new NotImplementedException("TODO(DEV-01a)");
+    public async Task<IReadOnlyList<DeviceInfo>> LoadAsync(CancellationToken cancellationToken)
+    {
+        known = await store.ListAsync(cancellationToken);
 
-    // TODO(DEV-01b) [S, haiku]
-    // Spec: docs/engineering/architecture.md section 6 (DeviceRegistry).
-    // Input : a device id that is already known.
-    // Output: Selected is updated; unknown id throws KeyNotFoundException.
-    // Rules : no persistence of the selection here (decision: see questions.md Q4).
-    // Edge  : selecting the already selected device does nothing.
-    // Done  : add Services/DeviceRegistryTests.Select_* and make them pass.
+        if (Selected is not { } selected || known.All(device => device.Id != selected))
+        {
+            Selected = known.Count > 0 ? known[0].Id : null;
+        }
+
+        return known;
+    }
+
+    public TimeSpan IntervalFor(DeviceId id, DateTimeOffset at)
+    {
+        var history = known.FirstOrDefault(device => device.Id == id)?.IntervalHistory;
+
+        if (history is not { Count: > 0 })
+        {
+            return defaultInterval;
+        }
+
+        var inEffect = history.Where(change => change.From <= at).MaxBy(change => change.From);
+
+        return (inEffect ?? history.MinBy(change => change.From)!).Interval;
+    }
+
     public void Select(DeviceId id)
-        => throw new NotImplementedException("TODO(DEV-01b)");
+    {
+        if (known.All(device => device.Id != id))
+        {
+            throw new KeyNotFoundException($"Unknown device {id.ProviderId}/{id.Address}.");
+        }
+
+        Selected = id;
+    }
 }

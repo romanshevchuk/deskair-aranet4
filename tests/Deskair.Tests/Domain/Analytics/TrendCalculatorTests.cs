@@ -23,7 +23,7 @@ public class TrendCalculatorTests
         return readings;
     }
 
-    [Fact(Skip = "TODO(LIVE-01a)")]
+    [Fact]
     public void Co2_is_Rising_when_the_average_grows_by_30_ppm_or_more()
     {
         var result = TrendCalculator.Co2(Co2Readings(1000, 1100), now);
@@ -33,7 +33,7 @@ public class TrendCalculatorTests
         Assert.Equal(TimeSpan.FromMinutes(30), result.Window);
     }
 
-    [Fact(Skip = "TODO(LIVE-01a)")]
+    [Fact]
     public void Co2_is_Falling_when_the_average_drops_by_30_ppm_or_more()
     {
         var result = TrendCalculator.Co2(Co2Readings(1100, 1000), now);
@@ -42,7 +42,7 @@ public class TrendCalculatorTests
         Assert.Equal(-100, result.Change, 6);
     }
 
-    [Fact(Skip = "TODO(LIVE-01a)")]
+    [Fact]
     public void Co2_is_Steady_under_30_ppm()
     {
         var result = TrendCalculator.Co2(Co2Readings(1000, 1020), now);
@@ -50,7 +50,7 @@ public class TrendCalculatorTests
         Assert.Equal(TrendDirection.Steady, result.Direction);
     }
 
-    [Fact(Skip = "TODO(LIVE-01a)")]
+    [Fact]
     public void Co2_is_Steady_with_no_change_when_there_is_nothing_to_compare()
     {
         var result = TrendCalculator.Co2([], now);
@@ -59,7 +59,7 @@ public class TrendCalculatorTests
         Assert.Equal(0, result.Change);
     }
 
-    [Theory(Skip = "TODO(LIVE-01b)")]
+    [Theory]
     [InlineData(Metric.Temperature, 21.0, 21.6, TrendDirection.Rising)]
     [InlineData(Metric.Temperature, 21.0, 21.3, TrendDirection.Steady)]
     [InlineData(Metric.Humidity, 45, 41, TrendDirection.Falling)]
@@ -83,7 +83,29 @@ public class TrendCalculatorTests
         Assert.Equal(expected, result.Direction);
     }
 
-    [Fact(Skip = "TODO(LIVE-01b)")]
+    [Theory]
+    [InlineData(5, TrendDirection.Steady)]
+    [InlineData(29, TrendDirection.Steady)]
+    [InlineData(30, TrendDirection.Rising)]
+    public void Other_needs_at_least_30_minutes_of_readings_before_it_reports_a_trend(int minutesCovered, TrendDirection expected)
+    {
+        var readings = new List<Reading>
+        {
+            Samples.Climate(now.AddMinutes(-minutesCovered), 21.0, 45, 1010),
+            Samples.Climate(now, 22.0, 45, 1010)
+        };
+
+        var result = TrendCalculator.Other(readings, Metric.Temperature, now);
+
+        Assert.Equal(expected, result.Direction);
+
+        if (expected == TrendDirection.Steady)
+        {
+            Assert.Equal(0, result.Change);
+        }
+    }
+
+    [Fact]
     public void Other_rejects_Co2()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => TrendCalculator.Other([], Metric.Co2, now));

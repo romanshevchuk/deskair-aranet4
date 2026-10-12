@@ -4,26 +4,44 @@ namespace Deskair.Services.Sync;
 
 public static class SlotMerger
 {
-    // TODO(SYNC-01a) [S, haiku]
-    // Spec: docs/engineering/data-model.md "Merge rule".
-    // Input : a reading timestamp, the sensor interval.
-    // Output: the start of the interval slot the timestamp snaps to.
-    // Rules : snap to the nearest multiple of the interval counted from the Unix epoch (within half an interval).
-    // Edge  : exactly half an interval rounds up; interval of zero or less throws ArgumentOutOfRangeException.
-    // Done  : unskip tests Services/SlotMergerTests.Snap_* and make them pass.
     public static DateTimeOffset Snap(DateTimeOffset timestamp, TimeSpan interval)
-        => throw new NotImplementedException("TODO(SYNC-01a)");
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(interval, TimeSpan.Zero);
 
-    // TODO(SYNC-01b) [M, sonnet]
-    // Spec: docs/engineering/data-model.md "Merge rule"; docs/product/behaviour-rules.md "Sync and data" rule 2.
-    // Input : existing readings, incoming readings, interval.
-    // Output: the readings to add (one per newly filled slot), sorted by time, timestamps snapped.
-    // Rules : history is append-only (D-0013): a slot that already has a reading is never filled again, whatever the source; of two incoming readings for one slot the first stays.
-    // Edge  : empty incoming returns empty; a reading with a non-finite value does not fill its slot.
-    // Done  : unskip tests Services/SlotMergerTests.Merge_* and make them pass.
+        var sinceEpoch = timestamp.UtcTicks - DateTime.UnixEpoch.Ticks;
+        var shifted = sinceEpoch + interval.Ticks / 2;
+        var slot = shifted / interval.Ticks - (shifted % interval.Ticks < 0 ? 1 : 0);
+
+        return new DateTimeOffset(DateTime.UnixEpoch.Ticks + slot * interval.Ticks, TimeSpan.Zero);
+    }
+
     public static IReadOnlyList<Reading> Merge(
         IReadOnlyList<Reading> existing,
         IReadOnlyList<Reading> incoming,
         TimeSpan interval)
-        => throw new NotImplementedException("TODO(SYNC-01b)");
+    {
+        var filled = existing
+            .Where(IsUsable)
+            .Select(reading => Snap(reading.Timestamp, interval))
+            .ToHashSet();
+        var added = new List<Reading>();
+
+        foreach (var reading in incoming.Where(IsUsable))
+        {
+            var slot = Snap(reading.Timestamp, interval);
+
+            if (filled.Add(slot))
+            {
+                added.Add(reading with { Timestamp = slot });
+            }
+        }
+
+        return added.OrderBy(reading => reading.Timestamp).ToList();
+    }
+
+    private static bool IsUsable(Reading reading)
+        => double.IsFinite(reading.Co2Ppm)
+        && double.IsFinite(reading.TemperatureC)
+        && double.IsFinite(reading.HumidityPct)
+        && double.IsFinite(reading.PressureHpa);
 }

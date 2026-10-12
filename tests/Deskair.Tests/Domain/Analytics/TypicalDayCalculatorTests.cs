@@ -21,7 +21,7 @@ public class TypicalDayCalculatorTests
         return hours;
     }
 
-    [Fact(Skip = "TODO(HIST-05a)")]
+    [Fact]
     public void Hourly_averages_have_24_entries_and_use_only_existing_readings()
     {
         var readings = new List<Reading>
@@ -39,7 +39,7 @@ public class TypicalDayCalculatorTests
         Assert.Equal(0, hours[11].ReadingCount);
     }
 
-    [Fact(Skip = "TODO(HIST-05a)")]
+    [Fact]
     public void Hourly_averages_use_local_time()
     {
         var readings = new List<Reading> { Samples.Co2(Samples.Utc(2026, 1, 15, 10), 800) };
@@ -49,7 +49,7 @@ public class TypicalDayCalculatorTests
         Assert.Equal(800, hours[12].Average);
     }
 
-    [Fact(Skip = "TODO(HIST-05b)")]
+    [Fact]
     public void Worst_window_wraps_past_midnight()
     {
         var hours = Day((22, 1500), (23, 1400), (0, 1300), (12, 500), (13, 500), (14, 500));
@@ -57,7 +57,7 @@ public class TypicalDayCalculatorTests
         Assert.Equal(22, TypicalDayCalculator.WorstWindowStartHour(hours));
     }
 
-    [Fact(Skip = "TODO(HIST-05b)")]
+    [Fact]
     public void Worst_window_picks_the_earliest_start_on_a_tie()
     {
         var hours = Day((3, 900), (4, 900), (5, 900), (15, 900), (16, 900), (17, 900));
@@ -65,7 +65,7 @@ public class TypicalDayCalculatorTests
         Assert.Equal(3, TypicalDayCalculator.WorstWindowStartHour(hours));
     }
 
-    [Fact(Skip = "TODO(HIST-05b)")]
+    [Fact]
     public void Worst_window_is_null_with_fewer_than_three_hours_of_data()
     {
         var hours = Day((8, 900), (9, 900));

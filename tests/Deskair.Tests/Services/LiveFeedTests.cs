@@ -1,0 +1,136 @@
+using System.Collections.Concurrent;
+using CommunityToolkit.Mvvm.Messaging;
+using Deskair.Domain.Readings;
+using Deskair.Services.Live;
+using Deskair.Services.Messages;
+using Deskair.Services.Storage;
+using Deskair.Tests.Fakes;
+using Microsoft.Extensions.Logging;
+
+namespace Deskair.Tests.Services;
+
+public sealed class LiveFeedTests : IDisposable
+{
+    private static readonly DeviceId device = new("aranet4", "AA:01");
+    private static readonly TimeSpan interval = TimeSpan.FromMinutes(2);
+
+    private readonly FakeReadingStore store = new();
+    private readonly StrongReferenceMessenger messenger = new();
+    private readonly FakeClock clock = new(Samples.Utc(2026, 10, 9, 12));
+    private readonly ListLogger<LiveFeed> logger = new();
+    private readonly FakeSensor sensor = new();
+    private readonly ConcurrentQueue<ReadingReceived> received = new();
+    private readonly CancellationTokenSource stop = new();
+    private readonly LiveFeed feed;
+
+    public LiveFeedTests()
+    {
+        feed = new LiveFeed(store, messenger, clock, logger);
+        messenger.Register<ReadingReceived>(this, (_, message) => received.Enqueue(message));
+    }
+
+    public void Dispose()
+    {
+        stop.Cancel();
+        stop.Dispose();
+    }
+
+    private Task Start() => feed.RunAsync(sensor, device, interval, stop.Token);
+
+    [Fact]
+    public async Task Run_polls_straight_away_stores_the_reading_as_a_device_reading_and_announces_it()
+    {
+        var running = Start();
+
+        await Wait.Until(() => !received.IsEmpty);
+
+        var message = Assert.Single(received);
+        Assert.Equal(device, message.Device);
+        Assert.Equal(800, message.Reading.Co2Ppm);
+        Assert.Equal(ReadingSource.Device, Assert.Single(store.Merges).Source);
+        Assert.Single(store.Readings);
+
+        await stop.CancelAsync();
+        await running;
+    }
+
+    [Fact]
+    public async Task Run_waits_one_interval_between_polls()
+    {
+        var running = Start();
+        await Wait.Until(() => received.Count == 1);
+
+        clock.Advance(TimeSpan.FromMinutes(1));
+        await Task.Delay(50, TestContext.Current.CancellationToken);
+        Assert.Equal(1, sensor.ReadCurrentCalls);
+
+        clock.Advance(TimeSpan.FromMinutes(1));
+        await Wait.Until(() => received.Count == 2);
+
+        await stop.CancelAsync();
+        await running;
+    }
+
+    [Fact]
+    public async Task Run_logs_a_failed_poll_and_tries_again_after_the_next_interval()
+    {
+        sensor.OnReadCurrent = call => call == 0
+            ? throw new InvalidOperationException("Bluetooth dropped.")
+            : Samples.Co2(Samples.Utc(2026, 10, 9, 12, 2), 900);
+        var running = Start();
+
+        await Wait.Until(() => sensor.ReadCurrentCalls == 1);
+        await Wait.Until(() => logger.Entries.Count == 1);
+        Assert.Empty(received);
+
+        clock.Advance(interval);
+        await Wait.Until(() => received.Count == 1);
+
+        Assert.Equal(LogLevel.Warning, logger.Entries[0].Level);
+        Assert.IsType<InvalidOperationException>(logger.Entries[0].Exception);
+        Assert.Equal(900, received.Single().Reading.Co2Ppm);
+
+        await stop.CancelAsync();
+        await running;
+    }
+
+    [Fact]
+    public async Task Run_ends_quietly_when_cancelled()
+    {
+        var running = Start();
+        await Wait.Until(() => received.Count == 1);
+
+        await stop.CancelAsync();
+        await running;
+
+        Assert.True(running.IsCompletedSuccessfully);
+    }
+
+    [Fact]
+    public async Task Run_never_polls_in_parallel()
+    {
+        var running = Start();
+
+        for (var poll = 1; poll <= 4; poll++)
+        {
+            await Wait.Until(() => received.Count == poll);
+            clock.Advance(interval);
+        }
+
+        await Wait.Until(() => received.Count == 5);
+        await stop.CancelAsync();
+        await running;
+
+        Assert.Equal(1, sensor.MaxConcurrentReads);
+    }
+
+    [Fact]
+    public async Task Run_does_not_throw_when_already_cancelled()
+    {
+        await stop.CancelAsync();
+
+        await Start();
+
+        Assert.Equal(0, sensor.ReadCurrentCalls);
+    }
+}

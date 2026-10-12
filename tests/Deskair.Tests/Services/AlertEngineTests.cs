@@ -1,10 +1,275 @@
+using CommunityToolkit.Mvvm.Messaging;
+using Deskair.Domain.Readings;
+using Deskair.Domain.Zones;
 using Deskair.Services.Alerts;
+using Deskair.Services.Settings;
+using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.Services;
 
-public class AlertEngineTests
+public sealed class AlertEngineTests : IDisposable
 {
-    [Theory(Skip = "TODO(ALERT-01a)")]
+    private static readonly DeviceId office = new("aranet4", "AA:01");
+    private static readonly DeviceId bedroom = new("aranet4", "AA:02");
+    private static readonly DateTimeOffset start = Samples.Utc(2026, 10, 9, 12);
+
+    private sealed class FakeNotifier : INotifier
+    {
+        public List<AlertNotification> Sent { get; } = [];
+
+        public Task NotifyAsync(AlertNotification notification, CancellationToken cancellationToken)
+        {
+            Sent.Add(notification);
+            return Task.CompletedTask;
+        }
+    }
+
+    private sealed class FakeDoNotDisturb : IDoNotDisturb
+    {
+        public bool IsActive { get; set; }
+    }
+
+    private sealed class MemorySettingsStore : ISettingsStore
+    {
+        public Task<AppSettings> LoadAsync(CancellationToken cancellationToken) => Task.FromResult(AppSettings.Default);
+
+        public Task SaveAsync(AppSettings settings, CancellationToken cancellationToken) => Task.CompletedTask;
+    }
+
+    private readonly FakeNotifier notifier = new();
+    private readonly FakeDoNotDisturb doNotDisturb = new();
+    private readonly SettingsService settings = new(new MemorySettingsStore(), new StrongReferenceMessenger());
+    private readonly FakeClock clock;
+    private readonly AlertEngine engine;
+
+    public AlertEngineTests()
+    {
+        clock = new FakeClock(start);
+        engine = new AlertEngine(notifier, doNotDisturb, settings, clock);
+    }
+
+    public void Dispose()
+    {
+        engine.Dispose();
+    }
+
+    private Task Send(double ppm, DeviceId? device = null)
+    {
+        var reading = Samples.Co2(clock.GetUtcNow(), ppm);
+
+        return engine.OnReadingAsync(device ?? office, "Office", reading, CancellationToken.None);
+    }
+
+    private async Task SendAfter(double ppm, params int[] minutesFromNow)
+    {
+        foreach (var minute in minutesFromNow)
+        {
+            clock.Advance(TimeSpan.FromMinutes(minute));
+            await Send(ppm);
+        }
+    }
+
+    [Fact]
+    public async Task Episode_notifies_only_after_the_five_minute_dwell()
+    {
+        await Send(1100);
+        await SendAfter(1100, 4);
+
+        Assert.Empty(notifier.Sent);
+
+        await SendAfter(1100, 1);
+
+        var sent = Assert.Single(notifier.Sent);
+        Assert.Equal(Zone.Elevated, sent.Zone);
+        Assert.Equal(office, sent.Device);
+        Assert.Equal("Office", sent.RoomName);
+        Assert.Equal(1100, sent.Co2Ppm);
+    }
+
+    [Fact]
+    public async Task Episode_sends_one_toast_while_the_zone_stays_the_same()
+    {
+        await Send(1100);
+        await SendAfter(1100, 5, 5, 10, 30, 30);
+
+        Assert.Single(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task Episode_notifies_again_on_escalation_to_High_after_the_dwell()
+    {
+        await Send(1100);
+        await SendAfter(1100, 5);
+        await SendAfter(1500, 5);
+
+        Assert.Single(notifier.Sent);
+
+        await SendAfter(1500, 4);
+        Assert.Single(notifier.Sent);
+
+        await SendAfter(1500, 1);
+
+        Assert.Equal(new[] { Zone.Elevated, Zone.High }, notifier.Sent.Select(sent => sent.Zone));
+    }
+
+    [Fact]
+    public async Task Episode_repeats_only_after_60_minutes_while_still_High()
+    {
+        await Send(1600);
+        await SendAfter(1600, 5);
+
+        Assert.Single(notifier.Sent);
+
+        await SendAfter(1600, 30, 29);
+        Assert.Single(notifier.Sent);
+
+        await SendAfter(1600, 1);
+        Assert.Equal(2, notifier.Sent.Count);
+    }
+
+    [Fact]
+    public async Task Episode_ends_when_the_air_is_Good_and_a_new_episode_notifies_again()
+    {
+        await Send(1100);
+        await SendAfter(1100, 5);
+        await SendAfter(800, 2);
+        await SendAfter(1100, 2);
+        await SendAfter(1100, 4);
+        Assert.Single(notifier.Sent);
+
+        await SendAfter(1100, 1);
+
+        Assert.Equal(2, notifier.Sent.Count);
+    }
+
+    [Fact]
+    public async Task Episode_never_notifies_when_alerts_are_off()
+    {
+        await settings.UpdateAsync(current => current with { AlertsEnabled = false }, CancellationToken.None);
+
+        await Send(1600);
+        await SendAfter(1600, 10, 70);
+
+        Assert.Empty(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task Episode_skips_Elevated_when_that_toast_is_off_but_still_warns_at_High()
+    {
+        await settings.UpdateAsync(current => current with { NotifyAtElevated = false }, CancellationToken.None);
+
+        await Send(1100);
+        await SendAfter(1100, 10);
+        Assert.Empty(notifier.Sent);
+
+        await SendAfter(1500, 1);
+
+        Assert.Equal(Zone.High, Assert.Single(notifier.Sent).Zone);
+    }
+
+    [Fact]
+    public async Task Episode_skips_High_when_that_toast_is_off()
+    {
+        await settings.UpdateAsync(current => current with { NotifyAtHigh = false }, CancellationToken.None);
+
+        await Send(1600);
+        await SendAfter(1600, 10);
+
+        Assert.Empty(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task Episode_is_held_back_by_Do_Not_Disturb_and_sent_when_it_ends_if_the_air_is_still_bad()
+    {
+        doNotDisturb.IsActive = true;
+        await Send(1100);
+        await SendAfter(1100, 6);
+        Assert.Empty(notifier.Sent);
+
+        doNotDisturb.IsActive = false;
+        await SendAfter(1100, 2);
+
+        Assert.Single(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task Episode_is_dropped_when_the_air_gets_Good_during_Do_Not_Disturb()
+    {
+        doNotDisturb.IsActive = true;
+        await Send(1100);
+        await SendAfter(1100, 6);
+        await SendAfter(700, 2);
+
+        doNotDisturb.IsActive = false;
+        await SendAfter(700, 2);
+
+        Assert.Empty(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task Episode_is_muted_in_quiet_hours_by_local_time()
+    {
+        // 20:30 UTC in January is 22:30 in Kyiv.
+        var evening = new FakeClock(Samples.Utc(2026, 1, 15, 20, 30), Samples.Kyiv);
+        using var quietEngine = new AlertEngine(notifier, doNotDisturb, settings, evening);
+        await settings.UpdateAsync(current => current with { QuietHoursEnabled = true }, CancellationToken.None);
+
+        await quietEngine.OnReadingAsync(office, "Office", Samples.Co2(evening.GetUtcNow(), 1100), CancellationToken.None);
+        evening.Advance(TimeSpan.FromMinutes(10));
+        await quietEngine.OnReadingAsync(office, "Office", Samples.Co2(evening.GetUtcNow(), 1100), CancellationToken.None);
+
+        Assert.Empty(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task Episode_is_not_muted_outside_quiet_hours_or_when_they_are_off()
+    {
+        await settings.UpdateAsync(current => current with { QuietHoursEnabled = true }, CancellationToken.None);
+
+        await Send(1100);
+        await SendAfter(1100, 5);
+
+        Assert.Single(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task Episode_is_held_back_by_snooze_until_it_ends()
+    {
+        await Send(1100);
+        engine.SnoozeUntil(clock.GetUtcNow().AddHours(1));
+        await SendAfter(1100, 10);
+        Assert.Empty(notifier.Sent);
+
+        await SendAfter(1100, 50);
+        Assert.Single(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task Episode_is_tracked_per_device()
+    {
+        await Send(1100, office);
+        clock.Advance(TimeSpan.FromMinutes(3));
+        await Send(1100, bedroom);
+        clock.Advance(TimeSpan.FromMinutes(3));
+        await Send(1100, office);
+        await Send(1100, bedroom);
+
+        var sent = Assert.Single(notifier.Sent);
+        Assert.Equal(office, sent.Device);
+    }
+
+    [Fact]
+    public async Task Episode_ignores_a_reading_that_is_not_a_number()
+    {
+        await Send(1100);
+        await SendAfter(1100, 3);
+        await Send(double.NaN);
+        await SendAfter(1100, 2);
+
+        Assert.Single(notifier.Sent);
+    }
+
+    [Theory]
     [InlineData(22, 0, true)]
     [InlineData(23, 30, true)]
     [InlineData(3, 0, true)]
@@ -19,7 +284,7 @@ public class AlertEngineTests
         Assert.Equal(expected, AlertEngine.IsQuietHour(time, new TimeOnly(22, 0), new TimeOnly(7, 0)));
     }
 
-    [Theory(Skip = "TODO(ALERT-01a)")]
+    [Theory]
     [InlineData(9, 0, true)]
     [InlineData(12, 0, true)]
     [InlineData(17, 0, false)]
@@ -31,7 +296,7 @@ public class AlertEngineTests
         Assert.Equal(expected, AlertEngine.IsQuietHour(time, new TimeOnly(9, 0), new TimeOnly(17, 0)));
     }
 
-    [Fact(Skip = "TODO(ALERT-01a)")]
+    [Fact]
     public void QuietHours_with_equal_start_and_end_are_off()
     {
         Assert.False(AlertEngine.IsQuietHour(new TimeOnly(12, 0), new TimeOnly(22, 0), new TimeOnly(22, 0)));

@@ -6,28 +6,28 @@ namespace Deskair.Domain.Analytics.Aggregation;
 
 public static class BucketAggregator
 {
-    // TODO(HIST-01a) [M, haiku]
-    // Spec: docs/product/behaviour-rules.md "Aggregation" rules 1 and 2; "Semantics" (half-open buckets).
-    // Input : readings (any order), metric, bucket start and end (UTC), sensor interval.
-    // Output: one Bucket with average, min, max and counts; State from BucketStateClassifier.
-    // Rules : only readings with start <= timestamp < end count; average is the plain mean of existing readings.
-    // Edge  : no readings gives null statistics and NoData; never interpolate.
-    // Done  : unskip tests in Domain/Analytics/BucketAggregatorTests.cs and make them pass.
     public static Bucket Aggregate(
         IReadOnlyList<Reading> readings,
         Metric metric,
         DateTimeOffset start,
         DateTimeOffset end,
         TimeSpan interval)
-        => throw new NotImplementedException("TODO(HIST-01a)");
+    {
+        var values = readings
+            .Where(reading => reading.Timestamp >= start && reading.Timestamp < end)
+            .Select(reading => reading.ValueOf(metric))
+            .ToList();
+        var expected = LocalCalendar.ExpectedSlots(start, end, interval);
+        var state = BucketStateClassifier.Classify(values.Count, expected);
 
-    // TODO(HIST-03a) [L, sonnet]
-    // Spec: docs/product/behaviour-rules.md "Aggregation" rule 2; docs/design/screens-and-states.md (group by).
-    // Input : readings, metric, range start and end (UTC), grouping Period, LocalCalendar, sensor interval.
-    // Output: ordered list of Bucket covering the range with no holes.
-    // Rules : buckets follow local calendar days, weeks ending today, or months; DST days are 23 or 25 hours.
-    // Edge  : empty range returns an empty list; the caller passes "now" as end for the current month.
-    // Done  : unskip tests in Domain/Analytics/BucketGroupingTests.cs and make them pass.
+        if (values.Count == 0)
+        {
+            return new Bucket(start, end, null, null, null, 0, expected, state);
+        }
+
+        return new Bucket(start, end, values.Average(), values.Min(), values.Max(), values.Count, expected, state);
+    }
+
     public static IReadOnlyList<Bucket> Group(
         IReadOnlyList<Reading> readings,
         Metric metric,
@@ -36,5 +36,96 @@ public static class BucketAggregator
         Period grouping,
         LocalCalendar calendar,
         TimeSpan interval)
-        => throw new NotImplementedException("TODO(HIST-03a)");
+    {
+        if (grouping == Period.Year)
+        {
+            throw new ArgumentOutOfRangeException(nameof(grouping), grouping, "A year is a range; group it by Week or Month.");
+        }
+
+        if (end <= start)
+        {
+            return [];
+        }
+
+        var edges = grouping == Period.Week
+            ? WeekEdges(start, end, calendar)
+            : DayOrMonthEdges(start, end, grouping, calendar);
+        var sorted = readings.OrderBy(reading => reading.Timestamp).ToList();
+        var buckets = new List<Bucket>(edges.Count - 1);
+        var next = 0;
+
+        for (var index = 0; index < edges.Count - 1; index++)
+        {
+            var from = edges[index];
+            var to = edges[index + 1];
+            var inBucket = new List<Reading>();
+
+            while (next < sorted.Count && sorted[next].Timestamp < from)
+            {
+                next++;
+            }
+
+            while (next < sorted.Count && sorted[next].Timestamp < to)
+            {
+                inBucket.Add(sorted[next]);
+                next++;
+            }
+
+            buckets.Add(Aggregate(inBucket, metric, from, to, interval));
+        }
+
+        return buckets;
+    }
+
+    private static List<DateTimeOffset> DayOrMonthEdges(
+        DateTimeOffset start,
+        DateTimeOffset end,
+        Period grouping,
+        LocalCalendar calendar)
+    {
+        var edges = new List<DateTimeOffset> { start };
+        var cursor = start;
+
+        while (true)
+        {
+            var date = calendar.LocalDateOf(cursor);
+            var nextDate = grouping == Period.Month
+                ? new DateOnly(date.Year, date.Month, 1).AddMonths(1)
+                : date.AddDays(1);
+            var next = calendar.StartOfLocalDay(nextDate);
+
+            if (next >= end)
+            {
+                edges.Add(end);
+                return edges;
+            }
+
+            edges.Add(next);
+            cursor = next;
+        }
+    }
+
+    private static List<DateTimeOffset> WeekEdges(DateTimeOffset start, DateTimeOffset end, LocalCalendar calendar)
+    {
+        var lastDay = calendar.LocalDateOf(end - TimeSpan.FromTicks(1));
+        var inside = new List<DateTimeOffset>();
+
+        for (var weeksBack = 0; ; weeksBack++)
+        {
+            var edge = calendar.StartOfLocalDay(lastDay.AddDays(1 - 7 * weeksBack));
+
+            if (edge <= start)
+            {
+                break;
+            }
+
+            if (edge < end)
+            {
+                inside.Add(edge);
+            }
+        }
+
+        inside.Reverse();
+        return [start, .. inside, end];
+    }
 }

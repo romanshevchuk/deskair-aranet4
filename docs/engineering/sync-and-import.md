@@ -24,6 +24,6 @@ The phone export columns are: Time (DD/MM/YYYY H:mm:ss), Carbon dioxide (ppm), T
 3. Times are local without an offset. Convert with the PC's time zone and flag the repeated hour at the autumn daylight-saving change.
 4. Show a preview before importing, for example "64,000 readings, 12 Jul to 9 Oct 2026 · 62,500 new · 1,500 already present".
 5. Offer import on first run and in Settings → Data and storage. Also accept CSV or tab-separated text with the same layout.
-6. Use an Excel reader with a permissive licence (for example ClosedXML or Sylvan.Data.Excel). Check licence terms before choosing a package.
+6. Excel files are read with ExcelDataReader 3.9.0 (MIT; see questions.md Q8). The format is detected by content, not by file name (questions.md Q23). Text and .xlsx share one row parser, so both give the same readings.
 7. Because the sensor keeps only about 7 days, import is how older gaps are filled. The coverage chip can link to it.
 8. Tests need a real sample file with several thousand rows and a file with a daylight-saving change.

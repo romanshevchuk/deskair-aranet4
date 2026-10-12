@@ -4,7 +4,7 @@ namespace Deskair.Tests.Domain.Analytics;
 
 public class BucketStateClassifierTests
 {
-    [Theory(Skip = "TODO(HIST-04a)")]
+    [Theory]
     [InlineData(0, 10)]
     [InlineData(0, 0)]
     [InlineData(5, 0)]
@@ -13,7 +13,7 @@ public class BucketStateClassifierTests
         Assert.Equal(BucketState.NoData, BucketStateClassifier.Classify(present, expected));
     }
 
-    [Theory(Skip = "TODO(HIST-04a)")]
+    [Theory]
     [InlineData(1, 10)]
     [InlineData(7, 10)]
     [InlineData(79, 100)]
@@ -22,7 +22,7 @@ public class BucketStateClassifierTests
         Assert.Equal(BucketState.Partial, BucketStateClassifier.Classify(present, expected));
     }
 
-    [Theory(Skip = "TODO(HIST-04a)")]
+    [Theory]
     [InlineData(8, 10)]
     [InlineData(80, 100)]
     [InlineData(10, 10)]

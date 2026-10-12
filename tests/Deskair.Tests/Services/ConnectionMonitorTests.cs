@@ -12,44 +12,46 @@ public class ConnectionMonitorTests
         bool hasSensor = true,
         int? minutesSinceReading = 1,
         bool radioOn = true,
-        int? battery = 80)
+        int? battery = 80,
+        int? intervalMinutes = null)
     {
         DateTimeOffset? last = minutesSinceReading is null ? null : now.AddMinutes(-minutesSinceReading.Value);
+        var sensorInterval = intervalMinutes is null ? interval : TimeSpan.FromMinutes(intervalMinutes.Value);
 
-        return new ConnectionInputs(hasSensor, last, now, interval, radioOn, battery);
+        return new ConnectionInputs(hasSensor, last, now, sensorInterval, radioOn, battery);
     }
 
-    [Fact(Skip = "TODO(CONN-01a)")]
+    [Fact]
     public void Derive_is_Normal_with_a_fresh_reading()
     {
         Assert.Equal(ConnectionState.Normal, ConnectionMonitor.Derive(Inputs()));
     }
 
-    [Fact(Skip = "TODO(CONN-01a)")]
+    [Fact]
     public void Derive_is_FirstRun_without_a_paired_sensor()
     {
         Assert.Equal(ConnectionState.FirstRun, ConnectionMonitor.Derive(Inputs(hasSensor: false, minutesSinceReading: null)));
     }
 
-    [Fact(Skip = "TODO(CONN-01a)")]
+    [Fact]
     public void Derive_is_Stale_after_several_missed_readings()
     {
         Assert.Equal(ConnectionState.Stale, ConnectionMonitor.Derive(Inputs(minutesSinceReading: 8)));
     }
 
-    [Fact(Skip = "TODO(CONN-01a)")]
+    [Fact]
     public void Derive_is_NotConnected_after_10_minutes_without_a_reading()
     {
         Assert.Equal(ConnectionState.NotConnected, ConnectionMonitor.Derive(Inputs(minutesSinceReading: 12)));
     }
 
-    [Fact(Skip = "TODO(CONN-01a)")]
+    [Fact]
     public void Derive_is_NotConnected_when_Bluetooth_is_off()
     {
         Assert.Equal(ConnectionState.NotConnected, ConnectionMonitor.Derive(Inputs(radioOn: false)));
     }
 
-    [Theory(Skip = "TODO(CONN-01a)")]
+    [Theory]
     [InlineData(10, ConnectionState.LowBattery)]
     [InlineData(5, ConnectionState.LowBattery)]
     [InlineData(11, ConnectionState.Normal)]
@@ -59,7 +61,25 @@ public class ConnectionMonitorTests
         Assert.Equal(expected, ConnectionMonitor.Derive(Inputs(battery: battery)));
     }
 
-    [Fact(Skip = "TODO(CONN-01a)")]
+    [Theory]
+    [InlineData(5, 14, ConnectionState.Normal)]
+    [InlineData(5, 16, ConnectionState.Stale)]
+    [InlineData(5, 24, ConnectionState.Stale)]
+    [InlineData(5, 25, ConnectionState.NotConnected)]
+    [InlineData(10, 29, ConnectionState.Normal)]
+    [InlineData(10, 31, ConnectionState.Stale)]
+    [InlineData(10, 50, ConnectionState.NotConnected)]
+    public void Derive_scales_Stale_and_NotConnected_with_a_slow_sensor_interval(
+        int intervalMinutes,
+        int minutesSinceReading,
+        ConnectionState expected)
+    {
+        var inputs = Inputs(minutesSinceReading: minutesSinceReading, intervalMinutes: intervalMinutes);
+
+        Assert.Equal(expected, ConnectionMonitor.Derive(inputs));
+    }
+
+    [Fact]
     public void Derive_treats_a_sensor_without_a_reading_yet_as_NotConnected()
     {
         Assert.Equal(ConnectionState.NotConnected, ConnectionMonitor.Derive(Inputs(minutesSinceReading: null)));
