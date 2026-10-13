@@ -26,7 +26,7 @@ dotnet test tests/Deskair.Tests
 dotnet format Deskair.sln --verify-no-changes
 ```
 
-State now: build 0 warnings and 0 errors; **1151 tests, 1115 passed, 36 skipped, 0 failed** (17+5 of the skipped are image-render tests that only run with `DESKAIR_RENDER=1`, the rest are card placeholders); format clean. `todo-index.md`: **8 cards**. Nothing is committed.
+State now: build 0 warnings and 0 errors; **1159 tests, 1123 passed, 36 skipped, 0 failed** (17+5 of the skipped are image-render tests that only run with `DESKAIR_RENDER=1`, the rest are card placeholders); format clean. `todo-index.md`: **7 cards**. Nothing is committed.
 
 Recompute the totals line of `todo-index.md` with:
 
@@ -81,11 +81,12 @@ This session:
 - **Flyout positioning (TRAY-02a):** `FlyoutPositioner.Position(icon, size, workArea)` (pure, DIPs): the side of the icon outside the work area tells where the taskbar is; the flyout goes `Gap` (8) away from it, centred on the icon along the taskbar, clamped inside the work area; an icon inside the work area (overflow pop-up) gets it above, else below. 14 tests. `Shell_NotifyIconGetRect` and the real window come with TRAY-02b. **Not verified:** on real taskbars, other DPIs and two monitors (spike S2).
 - **Tray flyout (TRAY-02b, window and click):** `FlyoutViewModel` now gives the ribbon, the time in each zone, hour labels, the other readings, texts and Open and Settings commands; `FlyoutView` shows it (render tests `flyout-*.png`); `FlyoutWindow` (borderless, transparent, topmost, closes on deactivation and Esc), `FlyoutController` (loads the last 24 h, positions with `FlyoutPositioner`, from the cursor position at the click, with the monitor work area and DPI from `ScreenPoint`) and `ToggleGuard` (a click right after the flyout hid only closes it). `TrayIconHost` opens it on left click. Q38. **Verified:** view model and guard with tests, renders in light and dark, English and Ukrainian, connected and not connected. **Verified by the owner on a real taskbar (bottom edge, one monitor):** the flyout opens above the icon. The first open was too low because the content had no real size before the window was shown; the window now places itself again when its size is known (re-check this). **Not verified:** closing on click-away and Esc and the toggle, other taskbar edges, DPIs and monitors (spike S2).
 - **Single instance (WIN-02a):** `SingleInstance` now has `Listen(callback)` and `SignalFirstInstance()` (named event, local to the session); `Program` signals and exits when another Deskair runs, `StartupSequence` listens and calls `MainWindowController.Show()` on the UI thread. Q39. **Verified:** 6 tests, and the real app started twice (the second exits with code 0, the window hidden in the tray comes back, one process). Not verified: foreground focus when another app is in front.
+- **Resume from sleep (SYNC-03a):** `PowerEvents` (Platform/Power) sends the new `SystemResumed` message (once per resume, 10 s burst window); `AppServicesStarter` restarts the selected sensor session on it; `StartupSequence` starts the listener. Q40. **Verified:** 8 tests, and a real `WM_POWERBROADCAST` resume message sent to the running app made it reconnect and sync. **Not verified:** a real sleep and wake of the PC with the real sensor (the Bluetooth stack may need a few seconds; the 30 s retry covers it).
 - **Docs and tokens:** D-0016 in `docs/decisions.md`; Q32 and Q33 in `docs/plans/questions.md`; new strings in `docs/design/localization.md`; new tokens in `Spacing.xaml`/`Typography.xaml`; the prototype's first-run screen lost its room-type row and its settings rows got 4 px padding.
 
 ## Next work (plan it and wait for approval)
 
-Remaining cards are in `todo-index.md` (8). Suggested order:
+Remaining cards are in `todo-index.md` (7). Suggested order:
 
 1. **Spikes S2, S3 and S5** (flyout placement, title bar, crisp tray icons, toasts): write each as a runnable program for the owner to run, as was done for S1 (`--spike-sN` switch in `Deskair.App/Composition/Spikes`, a note in `docs/plans/`, output saved under `artifacts/`). Text is in `docs/plans/spikes.md`. Ask before adding a project.
 2. **Windows glue** after the spikes: tray (`H.NotifyIcon.Wpf`, TRAY-01a/b), flyout (TRAY-02a/b), toasts (ALERT-02a), Do Not Disturb (ALERT-03a, then the "Alerts paused by Windows" line and quiet-hours time editing in Settings), power events (SYNC-03a), single instance (WIN-02a), title bar and backdrop (WIN-01a, Q14).

@@ -9,7 +9,7 @@ Every TODO card in the code, with its size and the model that should take it. Fo
 - **Test:** `skipped test` means a skipped test with reason `TODO(ID)` already exists; unskip it and make it pass. `manual / gallery` means the card is done when the gallery or a manual check shows it.
 - Controls, views and Windows glue are stubs too: an empty control template, an empty view, or a method that throws `NotImplementedException("TODO(ID)")`. The card sits above the stub (in the XAML file for templates and views; for controls, in both the `.cs` and the `.xaml` file).
 
-Totals: 8 cards. Sizes: L: 3, M: 4, S: 1. Suggested models: haiku: 2, sonnet: 6.
+Totals: 7 cards. Sizes: L: 3, M: 3, S: 1. Suggested models: haiku: 2, sonnet: 5.
 
 | ID | File | Size | Suggested model | Status | Test |
 |---|---|---|---|---|---|
@@ -19,5 +19,4 @@ Totals: 8 cards. Sizes: L: 3, M: 4, S: 1. Suggested models: haiku: 2, sonnet: 6.
 | BLE-03a | src/Deskair.App/Platform/Bluetooth/BluetoothRadioMonitor.cs | M | sonnet | doing | manual check (implemented, needs a Bluetooth toggle test) |
 | SET-01k | src/Deskair.App/Ui/Views/Settings/AlertsSettingsView.xaml | S | haiku | doing | manual / gallery (switches done; quiet hours times and the paused-by-Windows line wait for ALERT-03a) |
 | SLEEP-01a | src/Deskair.App/Ui/Views/History/SleepCard.xaml | M | haiku | todo | manual / gallery |
-| SYNC-03a | src/Deskair.App/Platform/Power/PowerEvents.cs | M | sonnet | todo | manual / gallery |
 | WIN-01a | src/Deskair.App/Platform/Theming/BackdropService.cs | L | sonnet | todo | manual / gallery |

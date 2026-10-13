@@ -1,18 +1,84 @@
+using CommunityToolkit.Mvvm.Messaging;
+using Deskair.Services.Messages;
+using Microsoft.Win32;
+
 namespace Deskair.App.Platform.Power;
 
-/// <summary>Raises Resumed when Windows wakes from sleep, which triggers a sync.</summary>
-public sealed class PowerEvents
+/// <summary>
+/// Sends <see cref="SystemResumed"/> when Windows wakes from sleep, so the app connects to the sensor again and syncs. Windows can report a resume more than once
+/// in a few seconds; only the first is announced.
+/// </summary>
+public sealed class PowerEvents : IDisposable
 {
-    // TODO(SYNC-03a) [M, sonnet]
-    // Spec: docs/engineering/architecture.md section 10 (Power); docs/engineering/sync-and-import.md.
-    // Input : none.
-    // Output: the Resumed event fires once per resume from sleep.
-    // Rules : subscribe to the system power-mode event; unsubscribe on dispose.
-    // Edge  : resume events can arrive in bursts; raise once.
-    // Done  : manual check by sleeping and waking the PC.
-    public event EventHandler? Resumed
+    private static readonly TimeSpan burstWindow = TimeSpan.FromSeconds(10);
+
+    private readonly IMessenger messenger;
+    private readonly TimeProvider timeProvider;
+    private readonly Lock gate = new();
+    private DateTimeOffset? lastResume;
+    private bool subscribed;
+    private bool disposed;
+
+    public PowerEvents(IMessenger messenger, TimeProvider timeProvider)
     {
-        add => throw new NotImplementedException("TODO(SYNC-03a)");
-        remove => throw new NotImplementedException("TODO(SYNC-03a)");
+        this.messenger = messenger;
+        this.timeProvider = timeProvider;
+    }
+
+    /// <summary>Starts listening to the system's power-mode event.</summary>
+    public void Start()
+    {
+        lock (gate)
+        {
+            if (subscribed || disposed)
+            {
+                return;
+            }
+
+            SystemEvents.PowerModeChanged += OnPowerModeChanged;
+            subscribed = true;
+        }
+    }
+
+    /// <summary>What to do for a power-mode change. Public so tests can drive it without putting the PC to sleep.</summary>
+    public void Handle(PowerModes mode)
+    {
+        if (mode != PowerModes.Resume)
+        {
+            return;
+        }
+
+        lock (gate)
+        {
+            var now = timeProvider.GetUtcNow();
+
+            if (disposed || (lastResume is { } previous && now - previous < burstWindow))
+            {
+                return;
+            }
+
+            lastResume = now;
+        }
+
+        messenger.Send(new SystemResumed());
+    }
+
+    public void Dispose()
+    {
+        lock (gate)
+        {
+            disposed = true;
+
+            if (subscribed)
+            {
+                SystemEvents.PowerModeChanged -= OnPowerModeChanged;
+                subscribed = false;
+            }
+        }
+    }
+
+    private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+    {
+        Handle(e.Mode);
     }
 }

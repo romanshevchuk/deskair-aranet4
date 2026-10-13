@@ -1,5 +1,6 @@
 using System.Windows;
 using Deskair.App.Localization;
+using Deskair.App.Platform.Power;
 using Deskair.App.Platform.Tray;
 using Deskair.App.Ui.Theme;
 using Deskair.App.Ui.Views.Gallery;
@@ -55,6 +56,7 @@ public sealed class StartupSequence : IDisposable
         window.Show();
         StartTray(window);
         ShowWindowOnSecondLaunch(window);
+        services.GetRequiredService<PowerEvents>().Start();
 
         running = new CancellationTokenSource();
         await services.GetRequiredService<AppServicesStarter>().StartAsync(running.Token);

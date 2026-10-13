@@ -7,6 +7,7 @@ using Deskair.App.Platform.Bluetooth;
 using Deskair.App.Platform.Files;
 using Deskair.App.Platform.Launch;
 using Deskair.App.Platform.Notifications;
+using Deskair.App.Platform.Power;
 using Deskair.App.Platform.Startup;
 using Deskair.App.Platform.Theming;
 using Deskair.App.Platform.Threading;
@@ -85,6 +86,7 @@ public static class ServiceRegistration
         services.AddSingleton<IStartupRegistration, StartupRegistration>();
         services.AddSingleton<IFileDialogs, WindowsFileDialogs>();
         services.AddSingleton<IFolderOpener, ExplorerFolderOpener>();
+        services.AddSingleton<PowerEvents>();
         services.AddSingleton<ISystemSettings, WindowsSystemSettings>();
 
         return services;

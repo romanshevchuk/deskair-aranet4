@@ -303,4 +303,27 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
 
         await Wait.Until(() => connection.State == ConnectionState.Stale);
     }
+
+    [Fact]
+    public async Task Waking_from_sleep_connects_to_the_selected_sensor_again()
+    {
+        await Create(simulated: true).StartAsync(cts.Token);
+        await Wait.Until(() => provider.Created.Count == 1);
+
+        messenger.Send(new SystemResumed());
+
+        await Wait.Until(() => provider.Created.Count == 2);
+        Assert.All(provider.Created, device => Assert.Equal("SIM-0001", device.Address));
+    }
+
+    [Fact]
+    public async Task Waking_from_sleep_without_a_sensor_does_nothing()
+    {
+        await Create(simulated: false).StartAsync(cts.Token);
+
+        messenger.Send(new SystemResumed());
+        await Task.Delay(50, TestContext.Current.CancellationToken);
+
+        Assert.Empty(provider.Created);
+    }
 }
