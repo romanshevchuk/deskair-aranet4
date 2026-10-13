@@ -1,3 +1,4 @@
+using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 
@@ -26,6 +27,14 @@ public sealed record AppSettings(
 
     /// <summary>The tray icon shows the CO₂ value ("1.1k") instead of the ring (Settings, or the tray menu).</summary>
     public bool ShowValueOnTrayIcon { get; init; }
+
+    /// <summary>When the night starts, in local time: the Night filter in History and the sleep card use it (Settings → Sleep).</summary>
+    public TimeOnly NightStart { get; init; } = NightWindow.Default.Start;
+
+    /// <summary>When the night ends, in local time. The night may cross midnight; it must not start where it ends.</summary>
+    public TimeOnly NightEnd { get; init; } = NightWindow.Default.End;
+
+    public NightWindow Night => new(NightStart, NightEnd);
 
     public static AppSettings Default { get; } = new(LanguageChoice.System, ThemeChoice.System, true);
 }

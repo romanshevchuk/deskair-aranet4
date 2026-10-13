@@ -17,20 +17,26 @@ public sealed class LocalCalendar
     public DateTimeOffset StartOfLocalDay(DateTimeOffset instant)
         => StartOfLocalDay(LocalDateOf(instant));
 
-    public DateTimeOffset StartOfLocalDay(DateOnly date)
-    {
-        var midnight = date.ToDateTime(TimeOnly.MinValue);
+    public DateTimeOffset StartOfLocalDay(DateOnly date) => InstantAt(date, TimeOnly.MinValue);
 
-        while (Zone.IsInvalidTime(midnight))
+    /// <summary>
+    /// The instant of a local date and time. A time that does not exist (the clock jumped over it) moves forward to the first time that does;
+    /// a time that happens twice is the first one.
+    /// </summary>
+    public DateTimeOffset InstantAt(DateOnly date, TimeOnly time)
+    {
+        var local = date.ToDateTime(time);
+
+        while (Zone.IsInvalidTime(local))
         {
-            midnight = midnight.AddMinutes(1);
+            local = local.AddMinutes(1);
         }
 
-        var offset = Zone.IsAmbiguousTime(midnight)
-            ? Zone.GetAmbiguousTimeOffsets(midnight).Max()
-            : Zone.GetUtcOffset(midnight);
+        var offset = Zone.IsAmbiguousTime(local)
+            ? Zone.GetAmbiguousTimeOffsets(local).Max()
+            : Zone.GetUtcOffset(local);
 
-        return new DateTimeOffset(midnight, offset).ToUniversalTime();
+        return new DateTimeOffset(local, offset).ToUniversalTime();
     }
 
     public TimeSpan DayLength(DateOnly date)

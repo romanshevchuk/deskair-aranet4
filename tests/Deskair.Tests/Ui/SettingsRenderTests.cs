@@ -87,6 +87,7 @@ public class SettingsRenderTests
         var screen = new SettingsViewModel(
             new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance),
             new AlertsSettingsViewModel(settings, new FakeDoNotDisturb { IsActive = true }, messenger, dispatcher, NullLogger<AlertsSettingsViewModel>.Instance),
+            new SleepSettingsViewModel(settings, NullLogger<SleepSettingsViewModel>.Instance),
             new DevicesSettingsViewModel(registry, new DeviceEnrollment(deviceStore, registry, settings, messenger), messenger, NullLogger<DevicesSettingsViewModel>.Instance),
             Deskair.Tests.ViewModels.DataSettingsViewModelTests.Create(new TempKnownFolders()),
             new StartupSettingsViewModel(new FakeStartupRegistration { IsEnabled = true }, NullLogger<StartupSettingsViewModel>.Instance));

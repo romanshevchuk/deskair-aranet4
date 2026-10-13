@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Domain.Analytics.Aggregation;
 using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
@@ -5,6 +6,7 @@ using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
 using Deskair.Services.Devices;
 using Deskair.Services.Queries;
+using Deskair.Services.Settings;
 using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.Services;
@@ -217,5 +219,77 @@ public class ReadingQueryServiceTests
         store.Readings.Add(Samples.Co2(now, 800));
 
         Assert.True(await service.HasReadingsAsync(device, CancellationToken.None));
+    }
+
+    private async Task<ReadingQueryService> ServiceWithNightAsync(TimeOnly nightStart, TimeOnly nightEnd)
+    {
+        var devices = new FakeDeviceStore();
+        devices.Devices.Add(new DeviceInfo(device, "Office", null, [new IntervalChange(Samples.Utc(2026, 1, 1), TimeSpan.FromMinutes(30))], null));
+        var registry = new DeviceRegistry(devices);
+        await registry.LoadAsync(CancellationToken.None);
+        var settings = new SettingsService(new FakeSettingsStore { Stored = AppSettings.Default with { NightStart = nightStart, NightEnd = nightEnd } }, new StrongReferenceMessenger());
+        await settings.LoadAsync(CancellationToken.None);
+
+        return new ReadingQueryService(store, registry, new FakeClock(now), new LocalCalendar(TimeZoneInfo.Utc), settings);
+    }
+
+    [Fact]
+    public async Task The_night_filter_uses_the_hours_the_user_chose()
+    {
+        var day = Samples.Utc(2026, 10, 8);
+        store.Readings.AddRange([Samples.Co2(day.AddHours(12), 500), Samples.Co2(day.AddHours(23), 1200), Samples.Co2(day.AddHours(5), 900)]);
+        var queries = await ServiceWithNightAsync(new TimeOnly(0, 0), new TimeOnly(10, 0));
+
+        var buckets = await queries.GetBucketsAsync(device, Metric.Co2, day, day.AddDays(1), Period.Day, HoursFilterMode.Night, CancellationToken.None);
+
+        Assert.Equal(900, Assert.Single(buckets).Average);
+    }
+
+    [Fact]
+    public async Task Last_night_is_the_night_that_ended_this_morning_in_the_default_hours()
+    {
+        // now is 9 October 12:00, so last night is 8 October 22:00 to 9 October 07:00.
+        store.Readings.AddRange([
+            Samples.Co2(Samples.Utc(2026, 10, 8, 21, 30), 2000),
+            Samples.Co2(Samples.Utc(2026, 10, 8, 22), 700),
+            Samples.Co2(Samples.Utc(2026, 10, 9, 6, 30), 900),
+            Samples.Co2(Samples.Utc(2026, 10, 9, 7), 2000)]);
+        var queries = await ServiceWithNightAsync(new TimeOnly(22, 0), new TimeOnly(7, 0));
+
+        var summary = await queries.GetLastNightAsync(device, Metric.Co2, CancellationToken.None);
+
+        Assert.NotNull(summary);
+        Assert.Equal(Samples.Utc(2026, 10, 8, 22), summary.Start);
+        Assert.Equal(Samples.Utc(2026, 10, 9, 7), summary.End);
+        Assert.Equal(2, summary.ReadingCount);
+        Assert.Equal(800, summary.Average);
+    }
+
+    [Fact]
+    public async Task Last_night_follows_the_hours_the_user_chose()
+    {
+        var queries = await ServiceWithNightAsync(new TimeOnly(23, 0), new TimeOnly(8, 0));
+
+        var summary = await queries.GetLastNightAsync(device, Metric.Co2, CancellationToken.None);
+
+        Assert.Equal(Samples.Utc(2026, 10, 8, 23), summary!.Start);
+        Assert.Equal(Samples.Utc(2026, 10, 9, 8), summary.End);
+        Assert.False(summary.HasData);
+    }
+
+    [Fact]
+    public async Task Without_settings_last_night_uses_the_default_hours()
+    {
+        var summary = await service.GetLastNightAsync(device, Metric.Co2, CancellationToken.None);
+
+        Assert.Equal(Samples.Utc(2026, 10, 8, 22), summary!.Start);
+    }
+
+    [Fact]
+    public async Task An_empty_night_window_has_no_last_night()
+    {
+        var queries = await ServiceWithNightAsync(new TimeOnly(7, 0), new TimeOnly(7, 0));
+
+        Assert.Null(await queries.GetLastNightAsync(device, Metric.Co2, CancellationToken.None));
     }
 }

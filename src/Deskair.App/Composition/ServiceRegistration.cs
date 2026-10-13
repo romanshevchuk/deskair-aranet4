@@ -138,6 +138,7 @@ public static class ServiceRegistration
         services.AddSingleton<TrayIconHost>();
         services.AddSingleton<AppearanceSettingsViewModel>();
         services.AddSingleton<AlertsSettingsViewModel>();
+        services.AddSingleton<SleepSettingsViewModel>();
         services.AddSingleton<DevicesSettingsViewModel>();
         services.AddSingleton<ImportViewModel>();
         services.AddSingleton<ExportViewModel>();

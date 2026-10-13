@@ -1,4 +1,3 @@
-using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Services.Alerts;
@@ -10,13 +9,11 @@ using Microsoft.Extensions.Logging;
 namespace Deskair.App.ViewModels.Settings;
 
 /// <summary>
-/// Alert switches and quiet hours. A change from the screen is saved at once; <see cref="Load"/> does not save. The quiet hours times are typed as "HH:mm": a time that does
-/// not parse is flagged and not saved. <see cref="IsPausedByWindows"/> says Windows Do Not Disturb is holding the alerts.
+/// Alert switches and quiet hours. A change from the screen is saved at once; <see cref="Load"/> does not save. The quiet hours times are <see cref="TimeField"/>s:
+/// a time that does not parse is flagged and not saved. <see cref="IsPausedByWindows"/> says Windows Do Not Disturb is holding the alerts.
 /// </summary>
 public sealed partial class AlertsSettingsViewModel : ObservableObject
 {
-    private static readonly string[] timeFormats = ["H:mm", "HH:mm"];
-
     private readonly SettingsService settings;
     private readonly IDoNotDisturb doNotDisturb;
     private readonly IUiDispatcher dispatcher;
@@ -36,26 +33,6 @@ public sealed partial class AlertsSettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool quietHoursEnabled;
 
-    [ObservableProperty]
-    private TimeOnly quietHoursStart;
-
-    [ObservableProperty]
-    private TimeOnly quietHoursEnd;
-
-    /// <summary>The start time as typed.</summary>
-    [ObservableProperty]
-    private string quietHoursStartText = string.Empty;
-
-    /// <summary>The end time as typed.</summary>
-    [ObservableProperty]
-    private string quietHoursEndText = string.Empty;
-
-    [ObservableProperty]
-    private bool quietHoursStartInvalid;
-
-    [ObservableProperty]
-    private bool quietHoursEndInvalid;
-
     /// <summary>True while alerts are on but Windows Do Not Disturb holds them back.</summary>
     [ObservableProperty]
     private bool isPausedByWindows;
@@ -72,8 +49,14 @@ public sealed partial class AlertsSettingsViewModel : ObservableObject
         this.dispatcher = dispatcher;
         this.logger = logger;
 
+        QuietHoursStart.ValueChanged += (_, _) => ApplyLater();
+        QuietHoursEnd.ValueChanged += (_, _) => ApplyLater();
         messenger.Register<AlertsSettingsViewModel, DoNotDisturbChanged>(this, static (self, message) => self.dispatcher.Post(() => self.OnDoNotDisturb(message.IsActive)));
     }
+
+    public TimeField QuietHoursStart { get; } = new();
+
+    public TimeField QuietHoursEnd { get; } = new();
 
     public void Load()
     {
@@ -86,12 +69,8 @@ public sealed partial class AlertsSettingsViewModel : ObservableObject
             NotifyAtElevated = current.NotifyAtElevated;
             NotifyAtHigh = current.NotifyAtHigh;
             QuietHoursEnabled = current.QuietHoursEnabled;
-            QuietHoursStart = current.QuietHoursStart;
-            QuietHoursEnd = current.QuietHoursEnd;
-            QuietHoursStartText = Format(current.QuietHoursStart);
-            QuietHoursEndText = Format(current.QuietHoursEnd);
-            QuietHoursStartInvalid = false;
-            QuietHoursEndInvalid = false;
+            QuietHoursStart.Load(current.QuietHoursStart);
+            QuietHoursEnd.Load(current.QuietHoursEnd);
             windowsHoldsAlerts = doNotDisturb.IsActive;
             RefreshPaused();
         }
@@ -110,8 +89,8 @@ public sealed partial class AlertsSettingsViewModel : ObservableObject
                 NotifyAtElevated = NotifyAtElevated,
                 NotifyAtHigh = NotifyAtHigh,
                 QuietHoursEnabled = QuietHoursEnabled,
-                QuietHoursStart = QuietHoursStart,
-                QuietHoursEnd = QuietHoursEnd
+                QuietHoursStart = QuietHoursStart.Value,
+                QuietHoursEnd = QuietHoursEnd.Value
             },
             cancellationToken);
     }
@@ -127,50 +106,6 @@ public sealed partial class AlertsSettingsViewModel : ObservableObject
     partial void OnNotifyAtHighChanged(bool value) => ApplyLater();
 
     partial void OnQuietHoursEnabledChanged(bool value) => ApplyLater();
-
-    partial void OnQuietHoursStartChanged(TimeOnly value) => ApplyLater();
-
-    partial void OnQuietHoursEndChanged(TimeOnly value) => ApplyLater();
-
-    partial void OnQuietHoursStartTextChanged(string value)
-    {
-        if (loading)
-        {
-            return;
-        }
-
-        if (TryParse(value, out var time))
-        {
-            QuietHoursStartInvalid = false;
-            QuietHoursStart = time;
-        }
-        else
-        {
-            QuietHoursStartInvalid = true;
-        }
-    }
-
-    partial void OnQuietHoursEndTextChanged(string value)
-    {
-        if (loading)
-        {
-            return;
-        }
-
-        if (TryParse(value, out var time))
-        {
-            QuietHoursEndInvalid = false;
-            QuietHoursEnd = time;
-        }
-        else
-        {
-            QuietHoursEndInvalid = true;
-        }
-    }
-
-    private static string Format(TimeOnly time) => time.ToString("HH:mm", CultureInfo.InvariantCulture);
-
-    private static bool TryParse(string text, out TimeOnly time) => TimeOnly.TryParseExact(text.Trim(), timeFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out time);
 
     private void OnDoNotDisturb(bool active)
     {

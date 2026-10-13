@@ -1,3 +1,4 @@
+using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Services.Settings;
 
 namespace Deskair.Tests.Services;
@@ -5,7 +6,7 @@ namespace Deskair.Tests.Services;
 public class AppSettingsTests
 {
     [Fact]
-    public void Default_notifies_at_Elevated_and_High_with_quiet_hours_off_from_22_00_to_07_00()
+    public void Default_notifies_at_Elevated_and_High_with_quiet_hours_off_and_the_night_from_22_00_to_07_00()
     {
         var settings = AppSettings.Default;
 
@@ -18,6 +19,9 @@ public class AppSettingsTests
         Assert.Equal(Deskair.Domain.Metrics.TemperatureUnit.Celsius, settings.TemperatureUnit);
         Assert.Null(settings.SelectedDevice);
         Assert.False(settings.ShowValueOnTrayIcon);
+        Assert.Equal(new TimeOnly(22, 0), settings.NightStart);
+        Assert.Equal(new TimeOnly(7, 0), settings.NightEnd);
+        Assert.Equal(NightWindow.Default, settings.Night);
     }
 
     [Fact]

@@ -29,19 +29,19 @@
         <controls:SettingsRow Header="{loc:T Settings_QuietHours_From}">
           <controls:TextInput Width="72"
                               AutomationProperties.Name="{loc:T Settings_QuietHours_From}"
-                              Text="{Binding QuietHoursStartText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                              Text="{Binding QuietHoursStart.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </controls:SettingsRow>
         <TextBlock Style="{StaticResource Text.Caption}"
                    Text="{loc:T Settings_QuietHours_Invalid}"
-                   Visibility="{Binding QuietHoursStartInvalid, Converter={StaticResource BoolToVisibility}}" />
+                   Visibility="{Binding QuietHoursStart.IsInvalid, Converter={StaticResource BoolToVisibility}}" />
         <controls:SettingsRow Header="{loc:T Settings_QuietHours_To}">
           <controls:TextInput Width="72"
                               AutomationProperties.Name="{loc:T Settings_QuietHours_To}"
-                              Text="{Binding QuietHoursEndText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                              Text="{Binding QuietHoursEnd.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </controls:SettingsRow>
         <TextBlock Style="{StaticResource Text.Caption}"
                    Text="{loc:T Settings_QuietHours_Invalid}"
-                   Visibility="{Binding QuietHoursEndInvalid, Converter={StaticResource BoolToVisibility}}" />
+                   Visibility="{Binding QuietHoursEnd.IsInvalid, Converter={StaticResource BoolToVisibility}}" />
       </StackPanel>
     </StackPanel>
   </controls:SettingsCard>

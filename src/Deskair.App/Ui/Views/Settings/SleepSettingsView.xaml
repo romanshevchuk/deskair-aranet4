@@ -1,0 +1,33 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Settings.SleepSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- DataContext: SleepSettingsViewModel. The night hours, typed as HH:mm and saved as soon as they read as a time. The Night filter in History and the sleep card use them. -->
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+  </UserControl.Resources>
+  <controls:SettingsCard Header="{loc:T Settings_Sleep}">
+    <StackPanel>
+      <controls:SettingsRow Header="{loc:T Settings_Sleep_Start}" Description="{loc:T Settings_Sleep_Hint}">
+        <controls:TextInput Width="72"
+                            AutomationProperties.Name="{loc:T Settings_Sleep_Start}"
+                            Text="{Binding NightStart.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+      </controls:SettingsRow>
+      <TextBlock Style="{StaticResource Text.Caption}"
+                 Text="{loc:T Settings_QuietHours_Invalid}"
+                 Visibility="{Binding NightStart.IsInvalid, Converter={StaticResource BoolToVisibility}}" />
+      <controls:SettingsRow Header="{loc:T Settings_Sleep_End}">
+        <controls:TextInput Width="72"
+                            AutomationProperties.Name="{loc:T Settings_Sleep_End}"
+                            Text="{Binding NightEnd.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+      </controls:SettingsRow>
+      <TextBlock Style="{StaticResource Text.Caption}"
+                 Text="{loc:T Settings_QuietHours_Invalid}"
+                 Visibility="{Binding NightEnd.IsInvalid, Converter={StaticResource BoolToVisibility}}" />
+      <TextBlock Style="{StaticResource Text.Caption}"
+                 Text="{loc:T Settings_Sleep_SameTime}"
+                 Visibility="{Binding IsEmptyWindow, Converter={StaticResource BoolToVisibility}}" />
+    </StackPanel>
+  </controls:SettingsCard>
+</UserControl>

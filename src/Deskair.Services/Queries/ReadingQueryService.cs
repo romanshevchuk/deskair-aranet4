@@ -1,11 +1,13 @@
 using Deskair.Domain.Analytics.Aggregation;
 using Deskair.Domain.Analytics.HoursFilter;
+using Deskair.Domain.Analytics.Sleep;
 using Deskair.Domain.Analytics.TypicalDay;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
 using Deskair.Domain.Zones;
 using Deskair.Services.Devices;
+using Deskair.Services.Settings;
 using Deskair.Services.Storage;
 
 namespace Deskair.Services.Queries;
@@ -17,18 +19,24 @@ public sealed class ReadingQueryService
     private readonly DeviceRegistry devices;
     private readonly TimeProvider timeProvider;
     private readonly LocalCalendar calendar;
+    private readonly SettingsService? settings;
 
     public ReadingQueryService(
         IReadingStore readings,
         DeviceRegistry devices,
         TimeProvider timeProvider,
-        LocalCalendar calendar)
+        LocalCalendar calendar,
+        SettingsService? settings = null)
     {
         this.readings = readings;
         this.devices = devices;
         this.timeProvider = timeProvider;
         this.calendar = calendar;
+        this.settings = settings;
     }
+
+    /// <summary>The hours the Night filter and the sleep card use: the user's choice, or 22:00 to 07:00 when there are no settings.</summary>
+    private NightWindow Night => settings?.Current.Night ?? NightWindow.Default;
 
     private static readonly TimeSpan shortTypicalDayRange = TimeSpan.FromDays(7);
     private static readonly TimeSpan yearTypicalDayRange = TimeSpan.FromDays(90);
@@ -60,7 +68,7 @@ public sealed class ReadingQueryService
         CancellationToken cancellationToken)
     {
         var inRange = await readings.ReadRangeAsync(device, start, end, cancellationToken);
-        var filtered = HoursFilterRule.Apply(inRange, filter, calendar);
+        var filtered = HoursFilterRule.Apply(inRange, filter, calendar, Night);
         var interval = devices.IntervalFor(device, end);
 
         return BucketAggregator.Group(filtered, metric, start, end, grouping, calendar, interval);
@@ -76,7 +84,26 @@ public sealed class ReadingQueryService
     {
         var inRange = await readings.ReadRangeAsync(device, start, end, cancellationToken);
 
-        return ZoneShareCalculator.Calculate(HoursFilterRule.Apply(inRange, filter, calendar));
+        return ZoneShareCalculator.Calculate(HoursFilterRule.Apply(inRange, filter, calendar, Night));
+    }
+
+    /// <summary>
+    /// The summary of the most recent night that has ended (the night in progress is not "last night"), in the user's night hours. Null when the night window is empty.
+    /// A night without readings still gives a summary, so the screen can say there is nothing.
+    /// </summary>
+    public async Task<SleepSummary?> GetLastNightAsync(DeviceId device, Metric metric, CancellationToken cancellationToken)
+    {
+        var night = Night;
+
+        if (night.IsEmpty)
+        {
+            return null;
+        }
+
+        var (start, end) = night.LastFinished(timeProvider.GetUtcNow(), calendar);
+        var inNight = await readings.ReadRangeAsync(device, start, end, cancellationToken);
+
+        return SleepCalculator.Summarise(inNight, metric, start, end, devices.IntervalFor(device, end), calendar, ZoneThresholds.Default);
     }
 
     public async Task<IReadOnlyList<HourOfDayAverage>> GetTypicalDayAsync(

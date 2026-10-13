@@ -70,4 +70,25 @@ public class LocalCalendarTests
 
         Assert.Throws<ArgumentOutOfRangeException>(() => LocalCalendar.ExpectedSlots(start, start.AddHours(1), TimeSpan.Zero));
     }
+
+    [Fact]
+    public void InstantAt_converts_a_local_date_and_time()
+    {
+        // 12 October is summer time in Kyiv (UTC+3).
+        Assert.Equal(Samples.Utc(2026, 10, 12, 19), kyiv.InstantAt(new DateOnly(2026, 10, 12), new TimeOnly(22, 0)));
+    }
+
+    [Fact]
+    public void InstantAt_moves_a_time_the_clock_jumps_over_to_the_first_time_that_exists()
+    {
+        // 29 March 2026: at 03:00 the clocks go to 04:00, so 03:30 does not exist. 04:00 is 01:00 UTC.
+        Assert.Equal(Samples.Utc(2026, 3, 29, 1), kyiv.InstantAt(new DateOnly(2026, 3, 29), new TimeOnly(3, 30)));
+    }
+
+    [Fact]
+    public void InstantAt_takes_the_first_of_a_time_that_happens_twice()
+    {
+        // 25 October 2026: at 04:00 the clocks go back to 03:00, so 03:30 happens twice. The first is UTC+3, 00:30 UTC.
+        Assert.Equal(Samples.Utc(2026, 10, 25, 0, 30), kyiv.InstantAt(new DateOnly(2026, 10, 25), new TimeOnly(3, 30)));
+    }
 }

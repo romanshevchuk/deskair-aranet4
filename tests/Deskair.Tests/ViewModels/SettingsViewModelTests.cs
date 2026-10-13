@@ -22,6 +22,7 @@ public sealed class SettingsViewModelTests : IDisposable
     private readonly DevicesSettingsViewModel devices;
     private readonly DataSettingsViewModel data;
     private readonly StartupSettingsViewModel startup;
+    private readonly SleepSettingsViewModel sleep;
     private readonly SettingsViewModel viewModel;
 
     public SettingsViewModelTests()
@@ -30,11 +31,12 @@ public sealed class SettingsViewModelTests : IDisposable
         settings = new SettingsService(settingsStore, messenger);
         appearance = new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance);
         alerts = new AlertsSettingsViewModel(settings, new FakeDoNotDisturb(), messenger, new FakeUiDispatcher(), NullLogger<AlertsSettingsViewModel>.Instance);
+        sleep = new SleepSettingsViewModel(settings, NullLogger<SleepSettingsViewModel>.Instance);
         var registry = new DeviceRegistry(deviceStore);
         devices = new DevicesSettingsViewModel(registry, new DeviceEnrollment(deviceStore, registry, settings, messenger), messenger, NullLogger<DevicesSettingsViewModel>.Instance);
         data = DataSettingsViewModelTests.Create(folders);
         startup = new StartupSettingsViewModel(registration, NullLogger<StartupSettingsViewModel>.Instance);
-        viewModel = new SettingsViewModel(appearance, alerts, devices, data, startup);
+        viewModel = new SettingsViewModel(appearance, alerts, sleep, devices, data, startup);
     }
 
     public void Dispose()
@@ -67,7 +69,7 @@ public sealed class SettingsViewModelTests : IDisposable
         var failingStore = new ThrowingDeviceStore();
         var failingRegistry = new DeviceRegistry(failingStore);
         var failing = new DevicesSettingsViewModel(failingRegistry, new DeviceEnrollment(failingStore, failingRegistry, settings, new StrongReferenceMessenger()), new StrongReferenceMessenger(), NullLogger<DevicesSettingsViewModel>.Instance);
-        var model = new SettingsViewModel(appearance, alerts, failing, data, startup);
+        var model = new SettingsViewModel(appearance, alerts, sleep, failing, data, startup);
         registration.IsEnabled = true;
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => model.LoadAsync(TestContext.Current.CancellationToken));

@@ -42,7 +42,9 @@ public sealed class JsonSettingsStoreTests : IDisposable
             QuietHoursEnabled = true,
             QuietHoursStart = new TimeOnly(23, 30),
             QuietHoursEnd = new TimeOnly(6, 15),
-            ShowValueOnTrayIcon = true
+            ShowValueOnTrayIcon = true,
+            NightStart = new TimeOnly(23, 0),
+            NightEnd = new TimeOnly(8, 30)
         };
         await store.SaveAsync(saved, CancellationToken.None);
 
