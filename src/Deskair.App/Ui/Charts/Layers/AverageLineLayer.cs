@@ -5,13 +5,20 @@ using Deskair.Domain.Analytics.Aggregation;
 
 namespace Deskair.App.Ui.Charts.Layers;
 
-/// <summary>A short horizontal tick at the average of each bar. Buckets with no average, or no data, get none.</summary>
+/// <summary>
+/// A short horizontal tick at the average of each bar (prototype): 3 px thick, rounded, 2 px wider than the bar on each side. With <see cref="ZoneColoured"/> it is the strong colour of the zone
+/// of the average, otherwise <see cref="BrushKey"/>. Buckets with no average, or no data, get none.
+/// </summary>
 public sealed class AverageLineLayer : IChartLayer
 {
-    private const double SideGap = 3;
-    private const double Thickness = 2;
+    private const double Thickness = 3;
+    private const double Overhang = 2;
 
     public IReadOnlyList<ChartBar>? Bars { get; set; }
+
+    public string BrushKey { get; set; } = "Text.Primary.Brush";
+
+    public bool ZoneColoured { get; set; }
 
     public void Draw(DrawingContext context, ChartArea area)
     {
@@ -19,8 +26,6 @@ public sealed class AverageLineLayer : IChartLayer
         {
             return;
         }
-
-        var pen = new Pen(area.Brush("Text.Primary.Brush"), Thickness) { StartLineCap = PenLineCap.Flat, EndLineCap = PenLineCap.Flat };
 
         foreach (var bar in Bars)
         {
@@ -30,22 +35,23 @@ public sealed class AverageLineLayer : IChartLayer
             }
 
             var y = area.Y(average);
-            var left = area.X(bar.Start) + SideGap;
-            var right = area.X(bar.End) - SideGap;
-
-            if (right - left < 2)
-            {
-                var middle = (left + right) / 2;
-                left = middle - 1;
-                right = middle + 1;
-            }
 
             if (y < area.Plot.Top || y > area.Plot.Bottom)
             {
                 continue;
             }
 
-            context.DrawLine(pen, new Point(Math.Max(left, area.Plot.Left), y), new Point(Math.Min(right, area.Plot.Right), y));
+            var (barLeft, barRight) = BarGeometry.Horizontal(area, bar);
+            var tick = new Rect(barLeft - Overhang, y - (Thickness / 2), barRight - barLeft + (2 * Overhang), Thickness);
+            tick.Intersect(area.Plot);
+
+            if (!tick.IsEmpty)
+            {
+                context.DrawRoundedRectangle(Brush(area, bar), null, tick, Thickness / 2, Thickness / 2);
+            }
         }
     }
+
+    private Brush Brush(ChartArea area, ChartBar bar)
+        => ZoneColoured && BarGeometry.ZoneOf(bar) is { } zone ? area.Brush($"Zone.{zone}.Line.Brush") : area.Brush(BrushKey);
 }

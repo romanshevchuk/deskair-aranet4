@@ -17,6 +17,8 @@ public sealed class HistoryChart : ChartBase
     private const double Co2Maximum = 2000;
     private const double ElevatedFrom = 1000;
     private const double HighAbove = 1400;
+    private const int MaximumDayBars = 14;
+    private const double AverageRowHeight = 20;
     private static readonly TimeSpan clockLabelLimit = TimeSpan.FromHours(36);
 
     public static readonly DependencyProperty PointsProperty = DependencyProperty.Register(
@@ -66,6 +68,45 @@ public sealed class HistoryChart : ChartBase
         typeof(string),
         typeof(HistoryChart),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    public static readonly DependencyProperty AverageValueProperty = DependencyProperty.Register(
+        nameof(AverageValue),
+        typeof(double?),
+        typeof(HistoryChart),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    public static readonly DependencyProperty AverageLabelProperty = DependencyProperty.Register(
+        nameof(AverageLabel),
+        typeof(string),
+        typeof(HistoryChart),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    public static readonly DependencyProperty TodayLabelProperty = DependencyProperty.Register(
+        nameof(TodayLabel),
+        typeof(string),
+        typeof(HistoryChart),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    /// <summary>The average of the whole period, drawn as a dashed line with its label. Null draws none.</summary>
+    public double? AverageValue
+    {
+        get => (double?)GetValue(AverageValueProperty);
+        set => SetValue(AverageValueProperty, value);
+    }
+
+    /// <summary>The word before the average ("avg") on the line and in the row under the bars. Already localized.</summary>
+    public string? AverageLabel
+    {
+        get => (string?)GetValue(AverageLabelProperty);
+        set => SetValue(AverageLabelProperty, value);
+    }
+
+    /// <summary>The label of the last day bar ("Today"). Already localized.</summary>
+    public string? TodayLabel
+    {
+        get => (string?)GetValue(TodayLabelProperty);
+        set => SetValue(TodayLabelProperty, value);
+    }
 
     public IReadOnlyList<ChartPoint>? Points
     {
@@ -128,6 +169,24 @@ public sealed class HistoryChart : ChartBase
 
     private string ValueFormat => Metric is Metric.Temperature or Metric.Pressure ? "N1" : "N0";
 
+    /// <summary>
+    /// True when every bar stands for one day and there are few enough to name them (a week): the labels are weekdays with "Today", and a row of averages sits under them.
+    /// Longer ranges keep the date labels along the axis.
+    /// </summary>
+    private bool DayBars => BarMode && Bars!.Count is > 0 and <= MaximumDayBars && Bars.All(IsOneDay);
+
+    private static bool IsOneDay(ChartBar bar) => bar.End - bar.Start <= TimeSpan.FromHours(25);
+
+    protected override Thickness PlotMargin
+    {
+        get
+        {
+            var margin = base.PlotMargin;
+
+            return DayBars && !string.IsNullOrEmpty(AverageLabel) ? new Thickness(margin.Left, margin.Top, margin.Right, margin.Bottom + AverageRowHeight) : margin;
+        }
+    }
+
     protected override ChartRanges GetDataRanges()
     {
         var (start, end) = TimeRange();
@@ -163,15 +222,12 @@ public sealed class HistoryChart : ChartBase
 
         layers.Add(new GridLayer { YTicks = ticks });
 
-        if (Metric == Metric.Co2)
-        {
-            layers.Add(new DashedZoneLinesLayer());
-        }
-
         if (BarMode)
         {
-            layers.Add(new RangeBarLayer { Bars = Bars, BrushKey = $"Metric.{Metric}.Brush" });
-            layers.Add(new AverageLineLayer { Bars = Bars });
+            var zoneColoured = Metric == Metric.Co2;
+
+            layers.Add(new RangeBarLayer { Bars = Bars, BrushKey = $"Metric.{Metric}.Brush", ZoneColoured = zoneColoured });
+            layers.Add(new AverageLineLayer { Bars = Bars, BrushKey = $"Metric.{Metric}.Brush", ZoneColoured = zoneColoured });
         }
         else if (Metric == Metric.Co2)
         {
@@ -184,13 +240,31 @@ public sealed class HistoryChart : ChartBase
 
         layers.Add(new GapHatchLayer { Gaps = Gaps });
 
-        if (!HasData)
+        if (HasData)
+        {
+            layers.Add(new OverallAverageLayer { Value = AverageValue, Label = AverageLabel, Format = ValueFormat, Culture = CultureInfo.CurrentUICulture });
+        }
+        else
         {
             layers.Add(new NoDataLayer { Text = NoDataText });
         }
 
         layers.Add(new CrosshairLayer { Hover = Hover });
         layers.Add(axis);
+
+        if (DayBars)
+        {
+            axis.TimeLabels = false;
+            layers.Add(new BarLabelLayer
+            {
+                Bars = Bars,
+                Culture = CultureInfo.CurrentUICulture,
+                TimeZone = TimeZone,
+                TodayLabel = TodayLabel,
+                RowLabel = AverageLabel,
+                Format = ValueFormat
+            });
+        }
 
         return layers;
     }

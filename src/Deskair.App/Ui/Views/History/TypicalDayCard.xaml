@@ -4,8 +4,9 @@
              xmlns:charts="clr-namespace:Deskair.App.Ui.Charts"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- DataContext: TypicalDayViewModel. The average CO2 for each hour of the day over the period, the worst three hours outlined. -->
-  <controls:Card Padding="{StaticResource Space.Chart.Card}">
+  <!-- DataContext: TypicalDayViewModel. The average CO2 for each hour of the day over the period, the worst three hours outlined with their time above. The line after the title
+       ("average by hour, last 7 days") comes from the screen (Subtitle). -->
+  <controls:Card Padding="{StaticResource Space.TypicalDay.Card}">
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
@@ -13,19 +14,25 @@
         <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
 
-      <TextBlock Grid.Row="0"
-                 Style="{StaticResource Text.SectionLabel}"
-                 Text="{loc:T Chart_TypicalDay}" />
+      <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <TextBlock FontSize="{StaticResource Font.Size.Body}"
+                   FontWeight="{StaticResource Font.Weight.SemiBold}"
+                   Foreground="{DynamicResource Text.Primary.Brush}"
+                   Text="{loc:T Chart_TypicalDay}" />
+        <TextBlock FontSize="{StaticResource Font.Size.Body}"
+                   Foreground="{DynamicResource Text.Secondary.Brush}"
+                   Text="{Binding Subtitle, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, StringFormat=' · {0}'}" />
+      </StackPanel>
 
       <charts:TypicalDayChart x:Name="Chart"
                               Grid.Row="1"
                               Height="{StaticResource Size.TypicalDay.Chart.Height}"
                               Hours="{Binding Bars}"
                               NoDataText="{loc:T Chart_NoData}"
-                              Unit="{loc:T Unit_Ppm}" />
+                              Unit="{loc:T Unit_Ppm}"
+                              WorstText="{Binding WorstText}" />
 
       <TextBlock Grid.Row="2"
-                 Margin="{StaticResource Space.Chart.Caption}"
                  MinHeight="{StaticResource Size.Chart.Readout.Height}"
                  Style="{StaticResource Text.Secondary}"
                  Text="{Binding Hover.Text, ElementName=Chart}" />

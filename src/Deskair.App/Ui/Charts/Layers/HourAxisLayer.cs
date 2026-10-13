@@ -4,11 +4,12 @@ using System.Windows.Media;
 
 namespace Deskair.App.Ui.Charts.Layers;
 
-/// <summary>Labels for the typical-day chart: values on the y axis and the hours 0, 6, 12, 18 and 24 on the x axis, in Text.Tertiary.</summary>
+/// <summary>Labels for the typical-day chart (prototype): values on the y axis at <see cref="YTicks"/> and a label every three hours under the middle of that hour's bar ("00h", "03h" ... "21h"), in Text.Tertiary.</summary>
 public sealed class HourAxisLayer : IChartLayer
 {
     private const double LabelGap = 8;
-    private static readonly int[] hourLabels = [0, 6, 12, 18, 24];
+    private const int LabelEvery = 3;
+    private const int Hours = 24;
 
     public CultureInfo? Culture { get; set; }
 
@@ -25,10 +26,10 @@ public sealed class HourAxisLayer : IChartLayer
             context.DrawText(text, new Point(area.Plot.Left - LabelGap - text.Width, area.Y(tick) - (text.Height / 2)));
         }
 
-        foreach (var hour in hourLabels)
+        for (var hour = 0; hour < Hours; hour += LabelEvery)
         {
-            var text = area.Text(hour.ToString("00", CultureInfo.InvariantCulture), brush);
-            context.DrawText(text, new Point(area.X(hour) - (text.Width / 2), area.Plot.Bottom + LabelGap));
+            var text = area.Text($"{hour:00}h", brush);
+            context.DrawText(text, new Point(area.X(hour + 0.5) - (text.Width / 2), area.Plot.Bottom + LabelGap));
         }
     }
 }

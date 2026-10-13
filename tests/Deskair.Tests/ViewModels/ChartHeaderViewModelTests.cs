@@ -79,4 +79,16 @@ public class ChartHeaderViewModelTests
         viewModel.Update(Metric.Co2, Period.Week, Period.Day, HoursFilterMode.AllDay, hasGaps: false);
         Assert.False(viewModel.ShowNoDataLegend);
     }
+
+    [Theory]
+    [InlineData(Period.Day, "History_TypicalDay_Last7")]
+    [InlineData(Period.Week, "History_TypicalDay_Last7")]
+    [InlineData(Period.Month, "History_TypicalDay_Last30")]
+    [InlineData(Period.Year, "History_TypicalDay_Last90")]
+    public void The_typical_day_says_how_many_days_it_is_built_from(Period range, string days)
+    {
+        viewModel.Update(Metric.Co2, range, Period.Day, HoursFilterMode.AllDay, hasGaps: false);
+
+        Assert.Equal($"History_TypicalDay_Subtitle(period={days})", viewModel.TypicalDaySubtitle);
+    }
 }

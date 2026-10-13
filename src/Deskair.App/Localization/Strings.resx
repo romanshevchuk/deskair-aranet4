@@ -49,6 +49,11 @@
   <data name="History_Legend_Bars" xml:space="preserve"><value>Bar = min–max · tick = average</value></data>
   <data name="History_Legend_Line" xml:space="preserve"><value>Line = readings</value></data>
   <data name="History_Legend_NoData" xml:space="preserve"><value>No data</value></data>
+  <data name="History_TypicalDay_Subtitle" xml:space="preserve"><value>average by hour, {period}</value></data>
+  <data name="History_TypicalDay_Last7" xml:space="preserve"><value>last 7 days</value></data>
+  <data name="History_TypicalDay_Last30" xml:space="preserve"><value>last 30 days</value></data>
+  <data name="History_TypicalDay_Last90" xml:space="preserve"><value>last 90 days</value></data>
+  <data name="History_TypicalDay_Worst" xml:space="preserve"><value>worst {from}–{to}h</value></data>
   <data name="Group_ByDay" xml:space="preserve"><value>By day</value></data>
   <data name="Group_ByWeek" xml:space="preserve"><value>By week</value></data>
   <data name="Group_ByMonth" xml:space="preserve"><value>By month</value></data>
@@ -58,6 +63,8 @@
   <data name="Stats_Highest" xml:space="preserve"><value>Highest reading</value></data>
   <data name="Stats_Lowest" xml:space="preserve"><value>Lowest reading</value></data>
   <data name="Stats_ZoneShare" xml:space="preserve"><value>Time in each zone</value></data>
+  <data name="Stats_Header_Average" xml:space="preserve"><value>Average · {range}</value></data>
+  <data name="Stats_Header_NightAverage" xml:space="preserve"><value>Night average · {range}</value></data>
   <data name="Gap_DaysNoData_One" xml:space="preserve"><value>{count} day with no data</value></data>
   <data name="Gap_DaysNoData_Other" xml:space="preserve"><value>{count} days with no data</value></data>
   <data name="Banner_Stale" xml:space="preserve"><value>Last reading {min} min ago</value></data>
@@ -164,6 +171,8 @@
   <data name="Gallery_Section_Chart" xml:space="preserve"><value>Live chart</value></data>
   <data name="Gallery_Section_ZoneRibbon" xml:space="preserve"><value>24 h ribbon</value></data>
   <data name="Chart_Now" xml:space="preserve"><value>Now</value></data>
+  <data name="Chart_Today" xml:space="preserve"><value>Today</value></data>
+  <data name="Chart_Avg" xml:space="preserve"><value>avg</value></data>
   <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ideal 20–24</value></data>
   <data name="Gallery_Sample_IdealHumidity" xml:space="preserve"><value>ideal 30–50</value></data>
   <data name="Stat_PeakNow" xml:space="preserve"><value>Peak right now</value></data>
@@ -220,8 +229,8 @@
   <data name="Stats_Period_Day" xml:space="preserve"><value>day</value></data>
   <data name="Stats_Period_Week" xml:space="preserve"><value>week</value></data>
   <data name="Stats_Period_Month" xml:space="preserve"><value>month</value></data>
-  <data name="Insight_WorstHours" xml:space="preserve"><value>Worst hours: {from}–{to} (avg {value}). Opening a window shortly before keeps you in the good zone.</value></data>
-  <data name="Insight_AllGood" xml:space="preserve"><value>On a typical day CO₂ stays in the good zone, even at its worst around {from}–{to} (avg {value}).</value></data>
+  <data name="Insight_WorstHours" xml:space="preserve"><value>**Worst hours: {from}–{to}** (avg {value}). Opening a window shortly before keeps you in the good zone.</value></data>
+  <data name="Insight_AllGood" xml:space="preserve"><value>**All good.** On a typical day CO₂ stays in the good zone, even at its worst around {from}–{to} (avg {value}).</value></data>
   <data name="Offline_Text" xml:space="preserve"><value>The sensor may be out of range or asleep.</value></data>
   <data name="Offline_Text_BluetoothOff" xml:space="preserve"><value>Bluetooth is off, so Deskair cannot reach the sensor.</value></data>
   <data name="Offline_LastReading" xml:space="preserve"><value>Your last reading was {value} at {time}.</value></data>

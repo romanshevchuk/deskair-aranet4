@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
 using Deskair.App.ViewModels.History;
 using Deskair.Domain.Analytics.Aggregation;
+using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Analytics.TypicalDay;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Time;
@@ -224,5 +225,81 @@ public class StatsViewModelDetailTests
 
         viewModel.Update(Week([Day(0, 20)], metric: Metric.Temperature) with { TypicalDay = hours });
         Assert.Null(viewModel.InsightText);
+    }
+
+    [Fact]
+    public async Task The_header_names_the_period_by_its_first_and_last_day()
+    {
+        var viewModel = await CreateAsync();
+
+        viewModel.Update(Week([Day(0, 1000), Day(1, 1000), Day(2, 1000)]));
+
+        Assert.Equal("Stats_Header_Average(range=1 Oct – 3 Oct 2026)", viewModel.HeaderText);
+    }
+
+    [Fact]
+    public async Task The_header_of_a_single_day_is_that_day()
+    {
+        var viewModel = await CreateAsync();
+
+        viewModel.Update(Week([Day(4, 1000)]) with { Range = Period.Day });
+
+        Assert.Equal("Stats_Header_Average(range=5 Oct 2026)", viewModel.HeaderText);
+    }
+
+    [Fact]
+    public async Task With_the_night_filter_the_header_says_night_average()
+    {
+        var viewModel = await CreateAsync();
+
+        viewModel.Update(Week([Day(0, 1000), Day(1, 1000)]) with { Hours = HoursFilterMode.Night });
+
+        Assert.Equal("Stats_Header_NightAverage(range=1 Oct – 2 Oct 2026)", viewModel.HeaderText);
+    }
+
+    [Fact]
+    public async Task Without_buckets_there_is_no_header()
+    {
+        var viewModel = await CreateAsync();
+
+        viewModel.Update(Week([]));
+
+        Assert.Null(viewModel.HeaderText);
+    }
+
+    [Fact]
+    public async Task The_big_number_is_the_average_without_its_unit()
+    {
+        var viewModel = await CreateAsync();
+
+        viewModel.Update(Week([Day(0, 1013)]));
+
+        Assert.Equal("1,013", viewModel.AverageNumber);
+        Assert.Equal("1,013 ppm", viewModel.AverageText);
+        Assert.Equal("ppm", viewModel.UnitText);
+    }
+
+    [Theory]
+    [InlineData(800, Zone.Good)]
+    [InlineData(1200, Zone.Elevated)]
+    [InlineData(1600, Zone.High)]
+    public async Task The_insight_box_takes_the_zone_of_the_average(double average, Zone expected)
+    {
+        var viewModel = await CreateAsync();
+        List<HourOfDayAverage> hours = [.. Enumerable.Range(0, 24).Select(hour => new HourOfDayAverage(hour, 700, 1))];
+
+        viewModel.Update(Week([Day(0, average)]) with { TypicalDay = hours });
+
+        Assert.Equal(expected, viewModel.InsightZone);
+    }
+
+    [Fact]
+    public async Task Without_an_insight_there_is_no_insight_zone()
+    {
+        var viewModel = await CreateAsync();
+
+        viewModel.Update(Week([Day(0, 1200)]));
+
+        Assert.Null(viewModel.InsightZone);
     }
 }

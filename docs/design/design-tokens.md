@@ -1,6 +1,6 @@
 # Design tokens
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-13*
 
 Design size is 1200 × 728 px at 100 % scale. Implement every value as a named resource in a light and a dark `ResourceDictionary`.
 
@@ -11,6 +11,8 @@ Design size is 1200 × 728 px at 100 % scale. Implement every value as a named r
 | window.bg | #EEF1F3 | #12161A | App background (Mica fallback) |
 | surface | #FFFFFF | #1B2026 | Cards, popovers |
 | border | #DCE2E6 | #2C343C | Outlines |
+| card.border | #EAEBEC | #2B3035 | Card outline: 9 % ink (light) or 7 % white (dark) over the surface, 1 px (prototype `.card`) |
+| card.border.hover | #B3BDC4 | #4A545D | Mini card outline on hover |
 | divider | #E6EAED | #262D34 | Lines inside cards |
 | grid | #E3E8EB | #232A31 | Chart gridlines |
 | segment.bg | #E4E9EC | #232A31 | Segmented track |
@@ -27,7 +29,7 @@ Design size is 1200 × 728 px at 100 % scale. Implement every value as a named r
 | Token | Good (L / D) | Elevated (L / D) | High (L / D) |
 |---|---|---|---|
 | card.bg | #F2FBF6 / #16261E | #FFFBF1 / #2A2315 | #FFF5F3 / #2B1A18 |
-| card.border (1.5 px) | #7CC7A0 / #2F7A58 | #E3B552 / #8A6A1F | #D9776D / #8E3A33 |
+| card.border (zone card, 1 px) | #7CC7A0 / #2F7A58 | #E3B552 / #8A6A1F | #D9776D / #8E3A33 |
 | pill.bg | #D3EFE1 / #1F4A38 | #FCEBC4 / #4A3A12 | #F9D9D4 / #4F2420 |
 | pill.text | #14573A / #9FE0BF | #7A4800 / #F2CE7A | #8E241A / #F5A9A0 |
 | dot | #1E8A5C | #D4961A | #C7453A |
@@ -71,13 +73,15 @@ Segoe UI Variable Text, falling back to Segoe UI. Minimum size 12 px. Tabular fi
 | Page padding | 24 px sides, 8 px top, 20 px bottom |
 | Card gap | 16 px |
 | Radius: card, hero | 16 px |
+| Card elevation | A soft shadow behind every card: light 0 3 16 at 9 % ink, dark 0 4 18 at 40 % black (the prototype's two layers merged: WPF has one shadow per element). The shadow is drawn by a separate border behind the content, so a changing chart inside a card does not re-blur it. The hero card's shadow is tinted with its zone border colour (light theme) |
+| Hero and zone card border | 1 px. The prototype says 1.5 px, which a browser draws as one device pixel at 100 % scale; WPF would round 1.5 up to 2 px, so the tokens say 1 px |
 | Radius: advice panel, banner, insight | 12 px and 10 px |
 | Radius: segmented track / segment | 10 px / 8 px |
 | Radius: window | 10 px (Windows 11); 1 px border at 30 % grey |
 | Hero padding | 22 / 24 / 20 px |
 | Settings card / row | card padding 12 / 22 / 2 px; row at least 40 px tall with 4 px above and below, 16 px between label and control, a 1 px divider above every row but the first |
 | Live grid | 3 equal columns; rows 1 fr and 132 px |
-| History | toolbar 40 px; stats card 360 px wide |
+| History | toolbar 40 px; stats card 360 px wide, padding 20 / 16; main chart card padding 22 / 16 / 22 / 8; typical day card padding 22 / 14 / 22 / 6, chart 112 px high |
 | Flyout | 360 px wide, radius 12 px, shadow 0 12 36 at 35 % black |
 | Toast | drawn by Windows (card, fonts, corners); Deskair supplies the zone-coloured ring (96 px image, the same ring as the tray icon) and the texts; no left edge, no custom colours |
 

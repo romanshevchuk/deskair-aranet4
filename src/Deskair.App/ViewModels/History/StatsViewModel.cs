@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Deskair.App.Localization;
 using Deskair.Domain.Analytics.Aggregation;
 using Deskair.Domain.Analytics.Coverage;
+using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Analytics.TypicalDay;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Time;
@@ -44,6 +45,18 @@ public sealed partial class StatsViewModel : ObservableObject
 
     [ObservableProperty]
     private string? averageText;
+
+    /// <summary>The average without its unit ("1,013"), for the large number at the top of the card.</summary>
+    [ObservableProperty]
+    private string? averageNumber;
+
+    /// <summary>"Average · 2 Oct – 8 Oct 2026", or "Night average · ..." with the night filter. Null without data buckets.</summary>
+    [ObservableProperty]
+    private string? headerText;
+
+    /// <summary>The zone of the average while there is an insight, so its box takes that zone's advice colours. Null otherwise.</summary>
+    [ObservableProperty]
+    private Zone? insightZone;
 
     [ObservableProperty]
     private string? highestText;
@@ -140,6 +153,7 @@ public sealed partial class StatsViewModel : ObservableObject
     public void Update(StatsInput input)
     {
         UpdateNumbers(input.Buckets, input.Metric);
+        UpdateHeader(input);
         UpdateChange(input);
         UpdatePeriods(input);
         UpdateZoneShare(input);
@@ -158,9 +172,29 @@ public sealed partial class StatsViewModel : ObservableObject
         HasData = withData.Count > 0;
         ShowCoverage = buckets.Count > 0 && CoverageCalculator.ShouldShowChip(Coverage, buckets.Count(bucket => bucket.State == BucketState.NoData));
         AverageText = Text(Average, metric);
+        AverageNumber = formatter is not null && Average is { } stored ? formatter.Value(metric, stored) : null;
         HighestText = Text(Highest, metric);
         LowestText = Text(Lowest, metric);
         UnitText = formatter?.Unit(metric);
+    }
+
+    private void UpdateHeader(StatsInput input)
+    {
+        HeaderText = null;
+
+        if (localizer is null || calendar is null || input.Buckets.Count == 0)
+        {
+            return;
+        }
+
+        var culture = localizer.Culture;
+        var first = calendar.LocalDateOf(input.Buckets[0].Start);
+        var last = calendar.LocalDateOf(input.Buckets[^1].End.AddTicks(-1));
+        var range = first == last
+            ? first.ToString("d MMM yyyy", culture)
+            : $"{first.ToString("d MMM", culture)} – {last.ToString("d MMM yyyy", culture)}";
+
+        HeaderText = localizer.Format(input.Hours == HoursFilterMode.Night ? "Stats_Header_NightAverage" : "Stats_Header_Average", ("range", range));
     }
 
     private void UpdateChange(StatsInput input)
@@ -246,6 +280,7 @@ public sealed partial class StatsViewModel : ObservableObject
     private void UpdateInsight(StatsInput input)
     {
         InsightText = null;
+        InsightZone = null;
 
         if (localizer is null || input.Metric != Metric.Co2 || input.TypicalDay is null || TypicalDayCalculator.WorstWindow(input.TypicalDay) is not { } window)
         {
@@ -259,6 +294,7 @@ public sealed partial class StatsViewModel : ObservableObject
             ("from", Hour(window.StartHour)),
             ("to", Hour(window.StartHour + 3)),
             ("value", Text(window.Average, Metric.Co2)));
+        InsightZone = Average is { } average ? ZoneClassifier.Classify(average) : null;
     }
 
     private string? Text(double? value, Metric metric)

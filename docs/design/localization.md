@@ -136,7 +136,7 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Stats_Change_Day / Week / Month / Year / None | vs previous 24 hours / vs previous week / vs previous 30 days / vs previous 12 months / no earlier data to compare | порівняно з попередніми 24 годинами / з попереднім тижнем / з попередніми 30 днями / з попередніми 12 місяцями / немає раніших даних для порівняння |
 | Stats_BestPeriod / WorstPeriod / LowestPeriod / HighestPeriod | Best {period} / Worst {period} / Lowest {period} / Highest {period} | Найкращий / Найгірший / Найнижчий / Найвищий {period} (день, тиждень and місяць are all masculine) |
 | Stats_Period_Day / Week / Month | day / week / month | день / тиждень / місяць |
-| Insight_WorstHours / AllGood | Worst hours: {from}–{to} (avg {value}). Opening a window shortly before keeps you in the good zone. / On a typical day CO₂ stays in the good zone, even at its worst around {from}–{to} (avg {value}). | Найгірші години: {from}–{to} (середнє {value}). Відчинене вікно незадовго до цього тримає повітря в зеленій зоні. / Зазвичай CO₂ залишається в зеленій зоні, навіть у найгірші години, {from}–{to} (середнє {value}). |
+| Insight_WorstHours / AllGood | **Worst hours: {from}–{to}** (avg {value}). Opening a window shortly before keeps you in the good zone. / **All good.** On a typical day CO₂ stays in the good zone, even at its worst around {from}–{to} (avg {value}). | Найгірші години: {from}–{to} (середнє {value}). Відчинене вікно незадовго до цього тримає повітря в зеленій зоні. / Зазвичай CO₂ залишається в зеленій зоні, навіть у найгірші години, {from}–{to} (середнє {value}). | (the `**` marks a bold lead, see `InlineMarkup`)
 | Offline_Text / Text_BluetoothOff | The sensor may be out of range or asleep. / Bluetooth is off, so Deskair cannot reach the sensor. | Датчик може бути поза зоною дії або «спати». / Bluetooth вимкнено, тож Deskair не може зв'язатися з датчиком. |
 | Offline_LastReading / HistoryHint | Your last reading was {value} at {time}. / History is still available. | Останнє вимірювання: {value}, {time}. / Історія, як і раніше, доступна. |
 | Offline_Step_Range / Wake / Battery | Stay within about 10 m of the sensor / Press the button on the Aranet4 to wake it / Check the sensor battery ({percent} when last seen) | Тримайтеся приблизно в межах 10 м від датчика / Натисніть кнопку на Aranet4, щоб розбудити його / Перевірте батарею датчика ({percent} востаннє) |
@@ -149,6 +149,14 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Tray_SnoozeTomorrow / Tray_ResumeUntil | Snooze until tomorrow / Resume alerts (snoozed until {time}) | Відкласти до завтра / Відновити сповіщення (відкладено до {time}) |
 | Flyout_Snooze / Flyout_SnoozedUntil / Flyout_Resume | Snooze / Snoozed until {time} / Resume alerts | Відкласти / Відкладено до {time} / Відновити сповіщення |
 | Action_Retrying / Action_RetryFailed | Trying… / Still can't reach it. Try again | Пробуємо… / Досі не вдається підключитися. Спробувати ще раз |
+| Hours_NightHint | The night hours from Settings | Години ночі з налаштувань |
+| History_Chart_Hourly / Daily / Weekly / Monthly | readings of the last 24 hours / daily range & average / weekly range & average / monthly range & average | виміри за останні 24 години / діапазон і середнє за день / тиждень / місяць |
+| History_Chart_NightsOnly | {what} · nights only | {what} · лише ночі |
+| History_Legend_Bars / Line / NoData | Bar = min–max · tick = average / Line = readings / No data | Стовпчик = мін–макс · риска = середнє / Лінія = виміри / Немає даних |
+| History_TypicalDay_Subtitle, Last7 / Last30 / Last90 | average by hour, {period} / last 7 days / last 30 days / last 90 days | середнє за годину, {period} / останні 7 / 30 / 90 днів |
+| History_TypicalDay_Worst | worst {from}–{to}h | найгірше {from}–{to} год |
+| Chart_Today / Chart_Avg | Today / avg | Сьогодні / сер. |
+| Stats_Header_Average / Stats_Header_NightAverage | Average · {range} / Night average · {range} | Середнє · {range} / Середнє за ніч · {range} |
 | Settings_Sleep / Settings_Sleep_Start / Settings_Sleep_End | Sleep / Night starts / Night ends | Сон / Ніч починається / Ніч закінчується |
 | Settings_Sleep_Hint | The Night filter in History and the sleep card use these hours | Ці години використовують фільтр «Ніч» в Історії та картка сну |
 | Settings_Sleep_SameTime | The night must start and end at different times. | Ніч має починатися й закінчуватися в різний час. |

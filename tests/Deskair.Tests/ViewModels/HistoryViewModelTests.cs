@@ -488,6 +488,29 @@ public class HistoryViewModelTests
 
         Assert.False(viewModel.ShowSleep);
     }
+
+    [Fact]
+    public async Task The_average_line_is_the_average_of_the_period()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 11), 1000);
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal(1000, viewModel.AverageLine);
+    }
+
+    [Fact]
+    public async Task Without_a_device_there_is_no_average_line()
+    {
+        var viewModel = Create();
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.Null(viewModel.AverageLine);
+    }
     [Fact]
     public async Task Without_a_selected_device_there_is_no_sleep_card()
     {

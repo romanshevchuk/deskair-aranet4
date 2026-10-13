@@ -69,4 +69,37 @@ public class TypicalDayViewModelTests
 
         Assert.All(viewModel.Bars, bar => Assert.False(bar.InWorstWindow));
     }
+
+    [Fact]
+    public void The_worst_window_is_named_from_its_first_hour_to_the_hour_after_its_last()
+    {
+        var viewModel = new TypicalDayViewModel(new Deskair.Tests.Fakes.FakeLocalizer());
+
+        viewModel.Update(Day(hour => hour is 15 or 16 or 17 ? 1800 : 500));
+
+        Assert.Equal("History_TypicalDay_Worst(from=15, to=18)", viewModel.WorstText);
+    }
+
+    [Fact]
+    public void A_worst_window_across_midnight_wraps_the_second_number()
+    {
+        var viewModel = new TypicalDayViewModel(new Deskair.Tests.Fakes.FakeLocalizer());
+
+        viewModel.Update(Day(hour => hour is 22 or 23 or 0 ? 1800 : 500));
+
+        Assert.Equal("History_TypicalDay_Worst(from=22, to=01)", viewModel.WorstText);
+    }
+
+    [Fact]
+    public void Without_data_or_a_localizer_there_is_no_text()
+    {
+        var withoutData = new TypicalDayViewModel(new Deskair.Tests.Fakes.FakeLocalizer());
+        var withoutLocalizer = new TypicalDayViewModel();
+
+        withoutData.Update(Day(_ => null));
+        withoutLocalizer.Update(Day(hour => hour == 14 ? 1800 : 500));
+
+        Assert.Equal(string.Empty, withoutData.WorstText);
+        Assert.Equal(string.Empty, withoutLocalizer.WorstText);
+    }
 }

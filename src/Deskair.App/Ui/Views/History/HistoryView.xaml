@@ -68,7 +68,7 @@
             <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
 
-          <controls:Card Grid.Row="0" Padding="{StaticResource Space.Chart.Card}">
+          <controls:Card Grid.Row="0" Padding="{StaticResource Space.History.Chart.Card}">
             <Grid>
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -80,12 +80,15 @@
 
               <charts:HistoryChart x:Name="Chart"
                                    Grid.Row="1"
+                                   AverageLabel="{loc:T Chart_Avg}"
+                                   AverageValue="{Binding AverageLine}"
                                    Bars="{Binding Bars}"
                                    Gaps="{Binding Gaps}"
                                    Metric="{Binding Toolbar.Metric}"
                                    NoDataText="{loc:T Chart_NoData}"
                                    PartialText="{loc:T Chart_Partial}"
                                    Points="{Binding Points}"
+                                   TodayLabel="{loc:T Chart_Today}"
                                    Unit="{Binding Stats.UnitText}"
                                    WeekendSpans="{Binding WeekendSpans}" />
 
@@ -97,7 +100,10 @@
             </Grid>
           </controls:Card>
 
-          <history:TypicalDayCard Grid.Row="2" DataContext="{Binding TypicalDay}" Style="{StaticResource History.TypicalDay}" />
+          <history:TypicalDayCard Grid.Row="2"
+                                  DataContext="{Binding TypicalDay}"
+                                  Style="{StaticResource History.TypicalDay}"
+                                  Subtitle="{Binding DataContext.ChartHeader.TypicalDaySubtitle, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" />
           <history:SleepCard Grid.Row="2" DataContext="{Binding Sleep}" Style="{StaticResource History.Sleep}" />
         </Grid>
 

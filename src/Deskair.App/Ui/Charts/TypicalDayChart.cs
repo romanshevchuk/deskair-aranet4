@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Windows;
 using Deskair.App.Ui.Charts.Layers;
 using Deskair.App.ViewModels.ChartModels;
+using Deskair.Domain.Zones;
 
 namespace Deskair.App.Ui.Charts;
 
@@ -13,6 +14,7 @@ public sealed class TypicalDayChart : ChartBase
 {
     private const double Minimum = 400;
     private const double MinimumTop = 1600;
+    private const double OutlineHeadroom = 24;
 
     public static readonly DependencyProperty HoursProperty = DependencyProperty.Register(
         nameof(Hours),
@@ -52,17 +54,41 @@ public sealed class TypicalDayChart : ChartBase
         set => SetValue(NoDataTextProperty, value);
     }
 
+    public static readonly DependencyProperty WorstTextProperty = DependencyProperty.Register(
+        nameof(WorstText),
+        typeof(string),
+        typeof(TypicalDayChart),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    /// <summary>The text above the worst three hours ("worst 15–18h"). Already localized.</summary>
+    public string? WorstText
+    {
+        get => (string?)GetValue(WorstTextProperty);
+        set => SetValue(WorstTextProperty, value);
+    }
+
+    /// <summary>Room above the plot for the dashed outline of the worst hours and its text.</summary>
+    protected override Thickness PlotMargin
+    {
+        get
+        {
+            var margin = base.PlotMargin;
+
+            return new Thickness(margin.Left, Math.Max(margin.Top, OutlineHeadroom), margin.Right, margin.Bottom);
+        }
+    }
+
     private bool HasData => Hours?.Any(hour => hour.Average is not null) == true;
 
     protected override ChartRanges GetDataRanges() => new(0, 24, Minimum, Top());
 
     protected override IReadOnlyList<IChartLayer> CreateLayers()
     {
-        var ticks = ChartTicks.Nice(Minimum, Top(), 5);
+        double[] ticks = [ZoneThresholds.Default.ElevatedFromPpm, ZoneThresholds.Default.HighAbovePpm];
         var layers = new List<IChartLayer>
         {
-            new GridLayer { YTicks = ticks },
-            new HourBarLayer { Hours = Hours }
+            new GridLayer { YTicks = ticks, Dashed = true },
+            new HourBarLayer { Hours = Hours, WorstText = WorstText }
         };
 
         if (!HasData)

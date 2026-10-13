@@ -1,4 +1,5 @@
 using Deskair.Domain.Analytics.Aggregation;
+using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Analytics.TypicalDay;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Time;
@@ -20,6 +21,9 @@ public sealed record StatsInput(IReadOnlyList<Bucket> Buckets)
 
     /// <summary>The buckets of the period before the one shown, for the change. Null or empty when there is nothing earlier.</summary>
     public IReadOnlyList<Bucket>? Previous { get; init; }
+
+    /// <summary>The hours filter of the toolbar. "Night average" heads the card with the night filter.</summary>
+    public HoursFilterMode Hours { get; init; } = HoursFilterMode.AllDay;
 
     public ZoneShare? ZoneShare { get; init; }
 

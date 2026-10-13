@@ -54,6 +54,10 @@ public sealed partial class HistoryViewModel : ObservableObject
     [ObservableProperty]
     private bool showSleep;
 
+    /// <summary>The average of the whole period in the unit shown, for the dashed line across the main chart. Null when there is none.</summary>
+    [ObservableProperty]
+    private double? averageLine;
+
     public HistoryViewModel(
         HistoryToolbarViewModel toolbar,
         StatsViewModel stats,
@@ -207,9 +211,11 @@ public sealed partial class HistoryViewModel : ObservableObject
             Grouping = grouping,
             Previous = previous,
             ZoneShare = zoneShare,
+            Hours = toolbar.Hours,
             TypicalDay = hours
         });
         typicalDay.Update(hours);
+        AverageLine = Display(metric, stats.Average);
 
         ShowSleep = lastNight is not null;
         sleep.Update(lastNight);
@@ -262,6 +268,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         stats.Update([]);
         typicalDay.Update([]);
         ShowSleep = false;
+        AverageLine = null;
         sleep.Update(null);
         chartHeader.Update(toolbar.Metric, toolbar.Range, toolbar.Grouping, toolbar.Hours, hasGaps: false);
     }

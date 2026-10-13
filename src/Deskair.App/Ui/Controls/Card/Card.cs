@@ -5,7 +5,7 @@ using Deskair.Domain.Zones;
 namespace Deskair.App.Ui.Controls;
 
 /// <summary>
-/// A rounded surface. With a <see cref="Zone"/> it takes the zone tint and a 1.5 px zone border.
+/// A rounded surface. With a <see cref="Zone"/> it takes the zone tint and a 1 px zone border, with a shadow tinted like the border.
 /// This is a reference control: new controls follow its pattern (docs/guides/add-a-control.md).
 /// </summary>
 public class Card : ContentControl

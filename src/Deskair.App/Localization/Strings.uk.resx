@@ -50,6 +50,11 @@
   <data name="History_Legend_Bars" xml:space="preserve"><value>Стовпчик = мін–макс · риска = середнє</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Legend_Line" xml:space="preserve"><value>Лінія = виміри</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Legend_NoData" xml:space="preserve"><value>Немає даних</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_TypicalDay_Subtitle" xml:space="preserve"><value>середнє за годину, {period}</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_TypicalDay_Last7" xml:space="preserve"><value>останні 7 днів</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_TypicalDay_Last30" xml:space="preserve"><value>останні 30 днів</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_TypicalDay_Last90" xml:space="preserve"><value>останні 90 днів</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_TypicalDay_Worst" xml:space="preserve"><value>найгірше {from}–{to} год</value><comment>Draft: needs native review.</comment></data>
   <data name="Group_ByDay" xml:space="preserve"><value>За днями</value><comment>Draft: needs native review.</comment></data>
   <data name="Group_ByWeek" xml:space="preserve"><value>За тижнями</value><comment>Draft: needs native review.</comment></data>
   <data name="Group_ByMonth" xml:space="preserve"><value>За місяцями</value><comment>Draft: needs native review.</comment></data>
@@ -59,6 +64,8 @@
   <data name="Stats_Highest" xml:space="preserve"><value>Найвище значення</value><comment>Draft: needs native review.</comment></data>
   <data name="Stats_Lowest" xml:space="preserve"><value>Найнижче значення</value><comment>Draft: needs native review.</comment></data>
   <data name="Stats_ZoneShare" xml:space="preserve"><value>Час у кожній зоні</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Header_Average" xml:space="preserve"><value>Середнє · {range}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Header_NightAverage" xml:space="preserve"><value>Середнє за ніч · {range}</value><comment>Draft: needs native review.</comment></data>
   <data name="Gap_DaysNoData_One" xml:space="preserve"><value>{count} день без даних</value><comment>Draft: needs native review.</comment></data>
   <data name="Gap_DaysNoData_Few" xml:space="preserve"><value>{count} дні без даних</value><comment>Draft: needs native review.</comment></data>
   <data name="Gap_DaysNoData_Many" xml:space="preserve"><value>{count} днів без даних</value><comment>Draft: needs native review.</comment></data>
@@ -165,6 +172,8 @@
   <data name="Gallery_Section_Chart" xml:space="preserve"><value>Графік наживо</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_ZoneRibbon" xml:space="preserve"><value>24-годинна стрічка</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Now" xml:space="preserve"><value>Зараз</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Today" xml:space="preserve"><value>Сьогодні</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Avg" xml:space="preserve"><value>сер.</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ідеально 20–24</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_IdealHumidity" xml:space="preserve"><value>ідеально 30–50</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_PeakNow" xml:space="preserve"><value>Пік зараз</value><comment>Draft: needs native review.</comment></data>
@@ -221,8 +230,8 @@
   <data name="Stats_Period_Day" xml:space="preserve"><value>день</value><comment>Draft: needs native review.</comment></data>
   <data name="Stats_Period_Week" xml:space="preserve"><value>тиждень</value><comment>Draft: needs native review.</comment></data>
   <data name="Stats_Period_Month" xml:space="preserve"><value>місяць</value><comment>Draft: needs native review.</comment></data>
-  <data name="Insight_WorstHours" xml:space="preserve"><value>Найгірші години: {from}–{to} (середнє {value}). Відчинене вікно незадовго до цього тримає повітря в зеленій зоні.</value><comment>Draft: needs native review.</comment></data>
-  <data name="Insight_AllGood" xml:space="preserve"><value>Зазвичай CO₂ залишається в зеленій зоні, навіть у найгірші години, {from}–{to} (середнє {value}).</value><comment>Draft: needs native review.</comment></data>
+  <data name="Insight_WorstHours" xml:space="preserve"><value>**Найгірші години: {from}–{to}** (середнє {value}). Відчинене вікно незадовго до цього тримає повітря в зеленій зоні.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Insight_AllGood" xml:space="preserve"><value>**Усе добре.** Зазвичай CO₂ залишається в зеленій зоні, навіть у найгірші години, {from}–{to} (середнє {value}).</value><comment>Draft: needs native review.</comment></data>
   <data name="Offline_Text" xml:space="preserve"><value>Датчик може бути поза зоною дії або «спати».</value><comment>Draft: needs native review.</comment></data>
   <data name="Offline_Text_BluetoothOff" xml:space="preserve"><value>Bluetooth вимкнено, тож Deskair не може зв&apos;язатися з датчиком.</value><comment>Draft: needs native review.</comment></data>
   <data name="Offline_LastReading" xml:space="preserve"><value>Останнє вимірювання: {value}, {time}.</value><comment>Draft: needs native review.</comment></data>

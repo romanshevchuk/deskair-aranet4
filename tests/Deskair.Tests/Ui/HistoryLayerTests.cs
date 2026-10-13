@@ -25,8 +25,15 @@ public class HistoryLayerTests
     private static bool Near(Color expected, Color actual, int tolerance = 12)
         => Math.Abs(expected.R - actual.R) <= tolerance && Math.Abs(expected.G - actual.G) <= tolerance && Math.Abs(expected.B - actual.B) <= tolerance;
 
+    /// <summary>What a colour looks like at the given opacity over nothing: the bitmap holds premultiplied values.</summary>
+    private static Color Soft(Color colour, double opacity)
+        => Color.FromArgb((byte)Math.Round(255 * opacity), (byte)Math.Round(colour.R * opacity), (byte)Math.Round(colour.G * opacity), (byte)Math.Round(colour.B * opacity));
+
+    private static bool NearSoft(Color expected, Color actual, int tolerance = 10)
+        => Math.Abs(expected.A - actual.A) <= tolerance && Math.Abs(expected.R - actual.R) <= tolerance && Math.Abs(expected.G - actual.G) <= tolerance && Math.Abs(expected.B - actual.B) <= tolerance;
+
     [Fact]
-    public void A_complete_bar_is_solid_in_the_metric_colour_from_its_low_to_its_high()
+    public void A_complete_bar_is_a_soft_pill_in_the_metric_colour_from_its_low_to_its_high()
     {
         UiHost.Run(() =>
         {
@@ -35,10 +42,47 @@ public class HistoryLayerTests
 
             var inside = LayerRenderer.Pixel(bitmap, X(area, 20), Y(area, 950));
 
-            Assert.True(Near(LayerRenderer.Token("Metric.Co2.Brush"), inside), "solid metric colour");
+            Assert.True(NearSoft(Soft(LayerRenderer.Token("Metric.Co2.Brush"), 0.4), inside), $"40 % of the metric colour, was {inside}");
             Assert.Equal(0, LayerRenderer.Pixel(bitmap, X(area, 20), Y(area, 1300)).A);
             Assert.Equal(0, LayerRenderer.Pixel(bitmap, X(area, 20), Y(area, 600)).A);
             Assert.Equal(0, LayerRenderer.Pixel(bitmap, X(area, 40), Y(area, 950)).A);
+        });
+    }
+
+    [Fact]
+    public void A_bar_is_narrower_than_its_slot_but_never_wider_than_forty_pixels()
+    {
+        UiHost.Run(() =>
+        {
+            var area = TimeArea();
+            var narrow = LayerRenderer.Render(new RangeBarLayer { Bars = [Bar(10, 30, 700, 1200, 900)] }, area);
+            var wide = LayerRenderer.Render(new RangeBarLayer { Bars = [Bar(0, 100, 700, 1200, 900)] }, area);
+            var y = Y(area, 950);
+
+            // The slot is 50 px: the pill is 56 % of it (28 px) and leaves the 2 px next to the slot edges empty.
+            Assert.Equal(0, LayerRenderer.Pixel(narrow, X(area, 10) + 2, y).A);
+            Assert.True(LayerRenderer.Pixel(narrow, X(area, 20) - 12, y).A > 50);
+
+            // A 250 px slot would give 140 px: the pill stops at 40 px, centred.
+            var drawn = Enumerable.Range(0, LayerRenderer.Width).Count(x => LayerRenderer.Pixel(wide, x, y).A > 50);
+            Assert.InRange(drawn, 38, 41);
+        });
+    }
+
+    [Theory]
+    [InlineData(900, "Good")]
+    [InlineData(1200, "Elevated")]
+    [InlineData(1700, "High")]
+    public void A_CO2_bar_takes_the_soft_colour_of_the_zone_of_its_average(double average, string zone)
+    {
+        UiHost.Run(() =>
+        {
+            var area = TimeArea();
+            var bitmap = LayerRenderer.Render(new RangeBarLayer { Bars = [Bar(10, 30, 700, 1900, average)], ZoneColoured = true }, area);
+
+            var inside = LayerRenderer.Pixel(bitmap, X(area, 20), Y(area, 1100));
+
+            Assert.True(NearSoft(Soft(LayerRenderer.Token($"Zone.{zone}.Segment.Brush"), 0.4), inside), $"{zone}: {inside}");
         });
     }
 
@@ -79,7 +123,7 @@ public class HistoryLayerTests
             var bitmap = LayerRenderer.Render(new RangeBarLayer { Bars = [Bar(10, 30, 1000, 1000, 1000)] }, area);
             var column = X(area, 20);
 
-            var drawn = Enumerable.Range(0, LayerRenderer.Height).Count(y => LayerRenderer.Pixel(bitmap, column, y).A > 128);
+            var drawn = Enumerable.Range(0, LayerRenderer.Height).Count(y => LayerRenderer.Pixel(bitmap, column, y).A > 40);
 
             Assert.True(drawn >= 2, $"{drawn} pixels");
         });
@@ -112,6 +156,39 @@ public class HistoryLayerTests
         });
     }
 
+
+    [Fact]
+    public void The_average_tick_is_three_pixels_thick_and_a_little_wider_than_its_bar()
+    {
+        UiHost.Run(() =>
+        {
+            var area = TimeArea();
+            var bar = Bar(10, 30, 700, 1200, 900);
+            var bars = LayerRenderer.Render(new RangeBarLayer { Bars = [bar] }, area);
+            var tick = LayerRenderer.Render(new AverageLineLayer { Bars = [bar] }, area);
+            var y = Y(area, 900);
+            var barColumns = Enumerable.Range(0, LayerRenderer.Width).Where(x => LayerRenderer.Pixel(bars, x, Y(area, 1100)).A > 40).ToList();
+            var tickColumns = Enumerable.Range(0, LayerRenderer.Width).Where(x => LayerRenderer.Pixel(tick, x, y).A > 100).ToList();
+
+            Assert.True(tickColumns.Min() < barColumns.Min() && tickColumns.Max() > barColumns.Max(), "the tick reaches past both sides of the bar");
+            Assert.InRange(Enumerable.Range(0, LayerRenderer.Height).Count(row => LayerRenderer.Pixel(tick, X(area, 20), row).A > 100), 2, 4);
+        });
+    }
+
+    [Theory]
+    [InlineData(900, "Good")]
+    [InlineData(1200, "Elevated")]
+    [InlineData(1700, "High")]
+    public void A_CO2_tick_takes_the_strong_colour_of_the_zone(double average, string zone)
+    {
+        UiHost.Run(() =>
+        {
+            var area = TimeArea();
+            var bitmap = LayerRenderer.Render(new AverageLineLayer { Bars = [Bar(10, 30, 700, 1900, average)], ZoneColoured = true }, area);
+
+            Assert.True(Near(LayerRenderer.Token($"Zone.{zone}.Line.Brush"), LayerRenderer.Pixel(bitmap, X(area, 20), Y(area, average))));
+        });
+    }
     [Fact]
     public void Buckets_without_an_average_or_data_get_no_tick()
     {

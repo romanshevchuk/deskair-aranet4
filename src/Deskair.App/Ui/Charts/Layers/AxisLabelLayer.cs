@@ -33,13 +33,19 @@ public sealed class AxisLabelLayer : IChartLayer
     /// <summary>Label the time axis with dates ("12 Oct") at local midnights, for charts that span days; otherwise with clock times.</summary>
     public bool DateLabels { get; set; }
 
+    /// <summary>False leaves out the time labels (the labels under day bars are drawn by <see cref="BarLabelLayer"/>); the y labels stay.</summary>
+    public bool TimeLabels { get; set; } = true;
+
     public void Draw(DrawingContext context, ChartArea area)
     {
         var culture = Culture ?? CultureInfo.CurrentUICulture;
         var brush = area.Brush("Text.Tertiary.Brush");
 
         DrawYLabels(context, area, brush, culture);
-        DrawTimeLabels(context, area, brush, culture);
+        if (TimeLabels)
+        {
+            DrawTimeLabels(context, area, brush, culture);
+        }
     }
 
     private void DrawYLabels(DrawingContext context, ChartArea area, Brush brush, CultureInfo culture)
