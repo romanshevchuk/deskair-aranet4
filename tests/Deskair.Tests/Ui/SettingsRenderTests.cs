@@ -79,7 +79,7 @@ public class SettingsRenderTests
 
         var footer = new FooterViewModel(registry, messenger, dispatcher, clock, localizer);
         footer.Start(ConnectionState.Normal, clock.GetUtcNow().AddSeconds(-20), CancellationToken.None);
-        var connection = new ConnectionViewModel(messenger, dispatcher);
+        var connection = new ConnectionViewModel(messenger, dispatcher, localizer);
         connection.Update(ConnectionState.Normal);
         var room = new RoomChipViewModel(registry, settings, messenger, dispatcher, formatter);
         room.Load();

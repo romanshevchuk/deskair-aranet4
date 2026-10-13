@@ -1,16 +1,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Deskair.App.Localization;
 using Deskair.Services.Connection;
 using Deskair.Services.Messages;
 using Deskair.Services.Platform;
 
 namespace Deskair.App.ViewModels.Connection;
 
-public sealed partial class ConnectionViewModel : ObservableObject
+public sealed partial class ConnectionViewModel : RetryingViewModel
 {
-    private readonly IMessenger? messenger;
-
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowStaleBanner))]
     [NotifyPropertyChangedFor(nameof(ShowLowBatteryBanner))]
@@ -23,14 +22,18 @@ public sealed partial class ConnectionViewModel : ObservableObject
     private bool lowBatteryDismissed;
 
     public ConnectionViewModel()
+        : base(null, null, null)
     {
     }
 
     /// <summary>Follows <see cref="ConnectionStateChanged"/> messages, on the UI thread, and can ask for a retry.</summary>
-    public ConnectionViewModel(IMessenger messenger, IUiDispatcher dispatcher)
+    public ConnectionViewModel(IMessenger messenger, IUiDispatcher dispatcher, ILocalizer localizer)
+        : base(messenger, dispatcher, localizer)
     {
-        this.messenger = messenger;
         messenger.Register<ConnectionViewModel, ConnectionStateChanged>(this, (self, message) => dispatcher.Post(() => self.Update(message.State)));
+        messenger.Register<ConnectionViewModel, SensorStatusUpdated>(this, (self, _) => dispatcher.Post(self.EndRetry));
+        messenger.Register<ConnectionViewModel, DeviceSelected>(this, (self, _) => dispatcher.Post(self.EndRetry));
+        messenger.Register<ConnectionViewModel, LanguageChanged>(this, (self, _) => dispatcher.Post(self.RefreshRetryText));
     }
 
     public bool ShowStaleBanner => State == ConnectionState.Stale;
@@ -49,12 +52,6 @@ public sealed partial class ConnectionViewModel : ObservableObject
         }
 
         State = newState;
-    }
-
-    [RelayCommand]
-    private void Retry()
-    {
-        messenger?.Send(new RetryRequested());
     }
 
     [RelayCommand]

@@ -216,6 +216,48 @@ public sealed class SensorSessionTests : IAsyncDisposable
     }
 
     [Fact]
+    public async Task A_failed_attempt_is_announced_so_the_screen_can_say_so()
+    {
+        var failures = new ThreadSafeLog<SensorConnectionFailed>();
+        messenger.Register<SensorConnectionFailed>(this, (_, message) => failures.Add(message));
+        provider.FailCreates = 1;
+
+        await session.StartAsync(device);
+
+        await Wait.Until(() => failures.Count == 1);
+        Assert.Equal(device, failures[0].Device);
+    }
+
+    [Fact]
+    public async Task A_connection_that_never_answers_is_given_up_after_the_timeout_and_announced()
+    {
+        var failures = new ThreadSafeLog<SensorConnectionFailed>();
+        messenger.Register<SensorConnectionFailed>(this, (_, message) => failures.Add(message));
+        sensor.HangConnect = true;
+        await session.StartAsync(device);
+        await Wait.Until(() => clock.PendingTimers >= 1);
+
+        clock.Advance(SensorSession.ConnectTimeout);
+
+        await Wait.Until(() => failures.Count == 1);
+    }
+
+    [Fact]
+    public async Task A_stopped_session_does_not_announce_a_failure()
+    {
+        var failures = new ThreadSafeLog<SensorConnectionFailed>();
+        messenger.Register<SensorConnectionFailed>(this, (_, message) => failures.Add(message));
+        sensor.HangConnect = true;
+        await session.StartAsync(device);
+        await Wait.Until(() => clock.PendingTimers >= 1);
+
+        await session.StopAsync();
+        await Wait.Quiet();
+
+        Assert.Empty(failures);
+    }
+
+    [Fact]
     public async Task An_unknown_provider_is_an_error_and_starts_nothing()
     {
         await session.StartAsync(new DeviceId("nobody", "X"));

@@ -66,7 +66,7 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
             messenger,
             clock,
             NullLogger<SensorSession>.Instance);
-        connection = new ConnectionViewModel(messenger, dispatcher);
+        connection = new ConnectionViewModel(messenger, dispatcher, localizer);
         onboarding = new OnboardingViewModel([provider], new DeviceEnrollment(deviceStore, registry, settings, messenger), radio, localizer, clock, new ListLogger<OnboardingViewModel>());
         settingsScreen = new SettingsViewModel(
             new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance),

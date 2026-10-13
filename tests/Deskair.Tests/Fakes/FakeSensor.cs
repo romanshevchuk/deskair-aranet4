@@ -29,6 +29,9 @@ public sealed class FakeSensor : ISensor
     public Func<int, Reading> OnReadCurrent { get; set; }
         = call => Samples.Co2(Samples.Utc(2026, 10, 9, 12).AddMinutes(2 * call), 800 + call);
 
+    /// <summary>When true, connecting never answers until it is cancelled (Windows waiting for a sensor that is not there).</summary>
+    public bool HangConnect { get; set; }
+
     /// <summary>When true, a current reading never answers until it is cancelled (a sensor out of range that Windows still counts as connected).</summary>
     public bool HangCurrentReads { get; set; }
 
@@ -36,8 +39,7 @@ public sealed class FakeSensor : ISensor
 
     public int MaxConcurrentReads { get; private set; }
 
-    public Task<SensorStatus> ConnectAsync(CancellationToken cancellationToken)
-        => Task.FromResult(new SensorStatus(TimeSpan.FromMinutes(2), 80, -60));
+    public async Task<SensorStatus> ConnectAsync(CancellationToken cancellationToken) { if (HangConnect) { await Task.Delay(Timeout.Infinite, cancellationToken); } return new SensorStatus(TimeSpan.FromMinutes(2), 80, -60); }
 
     public async Task<Reading> ReadCurrentAsync(CancellationToken cancellationToken)
     {

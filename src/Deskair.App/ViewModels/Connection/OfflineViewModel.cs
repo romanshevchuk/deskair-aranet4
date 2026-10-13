@@ -19,7 +19,7 @@ namespace Deskair.App.ViewModels.Connection;
 /// recovery steps, and the two buttons that help. It follows readings, the sensor status and the Bluetooth radio on its own, so it needs no start-up call;
 /// when the sensor cannot be reached from the start it takes the last reading from the stored history.
 /// </summary>
-public sealed partial class OfflineViewModel : ObservableObject
+public sealed partial class OfflineViewModel : RetryingViewModel
 {
     private static readonly TimeSpan lookBack = TimeSpan.FromDays(7);
 
@@ -59,6 +59,7 @@ public sealed partial class OfflineViewModel : ObservableObject
         ILocalizer localizer,
         FriendlyTime time,
         ISystemSettings systemSettings)
+        : base(messenger, dispatcher, localizer)
     {
         this.devices = devices;
         this.query = query;
@@ -93,12 +94,6 @@ public sealed partial class OfflineViewModel : ObservableObject
         systemSettings.OpenBluetoothSettings();
     }
 
-    [RelayCommand]
-    private void Retry()
-    {
-        messenger.Send(new RetryRequested());
-    }
-
     private void UpdateRadio()
     {
         BluetoothOff = !radio.IsOn;
@@ -123,6 +118,7 @@ public sealed partial class OfflineViewModel : ObservableObject
 
         dispatcher.Post(() =>
         {
+            EndRetry();
             batteryPercent = message.Status.BatteryPercent;
             UpdateSteps();
         });
@@ -132,6 +128,7 @@ public sealed partial class OfflineViewModel : ObservableObject
     {
         dispatcher.Post(() =>
         {
+            EndRetry();
             lastReading = null;
             batteryPercent = null;
             LastReadingText = null;
@@ -150,6 +147,7 @@ public sealed partial class OfflineViewModel : ObservableObject
 
             UpdateSteps();
             OnPropertyChanged(nameof(Message));
+            RefreshRetryText();
         });
     }
 

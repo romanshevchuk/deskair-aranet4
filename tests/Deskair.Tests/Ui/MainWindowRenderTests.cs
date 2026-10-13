@@ -115,7 +115,7 @@ public class MainWindowRenderTests
         room.Start(CancellationToken.None);
         messenger.Send(new ReadingReceived(device, store.Readings[^1]));
 
-        var connection = new ConnectionViewModel(messenger, dispatcher);
+        var connection = new ConnectionViewModel(messenger, dispatcher, localizer);
         connection.Update(state);
 
         var radio = new FakeBluetoothRadio { IsOn = !bluetoothOff };

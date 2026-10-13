@@ -18,7 +18,7 @@
         <controls:PrimaryButton Command="{Binding TurnOnBluetoothCommand}"
                                 Content="{loc:T Offline_Bluetooth}"
                                 Visibility="{Binding BluetoothOff, Converter={StaticResource BoolToVisibility}}" />
-        <controls:SecondaryButton Margin="{StaticResource Space.Inline}" Command="{Binding RetryCommand}" Content="{loc:T Action_Retry}" />
+        <controls:SecondaryButton Margin="{StaticResource Space.Inline}" Command="{Binding RetryCommand}" Content="{Binding RetryText}" />
       </StackPanel>
 
       <ItemsControl Margin="{StaticResource Space.Empty.Content}"

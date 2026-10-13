@@ -14,7 +14,7 @@
     <StackPanel Grid.Row="0">
       <controls:Banner Margin="{StaticResource Space.Banner.Below}"
                        Message="{Binding Footer.StatusText}"
-                       ActionText="{loc:T Action_Retry}"
+                       ActionText="{Binding Connection.RetryText}"
                        ActionCommand="{Binding Connection.RetryCommand}">
         <controls:Banner.Style>
           <Style TargetType="{x:Type controls:Banner}">

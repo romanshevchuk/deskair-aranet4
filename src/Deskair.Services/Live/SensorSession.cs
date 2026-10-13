@@ -13,6 +13,9 @@ namespace Deskair.Services.Live;
 /// </summary>
 public sealed class SensorSession : IAsyncDisposable, IDisposable
 {
+    /// <summary>How long one attempt to connect may take. Windows can wait a long time for a sensor that is not there.</summary>
+    public static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(45);
+
     private static readonly TimeSpan retryAfter = TimeSpan.FromSeconds(30);
 
     private readonly IEnumerable<ISensorProvider> providers;
@@ -97,7 +100,7 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
             try
             {
                 await using var sensor = provider.Create(device);
-                var status = await sensor.ConnectAsync(cancellationToken);
+                var status = await ConnectAsync(sensor, cancellationToken);
 
                 if (logger.IsEnabled(LogLevel.Information))
                 {
@@ -143,6 +146,8 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
                 {
                     logger.LogWarning(exception, "The sensor {Address} could not be reached; trying again in {Seconds} s.", device.Address, retryAfter.TotalSeconds);
                 }
+
+                messenger.Send(new SensorConnectionFailed(device));
             }
 
             try
@@ -153,6 +158,21 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
             {
                 return;
             }
+        }
+    }
+
+    private async Task<SensorStatus> ConnectAsync(ISensor sensor, CancellationToken cancellationToken)
+    {
+        using var timeout = new CancellationTokenSource(ConnectTimeout, timeProvider);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
+
+        try
+        {
+            return await sensor.ConnectAsync(linked.Token);
+        }
+        catch (OperationCanceledException) when (timeout.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
+        {
+            throw new TimeoutException($"The sensor did not answer within {ConnectTimeout.TotalSeconds:0} s.");
         }
     }
 

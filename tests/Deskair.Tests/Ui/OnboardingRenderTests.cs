@@ -85,7 +85,7 @@ public class OnboardingRenderTests
 
         var footer = new FooterViewModel(registry, messenger, dispatcher, clock, localizer);
         footer.Start(adding ? ConnectionState.Normal : ConnectionState.FirstRun, null, CancellationToken.None);
-        var connection = new ConnectionViewModel(messenger, dispatcher);
+        var connection = new ConnectionViewModel(messenger, dispatcher, localizer);
         connection.Update(adding ? ConnectionState.Normal : ConnectionState.FirstRun);
         registry.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
         var room = new RoomChipViewModel(registry, settings, messenger, dispatcher, formatter);
