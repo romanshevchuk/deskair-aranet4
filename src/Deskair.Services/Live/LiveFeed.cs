@@ -33,9 +33,13 @@ public sealed class LiveFeed
     /// and the history download contains this reading anyway.
     /// </summary>
     public Task PollOnceAsync(ISensor sensor, DeviceId device, TimeSpan interval, CancellationToken cancellationToken)
-        => PollAsync(sensor, device, interval, cancellationToken, store: false);
+        => PollAsync(sensor, device, interval, store: false, rethrowConnectionFailure: false, cancellationToken);
 
-    /// <summary>Polls at the sensor's interval until cancelled. With <paramref name="pollFirst"/> false the first poll waits one interval, for a caller that has just read.</summary>
+    /// <summary>
+    /// Polls at the sensor's interval until cancelled. A failed read is logged and the next interval tries again, except when the connection itself failed (<see cref="IOException"/>,
+    /// <see cref="TimeoutException"/>): that is logged and thrown, so <see cref="SensorSession"/> opens a new connection instead of polling a dead one.
+    /// With <paramref name="pollFirst"/> false the first poll waits one interval, for a caller that has just read.
+    /// </summary>
     public async Task RunAsync(
         ISensor sensor,
         DeviceId device,
@@ -51,7 +55,7 @@ public sealed class LiveFeed
             {
                 if (!skip)
                 {
-                    await PollAsync(sensor, device, interval, cancellationToken);
+                    await PollAsync(sensor, device, interval, store: true, rethrowConnectionFailure: true, cancellationToken);
                 }
 
                 skip = false;
@@ -64,7 +68,7 @@ public sealed class LiveFeed
         }
     }
 
-    private async Task PollAsync(ISensor sensor, DeviceId device, TimeSpan interval, CancellationToken cancellationToken, bool store = true)
+    private async Task PollAsync(ISensor sensor, DeviceId device, TimeSpan interval, bool store, bool rethrowConnectionFailure, CancellationToken cancellationToken)
     {
         try
         {
@@ -85,6 +89,11 @@ public sealed class LiveFeed
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
             logger.LogWarning(exception, "Reading the current values of {Provider} {Address} failed; trying again in {Interval}.", device.ProviderId, device.Address, interval);
+
+            if (rethrowConnectionFailure && exception is IOException or TimeoutException)
+            {
+                throw;
+            }
         }
     }
 }

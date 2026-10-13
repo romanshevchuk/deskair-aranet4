@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.IO;
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Domain.Readings;
 using Deskair.Services.Live;
@@ -130,6 +131,44 @@ public sealed class LiveFeedTests : IDisposable
 
         await stop.CancelAsync();
         await running;
+    }
+
+    [Theory]
+    [InlineData(typeof(IOException))]
+    [InlineData(typeof(TimeoutException))]
+    public async Task Run_gives_up_when_the_connection_itself_failed_so_the_session_can_reconnect(Type failure)
+    {
+        sensor.OnReadCurrent = _ => throw (Exception)Activator.CreateInstance(failure, "Connection lost.")!;
+
+        await Assert.ThrowsAsync(failure, Start);
+
+        Assert.Empty(received);
+        Assert.Equal(LogLevel.Warning, logger.Entries.Single().Level);
+    }
+
+    [Fact]
+    public async Task Run_gives_up_when_a_later_poll_finds_the_connection_gone()
+    {
+        sensor.OnReadCurrent = call => call == 0
+            ? Samples.Co2(Samples.Utc(2026, 10, 9, 12), 800)
+            : throw new IOException("Connection lost.");
+        var running = Start();
+        await Wait.Until(() => clock.PendingTimers >= 1);
+
+        clock.Advance(interval);
+
+        await Assert.ThrowsAsync<IOException>(() => running);
+        Assert.Equal(800, received.Single().Reading.Co2Ppm);
+    }
+
+    [Fact]
+    public async Task Poll_once_still_does_not_throw_when_the_connection_failed()
+    {
+        sensor.OnReadCurrent = _ => throw new IOException("Connection lost.");
+
+        await feed.PollOnceAsync(sensor, device, interval, stop.Token);
+
+        Assert.Single(logger.Entries);
     }
 
     [Fact]

@@ -1,3 +1,4 @@
+using System.IO;
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Domain.Readings;
 using Deskair.Services.Live;
@@ -194,6 +195,24 @@ public sealed class SensorSessionTests : IAsyncDisposable
         clock.Advance(TimeSpan.FromSeconds(30));
 
         await Wait.Until(() => messages.OfType<ReadingReceived>().Any());
+    }
+
+    [Fact]
+    public async Task A_connection_lost_while_polling_makes_the_session_connect_again_after_30_seconds()
+    {
+        sensor.OnReadCurrent = call => call == 1
+            ? throw new IOException("Connection lost.")
+            : Samples.Co2(start.AddMinutes(call), 800);
+        await session.StartAsync(device);
+        await Wait.Until(() => messages.OfType<ReadingReceived>().Count() == 1);
+        await Wait.Until(() => clock.PendingTimers >= 1);
+
+        clock.Advance(TimeSpan.FromMinutes(2));
+        await Wait.Until(() => logger.Entries.Any(entry => entry.Level == LogLevel.Warning));
+        await Wait.Until(() => clock.PendingTimers >= 1);
+        clock.Advance(TimeSpan.FromSeconds(30));
+
+        await Wait.Until(() => provider.Created.Count == 2);
     }
 
     [Fact]
