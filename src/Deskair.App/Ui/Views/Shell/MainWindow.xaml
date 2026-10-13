@@ -13,6 +13,16 @@
         Title="Deskair"
         Width="1200"
         Height="728">
+  <!-- The header is the title bar: a 52 px caption with the system's own caption buttons, so dragging, double-click, resizing and the snap layouts box on the maximize
+       button all work as usual (docs/plans/spike-s3-title-bar.md). BackdropService adds Mica on Windows 11. -->
+  <WindowChrome.WindowChrome>
+    <WindowChrome CaptionHeight="{StaticResource Size.Header.Height}"
+                  CornerRadius="0"
+                  GlassFrameThickness="0,1,0,0"
+                  ResizeBorderThickness="{StaticResource Space.Window.ResizeBorder}"
+                  UseAeroCaptionButtons="True" />
+  </WindowChrome.WindowChrome>
+
   <Window.Resources>
     <DataTemplate x:Key="Section.LiveScreen"><live:LiveView /></DataTemplate>
     <DataTemplate x:Key="Section.FirstRun"><onboarding:OnboardingView DataContext="{Binding Onboarding}" /></DataTemplate>

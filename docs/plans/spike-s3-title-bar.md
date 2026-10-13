@@ -44,7 +44,7 @@ Notes for WIN-01a:
 ## Not verified
 
 - **Windows 10:** this machine has Windows 11 only. The code path is guarded by the build number (Mica only from 22621); `WindowChrome` itself is supported on Windows 10, with square corners and no snap layouts box (decision D-0001). Please check on a Windows 10 machine or VM if you have one.
-- **Maximized and restored windows, two monitors, other scales:** the spike was not tried maximized. Run `--variant chrome`, maximize and restore it, drag it to another monitor, and check that the header is not clipped.
+- **Maximized, two monitors, other scales:** the real main window was checked maximized on this machine (WIN-01a, header and footer fit, nothing clipped). Not tried: two monitors with different scales, other scales than 100 %.
 - **Mica look in dark theme and with accent colours.**
 
 ## Run it (owner), optional

@@ -111,6 +111,7 @@ public static class ServiceRegistration
     private static IServiceCollection AddUi(this IServiceCollection services)
     {
         services.AddSingleton<ThemeService>();
+        services.AddSingleton<BackdropService>();
         services.AddSingleton<StartupSequence>();
         services.AddSingleton<MetricFormatter>();
         services.AddSingleton<FriendlyTime>();

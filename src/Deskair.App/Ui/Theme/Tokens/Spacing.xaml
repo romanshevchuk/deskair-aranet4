@@ -8,6 +8,10 @@
   <sys:Double x:Key="Size.Footer.Height">40</sys:Double>
   <Thickness x:Key="Space.Page.Padding">24,8,24,20</Thickness>
   <Thickness x:Key="Space.Bar.Padding">24,0,24,0</Thickness>
+  <!-- Header bar on the window with the system caption buttons: the chip keeps clear of the three buttons (3 x 46 = 138) with 12 to spare, so the navigation stays centred in the window. -->
+  <Thickness x:Key="Space.Header.Padding">24,0,0,0</Thickness>
+  <Thickness x:Key="Space.Header.Chip">0,0,150,0</Thickness>
+  <Thickness x:Key="Space.Window.ResizeBorder">6</Thickness>
   <Thickness x:Key="Space.Inline">8,0,0,0</Thickness>
   <Thickness x:Key="Space.Inline.Wide">24,0,0,0</Thickness>
   <Thickness x:Key="Space.Item">0,0,16,16</Thickness>

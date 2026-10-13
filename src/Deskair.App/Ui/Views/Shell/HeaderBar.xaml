@@ -5,8 +5,9 @@
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
              xmlns:vm="clr-namespace:Deskair.App.ViewModels.Shell">
   <!-- DataContext: ShellViewModel. The logo and name on the left, the navigation in the middle, the room chip on the right.
-       The native title bar stays until the title bar question is answered (questions.md Q14). -->
-  <Grid Margin="{StaticResource Space.Bar.Padding}">
+       It is the window's title bar (WindowChrome, 52 px): the empty parts drag the window and double-click maximizes it; the tabs and the chip are marked clickable. The system draws the
+       three caption buttons at the right edge (docs/plans/spike-s3-title-bar.md). -->
+  <Grid Margin="{StaticResource Space.Header.Padding}">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="Auto" />
@@ -25,6 +26,7 @@
 
     <controls:SegmentedControl Grid.Column="1"
                                VerticalAlignment="Center"
+                               WindowChrome.IsHitTestVisibleInChrome="True"
                                AutomationProperties.Name="{loc:T Nav_Main}"
                                SelectedValuePath="Tag"
                                SelectedValue="{Binding Section, Mode=TwoWay}">
@@ -34,7 +36,12 @@
     </controls:SegmentedControl>
 
     <!-- No rooms yet (first run): no chip. -->
-    <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" DataContext="{Binding Room}">
+    <StackPanel Grid.Column="2"
+                Margin="{StaticResource Space.Header.Chip}"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                WindowChrome.IsHitTestVisibleInChrome="True"
+                DataContext="{Binding Room}">
       <StackPanel.Style>
         <Style TargetType="{x:Type StackPanel}">
           <Style.Triggers>

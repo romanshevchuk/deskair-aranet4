@@ -4,6 +4,7 @@ using System.Windows;
 using Deskair.App.Localization;
 using Deskair.App.Platform.Notifications;
 using Deskair.App.Platform.Power;
+using Deskair.App.Platform.Theming;
 using Deskair.App.Platform.Tray;
 using Deskair.App.Ui.Theme;
 using Deskair.App.Ui.Views.Gallery;
@@ -60,6 +61,7 @@ public sealed class StartupSequence : IDisposable
         StartToasts();
 
         var window = services.GetRequiredService<MainWindow>();
+        services.GetRequiredService<BackdropService>().Attach(window);
         var trayStarted = StartTray(window);
 
         // Windows starts the app in the background when a toast button is pressed while it is not running; without a tray icon there would be no way to reach it.
