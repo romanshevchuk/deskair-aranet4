@@ -59,6 +59,42 @@ public class AppOptionsTests
     }
 
     [Fact]
+    public void The_first_run_option_is_read_and_uses_its_own_temp_folder_never_documents()
+    {
+        Assert.True(AppOptions.Parse(["--first-run"]).FirstRun);
+        Assert.False(AppOptions.Parse([]).FirstRun);
+
+        var folders = new KnownFolders(new AppOptions(false, FirstRun: true));
+        var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+        Assert.Equal(KnownFolders.FirstRunFolder, folders.DataFolder);
+        Assert.StartsWith(System.IO.Path.GetTempPath(), folders.DataFolder);
+        Assert.DoesNotContain(documents, folders.DataFolder);
+    }
+
+    [Fact]
+    public void Resetting_the_first_run_folder_deletes_only_that_folder()
+    {
+        var inside = System.IO.Path.Combine(KnownFolders.FirstRunFolder, "devices");
+        System.IO.Directory.CreateDirectory(inside);
+        System.IO.File.WriteAllText(System.IO.Path.Combine(inside, "x.txt"), "x");
+        var neighbour = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Deskair-first-run-neighbour-test");
+        System.IO.Directory.CreateDirectory(neighbour);
+
+        try
+        {
+            KnownFolders.ResetFirstRunFolder();
+
+            Assert.False(System.IO.Directory.Exists(KnownFolders.FirstRunFolder));
+            Assert.True(System.IO.Directory.Exists(neighbour));
+        }
+        finally
+        {
+            System.IO.Directory.Delete(neighbour, recursive: true);
+        }
+    }
+
+    [Fact]
     public void The_real_app_keeps_its_data_in_documents()
     {
         var folders = new KnownFolders(new AppOptions(false));

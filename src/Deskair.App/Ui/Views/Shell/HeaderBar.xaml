@@ -33,7 +33,17 @@
       <ListBoxItem Content="{loc:T Nav_Settings}" Tag="{x:Static vm:ShellSection.Settings}" />
     </controls:SegmentedControl>
 
+    <!-- No rooms yet (first run): no chip. -->
     <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" DataContext="{Binding Room}">
+      <StackPanel.Style>
+        <Style TargetType="{x:Type StackPanel}">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding Rooms.Count}" Value="0">
+              <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </StackPanel.Style>
       <controls:RoomChip IsOpen="{Binding IsOpen, Mode=TwoWay}"
                          RoomName="{Binding SelectedRoom.Name}"
                          Zone="{Binding SelectedRoom.Zone}" />

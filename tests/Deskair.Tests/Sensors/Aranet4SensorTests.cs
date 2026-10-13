@@ -1,6 +1,7 @@
 using System.IO;
 using Deskair.Domain.Readings;
 using Deskair.Sensors.Aranet4;
+using Deskair.Services.Sensors;
 using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.Sensors;
@@ -105,6 +106,37 @@ public class Aranet4SensorTests
         Assert.Equal(11, readings.Count);
         Assert.Equal(since, readings[0].Timestamp);
         Assert.Equal(newestSlot, readings[^1].Timestamp);
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task The_download_reports_every_page_up_to_the_expected_total()
+    {
+        var progress = new ListProgress<HistoryProgress>();
+
+        await foreach (var unused in Sensor(Connection()).ReadHistoryAsync(DateTimeOffset.MinValue, progress, TestContext.Current.CancellationToken))
+        {
+            // Only the progress matters here.
+        }
+
+        // 44 pages each for CO2, temperature and pressure and 22 for humidity: 154, as in the real capture.
+        Assert.Equal(154, progress.Reports.Count);
+        Assert.Equal(Enumerable.Range(1, 154), progress.Reports.Select(report => report.Done));
+        Assert.All(progress.Reports, report => Assert.Equal(154, report.Total));
+    }
+
+    [Fact(Timeout = 30000)]
+    public async Task A_short_download_expects_fewer_pages()
+    {
+        var progress = new ListProgress<HistoryProgress>();
+        var newestSlot = new DateTimeOffset(2026, 10, 12, 19, 0, 0, TimeSpan.Zero);
+
+        await foreach (var unused in Sensor(Connection()).ReadHistoryAsync(newestSlot.AddMinutes(-20), progress, TestContext.Current.CancellationToken))
+        {
+            // Only the progress matters here.
+        }
+
+        Assert.Equal(4, progress.Reports.Count);
+        Assert.Equal(new HistoryProgress(4, 4), progress.Reports[^1]);
     }
 
     [Fact]

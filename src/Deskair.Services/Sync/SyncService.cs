@@ -28,10 +28,15 @@ public sealed class SyncService
 
     private static readonly TimeSpan sensorMemory = TimeSpan.FromDays(7);
 
+    public Task<SyncResult> SyncAsync(ISensor sensor, DeviceId device, TimeSpan interval, CancellationToken cancellationToken)
+        => SyncAsync(sensor, device, interval, null, cancellationToken);
+
+    /// <summary>Syncs, and passes the sensor's download progress on to <paramref name="progress"/> when it reports any.</summary>
     public async Task<SyncResult> SyncAsync(
         ISensor sensor,
         DeviceId device,
         TimeSpan interval,
+        IProgress<HistoryProgress>? progress,
         CancellationToken cancellationToken)
     {
         if (!sensor.Capabilities.History)
@@ -44,7 +49,7 @@ public sealed class SyncService
         try
         {
             var since = await readings.GetLastReadingTimeAsync(device, cancellationToken) ?? now - sensorMemory;
-            var downloaded = await DownloadAsync(sensor, device, since, cancellationToken);
+            var downloaded = await DownloadAsync(sensor, device, since, progress, cancellationToken);
 
             if (downloaded is null)
             {
@@ -69,13 +74,14 @@ public sealed class SyncService
         ISensor sensor,
         DeviceId device,
         DateTimeOffset since,
+        IProgress<HistoryProgress>? progress,
         CancellationToken cancellationToken)
     {
         var downloaded = new List<Reading>();
 
         try
         {
-            await foreach (var reading in sensor.ReadHistoryAsync(since, cancellationToken).WithCancellation(cancellationToken))
+            await foreach (var reading in sensor.ReadHistoryAsync(since, progress, cancellationToken).WithCancellation(cancellationToken))
             {
                 downloaded.Add(reading);
             }

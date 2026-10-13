@@ -42,6 +42,7 @@ public sealed class StartupSequence : IDisposable
         await settings.LoadAsync(CancellationToken.None);
         language.Apply(settings.Current.Language);
         theme.Apply(settings.Current.Theme);
+        services.GetRequiredService<SettingsApplier>().Start(CancellationToken.None);
 
         if (options.Gallery)
         {

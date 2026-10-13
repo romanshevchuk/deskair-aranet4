@@ -54,8 +54,13 @@ public sealed class FakeSensor : ISensor
         }
     }
 
+    public IAsyncEnumerable<Reading> ReadHistoryAsync(DateTimeOffset since, CancellationToken cancellationToken)
+        => ReadHistoryAsync(since, null, cancellationToken);
+
+    /// <summary>Reports one step of progress for every reading it returns.</summary>
     public async IAsyncEnumerable<Reading> ReadHistoryAsync(
         DateTimeOffset since,
+        IProgress<HistoryProgress>? progress,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         HistoryCalls++;
@@ -77,6 +82,7 @@ public sealed class FakeSensor : ISensor
             }
 
             await Task.Yield();
+            progress?.Report(new HistoryProgress(index + 1, History.Count));
 
             yield return History[index];
         }

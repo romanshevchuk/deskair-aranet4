@@ -8,6 +8,7 @@ using Deskair.Domain.Zones;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
 using Deskair.Services.Queries;
+using Deskair.Services.Settings;
 using Deskair.Services.Storage;
 using Deskair.Services.Sync;
 using Deskair.Tests.Fakes;
@@ -202,6 +203,19 @@ public class LiveViewModelTests
 
         await Wait.Until(() => hero.Co2Ppm == 1500);
         Assert.Equal(1500, gauge.Value);
+    }
+
+    [Fact]
+    public async Task Changing_a_setting_reloads_the_screen_so_units_follow()
+    {
+        await SelectDeviceAsync();
+        AddHour(600);
+        await viewModel.StartAsync(TestContext.Current.CancellationToken);
+        store.Readings.Add(Samples.Co2(now.AddMinutes(-1), 1500));
+
+        messenger.Send(new SettingsChanged(AppSettings.Default));
+
+        await Wait.Until(() => hero.Co2Ppm == 1500);
     }
 
     [Fact]

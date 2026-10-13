@@ -4,7 +4,7 @@
 
 ## Sensor sync
 
-- Run on launch and on every reconnect.
+- Run on launch and on every reconnect. The current reading is shown as soon as the sensor connects, before the history download, because the first download of a whole week takes about 25 seconds.
 - The Aranet4 stores up to about 7 days. The user should open the app at least weekly.
 - Sync fills missing slots only (see merge rule in `data-model.md`). Timestamps are computed from the sync time and each reading's age, so allow a few seconds of error and snap to the interval grid.
 - After sync, Live must have the last 24 h.

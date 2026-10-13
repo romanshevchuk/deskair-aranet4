@@ -1,14 +1,23 @@
 <UserControl x:Class="Deskair.App.Ui.Views.Settings.AlertsSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(SET-01k) [S, haiku]
-       Spec: docs/design/screens-and-states.md "Settings"; docs/product/behaviour-rules.md "Alerts"
-       Input : AlertsSettingsViewModel.
-       Output: Notify at Elevated and High, quiet hours, and the "Alerts paused by Windows" line.
-       Rules : The paused line shows only while IDoNotDisturb.IsActive.
-       Edge  : None.
-       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
-  <Grid>
-  </Grid>
+  <!-- DataContext: AlertsSettingsViewModel. The switches save at once. The quiet hours times and the "paused by Windows" line come with their own cards. -->
+  <controls:SettingsCard Header="{loc:T Settings_Alerts}">
+    <StackPanel>
+      <controls:SettingsRow Header="{loc:T Settings_Alerts_Enabled}" Description="{loc:T Settings_Alerts_EnabledHint}">
+        <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_Enabled}" IsChecked="{Binding AlertsEnabled, Mode=TwoWay}" />
+      </controls:SettingsRow>
+      <controls:SettingsRow Header="{loc:T Settings_Alerts_Elevated}">
+        <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_Elevated}" IsChecked="{Binding NotifyAtElevated, Mode=TwoWay}" />
+      </controls:SettingsRow>
+      <controls:SettingsRow Header="{loc:T Settings_Alerts_High}">
+        <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_High}" IsChecked="{Binding NotifyAtHigh, Mode=TwoWay}" />
+      </controls:SettingsRow>
+      <controls:SettingsRow Header="{loc:T Settings_QuietHours}" Description="{loc:T Settings_QuietHours_Hint}">
+        <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_QuietHours}" IsChecked="{Binding QuietHoursEnabled, Mode=TwoWay}" />
+      </controls:SettingsRow>
+    </StackPanel>
+  </controls:SettingsCard>
 </UserControl>

@@ -72,6 +72,7 @@ public sealed partial class LiveViewModel : ObservableObject
         messenger.Register<LiveViewModel, ReadingReceived>(this, static (self, message) => self.OnReading(message));
         messenger.Register<LiveViewModel, ZoneChanged>(this, static (self, message) => self.OnZoneChanged(message));
         messenger.Register<LiveViewModel, DeviceSelected>(this, static (self, _) => self.OnReload());
+        messenger.Register<LiveViewModel, SettingsChanged>(this, static (self, _) => self.OnReload());
         messenger.Register<LiveViewModel, SyncCompleted>(this, static (self, message) => self.OnSyncCompleted(message));
         tabs.PropertyChanged += OnTabsChanged;
         cancellationToken.Register(Stop);

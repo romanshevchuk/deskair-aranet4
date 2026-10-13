@@ -1,20 +1,19 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
+using Deskair.Domain.Readings;
 using Deskair.Domain.Zones;
 using Deskair.Services.Connection;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
 using Deskair.Services.Platform;
+using Deskair.Services.Sensors;
 
 namespace Deskair.App.ViewModels.Shell;
 
 /// <summary>The footer: status dot, "Connected · updated 12 s ago", room, sensor id, signal and battery. Text is already localized.</summary>
 public sealed partial class FooterViewModel : ObservableObject
 {
-    private const int GoodSignalDbm = -60;
-    private const int FairSignalDbm = -75;
-
     private readonly DeviceRegistry devices;
     private readonly IMessenger messenger;
     private readonly IUiDispatcher dispatcher;
@@ -30,6 +29,10 @@ public sealed partial class FooterViewModel : ObservableObject
 
     [ObservableProperty]
     private string? statusText;
+
+    /// <summary>"Syncing history… 42 of 154" while the history downloads; null otherwise.</summary>
+    [ObservableProperty]
+    private string? syncText;
 
     /// <summary>"Office · 0A0B3 · Signal fair". Null without a sensor.</summary>
     [ObservableProperty]
@@ -73,6 +76,9 @@ public sealed partial class FooterViewModel : ObservableObject
         messenger.Register<FooterViewModel, ReadingReceived>(this, static (self, message) => self.OnReading(message));
         messenger.Register<FooterViewModel, SensorStatusUpdated>(this, static (self, message) => self.OnStatus(message));
         messenger.Register<FooterViewModel, DeviceSelected>(this, static (self, _) => self.OnDeviceSelected());
+        messenger.Register<FooterViewModel, SyncStarted>(this, static (self, _) => self.ShowSync(null));
+        messenger.Register<FooterViewModel, SyncProgressed>(this, static (self, message) => self.ShowSync(message.Progress));
+        messenger.Register<FooterViewModel, SyncCompleted>(this, static (self, _) => self.ShowSync(null, hide: true));
         cancellationToken.Register(() => messenger.UnregisterAll(this));
 
         Refresh();
@@ -126,7 +132,12 @@ public sealed partial class FooterViewModel : ObservableObject
 
         if (signalDbm is { } dbm)
         {
-            parts.Add(localizer.Get(dbm >= GoodSignalDbm ? "Footer_Signal_Good" : dbm >= FairSignalDbm ? "Footer_Signal_Fair" : "Footer_Signal_Weak"));
+            parts.Add(localizer.Get(SignalClassifier.Classify(dbm) switch
+            {
+                SignalLevel.Good => "Footer_Signal_Good",
+                SignalLevel.Fair => "Footer_Signal_Fair",
+                _ => "Footer_Signal_Weak"
+            }));
         }
 
         return string.Join(" · ", parts);
@@ -197,5 +208,22 @@ public sealed partial class FooterViewModel : ObservableObject
             BatteryText = null;
             Refresh();
         });
+    }
+
+    /// <summary>The share of the download that has arrived, as text in the selected culture. Never above 100 %.</summary>
+    private string Percent(HistoryProgress progress)
+    {
+        var share = progress.Total <= 0 ? 0 : Math.Min(1.0, (double)progress.Done / progress.Total);
+
+        return share.ToString("P0", localizer.Culture);
+    }
+
+    private void ShowSync(HistoryProgress? progress, bool hide = false)
+    {
+        dispatcher.Post(() => SyncText = hide
+            ? null
+            : progress is { } value
+                ? localizer.Format("Footer_Syncing", ("percent", Percent(value)))
+                : localizer.Get("Footer_SyncingStart"));
     }
 }

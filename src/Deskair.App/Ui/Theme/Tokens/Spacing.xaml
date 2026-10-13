@@ -87,5 +87,22 @@
   <sys:Double x:Key="Size.Battery.Width">26</sys:Double>
   <sys:Double x:Key="Size.Battery.Height">12</sys:Double>
 
+  <!-- Settings card and row (CTRL-14, CTRL-15): prototype values (card padding 12 22 2, row min height 40, gap 16). -->
+  <Thickness x:Key="Space.SettingsCard.Padding">22,12,22,2</Thickness>
+  <Thickness x:Key="Space.SettingsCard.Header">0,0,0,2</Thickness>
+  <Thickness x:Key="Space.SettingsRow.Label">0,0,16,0</Thickness>
+  <Thickness x:Key="Space.SettingsRow.Padding">0,4,0,4</Thickness>
+  <sys:Double x:Key="Size.SettingsRow.MinHeight">40</sys:Double>
+  <Thickness x:Key="Space.Input.Padding">14,6,14,6</Thickness>
+  <sys:Double x:Key="Size.Input.MinWidth">200</sys:Double>
+
+  <!-- First-run screen (prototype: welcome card padding 26 28, step rows 10 high, 26 px badge, gap 12). -->
+  <Thickness x:Key="Space.Welcome.Padding">28,26,28,26</Thickness>
+  <Thickness x:Key="Space.Welcome.Text">0,6,0,18</Thickness>
+  <Thickness x:Key="Space.Step.Padding">0,10,0,10</Thickness>
+  <Thickness x:Key="Space.Step.Text">12,0,0,0</Thickness>
+  <Thickness x:Key="Space.Onboarding.Message">4,12,4,0</Thickness>
+  <sys:Double x:Key="Size.Step.Badge">26</sys:Double>
+
   <Duration x:Key="Motion.Toggle">0:0:0.15</Duration>
 </ResourceDictionary>

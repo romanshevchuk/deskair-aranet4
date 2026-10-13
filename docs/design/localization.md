@@ -103,3 +103,15 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Toast_Snooze | Snooze 1 h | Відкласти на 1 год |
 | Toast_Dismiss | Dismiss | Закрити |
 | Action_OpenApp | Open Deskair | Відкрити Deskair |
+| Onboarding_Welcome_Title | Welcome to Deskair | Ласкаво просимо до Deskair |
+| Onboarding_Welcome_Text | Watch your room’s CO₂, temperature, humidity and pressure, and get a nudge when it’s time to open a window. | Стежте за CO₂, температурою, вологістю й тиском у кімнаті та отримуйте нагадування, коли час відчинити вікно. |
+| Onboarding_Step_Pick | Pick your sensor, then name the room | Оберіть датчик і назвіть кімнату |
+| Onboarding_Nearby_Title | Sensors found nearby | Датчики поблизу |
+| Onboarding_Pair | Pair | Підключити |
+| Onboarding_Searching | Looking for sensors… | Пошук датчиків… |
+| Onboarding_NoSensor | No sensor found yet. Wake your sensor and keep it close to your PC. | Датчик ще не знайдено. Розбудіть його й тримайте поруч із ПК. |
+| Onboarding_BluetoothOff | Bluetooth is off. Turn it on in Windows settings, then try again. | Bluetooth вимкнено. Увімкніть його в налаштуваннях Windows і спробуйте ще раз. |
+| Onboarding_Room_Title / Name | Room / Name | Кімната / Назва |
+| Onboarding_Room_NameHint | Shown in the title bar and notifications | Показується в заголовку вікна та у сповіщеннях |
+| Onboarding_Room_DefaultName | My room | Моя кімната |
+| Onboarding_PairFailed | Could not add the sensor. Try again. | Не вдалося додати датчик. Спробуйте ще раз. |

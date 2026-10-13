@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
 using Deskair.Domain.Metrics;
+using Deskair.Domain.Readings;
 using Deskair.Domain.Zones;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
@@ -57,6 +58,7 @@ public sealed partial class RoomChipViewModel : ObservableObject
     {
         messenger.UnregisterAll(this);
         messenger.Register<RoomChipViewModel, ReadingReceived>(this, static (self, message) => self.OnReading(message));
+        messenger.Register<RoomChipViewModel, DeviceSelected>(this, static (self, message) => self.OnDeviceSelected(message.Device));
         cancellationToken.Register(() => messenger.UnregisterAll(this));
     }
 
@@ -75,6 +77,18 @@ public sealed partial class RoomChipViewModel : ObservableObject
 
         await settings.UpdateAsync(current => current with { SelectedDevice = room.Device }, CancellationToken.None);
         messenger.Send(new DeviceSelected(room.Device));
+    }
+
+    /// <summary>A room that is new to the list (just paired) is added; a known room keeps the values the list already shows.</summary>
+    private void OnDeviceSelected(DeviceId device)
+    {
+        dispatcher.Post(() =>
+        {
+            if (Rooms.All(room => room.Device != device))
+            {
+                Load();
+            }
+        });
     }
 
     private void OnReading(ReadingReceived message)

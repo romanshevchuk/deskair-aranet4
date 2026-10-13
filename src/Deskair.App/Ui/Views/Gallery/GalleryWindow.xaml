@@ -63,6 +63,8 @@
         <gallery:StatusDotSection />
         <gallery:ToggleSwitchSection />
         <gallery:SegmentedControlSection />
+        <gallery:TextInputSection />
+        <gallery:SettingsCardSection />
       </StackPanel>
     </ScrollViewer>
   </Grid>

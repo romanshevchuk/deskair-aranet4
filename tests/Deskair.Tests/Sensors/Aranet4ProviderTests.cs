@@ -69,6 +69,20 @@ public class Aranet4ProviderTests
     }
 
     [Fact]
+    public async Task A_sensor_first_seen_without_a_name_is_reported_again_when_its_name_arrives()
+    {
+        var provider = Provider(new FakeBleScanner(
+            Advertisement("C3DEC8FCC7C6", null, -73, company: 0x0702),
+            Advertisement("C3DEC8FCC7C6", "Aranet4 0A0B3", -71),
+            Advertisement("C3DEC8FCC7C6", "Aranet4 0A0B3", -70)));
+
+        var found = await ScanAll(provider);
+
+        Assert.Equal([null, "Aranet4 0A0B3"], found.Select(sensor => sensor.Name));
+        Assert.All(found, sensor => Assert.Equal("C3DEC8FCC7C6", sensor.Id.Address));
+    }
+
+    [Fact]
     public async Task Scanning_stops_when_cancelled()
     {
         var provider = Provider(new FakeBleScanner(Advertisement("A", "Aranet4 1"), Advertisement("B", "Aranet4 2")));

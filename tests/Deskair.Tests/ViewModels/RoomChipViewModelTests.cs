@@ -36,6 +36,38 @@ public sealed class RoomChipViewModelTests : IDisposable
     }
 
     [Fact]
+    public async Task A_room_that_was_just_paired_is_added_to_the_list_when_it_is_selected()
+    {
+        deviceStore.Devices.Clear();
+        await registry.LoadAsync(TestContext.Current.CancellationToken);
+        viewModel.Load();
+        viewModel.Start(TestContext.Current.CancellationToken);
+        Assert.Empty(viewModel.Rooms);
+
+        deviceStore.Devices.Add(new DeviceInfo(office, "My room", null, [], null));
+        await registry.LoadAsync(TestContext.Current.CancellationToken);
+        messenger.Send(new DeviceSelected(office));
+
+        Assert.Equal(["My room"], viewModel.Rooms.Select(room => room.Name));
+        Assert.Equal("My room", viewModel.SelectedRoom?.Name);
+    }
+
+    [Fact]
+    public async Task Selecting_a_known_room_keeps_the_values_the_list_shows()
+    {
+        await registry.LoadAsync(TestContext.Current.CancellationToken);
+        viewModel.Load();
+        viewModel.Start(TestContext.Current.CancellationToken);
+        messenger.Send(new ReadingReceived(office, Samples.Co2(now, 800)));
+        var before = viewModel.Rooms[0].ValueText;
+
+        messenger.Send(new DeviceSelected(office));
+
+        Assert.NotNull(before);
+        Assert.Equal(before, viewModel.Rooms[0].ValueText);
+    }
+
+    [Fact]
     public async Task Load_lists_the_rooms_and_selects_the_current_one()
     {
         await registry.LoadAsync(TestContext.Current.CancellationToken);

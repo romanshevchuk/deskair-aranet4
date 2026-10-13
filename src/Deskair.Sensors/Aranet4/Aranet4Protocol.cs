@@ -69,6 +69,11 @@ public static class Aranet4Protocol
     /// <summary>Page header: metric (1), interval (2), total readings (2), seconds since newest (2), first index (2, 1-based), value count (1).</summary>
     public const int PageHeaderLength = 10;
 
+    /// <summary>Values in one full page (seen: 117 two-byte values, 234 one-byte humidity values, in 244-byte pages).</summary>
+    public const int ValuesPerPage = 117;
+
+    public const int HumidityValuesPerPage = 234;
+
     public const int PageIntervalOffset = 1;
 
     public const int PageTotalOffset = 3;

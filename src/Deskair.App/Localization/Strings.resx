@@ -70,6 +70,17 @@
   <data name="Settings_Devices" xml:space="preserve"><value>Devices</value></data>
   <data name="Settings_Data" xml:space="preserve"><value>Data and storage</value></data>
   <data name="Settings_Startup" xml:space="preserve"><value>Start-up</value></data>
+  <data name="Settings_Appearance" xml:space="preserve"><value>Appearance and units</value></data>
+  <data name="Settings_Unit" xml:space="preserve"><value>Temperature unit</value></data>
+  <data name="Unit_Celsius" xml:space="preserve"><value>°C</value></data>
+  <data name="Unit_Fahrenheit" xml:space="preserve"><value>°F</value></data>
+  <data name="Settings_Alerts_Enabled" xml:space="preserve"><value>Alerts</value></data>
+  <data name="Settings_Alerts_EnabledHint" xml:space="preserve"><value>A notification when the air gets worse</value></data>
+  <data name="Settings_Alerts_Elevated" xml:space="preserve"><value>Notify at Elevated</value></data>
+  <data name="Settings_Alerts_High" xml:space="preserve"><value>Notify at High</value></data>
+  <data name="Settings_QuietHours_Hint" xml:space="preserve"><value>No notifications at night</value></data>
+  <data name="Settings_Startup_Windows" xml:space="preserve"><value>Start with Windows</value></data>
+  <data name="Settings_Startup_WindowsHint" xml:space="preserve"><value>Deskair opens when you sign in</value></data>
   <data name="Toast_Elevated_Title" xml:space="preserve"><value>CO₂ is elevated · {room}</value></data>
   <data name="Toast_Snooze" xml:space="preserve"><value>Snooze 1 h</value></data>
   <data name="Toast_Dismiss" xml:space="preserve"><value>Dismiss</value></data>
@@ -123,10 +134,28 @@
   <data name="Footer_Signal_Good" xml:space="preserve"><value>Signal good</value></data>
   <data name="Footer_Signal_Fair" xml:space="preserve"><value>Signal fair</value></data>
   <data name="Footer_Signal_Weak" xml:space="preserve"><value>Signal weak</value></data>
+  <data name="Footer_SyncingStart" xml:space="preserve"><value>· Syncing history…</value></data>
+  <data name="Footer_Syncing" xml:space="preserve"><value>· Syncing history… {percent}</value></data>
+  <data name="Onboarding_Room_DefaultName" xml:space="preserve"><value>My room</value></data>
+  <data name="Onboarding_Step_Pick" xml:space="preserve"><value>Pick your sensor, then name the room</value></data>
+  <data name="Onboarding_Welcome_Title" xml:space="preserve"><value>Welcome to Deskair</value></data>
+  <data name="Onboarding_Welcome_Text" xml:space="preserve"><value>Watch your room’s CO₂, temperature, humidity and pressure, and get a nudge when it’s time to open a window.</value></data>
+  <data name="Onboarding_Nearby_Title" xml:space="preserve"><value>Sensors found nearby</value></data>
+  <data name="Onboarding_Pair" xml:space="preserve"><value>Pair</value></data>
+  <data name="Onboarding_Searching" xml:space="preserve"><value>Looking for sensors…</value></data>
+  <data name="Onboarding_NoSensor" xml:space="preserve"><value>No sensor found yet. Wake your sensor and keep it close to your PC.</value></data>
+  <data name="Onboarding_BluetoothOff" xml:space="preserve"><value>Bluetooth is off. Turn it on in Windows settings, then try again.</value></data>
+  <data name="Onboarding_Room_Title" xml:space="preserve"><value>Room</value></data>
+  <data name="Onboarding_Room_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Onboarding_Room_NameHint" xml:space="preserve"><value>Shown in the title bar and notifications</value></data>
+  <data name="Onboarding_PairFailed" xml:space="preserve"><value>Could not add the sensor. Try again.</value></data>
+  <data name="Gallery_Section_TextInput" xml:space="preserve"><value>Text input</value></data>
   <data name="Banner_LowBattery" xml:space="preserve"><value>Sensor battery is low ({percent})</value></data>
   <data name="Startup_Failed" xml:space="preserve"><value>Deskair could not start: {message}</value></data>
   <data name="Gallery_Section_StatusDot" xml:space="preserve"><value>Status dot</value></data>
   <data name="Gallery_Sample_CardText" xml:space="preserve"><value>Card content</value></data>
   <data name="Gallery_Sample_Disabled" xml:space="preserve"><value>Disabled</value></data>
+  <data name="Gallery_Section_SettingsCard" xml:space="preserve"><value>Settings card and rows</value></data>
+  <data name="Gallery_Sample_RowDescription" xml:space="preserve"><value>A short explanation under the label</value></data>
   <data name="Nav_Main" xml:space="preserve"><value>Main navigation</value></data>
 </root>

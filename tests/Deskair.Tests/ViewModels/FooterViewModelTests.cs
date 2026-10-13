@@ -5,6 +5,7 @@ using Deskair.Domain.Zones;
 using Deskair.Services.Connection;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
+using Deskair.Services.Sensors;
 using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.ViewModels;
@@ -40,6 +41,29 @@ public sealed class FooterViewModelTests : IDisposable
         }
 
         viewModel.Start(state, withDevice ? start : null, CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task While_the_history_downloads_the_footer_says_so_with_the_progress()
+    {
+        await StartAsync();
+        Assert.Null(viewModel.SyncText);
+
+        messenger.Send(new SyncStarted(device));
+        Assert.Equal("Footer_SyncingStart", viewModel.SyncText);
+
+        messenger.Send(new SyncProgressed(device, new HistoryProgress(42, 154)));
+        Assert.Equal("Footer_Syncing(percent=27%)", viewModel.SyncText);
+
+        messenger.Send(new SyncProgressed(device, new HistoryProgress(154, 154)));
+        Assert.Equal("Footer_Syncing(percent=100%)", viewModel.SyncText);
+
+        // More pages than expected never show more than 100 %.
+        messenger.Send(new SyncProgressed(device, new HistoryProgress(160, 154)));
+        Assert.Equal("Footer_Syncing(percent=100%)", viewModel.SyncText);
+
+        messenger.Send(new SyncCompleted(device, 5040));
+        Assert.Null(viewModel.SyncText);
     }
 
     [Fact]

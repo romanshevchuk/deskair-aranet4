@@ -27,17 +27,34 @@ public sealed class LiveFeed
         this.logger = logger;
     }
 
+    /// <summary>
+    /// Reads the current values once and raises ReadingReceived, without storing the reading. A failed read is logged and not thrown.
+    /// It shows a value right after connecting; it must not be stored, because the history sync asks the sensor for everything after the newest stored reading,
+    /// and the history download contains this reading anyway.
+    /// </summary>
+    public Task PollOnceAsync(ISensor sensor, DeviceId device, TimeSpan interval, CancellationToken cancellationToken)
+        => PollAsync(sensor, device, interval, cancellationToken, store: false);
+
+    /// <summary>Polls at the sensor's interval until cancelled. With <paramref name="pollFirst"/> false the first poll waits one interval, for a caller that has just read.</summary>
     public async Task RunAsync(
         ISensor sensor,
         DeviceId device,
         TimeSpan interval,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        bool pollFirst = true)
     {
+        var skip = !pollFirst;
+
         try
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await PollAsync(sensor, device, interval, cancellationToken);
+                if (!skip)
+                {
+                    await PollAsync(sensor, device, interval, cancellationToken);
+                }
+
+                skip = false;
                 await Task.Delay(interval, timeProvider, cancellationToken);
             }
         }
@@ -47,13 +64,17 @@ public sealed class LiveFeed
         }
     }
 
-    private async Task PollAsync(ISensor sensor, DeviceId device, TimeSpan interval, CancellationToken cancellationToken)
+    private async Task PollAsync(ISensor sensor, DeviceId device, TimeSpan interval, CancellationToken cancellationToken, bool store = true)
     {
         try
         {
             var reading = await sensor.ReadCurrentAsync(cancellationToken);
 
-            await readings.MergeAsync(device, [reading], ReadingSource.Device, interval, cancellationToken);
+            if (store)
+            {
+                await readings.MergeAsync(device, [reading], ReadingSource.Device, interval, cancellationToken);
+            }
+
             messenger.Send(new ReadingReceived(device, reading));
 
             if (logger.IsEnabled(LogLevel.Information))

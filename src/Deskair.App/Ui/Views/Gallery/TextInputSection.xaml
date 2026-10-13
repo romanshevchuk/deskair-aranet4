@@ -1,0 +1,22 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Gallery.TextInputSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <StackPanel>
+    <TextBlock Margin="{StaticResource Space.SectionLabel}"
+               Style="{StaticResource Text.SectionLabel}"
+               Text="{loc:T Gallery_Section_TextInput}" />
+    <WrapPanel>
+      <controls:TextInput Margin="{StaticResource Space.Item}"
+                          AutomationProperties.Name="{loc:T Onboarding_Room_Name}"
+                          Text="{loc:T Onboarding_Room_DefaultName}" />
+      <controls:TextInput Margin="{StaticResource Space.Item}"
+                          AutomationProperties.Name="{loc:T Onboarding_Room_Name}" />
+      <controls:TextInput Margin="{StaticResource Space.Item}"
+                          AutomationProperties.Name="{loc:T Gallery_Sample_Disabled}"
+                          IsEnabled="False"
+                          Text="{loc:T Gallery_Sample_Disabled}" />
+    </WrapPanel>
+  </StackPanel>
+</UserControl>

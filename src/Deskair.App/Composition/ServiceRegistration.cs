@@ -11,6 +11,8 @@ using Deskair.App.Ui.Views.Gallery;
 using Deskair.App.Ui.Views.Shell;
 using Deskair.App.ViewModels.Connection;
 using Deskair.App.ViewModels.Live;
+using Deskair.App.ViewModels.Onboarding;
+using Deskair.App.ViewModels.Settings;
 using Deskair.App.ViewModels.Shell;
 using Deskair.Sensors.Aranet4;
 using Deskair.Sensors.Simulated;
@@ -35,7 +37,12 @@ public static class ServiceRegistration
 
         services.AddDeskairServices();
         services.AddDeskairStorage();
-        services.AddSimulated();
+        // Simulated sensors are for the gallery, tests and --simulated; a real first run must not list one.
+        if (options.Simulated || options.Gallery)
+        {
+            services.AddSimulated();
+        }
+
         services.AddAranet4();
 
         services.AddWindowsPlatform(options);
@@ -97,16 +104,26 @@ public static class ServiceRegistration
         services.AddSingleton<ConnectionViewModel>();
         services.AddSingleton<FooterViewModel>();
         services.AddSingleton<RoomChipViewModel>();
+        services.AddSingleton<OnboardingViewModel>();
+        services.AddSingleton<AppearanceSettingsViewModel>();
+        services.AddSingleton<AlertsSettingsViewModel>();
+        services.AddSingleton<DevicesSettingsViewModel>();
+        services.AddSingleton<DataSettingsViewModel>();
+        services.AddSingleton<StartupSettingsViewModel>();
+        services.AddSingleton<SettingsViewModel>();
         services.AddSingleton(provider => new ShellViewModel
         {
             Live = provider.GetRequiredService<LiveViewModel>(),
             Connection = provider.GetRequiredService<ConnectionViewModel>(),
             Footer = provider.GetRequiredService<FooterViewModel>(),
-            Room = provider.GetRequiredService<RoomChipViewModel>()
+            Room = provider.GetRequiredService<RoomChipViewModel>(),
+            Onboarding = provider.GetRequiredService<OnboardingViewModel>(),
+            Settings = provider.GetRequiredService<SettingsViewModel>()
         });
         services.AddSingleton<SensorSession>();
         services.AddSingleton<ConnectionTracker>();
         services.AddSingleton<AppServicesStarter>();
+        services.AddSingleton<SettingsApplier>();
         services.AddTransient<MainWindow>();
         services.AddTransient<GalleryWindow>();
 

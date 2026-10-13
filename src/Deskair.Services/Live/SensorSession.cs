@@ -106,7 +106,23 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
 
                 messenger.Send(new SensorStatusUpdated(device, status));
 
-                var result = await sync.SyncAsync(sensor, device, status.Interval, cancellationToken);
+                // Show the current value at once: the first history download can take half a minute.
+                await liveFeed.PollOnceAsync(sensor, device, status.Interval, cancellationToken);
+
+                SyncResult result;
+                messenger.Send(new SyncStarted(device));
+
+                try
+                {
+                    result = await sync.SyncAsync(sensor, device, status.Interval, new ProgressMessages(messenger, device), cancellationToken);
+                }
+                catch
+                {
+                    // Whatever went wrong, the "syncing" note must not stay on screen.
+                    messenger.Send(new SyncCompleted(device, 0));
+
+                    throw;
+                }
 
                 if (logger.IsEnabled(LogLevel.Information))
                 {
@@ -115,7 +131,7 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
 
                 messenger.Send(new SyncCompleted(device, result.ReadingsAdded));
 
-                await liveFeed.RunAsync(sensor, device, status.Interval, cancellationToken);
+                await liveFeed.RunAsync(sensor, device, status.Interval, cancellationToken, pollFirst: false);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -138,5 +154,20 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
                 return;
             }
         }
+    }
+
+    /// <summary>Turns the sensor's download progress into messages, as it arrives (no thread hop).</summary>
+    private sealed class ProgressMessages : IProgress<HistoryProgress>
+    {
+        private readonly IMessenger messenger;
+        private readonly DeviceId device;
+
+        public ProgressMessages(IMessenger messenger, DeviceId device)
+        {
+            this.messenger = messenger;
+            this.device = device;
+        }
+
+        public void Report(HistoryProgress value) => messenger.Send(new SyncProgressed(device, value));
     }
 }

@@ -10,6 +10,16 @@ public sealed partial class SettingsViewModel : ObservableObject
     private readonly DataSettingsViewModel data;
     private readonly StartupSettingsViewModel startup;
 
+    public AppearanceSettingsViewModel Appearance => appearance;
+
+    public AlertsSettingsViewModel Alerts => alerts;
+
+    public DevicesSettingsViewModel Devices => devices;
+
+    public DataSettingsViewModel Data => data;
+
+    public StartupSettingsViewModel Startup => startup;
+
     public SettingsViewModel(AppearanceSettingsViewModel appearance, AlertsSettingsViewModel alerts, DevicesSettingsViewModel devices, DataSettingsViewModel data, StartupSettingsViewModel startup)
     {
         this.appearance = appearance;

@@ -1,0 +1,41 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Gallery.SettingsCardSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <StackPanel>
+    <TextBlock Margin="{StaticResource Space.SectionLabel}"
+               Style="{StaticResource Text.SectionLabel}"
+               Text="{loc:T Gallery_Section_SettingsCard}" />
+    <WrapPanel>
+      <controls:SettingsCard Width="420"
+                             Margin="{StaticResource Space.Item}"
+                             Header="{loc:T Settings_Alerts}">
+        <StackPanel>
+          <controls:SettingsRow Header="{loc:T Settings_QuietHours}" Description="{loc:T Gallery_Sample_RowDescription}">
+            <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_QuietHours}" IsChecked="True" />
+          </controls:SettingsRow>
+          <controls:SettingsRow Header="{loc:T Settings_Language}">
+            <controls:SegmentedControl AutomationProperties.Name="{loc:T Settings_Language}" SelectedIndex="0">
+              <ListBoxItem Content="{loc:T Language_English}" />
+              <ListBoxItem Content="{loc:T Language_Ukrainian}" />
+            </controls:SegmentedControl>
+          </controls:SettingsRow>
+          <controls:SettingsRow Header="{loc:T Settings_Theme}" Description="{loc:T Gallery_Sample_RowDescription}">
+            <controls:SecondaryButton Content="{loc:T Gallery_Sample_Secondary}" />
+          </controls:SettingsRow>
+        </StackPanel>
+      </controls:SettingsCard>
+      <controls:SettingsCard Width="420" Margin="{StaticResource Space.Item}">
+        <StackPanel>
+          <controls:SettingsRow Header="{loc:T Settings_QuietHours}">
+            <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_QuietHours}" />
+          </controls:SettingsRow>
+          <controls:SettingsRow Header="{loc:T Settings_Language}" Description="{loc:T Gallery_Sample_RowDescription}">
+            <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Language}" IsEnabled="False" />
+          </controls:SettingsRow>
+        </StackPanel>
+      </controls:SettingsCard>
+    </WrapPanel>
+  </StackPanel>
+</UserControl>

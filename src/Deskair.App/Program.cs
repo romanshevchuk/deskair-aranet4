@@ -1,5 +1,6 @@
 using Deskair.App.Composition;
 using Deskair.App.Composition.Spikes;
+using Deskair.App.Platform;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -11,6 +12,11 @@ public static class Program
     public static int Main(string[] args)
     {
         var options = AppOptions.Parse(args);
+
+        if (options.FirstRun)
+        {
+            KnownFolders.ResetFirstRunFolder();
+        }
 
         if (options.SpikeS1)
         {

@@ -41,15 +41,21 @@ public sealed class Aranet4Provider : ISensorProvider
         => advertisement.LocalName?.StartsWith(Aranet4Protocol.NamePrefix, StringComparison.OrdinalIgnoreCase) == true
             || advertisement.ManufacturerData.ContainsKey(Aranet4Protocol.ManufacturerId);
 
-    /// <summary>Reports each Aranet4 address once, with the name and signal of the first advertisement seen.</summary>
+    /// <summary>
+    /// Reports each Aranet4 address once, with the name and signal of the first advertisement seen. A sensor sends its name in a separate packet,
+    /// so an address first seen without a name is reported once more when the name arrives.
+    /// </summary>
     public async IAsyncEnumerable<DiscoveredSensor> ScanAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var seen = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
 
         await foreach (var advertisement in scanner.ScanAsync(cancellationToken).WithCancellation(cancellationToken))
         {
-            if (IsAranet4(advertisement) && seen.Add(advertisement.Address))
+            var named = !string.IsNullOrEmpty(advertisement.LocalName);
+
+            if (IsAranet4(advertisement) && (!seen.TryGetValue(advertisement.Address, out var known) || (named && !known)))
             {
+                seen[advertisement.Address] = named;
                 yield return new DiscoveredSensor(new DeviceId(ProviderId, advertisement.Address), advertisement.LocalName, advertisement.SignalDbm);
             }
         }

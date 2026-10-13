@@ -2,6 +2,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Platform.Bluetooth;
 using Deskair.App.ViewModels.Connection;
 using Deskair.App.ViewModels.Live;
+using Deskair.App.ViewModels.Onboarding;
+using Deskair.App.ViewModels.Settings;
 using Deskair.App.ViewModels.Shell;
 using Deskair.Domain.Readings;
 using Deskair.Sensors.Aranet4;
@@ -36,6 +38,8 @@ public sealed class AppServicesStarter
     private readonly FooterViewModel footer;
     private readonly RoomChipViewModel room;
     private readonly ConnectionViewModel connection;
+    private readonly OnboardingViewModel onboarding;
+    private readonly SettingsViewModel settingsScreen;
     private readonly ILogger<AppServicesStarter> logger;
 
     public AppServicesStarter(
@@ -51,6 +55,8 @@ public sealed class AppServicesStarter
         FooterViewModel footer,
         RoomChipViewModel room,
         ConnectionViewModel connection,
+        OnboardingViewModel onboarding,
+        SettingsViewModel settingsScreen,
         ILogger<AppServicesStarter> logger)
     {
         this.options = options;
@@ -65,6 +71,8 @@ public sealed class AppServicesStarter
         this.footer = footer;
         this.room = room;
         this.connection = connection;
+        this.onboarding = onboarding;
+        this.settingsScreen = settingsScreen;
         this.logger = logger;
     }
 
@@ -76,6 +84,7 @@ public sealed class AppServicesStarter
         }
 
         await LoadDevicesAsync(cancellationToken);
+        await LoadSettingsScreenAsync(cancellationToken);
 
         room.Load();
         room.Start(cancellationToken);
@@ -95,6 +104,27 @@ public sealed class AppServicesStarter
         if (registry.Selected is { } device)
         {
             await session.StartAsync(device);
+        }
+        else
+        {
+            // First run: look for sensors until one is paired.
+            onboarding.Start(cancellationToken);
+        }
+    }
+
+    private async Task LoadSettingsScreenAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await settingsScreen.LoadAsync(cancellationToken);
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            // The rest of the app does not need the Settings screen, so a failing section is logged and the app goes on.
+            if (logger.IsEnabled(LogLevel.Warning))
+            {
+                logger.LogWarning(exception, "Loading the Settings screen failed.");
+            }
         }
     }
 

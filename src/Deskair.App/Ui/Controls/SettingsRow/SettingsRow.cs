@@ -3,13 +3,7 @@ using System.Windows.Controls;
 
 namespace Deskair.App.Ui.Controls;
 
-// TODO(CTRL-15) [S, haiku]
-// Spec: docs/design/screens-and-states.md "Settings"
-// Input : Header (label), optional description, content (toggle, segmented control or button).
-// Output: Label and description on the left; the content on the right.
-// Rules : Content aligns right; the label wraps before it overlaps the content.
-// Edge  : No description hides the second line.
-// Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass.
+/// <summary>A setting: the label (and an optional description under it) on the left, the content (toggle, segmented control or button) on the right.</summary>
 public class SettingsRow : HeaderedContentControl
 {
     public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(

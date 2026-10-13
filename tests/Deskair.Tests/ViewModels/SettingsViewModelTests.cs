@@ -27,8 +27,8 @@ public sealed class SettingsViewModelTests : IDisposable
     public SettingsViewModelTests()
     {
         settings = new SettingsService(settingsStore, new StrongReferenceMessenger());
-        appearance = new AppearanceSettingsViewModel(settings);
-        alerts = new AlertsSettingsViewModel(settings);
+        appearance = new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance);
+        alerts = new AlertsSettingsViewModel(settings, NullLogger<AlertsSettingsViewModel>.Instance);
         devices = new DevicesSettingsViewModel(new DeviceRegistry(deviceStore));
         var readings = new FakeReadingStore();
         data = new DataSettingsViewModel(

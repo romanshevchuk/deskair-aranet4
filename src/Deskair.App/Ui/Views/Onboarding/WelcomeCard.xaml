@@ -1,0 +1,69 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Onboarding.WelcomeCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- DataContext: OnboardingViewModel. The title, a short text and the numbered checklist; a done step shows a tick on green. -->
+  <controls:Card Padding="{StaticResource Space.Welcome.Padding}">
+    <StackPanel>
+      <TextBlock Style="{StaticResource Text.Title}"
+                 FontSize="{DynamicResource Font.Size.Welcome}"
+                 FontWeight="{DynamicResource Font.Weight.SemiBold}"
+                 Text="{loc:T Onboarding_Welcome_Title}" />
+      <TextBlock Margin="{StaticResource Space.Welcome.Text}"
+                 Style="{StaticResource Text.Secondary}"
+                 Text="{loc:T Onboarding_Welcome_Text}"
+                 TextWrapping="Wrap" />
+      <!-- The first step's divider sits 1 px above the clip edge, so it is not drawn. -->
+      <Border ClipToBounds="True">
+        <ItemsControl Margin="0,-1,0,0"
+                      Focusable="False"
+                      IsTabStop="False"
+                      ItemsSource="{Binding Checklist}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border BorderBrush="{DynamicResource Divider.Brush}"
+                      BorderThickness="0,1,0,0"
+                      Padding="{StaticResource Space.Step.Padding}">
+                <DockPanel>
+                  <Grid Width="{DynamicResource Size.Step.Badge}"
+                        Height="{DynamicResource Size.Step.Badge}"
+                        DockPanel.Dock="Left">
+                    <Ellipse x:Name="Disc" Fill="{DynamicResource Segment.Bg.Brush}" />
+                    <TextBlock x:Name="Number"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="{DynamicResource Font.Size.Caption}"
+                               FontWeight="{DynamicResource Font.Weight.SemiBold}"
+                               Foreground="{DynamicResource Text.Primary.Brush}"
+                               Text="{Binding Number}" />
+                    <TextBlock x:Name="Tick"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                               FontSize="{DynamicResource Font.Size.Caption}"
+                               Foreground="{DynamicResource Toggle.Knob.Brush}"
+                               Text="&#xE73E;"
+                               Visibility="Collapsed" />
+                  </Grid>
+                  <TextBlock Margin="{StaticResource Space.Step.Text}"
+                             VerticalAlignment="Center"
+                             Style="{StaticResource Text.Body}"
+                             Text="{Binding Text}"
+                             TextWrapping="Wrap" />
+                </DockPanel>
+              </Border>
+              <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsDone}" Value="True">
+                  <Setter TargetName="Disc" Property="Fill" Value="{DynamicResource Toggle.On.Brush}" />
+                  <Setter TargetName="Number" Property="Visibility" Value="Collapsed" />
+                  <Setter TargetName="Tick" Property="Visibility" Value="Visible" />
+                </DataTrigger>
+              </DataTemplate.Triggers>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </Border>
+    </StackPanel>
+  </controls:Card>
+</UserControl>

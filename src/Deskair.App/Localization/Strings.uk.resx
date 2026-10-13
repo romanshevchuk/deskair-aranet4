@@ -72,6 +72,17 @@
   <data name="Settings_Devices" xml:space="preserve"><value>Пристрої</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Data" xml:space="preserve"><value>Дані та сховище</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Startup" xml:space="preserve"><value>Запуск</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Appearance" xml:space="preserve"><value>Вигляд і одиниці</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Unit" xml:space="preserve"><value>Одиниця температури</value><comment>Draft: needs native review.</comment></data>
+  <data name="Unit_Celsius" xml:space="preserve"><value>°C</value></data>
+  <data name="Unit_Fahrenheit" xml:space="preserve"><value>°F</value></data>
+  <data name="Settings_Alerts_Enabled" xml:space="preserve"><value>Сповіщення</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Alerts_EnabledHint" xml:space="preserve"><value>Повідомлення, коли повітря погіршується</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Alerts_Elevated" xml:space="preserve"><value>Сповіщати при підвищеному</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Alerts_High" xml:space="preserve"><value>Сповіщати при високому</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_QuietHours_Hint" xml:space="preserve"><value>Без сповіщень уночі</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Startup_Windows" xml:space="preserve"><value>Запускати з Windows</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Startup_WindowsHint" xml:space="preserve"><value>Deskair відкривається, коли ви входите в систему</value><comment>Draft: needs native review.</comment></data>
   <data name="Toast_Elevated_Title" xml:space="preserve"><value>Рівень CO₂ підвищений · {room}</value><comment>Draft: needs native review.</comment></data>
   <data name="Toast_Snooze" xml:space="preserve"><value>Відкласти на 1 год</value><comment>Draft: needs native review.</comment></data>
   <data name="Toast_Dismiss" xml:space="preserve"><value>Закрити</value><comment>Draft: needs native review.</comment></data>
@@ -125,10 +136,28 @@
   <data name="Footer_Signal_Good" xml:space="preserve"><value>Сигнал хороший</value><comment>Draft: needs native review.</comment></data>
   <data name="Footer_Signal_Fair" xml:space="preserve"><value>Сигнал середній</value><comment>Draft: needs native review.</comment></data>
   <data name="Footer_Signal_Weak" xml:space="preserve"><value>Сигнал слабкий</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_SyncingStart" xml:space="preserve"><value>· Синхронізація історії…</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_Syncing" xml:space="preserve"><value>· Синхронізація історії… {percent}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Room_DefaultName" xml:space="preserve"><value>Моя кімната</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Step_Pick" xml:space="preserve"><value>Оберіть датчик і назвіть кімнату</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Welcome_Title" xml:space="preserve"><value>Ласкаво просимо до Deskair</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Welcome_Text" xml:space="preserve"><value>Стежте за CO₂, температурою, вологістю й тиском у кімнаті та отримуйте нагадування, коли час відчинити вікно.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Nearby_Title" xml:space="preserve"><value>Датчики поблизу</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Pair" xml:space="preserve"><value>Підключити</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Searching" xml:space="preserve"><value>Пошук датчиків…</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_NoSensor" xml:space="preserve"><value>Датчик ще не знайдено. Розбудіть його й тримайте поруч із ПК.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_BluetoothOff" xml:space="preserve"><value>Bluetooth вимкнено. Увімкніть його в налаштуваннях Windows і спробуйте ще раз.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Room_Title" xml:space="preserve"><value>Кімната</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Room_Name" xml:space="preserve"><value>Назва</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Room_NameHint" xml:space="preserve"><value>Показується в заголовку вікна та у сповіщеннях</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_PairFailed" xml:space="preserve"><value>Не вдалося додати датчик. Спробуйте ще раз.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_TextInput" xml:space="preserve"><value>Текстове поле</value><comment>Draft: needs native review.</comment></data>
   <data name="Banner_LowBattery" xml:space="preserve"><value>Низький заряд датчика ({percent})</value><comment>Draft: needs native review.</comment></data>
   <data name="Startup_Failed" xml:space="preserve"><value>Не вдалося запустити Deskair: {message}</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_StatusDot" xml:space="preserve"><value>Індикатор стану</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_CardText" xml:space="preserve"><value>Вміст картки</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_Disabled" xml:space="preserve"><value>Вимкнено</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_SettingsCard" xml:space="preserve"><value>Картка налаштувань і рядки</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_RowDescription" xml:space="preserve"><value>Короткий опис під назвою</value><comment>Draft: needs native review.</comment></data>
   <data name="Nav_Main" xml:space="preserve"><value>Основна навігація</value><comment>Draft: needs native review.</comment></data>
 </root>

@@ -75,6 +75,7 @@ Segoe UI Variable Text, falling back to Segoe UI. Minimum size 12 px. Tabular fi
 | Radius: segmented track / segment | 10 px / 8 px |
 | Radius: window | 10 px (Windows 11); 1 px border at 30 % grey |
 | Hero padding | 22 / 24 / 20 px |
+| Settings card / row | card padding 12 / 22 / 2 px; row at least 40 px tall with 4 px above and below, 16 px between label and control, a 1 px divider above every row but the first |
 | Live grid | 3 equal columns; rows 1 fr and 132 px |
 | History | toolbar 40 px; stats card 360 px wide |
 | Flyout | 360 px wide, radius 12 px, shadow 0 12 36 at 35 % black |

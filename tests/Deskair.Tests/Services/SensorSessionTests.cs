@@ -23,6 +23,7 @@ public sealed class SensorSessionTests : IAsyncDisposable
     private readonly TestProvider provider;
     private readonly SensorSession session;
     private readonly List<object> messages = [];
+    private readonly List<object> syncMessages = [];
 
     public SensorSessionTests()
     {
@@ -33,7 +34,13 @@ public sealed class SensorSessionTests : IAsyncDisposable
         session = new SensorSession([provider], feed, syncService, messenger, clock, logger);
         messenger.Register<ReadingReceived>(this, (_, message) => messages.Add(message));
         messenger.Register<SensorStatusUpdated>(this, (_, message) => messages.Add(message));
-        messenger.Register<SyncCompleted>(this, (_, message) => messages.Add(message));
+        messenger.Register<SyncStarted>(this, (_, message) => syncMessages.Add(message));
+        messenger.Register<SyncProgressed>(this, (_, message) => syncMessages.Add(message));
+        messenger.Register<SyncCompleted>(this, (_, message) =>
+        {
+            messages.Add(message);
+            syncMessages.Add(message);
+        });
     }
 
     public async ValueTask DisposeAsync()
@@ -43,16 +50,84 @@ public sealed class SensorSessionTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task Starting_connects_syncs_and_then_polls_live_readings()
+    public async Task Starting_connects_shows_the_current_reading_syncs_and_then_keeps_polling()
     {
         await session.StartAsync(device);
 
-        await Wait.Until(() => messages.OfType<ReadingReceived>().Any());
+        await Wait.Until(() => messages.OfType<SyncCompleted>().Any());
 
+        // The current value comes first, so the screen is not empty while the history downloads.
         Assert.IsType<SensorStatusUpdated>(messages[0]);
-        Assert.IsType<SyncCompleted>(messages[1]);
-        Assert.IsType<ReadingReceived>(messages[2]);
-        Assert.Equal(device, ((ReadingReceived)messages[2]).Device);
+        Assert.IsType<ReadingReceived>(messages[1]);
+        Assert.IsType<SyncCompleted>(messages[2]);
+        Assert.Equal(device, ((ReadingReceived)messages[1]).Device);
+    }
+
+    [Fact]
+    public async Task The_current_reading_arrives_before_the_history_download_finishes()
+    {
+        sensor.History.Add(Samples.Co2(start.AddMinutes(-30), 700));
+        sensor.PauseHistoryAfter = 0;
+
+        await session.StartAsync(device);
+        await sensor.HistoryPaused.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
+
+        Assert.Single(messages.OfType<ReadingReceived>());
+        Assert.DoesNotContain(messages, message => message is SyncCompleted);
+    }
+
+    [Fact]
+    public async Task The_early_reading_is_not_stored_so_the_history_sync_still_asks_for_the_whole_week()
+    {
+        sensor.History.Add(Samples.Co2(start.AddDays(-3), 700));
+
+        await session.StartAsync(device);
+        await Wait.Until(() => messages.OfType<SyncCompleted>().Any());
+
+        // Nothing is stored yet, so the sync starts from the sensor memory (7 days), not from the reading just shown.
+        Assert.True(sensor.HistorySince < start.AddDays(-5));
+        Assert.Single(store.Merges);
+        Assert.Equal(700, store.Readings.Single().Co2Ppm);
+    }
+
+    [Fact]
+    public async Task After_the_sync_the_next_poll_waits_one_interval()
+    {
+        await session.StartAsync(device);
+        await Wait.Until(() => messages.OfType<SyncCompleted>().Any());
+        await Wait.Until(() => clock.PendingTimers >= 1);
+        await Task.Delay(50, TestContext.Current.CancellationToken);
+
+        Assert.Single(messages.OfType<ReadingReceived>());
+
+        clock.Advance(TimeSpan.FromMinutes(2));
+
+        await Wait.Until(() => messages.OfType<ReadingReceived>().Count() == 2);
+    }
+
+    [Fact]
+    public async Task The_sync_is_announced_with_its_progress_and_always_ends()
+    {
+        sensor.History.AddRange([Samples.Co2(start.AddMinutes(-6), 700), Samples.Co2(start.AddMinutes(-4), 710)]);
+
+        await session.StartAsync(device);
+        await Wait.Until(() => syncMessages.OfType<SyncCompleted>().Any());
+
+        Assert.IsType<SyncStarted>(syncMessages[0]);
+        Assert.Equal([new HistoryProgress(1, 2), new HistoryProgress(2, 2)], syncMessages.OfType<SyncProgressed>().Select(message => message.Progress));
+        Assert.IsType<SyncCompleted>(syncMessages[^1]);
+    }
+
+    [Fact]
+    public async Task A_sync_that_fails_still_ends_so_the_note_goes_away()
+    {
+        sensor.History.AddRange([Samples.Co2(start.AddMinutes(-6), 700), Samples.Co2(start.AddMinutes(-4), 710)]);
+        sensor.FailHistoryAfter = 1;
+
+        await session.StartAsync(device);
+
+        await Wait.Until(() => syncMessages.OfType<SyncCompleted>().Any());
+        Assert.IsType<SyncStarted>(syncMessages[0]);
     }
 
     [Fact]
@@ -72,6 +147,7 @@ public sealed class SensorSessionTests : IAsyncDisposable
     {
         await session.StartAsync(device);
         await Wait.Until(() => messages.OfType<ReadingReceived>().Count() == 1);
+        await Wait.Until(() => clock.PendingTimers >= 1);
 
         clock.Advance(TimeSpan.FromMinutes(2));
 
@@ -113,6 +189,7 @@ public sealed class SensorSessionTests : IAsyncDisposable
         await session.StartAsync(device);
         await Wait.Until(() => logger.Entries.Any(entry => entry.Level == LogLevel.Warning));
         Assert.DoesNotContain(messages, message => message is ReadingReceived);
+        await Wait.Until(() => clock.PendingTimers >= 1);
 
         clock.Advance(TimeSpan.FromSeconds(30));
 

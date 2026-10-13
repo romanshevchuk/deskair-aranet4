@@ -29,5 +29,6 @@
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/SettingsRow/SettingsRow.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/PrimaryButton/PrimaryButton.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/SecondaryButton/SecondaryButton.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/TextInput/TextInput.xaml" />
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

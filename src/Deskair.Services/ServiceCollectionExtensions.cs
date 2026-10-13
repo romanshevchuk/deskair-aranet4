@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(provider => new LocalCalendar(provider.GetRequiredService<TimeZoneInfo>()));
 
         services.AddSingleton<DeviceRegistry>();
+        services.AddSingleton<DeviceEnrollment>();
         services.AddSingleton<SettingsService>();
         services.AddSingleton<SyncService>();
         services.AddSingleton<LiveFeed>();

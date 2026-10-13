@@ -55,10 +55,47 @@ public sealed class LiveFeedTests : IDisposable
     }
 
     [Fact]
+    public async Task Poll_once_announces_one_reading_without_storing_it_or_starting_a_loop()
+    {
+        await feed.PollOnceAsync(sensor, device, interval, TestContext.Current.CancellationToken);
+
+        Assert.Single(received);
+        Assert.Empty(store.Merges);
+        Assert.Equal(0, clock.PendingTimers);
+    }
+
+    [Fact]
+    public async Task Poll_once_logs_a_failed_read_and_does_not_throw()
+    {
+        sensor.OnReadCurrent = _ => throw new InvalidOperationException("Bluetooth dropped.");
+
+        await feed.PollOnceAsync(sensor, device, interval, TestContext.Current.CancellationToken);
+
+        Assert.Empty(received);
+        Assert.Contains(logger.Entries, entry => entry.Level == LogLevel.Warning);
+    }
+
+    [Fact]
+    public async Task Run_can_wait_one_interval_before_the_first_poll()
+    {
+        var running = feed.RunAsync(sensor, device, interval, stop.Token, pollFirst: false);
+        await Wait.Until(() => clock.PendingTimers == 1);
+        await Task.Delay(50, TestContext.Current.CancellationToken);
+        Assert.Empty(received);
+
+        clock.Advance(interval);
+
+        await Wait.Until(() => received.Count == 1);
+        await stop.CancelAsync();
+        await running;
+    }
+
+    [Fact]
     public async Task Run_waits_one_interval_between_polls()
     {
         var running = Start();
         await Wait.Until(() => received.Count == 1);
+        await Wait.Until(() => clock.PendingTimers == 1);
 
         clock.Advance(TimeSpan.FromMinutes(1));
         await Task.Delay(50, TestContext.Current.CancellationToken);
@@ -82,6 +119,7 @@ public sealed class LiveFeedTests : IDisposable
         await Wait.Until(() => sensor.ReadCurrentCalls == 1);
         await Wait.Until(() => logger.Entries.Count == 1);
         Assert.Empty(received);
+        await Wait.Until(() => clock.PendingTimers >= 1);
 
         clock.Advance(interval);
         await Wait.Until(() => received.Count == 1);
@@ -114,6 +152,7 @@ public sealed class LiveFeedTests : IDisposable
         for (var poll = 1; poll <= 4; poll++)
         {
             await Wait.Until(() => received.Count == poll);
+            await Wait.Until(() => clock.PendingTimers >= 1);
             clock.Advance(interval);
         }
 

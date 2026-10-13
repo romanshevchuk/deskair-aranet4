@@ -34,6 +34,17 @@ public sealed class SyncServiceTests : IAsyncDisposable
     private DateTimeOffset? SavedSync => devices.Devices.Single().LastSyncUtc;
 
     [Fact]
+    public async Task Sync_passes_the_sensors_download_progress_on()
+    {
+        sensor.History.AddRange([At(6), At(4), At(2)]);
+        var progress = new ListProgress<HistoryProgress>();
+
+        await service.SyncAsync(sensor, device, interval, progress, CancellationToken.None);
+
+        Assert.Equal([new HistoryProgress(1, 3), new HistoryProgress(2, 3), new HistoryProgress(3, 3)], progress.Reports);
+    }
+
+    [Fact]
     public async Task Sync_merges_the_downloaded_history_as_device_readings_and_saves_the_sync_time()
     {
         sensor.History.AddRange([At(6), At(4), At(2)]);

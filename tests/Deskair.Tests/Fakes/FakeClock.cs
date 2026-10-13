@@ -19,6 +19,18 @@ public sealed class FakeClock : TimeProvider
 
     public override TimeZoneInfo LocalTimeZone => localZone;
 
+    /// <summary>How many timers are waiting to fire. A test waits for this before it advances the clock, so a loop that is still starting does not miss the time.</summary>
+    public int PendingTimers
+    {
+        get
+        {
+            lock (gate)
+            {
+                return timers.Count(timer => timer.Due is not null);
+            }
+        }
+    }
+
     public override DateTimeOffset GetUtcNow()
     {
         lock (gate)

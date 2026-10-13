@@ -1,14 +1,39 @@
 <UserControl x:Class="Deskair.App.Ui.Views.Settings.AppearanceSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(SET-01j) [S, haiku]
-       Spec: docs/design/screens-and-states.md "Settings"; docs/guides/add-a-setting.md
-       Input : AppearanceSettingsViewModel.
-       Output: Language, theme and temperature unit rows.
-       Rules : Changes apply immediately.
-       Edge  : None.
-       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
-  <Grid>
-  </Grid>
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:metrics="clr-namespace:Deskair.Domain.Metrics;assembly=Deskair.Domain"
+             xmlns:settings="clr-namespace:Deskair.Services.Settings;assembly=Deskair.Services">
+  <!-- DataContext: AppearanceSettingsViewModel. Language, theme and temperature unit. A change is saved and applied at once. -->
+  <controls:SettingsCard Header="{loc:T Settings_Appearance}">
+    <StackPanel>
+      <controls:SettingsRow Header="{loc:T Settings_Language}">
+        <controls:SegmentedControl AutomationProperties.Name="{loc:T Settings_Language}"
+                                   SelectedValue="{Binding Language, Mode=TwoWay}"
+                                   SelectedValuePath="Tag">
+          <ListBoxItem Content="{loc:T Language_System}" Tag="{x:Static settings:LanguageChoice.System}" />
+          <ListBoxItem Content="{loc:T Language_English}" Tag="{x:Static settings:LanguageChoice.English}" />
+          <ListBoxItem Content="{loc:T Language_Ukrainian}" Tag="{x:Static settings:LanguageChoice.Ukrainian}" />
+        </controls:SegmentedControl>
+      </controls:SettingsRow>
+      <controls:SettingsRow Header="{loc:T Settings_Theme}">
+        <controls:SegmentedControl AutomationProperties.Name="{loc:T Settings_Theme}"
+                                   SelectedValue="{Binding Theme, Mode=TwoWay}"
+                                   SelectedValuePath="Tag">
+          <ListBoxItem Content="{loc:T Theme_System}" Tag="{x:Static settings:ThemeChoice.System}" />
+          <ListBoxItem Content="{loc:T Theme_Light}" Tag="{x:Static settings:ThemeChoice.Light}" />
+          <ListBoxItem Content="{loc:T Theme_Dark}" Tag="{x:Static settings:ThemeChoice.Dark}" />
+        </controls:SegmentedControl>
+      </controls:SettingsRow>
+      <controls:SettingsRow Header="{loc:T Settings_Unit}">
+        <controls:SegmentedControl AutomationProperties.Name="{loc:T Settings_Unit}"
+                                   SelectedValue="{Binding TemperatureUnit, Mode=TwoWay}"
+                                   SelectedValuePath="Tag">
+          <ListBoxItem Content="{loc:T Unit_Celsius}" Tag="{x:Static metrics:TemperatureUnit.Celsius}" />
+          <ListBoxItem Content="{loc:T Unit_Fahrenheit}" Tag="{x:Static metrics:TemperatureUnit.Fahrenheit}" />
+        </controls:SegmentedControl>
+      </controls:SettingsRow>
+    </StackPanel>
+  </controls:SettingsCard>
 </UserControl>

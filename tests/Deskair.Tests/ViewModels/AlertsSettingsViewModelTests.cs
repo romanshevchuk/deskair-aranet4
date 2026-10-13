@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.ViewModels.Settings;
 using Deskair.Services.Settings;
 using Deskair.Tests.Fakes;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Deskair.Tests.ViewModels;
 
@@ -14,7 +15,7 @@ public class AlertsSettingsViewModelTests
     public AlertsSettingsViewModelTests()
     {
         settings = new SettingsService(store, new StrongReferenceMessenger());
-        viewModel = new AlertsSettingsViewModel(settings);
+        viewModel = new AlertsSettingsViewModel(settings, NullLogger<AlertsSettingsViewModel>.Instance);
     }
 
     [Fact]
@@ -42,16 +43,14 @@ public class AlertsSettingsViewModelTests
     }
 
     [Fact]
-    public async Task Apply_saves_the_new_values()
+    public void A_change_on_the_screen_is_saved_at_once()
     {
         viewModel.Load();
         viewModel.NotifyAtElevated = false;
         viewModel.QuietHoursEnabled = true;
         viewModel.QuietHoursStart = new TimeOnly(21, 0);
 
-        await viewModel.ApplyAsync(TestContext.Current.CancellationToken);
-
-        var saved = Assert.Single(store.Saved);
+        var saved = store.Stored;
         Assert.False(saved.NotifyAtElevated);
         Assert.True(saved.QuietHoursEnabled);
         Assert.Equal(new TimeOnly(21, 0), saved.QuietHoursStart);

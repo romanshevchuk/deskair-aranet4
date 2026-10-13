@@ -55,7 +55,11 @@ public sealed class Aranet4Sensor : ISensor
     /// Downloads CO₂, temperature, humidity and pressure from just before <paramref name="since"/> to the newest reading, then returns the readings from <paramref name="since"/> on, oldest first.
     /// Nothing is returned until all four metrics are complete: a download that fails or stalls throws, so the caller never sees a partial history.
     /// </summary>
-    public async IAsyncEnumerable<Reading> ReadHistoryAsync(DateTimeOffset since, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public IAsyncEnumerable<Reading> ReadHistoryAsync(DateTimeOffset since, CancellationToken cancellationToken)
+        => ReadHistoryAsync(since, null, cancellationToken);
+
+    /// <summary>As above, and reports after every page (packet) that arrives: how many of the roughly expected pages are done.</summary>
+    public async IAsyncEnumerable<Reading> ReadHistoryAsync(DateTimeOffset since, IProgress<HistoryProgress>? progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var total = Aranet4Parser.ParseUInt16(await ReadAsync(Aranet4Protocol.TotalReadingsId, cancellationToken));
         var interval = TimeSpan.FromSeconds(Aranet4Parser.ParseUInt16(await ReadAsync(Aranet4Protocol.IntervalId, cancellationToken)));
@@ -69,11 +73,12 @@ public sealed class Aranet4Sensor : ISensor
         var newest = timeProvider.GetUtcNow() - age;
         var start = FirstIndex(since, newest, interval, total);
         var packets = new List<byte[]>();
+        var counter = new PageCounter(ExpectedPages(total - start + 1), progress);
         DateTimeOffset? syncedAt = null;
 
         foreach (var metric in historyMetrics)
         {
-            var firstReadAt = await DownloadAsync(metric, start, total, packets, cancellationToken);
+            var firstReadAt = await DownloadAsync(metric, start, total, packets, counter, cancellationToken);
             syncedAt ??= firstReadAt;
         }
 
@@ -101,7 +106,7 @@ public sealed class Aranet4Sensor : ISensor
         => connection.ReadAsync(Aranet4Protocol.ServiceId, characteristic, cancellationToken);
 
     /// <summary>Requests one metric from <paramref name="start"/> and reads pages until every index up to <paramref name="total"/> has arrived. Returns when the first page was read.</summary>
-    private async Task<DateTimeOffset> DownloadAsync(byte metric, int start, int total, List<byte[]> packets, CancellationToken cancellationToken)
+    private async Task<DateTimeOffset> DownloadAsync(byte metric, int start, int total, List<byte[]> packets, PageCounter counter, CancellationToken cancellationToken)
     {
         byte[] request = [Aranet4Protocol.HistoryRequestCode, metric, (byte)start, (byte)(start >> 8)];
         await connection.WriteAsync(Aranet4Protocol.ServiceId, Aranet4Protocol.CommandId, request, cancellationToken);
@@ -121,6 +126,7 @@ public sealed class Aranet4Sensor : ISensor
             if (AddsNewValues(packet, metric, start, total, received))
             {
                 packets.Add(packet);
+                counter.PageArrived();
                 firstReadAt ??= readAt;
                 lastProgress = readAt;
 
@@ -179,4 +185,31 @@ public sealed class Aranet4Sensor : ISensor
         Aranet4Protocol.HumidityMetric => "humidity",
         _ => "pressure"
     };
+
+    /// <summary>How many pages a download of <paramref name="needed"/> readings takes: each metric on its own, 117 values to a page and 234 for humidity.</summary>
+    private static int ExpectedPages(int needed)
+        => historyMetrics.Sum(metric => (needed + PerPage(metric) - 1) / PerPage(metric));
+
+    private static int PerPage(byte metric)
+        => metric == Aranet4Protocol.HumidityMetric ? Aranet4Protocol.HumidityValuesPerPage : Aranet4Protocol.ValuesPerPage;
+
+    /// <summary>Counts pages across the four metrics and reports each one. The expected total grows if more pages arrive than estimated.</summary>
+    private sealed class PageCounter
+    {
+        private readonly IProgress<HistoryProgress>? progress;
+        private readonly int expected;
+        private int done;
+
+        public PageCounter(int expected, IProgress<HistoryProgress>? progress)
+        {
+            this.expected = expected;
+            this.progress = progress;
+        }
+
+        public void PageArrived()
+        {
+            done++;
+            progress?.Report(new HistoryProgress(done, Math.Max(expected, done)));
+        }
+    }
 }

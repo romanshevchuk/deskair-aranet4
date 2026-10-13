@@ -4,6 +4,7 @@ using Deskair.Domain.Metrics;
 using Deskair.Services.Messages;
 using Deskair.Services.Settings;
 using Deskair.Tests.Fakes;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Deskair.Tests.ViewModels;
 
@@ -17,7 +18,7 @@ public class AppearanceSettingsViewModelTests
     public AppearanceSettingsViewModelTests()
     {
         settings = new SettingsService(store, messenger);
-        viewModel = new AppearanceSettingsViewModel(settings);
+        viewModel = new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance);
     }
 
     [Fact]
@@ -34,17 +35,17 @@ public class AppearanceSettingsViewModelTests
     }
 
     [Fact]
-    public async Task Apply_saves_and_announces_the_new_values()
+    public async Task A_change_on_the_screen_is_saved_and_announced_at_once()
     {
+        await settings.LoadAsync(TestContext.Current.CancellationToken);
+        viewModel.Load();
         SettingsChanged? received = null;
         messenger.Register<SettingsChanged>(this, (_, message) => received = message);
         viewModel.Language = LanguageChoice.English;
         viewModel.Theme = ThemeChoice.Light;
         viewModel.TemperatureUnit = TemperatureUnit.Fahrenheit;
 
-        await viewModel.ApplyAsync(TestContext.Current.CancellationToken);
-
-        var saved = Assert.Single(store.Saved);
+        var saved = store.Stored;
         Assert.Equal(LanguageChoice.English, saved.Language);
         Assert.Equal(ThemeChoice.Light, saved.Theme);
         Assert.Equal(TemperatureUnit.Fahrenheit, saved.TemperatureUnit);

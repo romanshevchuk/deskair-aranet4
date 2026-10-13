@@ -1,12 +1,16 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Deskair.Domain.Metrics;
 using Deskair.Services.Settings;
+using Microsoft.Extensions.Logging;
 
 namespace Deskair.App.ViewModels.Settings;
 
+/// <summary>Language, theme and temperature unit. A change from the screen is saved at once (and announced, so the app follows); <see cref="Load"/> does not save.</summary>
 public sealed partial class AppearanceSettingsViewModel : ObservableObject
 {
     private readonly SettingsService settings;
+    private readonly ILogger<AppearanceSettingsViewModel> logger;
+    private bool loading;
 
     [ObservableProperty]
     private LanguageChoice language;
@@ -17,22 +21,60 @@ public sealed partial class AppearanceSettingsViewModel : ObservableObject
     [ObservableProperty]
     private TemperatureUnit temperatureUnit;
 
-    public AppearanceSettingsViewModel(SettingsService settings)
+    public AppearanceSettingsViewModel(SettingsService settings, ILogger<AppearanceSettingsViewModel> logger)
     {
         this.settings = settings;
+        this.logger = logger;
     }
 
     public void Load()
     {
         var current = settings.Current;
+        loading = true;
 
-        Language = current.Language;
-        Theme = current.Theme;
-        TemperatureUnit = current.TemperatureUnit;
+        try
+        {
+            Language = current.Language;
+            Theme = current.Theme;
+            TemperatureUnit = current.TemperatureUnit;
+        }
+        finally
+        {
+            loading = false;
+        }
     }
 
     public Task ApplyAsync(CancellationToken cancellationToken)
     {
         return settings.UpdateAsync(current => current with { Language = Language, Theme = Theme, TemperatureUnit = TemperatureUnit }, cancellationToken);
+    }
+
+    partial void OnLanguageChanged(LanguageChoice value) => ApplyLater();
+
+    partial void OnThemeChanged(ThemeChoice value) => ApplyLater();
+
+    partial void OnTemperatureUnitChanged(TemperatureUnit value) => ApplyLater();
+
+    private void ApplyLater()
+    {
+        if (!loading)
+        {
+            _ = ApplyQuietlyAsync();
+        }
+    }
+
+    private async Task ApplyQuietlyAsync()
+    {
+        try
+        {
+            await ApplyAsync(CancellationToken.None);
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            if (logger.IsEnabled(LogLevel.Warning))
+            {
+                logger.LogWarning(exception, "Saving the appearance settings failed.");
+            }
+        }
     }
 }

@@ -23,7 +23,7 @@ Left-click on the tray icon opens the flyout. Right-click opens the menu. Double
 | Stale data | Banner "Last reading N min ago", hero at 55 % opacity, amber footer dot, Retry |
 | Low battery | Banner with Dismiss; footer battery icon red |
 | Not connected | Full-screen state with last reading and recovery steps; grey ring; grey tray icon; History stays available |
-| First run | Onboarding (steps, nearby sensors, room name and type, import from the phone app); History shows "Collecting your first data" |
+| First run | Onboarding (steps, nearby sensors, room name; import from the phone app comes with the import in Settings → Data); History shows "Collecting your first data" |
 
 Each condition combines with the three zones and both themes. Live has metric (4) and range (3) selection. The ribbon shows for CO₂ on 1h and 6h only.
 
