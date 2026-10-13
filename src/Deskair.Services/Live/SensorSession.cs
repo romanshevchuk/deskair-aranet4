@@ -13,8 +13,8 @@ namespace Deskair.Services.Live;
 /// </summary>
 public sealed class SensorSession : IAsyncDisposable, IDisposable
 {
-    /// <summary>How long one attempt to connect may take. Windows can wait a long time for a sensor that is not there.</summary>
-    public static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(45);
+    /// <summary>How long one attempt to connect may take. Windows can wait a long time for a sensor that is not there; two minutes also leaves time to type a pairing PIN, which happens inside the connect.</summary>
+    public static readonly TimeSpan ConnectTimeout = TimeSpan.FromMinutes(2);
 
     private static readonly TimeSpan retryAfter = TimeSpan.FromSeconds(30);
 
@@ -24,6 +24,7 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
     private readonly IMessenger messenger;
     private readonly TimeProvider timeProvider;
     private readonly ILogger<SensorSession> logger;
+    private readonly SemaphoreSlim gate = new(1, 1);
     private CancellationTokenSource? running;
     private Task? loop;
 
@@ -45,28 +46,52 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
 
     public async Task StartAsync(DeviceId device)
     {
-        await StopAsync();
+        // Retry, resuming from sleep and choosing a room can all ask for a start at about the same time: one at a time, so no loop is left running that nobody can stop.
+        await gate.WaitAsync();
 
-        var provider = providers.FirstOrDefault(candidate => candidate.Id == device.ProviderId);
-
-        if (provider is null)
+        try
         {
-            if (logger.IsEnabled(LogLevel.Error))
+            await StopCoreAsync();
+
+            var provider = providers.FirstOrDefault(candidate => candidate.Id == device.ProviderId);
+
+            if (provider is null)
             {
-                logger.LogError("No sensor provider named {Provider} for {Address}.", device.ProviderId, device.Address);
+                if (logger.IsEnabled(LogLevel.Error))
+                {
+                    logger.LogError("No sensor provider named {Provider} for {Address}.", device.ProviderId, device.Address);
+                }
+
+                return;
             }
 
-            return;
+            running = new CancellationTokenSource();
+            var token = running.Token;
+
+            // On the thread pool, so the loop never resumes on the UI thread (which may be busy or shutting down).
+            loop = Task.Run(() => RunAsync(provider, device, token));
         }
-
-        running = new CancellationTokenSource();
-        var token = running.Token;
-
-        // On the thread pool, so the loop never resumes on the UI thread (which may be busy or shutting down).
-        loop = Task.Run(() => RunAsync(provider, device, token));
+        finally
+        {
+            gate.Release();
+        }
     }
 
     public async Task StopAsync()
+    {
+        await gate.WaitAsync();
+
+        try
+        {
+            await StopCoreAsync();
+        }
+        finally
+        {
+            gate.Release();
+        }
+    }
+
+    private async Task StopCoreAsync()
     {
         if (running is null)
         {

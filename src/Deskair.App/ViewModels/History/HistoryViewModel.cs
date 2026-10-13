@@ -206,7 +206,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         });
         typicalDay.Update(hours);
 
-        ShowSleep = wantSleep;
+        ShowSleep = lastNight is not null;
         sleep.Update(lastNight);
 
         if (recent is null)

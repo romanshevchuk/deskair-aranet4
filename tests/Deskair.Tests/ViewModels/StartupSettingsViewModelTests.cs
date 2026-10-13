@@ -72,4 +72,16 @@ public class StartupSettingsViewModelTests
 
         Assert.Equal(1, registration.Calls);
     }
+
+    [Fact]
+    public async Task A_state_that_cannot_be_read_does_not_stop_later_changes_from_being_applied()
+    {
+        registration.FailRead = true;
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => viewModel.LoadAsync(TestContext.Current.CancellationToken));
+        registration.FailRead = false;
+
+        viewModel.StartWithWindows = true;
+
+        Assert.Equal(1, registration.Calls);
+    }
 }

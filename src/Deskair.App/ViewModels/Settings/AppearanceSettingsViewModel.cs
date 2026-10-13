@@ -1,11 +1,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Domain.Metrics;
+using Deskair.Services.Messages;
+using Deskair.Services.Platform;
 using Deskair.Services.Settings;
 using Microsoft.Extensions.Logging;
 
 namespace Deskair.App.ViewModels.Settings;
 
-/// <summary>Language, theme, temperature unit and the value on the tray icon. A change from the screen is saved at once (and announced, so the app follows); <see cref="Load"/> does not save.</summary>
+/// <summary>Language, theme, temperature unit and the value on the tray icon. A change from the screen is saved at once (and announced, so the app follows); <see cref="Load"/> does not save. It reloads when the settings change elsewhere.</summary>
 public sealed partial class AppearanceSettingsViewModel : ObservableObject
 {
     private readonly SettingsService settings;
@@ -24,10 +27,13 @@ public sealed partial class AppearanceSettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool showValueOnTrayIcon;
 
-    public AppearanceSettingsViewModel(SettingsService settings, ILogger<AppearanceSettingsViewModel> logger)
+    public AppearanceSettingsViewModel(SettingsService settings, IMessenger messenger, IUiDispatcher dispatcher, ILogger<AppearanceSettingsViewModel> logger)
     {
         this.settings = settings;
         this.logger = logger;
+
+        // Another part of the app (the tray menu) can change these too; the screen follows, so it never shows or writes back an old value.
+        messenger.Register<AppearanceSettingsViewModel, SettingsChanged>(this, (self, _) => dispatcher.Post(self.Load));
     }
 
     public void Load()

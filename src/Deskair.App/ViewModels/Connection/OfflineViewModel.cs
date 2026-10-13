@@ -172,7 +172,14 @@ public sealed partial class OfflineViewModel : RetryingViewModel
 
             if (recent.Count > 0)
             {
-                dispatcher.Post(() => ShowLastReading(recent[^1]));
+                // By the time the history is read the room may have changed or a live reading may have arrived: the newer state wins.
+                dispatcher.Post(() =>
+                {
+                    if (devices.Selected == device && lastReading is null)
+                    {
+                        ShowLastReading(recent[^1]);
+                    }
+                });
             }
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)

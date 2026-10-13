@@ -1,4 +1,5 @@
 using Deskair.Domain.Analytics.Aggregation;
+using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
@@ -128,5 +129,43 @@ public class BucketGroupingTests
     {
         Assert.Throws<ArgumentOutOfRangeException>(
             () => BucketAggregator.Group([], Metric.Co2, Samples.Utc(2026, 1, 1), Samples.Utc(2026, 10, 1), Period.Year, utc, interval));
+    }
+
+    [Fact]
+    public void A_day_with_every_reading_of_its_night_is_complete_when_only_the_night_is_counted()
+    {
+        // 9 night hours at 2 minute intervals are 270 readings: 00:00 to 07:00 and 22:00 to midnight. Counted against the whole day that would be 37 %.
+        var day = Samples.Utc(2026, 10, 12);
+        var readings = Enumerable.Range(0, 210).Select(slot => Samples.Co2(day.AddMinutes(slot * 2), 700))
+            .Concat(Enumerable.Range(0, 60).Select(slot => Samples.Co2(day.AddHours(22).AddMinutes(slot * 2), 800)))
+            .ToList();
+
+        var bucket = Assert.Single(BucketAggregator.Group(readings, Metric.Co2, day, day.AddDays(1), Period.Day, utc, interval, NightWindow.Default));
+
+        Assert.Equal(270, bucket.ExpectedCount);
+        Assert.Equal(270, bucket.ReadingCount);
+        Assert.Equal(BucketState.Complete, bucket.State);
+    }
+
+    [Fact]
+    public void A_range_inside_the_night_expects_readings_for_all_of_it()
+    {
+        var day = Samples.Utc(2026, 10, 12);
+        var readings = Enumerable.Range(0, 30).Select(slot => Samples.Co2(day.AddHours(22).AddMinutes(slot * 2), 800)).ToList();
+
+        var bucket = Assert.Single(BucketAggregator.Group(readings, Metric.Co2, day.AddHours(22), day.AddDays(1), Period.Day, utc, interval, NightWindow.Default));
+
+        Assert.Equal(60, bucket.ExpectedCount);
+        Assert.Equal(30, bucket.ReadingCount);
+    }
+
+    [Fact]
+    public void Without_a_night_window_every_hour_is_expected()
+    {
+        var day = Samples.Utc(2026, 10, 12);
+
+        var bucket = Assert.Single(BucketAggregator.Group([], Metric.Co2, day, day.AddDays(1), Period.Day, utc, interval));
+
+        Assert.Equal(720, bucket.ExpectedCount);
     }
 }

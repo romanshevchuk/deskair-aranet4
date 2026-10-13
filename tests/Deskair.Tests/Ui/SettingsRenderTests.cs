@@ -85,7 +85,7 @@ public class SettingsRenderTests
         room.Load();
 
         var screen = new SettingsViewModel(
-            new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance),
+            new AppearanceSettingsViewModel(settings, messenger, dispatcher, NullLogger<AppearanceSettingsViewModel>.Instance),
             new AlertsSettingsViewModel(settings, new FakeDoNotDisturb { IsActive = true }, messenger, dispatcher, NullLogger<AlertsSettingsViewModel>.Instance),
             new SleepSettingsViewModel(settings, NullLogger<SleepSettingsViewModel>.Instance),
             new DevicesSettingsViewModel(registry, new DeviceEnrollment(deviceStore, registry, settings, messenger), messenger, NullLogger<DevicesSettingsViewModel>.Instance),

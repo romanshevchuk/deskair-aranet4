@@ -245,6 +245,34 @@ public class ReadingQueryServiceTests
         Assert.Equal(900, Assert.Single(buckets).Average);
     }
 
+
+    [Fact]
+    public async Task With_the_night_filter_a_day_expects_readings_for_the_night_hours_only()
+    {
+        // The sensor reads every 5 minutes: the 9 night hours are 108 readings, not the 288 of a whole day.
+        var day = Samples.Utc(2026, 10, 8);
+        store.Readings.AddRange(Enumerable.Range(0, 84).Select(slot => Samples.Co2(day.AddMinutes(slot * 5), 700)));
+        store.Readings.AddRange(Enumerable.Range(0, 24).Select(slot => Samples.Co2(day.AddHours(22).AddMinutes(slot * 5), 700)));
+        var queries = await ServiceForFiveMinuteSensorAsync();
+
+        var bucket = Assert.Single(await queries.GetBucketsAsync(device, Metric.Co2, day, day.AddDays(1), Period.Day, HoursFilterMode.Night, CancellationToken.None));
+
+        Assert.Equal(108, bucket.ExpectedCount);
+        Assert.Equal(108, bucket.ReadingCount);
+        Assert.Equal(BucketState.Complete, bucket.State);
+    }
+
+    [Fact]
+    public async Task The_night_filter_expects_readings_for_the_hours_the_user_chose()
+    {
+        var day = Samples.Utc(2026, 10, 8);
+        var queries = await ServiceWithNightAsync(new TimeOnly(0, 0), new TimeOnly(10, 0));
+
+        var bucket = Assert.Single(await queries.GetBucketsAsync(device, Metric.Co2, day, day.AddDays(1), Period.Day, HoursFilterMode.Night, CancellationToken.None));
+
+        // The sensor of that helper reads every 30 minutes: ten hours are 20 readings.
+        Assert.Equal(20, bucket.ExpectedCount);
+    }
     [Fact]
     public async Task Last_night_is_the_night_that_ended_this_morning_in_the_default_hours()
     {

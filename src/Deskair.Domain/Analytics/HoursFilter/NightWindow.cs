@@ -53,4 +53,34 @@ public sealed record NightWindow(TimeOnly Start, TimeOnly End)
 
         return CrossesMidnight ? timeOfDay >= start || timeOfDay < end : timeOfDay >= start && timeOfDay < end;
     }
+
+    /// <summary>How much of the range from <paramref name="start"/> up to <paramref name="end"/> is night. A bucket "expects" readings for this much time when only the night is counted.</summary>
+    public TimeSpan TimeWithin(DateTimeOffset start, DateTimeOffset end, LocalCalendar calendar)
+    {
+        if (IsEmpty || end <= start)
+        {
+            return TimeSpan.Zero;
+        }
+
+        var total = TimeSpan.Zero;
+        var last = calendar.LocalDateOf(end - TimeSpan.FromTicks(1));
+
+        // Start one day early: the night that began the evening before may still be going on at the start of the range.
+        for (var date = calendar.LocalDateOf(start).AddDays(-1); date <= last; date = date.AddDays(1))
+        {
+            var from = Latest(calendar.InstantAt(date, Start), start);
+            var to = Earliest(calendar.InstantAt(CrossesMidnight ? date.AddDays(1) : date, End), end);
+
+            if (to > from)
+            {
+                total += to - from;
+            }
+        }
+
+        return total;
+    }
+
+    private static DateTimeOffset Latest(DateTimeOffset first, DateTimeOffset second) => first > second ? first : second;
+
+    private static DateTimeOffset Earliest(DateTimeOffset first, DateTimeOffset second) => first < second ? first : second;
 }

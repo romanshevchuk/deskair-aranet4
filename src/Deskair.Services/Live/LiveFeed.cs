@@ -89,10 +89,27 @@ public sealed class LiveFeed
 
     private async Task PollAsync(ISensor sensor, DeviceId device, TimeSpan interval, bool store, bool rethrowConnectionFailure, CancellationToken cancellationToken)
     {
+        Reading reading;
+
         try
         {
-            var reading = await ReadWithTimeoutAsync(sensor, cancellationToken);
+            reading = await ReadWithTimeoutAsync(sensor, cancellationToken);
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            logger.LogWarning(exception, "Reading the current values of {Provider} {Address} failed; trying again in {Interval}.", device.ProviderId, device.Address, interval);
 
+            if (rethrowConnectionFailure && exception is IOException or TimeoutException)
+            {
+                throw;
+            }
+
+            return;
+        }
+
+        // A failure to store is not a lost connection, so it never reaches the session: the reading is lost, the connection is fine.
+        try
+        {
             if (store)
             {
                 await readings.MergeAsync(device, [reading], ReadingSource.Device, interval, cancellationToken);
@@ -107,12 +124,7 @@ public sealed class LiveFeed
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
-            logger.LogWarning(exception, "Reading the current values of {Provider} {Address} failed; trying again in {Interval}.", device.ProviderId, device.Address, interval);
-
-            if (rethrowConnectionFailure && exception is IOException or TimeoutException)
-            {
-                throw;
-            }
+            logger.LogWarning(exception, "Storing the live reading of {Provider} {Address} failed; trying again in {Interval}.", device.ProviderId, device.Address, interval);
         }
     }
 }

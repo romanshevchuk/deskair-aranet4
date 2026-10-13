@@ -13,6 +13,9 @@ public sealed class FakeReadingStore : IReadingStore
 
     public List<(DeviceId Device, ReadingSource Source, TimeSpan Interval, int Added)> Merges { get; } = [];
 
+    /// <summary>When set, merging throws it instead of storing (a full or locked disk).</summary>
+    public Exception? FailMerges { get; set; }
+
     public Task<IReadOnlyList<Reading>> ReadRangeAsync(
         DeviceId device,
         DateTimeOffset start,
@@ -37,6 +40,7 @@ public sealed class FakeReadingStore : IReadingStore
     {
         cancellationToken.ThrowIfCancellationRequested();
 
+        if (FailMerges is not null) { throw FailMerges; }
         var added = SlotMerger.Merge(Readings, readings, interval);
         Readings.AddRange(added);
         Merges.Add((device, source, interval, added.Count));

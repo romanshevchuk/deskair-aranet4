@@ -1,3 +1,4 @@
+using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
@@ -12,12 +13,20 @@ public static class BucketAggregator
         DateTimeOffset start,
         DateTimeOffset end,
         TimeSpan interval)
+        => Aggregate(readings, metric, start, end, LocalCalendar.ExpectedSlots(start, end, interval));
+
+    /// <summary>One bucket with the number of readings expected in it already worked out (fewer than the whole bucket holds when only some hours count).</summary>
+    public static Bucket Aggregate(
+        IReadOnlyList<Reading> readings,
+        Metric metric,
+        DateTimeOffset start,
+        DateTimeOffset end,
+        int expected)
     {
         var values = readings
             .Where(reading => reading.Timestamp >= start && reading.Timestamp < end)
             .Select(reading => reading.ValueOf(metric))
             .ToList();
-        var expected = LocalCalendar.ExpectedSlots(start, end, interval);
         var state = BucketStateClassifier.Classify(values.Count, expected);
 
         if (values.Count == 0)
@@ -28,6 +37,10 @@ public static class BucketAggregator
         return new Bucket(start, end, values.Average(), values.Min(), values.Max(), values.Count, expected, state);
     }
 
+    /// <summary>
+    /// Groups readings into buckets. With <paramref name="onlyDuring"/> the readings are meant to be the ones inside those hours already (the Night filter), and a bucket expects readings
+    /// only for the time of the night it holds, so a complete night is not "37 % present".
+    /// </summary>
     public static IReadOnlyList<Bucket> Group(
         IReadOnlyList<Reading> readings,
         Metric metric,
@@ -35,7 +48,8 @@ public static class BucketAggregator
         DateTimeOffset end,
         Period grouping,
         LocalCalendar calendar,
-        TimeSpan interval)
+        TimeSpan interval,
+        NightWindow? onlyDuring = null)
     {
         if (grouping == Period.Year)
         {
@@ -71,7 +85,11 @@ public static class BucketAggregator
                 next++;
             }
 
-            buckets.Add(Aggregate(inBucket, metric, from, to, interval));
+            var expected = onlyDuring is { } night
+                ? (int)(night.TimeWithin(from, to, calendar).Ticks / interval.Ticks)
+                : LocalCalendar.ExpectedSlots(from, to, interval);
+
+            buckets.Add(Aggregate(inBucket, metric, from, to, expected));
         }
 
         return buckets;

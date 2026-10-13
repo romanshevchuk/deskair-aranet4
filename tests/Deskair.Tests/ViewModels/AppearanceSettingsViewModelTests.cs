@@ -18,7 +18,7 @@ public class AppearanceSettingsViewModelTests
     public AppearanceSettingsViewModelTests()
     {
         settings = new SettingsService(store, messenger);
-        viewModel = new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance);
+        viewModel = new AppearanceSettingsViewModel(settings, messenger, new FakeUiDispatcher(), NullLogger<AppearanceSettingsViewModel>.Instance);
     }
 
     [Fact]
@@ -76,5 +76,27 @@ public class AppearanceSettingsViewModelTests
         await viewModel.ApplyAsync(TestContext.Current.CancellationToken);
 
         Assert.Empty(store.Saved);
+    }
+
+    [Fact]
+    public async Task A_change_made_elsewhere_such_as_the_tray_menu_shows_on_the_screen()
+    {
+        viewModel.Load();
+
+        await settings.UpdateAsync(current => current with { ShowValueOnTrayIcon = true }, TestContext.Current.CancellationToken);
+
+        Assert.True(viewModel.ShowValueOnTrayIcon);
+    }
+
+    [Fact]
+    public async Task Changing_the_theme_does_not_undo_a_tray_menu_change_made_since_the_screen_loaded()
+    {
+        viewModel.Load();
+        await settings.UpdateAsync(current => current with { ShowValueOnTrayIcon = true }, TestContext.Current.CancellationToken);
+
+        viewModel.Theme = ThemeChoice.Dark;
+
+        Assert.True(store.Stored.ShowValueOnTrayIcon);
+        Assert.Equal(ThemeChoice.Dark, store.Stored.Theme);
     }
 }

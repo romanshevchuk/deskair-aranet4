@@ -29,7 +29,7 @@ public sealed class SettingsViewModelTests : IDisposable
     {
         var messenger = new StrongReferenceMessenger();
         settings = new SettingsService(settingsStore, messenger);
-        appearance = new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance);
+        appearance = new AppearanceSettingsViewModel(settings, messenger, new FakeUiDispatcher(), NullLogger<AppearanceSettingsViewModel>.Instance);
         alerts = new AlertsSettingsViewModel(settings, new FakeDoNotDisturb(), messenger, new FakeUiDispatcher(), NullLogger<AlertsSettingsViewModel>.Instance);
         sleep = new SleepSettingsViewModel(settings, NullLogger<SleepSettingsViewModel>.Instance);
         var registry = new DeviceRegistry(deviceStore);

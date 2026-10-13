@@ -71,7 +71,7 @@ public sealed class ReadingQueryService
         var filtered = HoursFilterRule.Apply(inRange, filter, calendar, Night);
         var interval = devices.IntervalFor(device, end);
 
-        return BucketAggregator.Group(filtered, metric, start, end, grouping, calendar, interval);
+        return BucketAggregator.Group(filtered, metric, start, end, grouping, calendar, interval, filter == HoursFilterMode.Night ? Night : null);
     }
 
     /// <summary>How the CO₂ readings in the range spread over the zones, after the hours filter. Null when there are none.</summary>

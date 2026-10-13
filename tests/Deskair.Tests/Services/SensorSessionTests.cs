@@ -257,6 +257,31 @@ public sealed class SensorSessionTests : IAsyncDisposable
         Assert.Empty(failures);
     }
 
+
+    [Fact]
+    public async Task Two_stops_at_the_same_time_do_not_fail()
+    {
+        await session.StartAsync(device);
+        await Wait.Until(() => messages.OfType<ReadingReceived>().Any());
+
+        var both = await Record.ExceptionAsync(() => Task.WhenAll(session.StopAsync(), session.StopAsync()));
+
+        Assert.Null(both);
+    }
+
+    [Fact]
+    public async Task Two_starts_at_the_same_time_leave_one_loop_that_a_stop_really_ends()
+    {
+        await Task.WhenAll(session.StartAsync(device), session.StartAsync(device));
+        await Wait.Until(() => messages.OfType<ReadingReceived>().Any());
+        await session.StopAsync();
+        var before = messages.OfType<ReadingReceived>().Count();
+
+        clock.Advance(TimeSpan.FromMinutes(2));
+        await Wait.Quiet();
+
+        Assert.Equal(before, messages.OfType<ReadingReceived>().Count());
+    }
     [Fact]
     public async Task An_unknown_provider_is_an_error_and_starts_nothing()
     {

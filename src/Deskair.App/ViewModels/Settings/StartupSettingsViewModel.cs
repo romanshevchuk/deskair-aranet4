@@ -21,9 +21,7 @@ public sealed partial class StartupSettingsViewModel : ObservableObject
 
     public Task LoadAsync(CancellationToken cancellationToken)
     {
-        applying = true;
-        StartWithWindows = registration.IsEnabled;
-        applying = false;
+        SetWithoutApplying(registration.IsEnabled);
 
         return Task.CompletedTask;
     }
@@ -33,6 +31,20 @@ public sealed partial class StartupSettingsViewModel : ObservableObject
         if (!applying)
         {
             _ = ApplyAsync(value);
+        }
+    }
+
+    private void SetWithoutApplying(bool value)
+    {
+        applying = true;
+
+        try
+        {
+            StartWithWindows = value;
+        }
+        finally
+        {
+            applying = false;
         }
     }
 
@@ -49,9 +61,7 @@ public sealed partial class StartupSettingsViewModel : ObservableObject
                 logger.LogWarning(exception, "Changing start with Windows to {Enabled} failed.", enabled);
             }
 
-            applying = true;
-            StartWithWindows = !enabled;
-            applying = false;
+            SetWithoutApplying(!enabled);
         }
     }
 }

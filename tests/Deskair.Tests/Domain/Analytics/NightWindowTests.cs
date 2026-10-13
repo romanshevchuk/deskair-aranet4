@@ -115,4 +115,66 @@ public class NightWindowTests
     {
         Assert.Throws<InvalidOperationException>(() => Window(7, 7).LastFinished(Samples.Utc(2026, 10, 13, 12), utc));
     }
+
+    [Fact]
+    public void A_whole_day_holds_one_night_of_time()
+    {
+        var day = Samples.Utc(2026, 10, 12);
+
+        Assert.Equal(TimeSpan.FromHours(9), NightWindow.Default.TimeWithin(day, day.AddDays(1), utc));
+    }
+
+    [Fact]
+    public void Only_the_hours_of_the_range_inside_the_night_count()
+    {
+        // From 20:00 to 23:00 only the 22:00 to 23:00 part is night.
+        var from = Samples.Utc(2026, 10, 12, 20);
+
+        Assert.Equal(TimeSpan.FromHours(1), NightWindow.Default.TimeWithin(from, from.AddHours(3), utc));
+    }
+
+    [Fact]
+    public void A_night_that_began_before_the_range_counts_from_the_start_of_the_range()
+    {
+        // Midnight to 12:00 holds 00:00 to 07:00 of the night that began the evening before.
+        var from = Samples.Utc(2026, 10, 12);
+
+        Assert.Equal(TimeSpan.FromHours(7), NightWindow.Default.TimeWithin(from, from.AddHours(12), utc));
+    }
+
+    [Fact]
+    public void A_range_in_the_daytime_holds_no_night()
+    {
+        var from = Samples.Utc(2026, 10, 12, 8);
+
+        Assert.Equal(TimeSpan.Zero, NightWindow.Default.TimeWithin(from, from.AddHours(10), utc));
+    }
+
+    [Fact]
+    public void A_window_inside_one_day_counts_the_same_way()
+    {
+        var day = Samples.Utc(2026, 10, 12);
+
+        Assert.Equal(TimeSpan.FromHours(8), Window(2, 10).TimeWithin(day, day.AddDays(1), utc));
+    }
+
+    [Fact]
+    public void An_empty_window_holds_no_time()
+    {
+        var day = Samples.Utc(2026, 10, 12);
+
+        Assert.Equal(TimeSpan.Zero, Window(7, 7).TimeWithin(day, day.AddDays(1), utc));
+    }
+
+    [Fact]
+    public void The_local_day_the_clocks_go_back_holds_the_longer_night_hours()
+    {
+        // Kyiv, 25 October 2026: local midnight is 21:00 UTC on the 24th. The day lasts 25 hours; its morning part of the night (00:00 to 07:00 local) is eight hours long
+        // and its evening part (22:00 to midnight) two, so ten hours in all.
+        var calendar = new LocalCalendar(Samples.Kyiv);
+        var start = calendar.StartOfLocalDay(new DateOnly(2026, 10, 25));
+        var end = calendar.StartOfLocalDay(new DateOnly(2026, 10, 26));
+
+        Assert.Equal(TimeSpan.FromHours(10), NightWindow.Default.TimeWithin(start, end, calendar));
+    }
 }

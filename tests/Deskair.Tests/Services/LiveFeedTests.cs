@@ -188,6 +188,25 @@ public sealed class LiveFeedTests : IDisposable
         Assert.Single(logger.Entries);
     }
 
+
+    [Fact]
+    public async Task A_store_that_fails_is_logged_and_never_looks_like_a_lost_connection()
+    {
+        store.FailMerges = new IOException("disk full");
+        var running = Start();
+        await Wait.Until(() => logger.Entries.Count == 1);
+        await Wait.Until(() => clock.PendingTimers >= 1);
+
+        store.FailMerges = null;
+        clock.Advance(interval);
+
+        await Wait.Until(() => received.Count == 1);
+        Assert.False(running.IsCompleted);
+        Assert.Contains("Storing", logger.Entries[0].Message);
+
+        await stop.CancelAsync();
+        await running;
+    }
     [Fact]
     public async Task Poll_once_still_does_not_throw_when_the_connection_failed()
     {

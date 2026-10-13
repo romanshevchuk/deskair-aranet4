@@ -8,6 +8,7 @@ using Deskair.Domain.Time;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
 using Deskair.Services.Queries;
+using Deskair.Services.Settings;
 using Deskair.Services.Storage;
 using Deskair.Tests.Fakes;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -468,6 +469,25 @@ public class HistoryViewModelTests
         Assert.False(viewModel.ShowSleep);
     }
 
+
+    [Fact]
+    public async Task With_no_night_hours_to_show_the_typical_day_stays()
+    {
+        await SelectDeviceAsync();
+        var settingsStore = new FakeSettingsStore { Stored = AppSettings.Default with { NightStart = new TimeOnly(7, 0), NightEnd = new TimeOnly(7, 0) } };
+        var settings = new SettingsService(settingsStore, messenger);
+        await settings.LoadAsync(TestContext.Current.CancellationToken);
+        var calendar = new LocalCalendar(TimeZoneInfo.Utc);
+        var clock = new FakeClock(now);
+        var query = new ReadingQueryService(store, registry, clock, calendar, settings);
+        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), NullLogger<HistoryViewModel>.Instance);
+        toolbar.Range = Period.Day;
+        toolbar.Hours = HoursFilterMode.Night;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.False(viewModel.ShowSleep);
+    }
     [Fact]
     public async Task Without_a_selected_device_there_is_no_sleep_card()
     {
