@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
   <Style TargetType="{x:Type local:MetricCard}">
     <Setter Property="Background" Value="{DynamicResource Surface.Brush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource Border.Brush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Card.Border.Brush}" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="Padding" Value="{DynamicResource Space.Mini.Padding}" />
     <Setter Property="Cursor" Value="Hand" />
@@ -12,6 +12,11 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:MetricCard}">
+          <Grid>
+          <Border Background="{TemplateBinding Background}"
+                  CornerRadius="{DynamicResource Radius.Card}"
+                  Effect="{DynamicResource Shadow.Card}"
+                  IsHitTestVisible="False" />
           <Border x:Name="Frame"
                   Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
@@ -56,6 +61,7 @@
               <ContentPresenter Grid.Column="1" Grid.RowSpan="3" VerticalAlignment="Center" Margin="{DynamicResource Space.Mini.Sparkline}" />
             </Grid>
           </Border>
+          </Grid>
           <ControlTemplate.Triggers>
             <Trigger Property="Value" Value="{x:Null}">
               <Setter TargetName="Unit" Property="Visibility" Value="Collapsed" />
@@ -73,7 +79,7 @@
               <Setter TargetName="Dot" Property="Fill" Value="{DynamicResource Metric.Pressure.Brush}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Text.Tertiary.Brush}" />
+              <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Card.Border.Hover.Brush}" />
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
               <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Text.Primary.Brush}" />

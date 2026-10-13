@@ -40,6 +40,15 @@
   <data name="Range_Year" xml:space="preserve"><value>Year</value></data>
   <data name="Hours_AllDay" xml:space="preserve"><value>All day</value></data>
   <data name="Hours_Night" xml:space="preserve"><value>Night</value></data>
+  <data name="Hours_NightHint" xml:space="preserve"><value>The night hours from Settings</value></data>
+  <data name="History_Chart_Hourly" xml:space="preserve"><value>readings of the last 24 hours</value></data>
+  <data name="History_Chart_Daily" xml:space="preserve"><value>daily range &amp; average</value></data>
+  <data name="History_Chart_Weekly" xml:space="preserve"><value>weekly range &amp; average</value></data>
+  <data name="History_Chart_Monthly" xml:space="preserve"><value>monthly range &amp; average</value></data>
+  <data name="History_Chart_NightsOnly" xml:space="preserve"><value>{what} · nights only</value></data>
+  <data name="History_Legend_Bars" xml:space="preserve"><value>Bar = min–max · tick = average</value></data>
+  <data name="History_Legend_Line" xml:space="preserve"><value>Line = readings</value></data>
+  <data name="History_Legend_NoData" xml:space="preserve"><value>No data</value></data>
   <data name="Group_ByDay" xml:space="preserve"><value>By day</value></data>
   <data name="Group_ByWeek" xml:space="preserve"><value>By week</value></data>
   <data name="Group_ByMonth" xml:space="preserve"><value>By month</value></data>

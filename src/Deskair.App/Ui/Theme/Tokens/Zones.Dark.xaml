@@ -84,4 +84,8 @@
   <SolidColorBrush x:Key="Trend.Falling.Brush" Color="{StaticResource Trend.Falling.Color}" />
   <Color x:Key="Trend.Rising.Color">#FF8A7E</Color>
   <SolidColorBrush x:Key="Trend.Rising.Brush" Color="{StaticResource Trend.Rising.Color}" />
+  <!-- In the dark theme the zone shadow is a plain deep shadow: a tinted glow would look like a halo. -->
+  <DropShadowEffect x:Key="Shadow.Card.Good" Color="#000000" Opacity="0.40" BlurRadius="18" ShadowDepth="4" Direction="270" />
+  <DropShadowEffect x:Key="Shadow.Card.Elevated" Color="#000000" Opacity="0.40" BlurRadius="18" ShadowDepth="4" Direction="270" />
+  <DropShadowEffect x:Key="Shadow.Card.High" Color="#000000" Opacity="0.40" BlurRadius="18" ShadowDepth="4" Direction="270" />
 </ResourceDictionary>

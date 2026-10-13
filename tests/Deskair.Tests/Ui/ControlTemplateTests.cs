@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using Deskair.App.Ui.Controls;
 using Deskair.Domain.Zones;
 using Deskair.Services.Settings;
@@ -30,7 +31,7 @@ public class ControlTemplateTests
 
             Assert.Equal(Token($"Zone.{name}.CardBg.Brush"), BrushColor(card.Background));
             Assert.Equal(Token($"Zone.{name}.CardBorder.Brush"), BrushColor(card.BorderBrush));
-            Assert.Equal(new Thickness(1.5), card.BorderThickness);
+            Assert.Equal(new Thickness(1), card.BorderThickness);
         });
     }
 
@@ -42,11 +43,56 @@ public class ControlTemplateTests
             var card = UiHost.Prepare(new Card());
 
             Assert.Equal(Token("Surface.Brush"), BrushColor(card.Background));
-            Assert.Equal(Token("Border.Brush"), BrushColor(card.BorderBrush));
+            Assert.Equal(Token("Card.Border.Brush"), BrushColor(card.BorderBrush));
             Assert.Equal(new Thickness(1), card.BorderThickness);
         });
     }
 
+
+    private static IEnumerable<DependencyObject> Descendants(DependencyObject root)
+    {
+        for (var index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
+        {
+            var child = VisualTreeHelper.GetChild(root, index);
+
+            yield return child;
+
+            foreach (var inner in Descendants(child))
+            {
+                yield return inner;
+            }
+        }
+    }
+
+    [Fact]
+    public void Card_has_a_soft_shadow_behind_its_content_and_not_on_it()
+    {
+        UiHost.Run(() =>
+        {
+            var card = UiHost.Prepare(new Card { Content = new TextBlock { Text = "inside" } });
+
+            var shadowed = Descendants(card).OfType<Border>().Where(border => border.Effect is DropShadowEffect).ToList();
+
+            // One border behind the content carries the shadow, so what changes inside the card is never blurred again.
+            var shadow = Assert.Single(shadowed);
+            Assert.Null(shadow.Child);
+            Assert.DoesNotContain(Descendants(card).OfType<TextBlock>(), text => text.Effect is not null);
+        });
+    }
+
+    [Theory]
+    [MemberData(nameof(ZoneCards))]
+    public void A_zone_card_casts_a_shadow_tinted_with_its_zone(Zone zone, string name)
+    {
+        UiHost.Run(ThemeChoice.Light, () =>
+        {
+            var card = UiHost.Prepare(new Card { Zone = zone });
+
+            var shadow = (DropShadowEffect)Descendants(card).OfType<Border>().First(border => border.Effect is DropShadowEffect).Effect;
+
+            Assert.Equal(Token($"Zone.{name}.CardBorder.Brush"), shadow.Color);
+        });
+    }
     [Fact]
     public void Card_follows_the_theme()
     {

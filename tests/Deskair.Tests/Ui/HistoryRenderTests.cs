@@ -122,6 +122,7 @@ public class HistoryRenderTests
             stats,
             new TypicalDayViewModel(),
             new SleepViewModel(localizer, formatter, calendar),
+            new ChartHeaderViewModel(localizer),
             TestExport.Create(store, registry),
             new ReadingQueryService(store, registry, clock, calendar),
             registry,

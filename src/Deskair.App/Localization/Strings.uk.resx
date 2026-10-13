@@ -41,6 +41,15 @@
   <data name="Range_Year" xml:space="preserve"><value>Рік</value><comment>Draft: needs native review.</comment></data>
   <data name="Hours_AllDay" xml:space="preserve"><value>Увесь день</value><comment>Draft: needs native review.</comment></data>
   <data name="Hours_Night" xml:space="preserve"><value>Ніч</value><comment>Draft: needs native review.</comment></data>
+  <data name="Hours_NightHint" xml:space="preserve"><value>Години ночі з налаштувань</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Chart_Hourly" xml:space="preserve"><value>виміри за останні 24 години</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Chart_Daily" xml:space="preserve"><value>діапазон і середнє за день</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Chart_Weekly" xml:space="preserve"><value>діапазон і середнє за тиждень</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Chart_Monthly" xml:space="preserve"><value>діапазон і середнє за місяць</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Chart_NightsOnly" xml:space="preserve"><value>{what} · лише ночі</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Legend_Bars" xml:space="preserve"><value>Стовпчик = мін–макс · риска = середнє</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Legend_Line" xml:space="preserve"><value>Лінія = виміри</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Legend_NoData" xml:space="preserve"><value>Немає даних</value><comment>Draft: needs native review.</comment></data>
   <data name="Group_ByDay" xml:space="preserve"><value>За днями</value><comment>Draft: needs native review.</comment></data>
   <data name="Group_ByWeek" xml:space="preserve"><value>За тижнями</value><comment>Draft: needs native review.</comment></data>
   <data name="Group_ByMonth" xml:space="preserve"><value>За місяцями</value><comment>Draft: needs native review.</comment></data>

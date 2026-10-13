@@ -84,4 +84,8 @@
   <SolidColorBrush x:Key="Trend.Falling.Brush" Color="{StaticResource Trend.Falling.Color}" />
   <Color x:Key="Trend.Rising.Color">#B3342A</Color>
   <SolidColorBrush x:Key="Trend.Rising.Brush" Color="{StaticResource Trend.Rising.Color}" />
+  <!-- The hero card's shadow is tinted with its zone (prototype: 0 14 30 -16 in 65 % of the border colour). -->
+  <DropShadowEffect x:Key="Shadow.Card.Good" Color="{StaticResource Zone.Good.CardBorder.Color}" Opacity="0.40" BlurRadius="20" ShadowDepth="6" Direction="270" />
+  <DropShadowEffect x:Key="Shadow.Card.Elevated" Color="{StaticResource Zone.Elevated.CardBorder.Color}" Opacity="0.40" BlurRadius="20" ShadowDepth="6" Direction="270" />
+  <DropShadowEffect x:Key="Shadow.Card.High" Color="{StaticResource Zone.High.CardBorder.Color}" Opacity="0.40" BlurRadius="20" ShadowDepth="6" Direction="270" />
 </ResourceDictionary>

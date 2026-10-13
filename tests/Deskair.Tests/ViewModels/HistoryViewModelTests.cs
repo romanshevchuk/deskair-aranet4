@@ -44,7 +44,7 @@ public class HistoryViewModelTests
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(readingStore ?? store, registry, clock, calendar);
 
-        return new HistoryViewModel(toolbar, stats, typicalDay, sleep, TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), NullLogger<HistoryViewModel>.Instance);
+        return new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), NullLogger<HistoryViewModel>.Instance);
     }
 
     private async Task SelectDeviceAsync()
@@ -480,7 +480,7 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(store, registry, clock, calendar, settings);
-        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), NullLogger<HistoryViewModel>.Instance);
+        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), NullLogger<HistoryViewModel>.Instance);
         toolbar.Range = Period.Day;
         toolbar.Hours = HoursFilterMode.Night;
 
@@ -507,7 +507,7 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(new ThrowingReadingStore(), registry, clock, calendar);
-        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), logger);
+        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), logger);
 
         viewModel.Refresh();
 

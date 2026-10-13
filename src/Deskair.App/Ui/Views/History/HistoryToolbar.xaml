@@ -28,10 +28,30 @@
                                AutomationProperties.Name="{loc:T Toolbar_Metric}"
                                SelectedValue="{Binding Metric, Mode=TwoWay}"
                                SelectedValuePath="Tag">
-      <ListBoxItem Content="{loc:T Metric_Co2}" Tag="{x:Static metrics:Metric.Co2}" />
-      <ListBoxItem Content="{loc:T Metric_Temperature}" Tag="{x:Static metrics:Metric.Temperature}" />
-      <ListBoxItem Content="{loc:T Metric_Humidity}" Tag="{x:Static metrics:Metric.Humidity}" />
-      <ListBoxItem Content="{loc:T Metric_Pressure}" Tag="{x:Static metrics:Metric.Pressure}" />
+      <ListBoxItem Tag="{x:Static metrics:Metric.Co2}">
+        <StackPanel Orientation="Horizontal">
+          <Ellipse Width="8" Height="8" Margin="0,0,7,0" VerticalAlignment="Center" Fill="{DynamicResource Metric.Co2.Brush}" />
+          <TextBlock Text="{loc:T Metric_Co2}" />
+        </StackPanel>
+      </ListBoxItem>
+      <ListBoxItem Tag="{x:Static metrics:Metric.Temperature}">
+        <StackPanel Orientation="Horizontal">
+          <Ellipse Width="8" Height="8" Margin="0,0,7,0" VerticalAlignment="Center" Fill="{DynamicResource Metric.Temperature.Brush}" />
+          <TextBlock Text="{loc:T Metric_Temperature}" />
+        </StackPanel>
+      </ListBoxItem>
+      <ListBoxItem Tag="{x:Static metrics:Metric.Humidity}">
+        <StackPanel Orientation="Horizontal">
+          <Ellipse Width="8" Height="8" Margin="0,0,7,0" VerticalAlignment="Center" Fill="{DynamicResource Metric.Humidity.Brush}" />
+          <TextBlock Text="{loc:T Metric_Humidity}" />
+        </StackPanel>
+      </ListBoxItem>
+      <ListBoxItem Tag="{x:Static metrics:Metric.Pressure}">
+        <StackPanel Orientation="Horizontal">
+          <Ellipse Width="8" Height="8" Margin="0,0,7,0" VerticalAlignment="Center" Fill="{DynamicResource Metric.Pressure.Brush}" />
+          <TextBlock Text="{loc:T Metric_Pressure}" />
+        </StackPanel>
+      </ListBoxItem>
     </controls:SegmentedControl>
 
     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
@@ -39,7 +59,12 @@
                                  SelectedValue="{Binding Hours, Mode=TwoWay}"
                                  SelectedValuePath="Tag">
         <ListBoxItem Content="{loc:T Hours_AllDay}" Tag="{x:Static analytics:HoursFilterMode.AllDay}" />
-        <ListBoxItem Content="{loc:T Hours_Night}" Tag="{x:Static analytics:HoursFilterMode.Night}" />
+        <ListBoxItem Tag="{x:Static analytics:HoursFilterMode.Night}" ToolTip="{loc:T Hours_NightHint}">
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Margin="0,0,6,0" VerticalAlignment="Center" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Text="&#xE708;" />
+            <TextBlock Text="{loc:T Hours_Night}" />
+          </StackPanel>
+        </ListBoxItem>
       </controls:SegmentedControl>
 
       <!-- Month: by day or by week. -->
@@ -101,8 +126,11 @@
       </TextBlock>
 
       <controls:SecondaryButton Margin="{StaticResource Space.Inline}"
+                                AutomationProperties.Name="{loc:T Action_Export}"
                                 Command="{Binding ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                Content="{loc:T Action_Export}" />
+                                ToolTip="{loc:T Action_Export}">
+        <TextBlock FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Text="&#xE896;" />
+      </controls:SecondaryButton>
     </StackPanel>
   </Grid>
 </UserControl>

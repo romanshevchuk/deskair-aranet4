@@ -7,8 +7,13 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:SettingsCard}">
+          <Grid>
           <Border Background="{DynamicResource Surface.Brush}"
-                  BorderBrush="{DynamicResource Border.Brush}"
+                  CornerRadius="{DynamicResource Radius.Card}"
+                  Effect="{DynamicResource Shadow.Card}"
+                  IsHitTestVisible="False" />
+          <Border Background="{DynamicResource Surface.Brush}"
+                  BorderBrush="{DynamicResource Card.Border.Brush}"
                   BorderThickness="1"
                   CornerRadius="{DynamicResource Radius.Card}"
                   Padding="{DynamicResource Space.SettingsCard.Padding}">
@@ -23,6 +28,7 @@
               </Border>
             </StackPanel>
           </Border>
+          </Grid>
           <ControlTemplate.Triggers>
             <Trigger Property="Header" Value="{x:Null}">
               <Setter TargetName="HeaderText" Property="Visibility" Value="Collapsed" />

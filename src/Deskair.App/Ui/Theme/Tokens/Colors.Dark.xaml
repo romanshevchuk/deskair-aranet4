@@ -41,4 +41,10 @@
   <SolidColorBrush x:Key="Caption.CloseHover.Brush" Color="{StaticResource Caption.CloseHover.Color}" />
   <Color x:Key="Border.Window.Color">#4D808080</Color>
   <SolidColorBrush x:Key="Border.Window.Brush" Color="{StaticResource Border.Window.Color}" />
+  <!-- Cards: the prototype's dark .card, a 1 px border of 7 % white over the surface and a deeper shadow (0 1 2 at 35 %, 0 10 24 -8 at 45 %). -->
+  <Color x:Key="Card.Border.Color">#2B3035</Color>
+  <SolidColorBrush x:Key="Card.Border.Brush" Color="{StaticResource Card.Border.Color}" />
+  <Color x:Key="Card.Border.Hover.Color">#4A545D</Color>
+  <SolidColorBrush x:Key="Card.Border.Hover.Brush" Color="{StaticResource Card.Border.Hover.Color}" />
+  <DropShadowEffect x:Key="Shadow.Card" Color="#000000" Opacity="0.40" BlurRadius="18" ShadowDepth="4" Direction="270" />
 </ResourceDictionary>

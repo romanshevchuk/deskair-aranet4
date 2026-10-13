@@ -71,12 +71,15 @@
           <controls:Card Grid.Row="0" Padding="{StaticResource Space.Chart.Card}">
             <Grid>
               <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
 
+              <history:ChartHeader Grid.Row="0" Margin="0,0,0,6" DataContext="{Binding ChartHeader}" />
+
               <charts:HistoryChart x:Name="Chart"
-                                   Grid.Row="0"
+                                   Grid.Row="1"
                                    Bars="{Binding Bars}"
                                    Gaps="{Binding Gaps}"
                                    Metric="{Binding Toolbar.Metric}"
@@ -86,7 +89,7 @@
                                    Unit="{Binding Stats.UnitText}"
                                    WeekendSpans="{Binding WeekendSpans}" />
 
-              <TextBlock Grid.Row="1"
+              <TextBlock Grid.Row="2"
                          Margin="{StaticResource Space.Chart.Caption}"
                          MinHeight="{StaticResource Size.Chart.Readout.Height}"
                          Style="{StaticResource Text.Secondary}"

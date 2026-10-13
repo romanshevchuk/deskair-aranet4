@@ -22,6 +22,7 @@ public sealed partial class HistoryViewModel : ObservableObject
     private readonly StatsViewModel stats;
     private readonly TypicalDayViewModel typicalDay;
     private readonly SleepViewModel sleep;
+    private readonly ChartHeaderViewModel chartHeader;
     private readonly ReadingQueryService query;
     private readonly DeviceRegistry devices;
     private readonly LocalCalendar calendar;
@@ -58,6 +59,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         StatsViewModel stats,
         TypicalDayViewModel typicalDay,
         SleepViewModel sleep,
+        ChartHeaderViewModel chartHeader,
         ExportViewModel export,
         ReadingQueryService query,
         DeviceRegistry devices,
@@ -71,6 +73,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         this.stats = stats;
         this.typicalDay = typicalDay;
         this.sleep = sleep;
+        this.chartHeader = chartHeader;
         Export = export;
         this.query = query;
         this.devices = devices;
@@ -88,6 +91,8 @@ public sealed partial class HistoryViewModel : ObservableObject
     public TypicalDayViewModel TypicalDay => typicalDay;
 
     public SleepViewModel Sleep => sleep;
+
+    public ChartHeaderViewModel ChartHeader => chartHeader;
 
     /// <summary>Saves all readings of the selected room to a file. The toolbar shows its button.</summary>
     public ExportViewModel Export { get; }
@@ -215,6 +220,7 @@ public sealed partial class HistoryViewModel : ObservableObject
             WeekendSpans = grouping == Period.Day ? Weekends(start, end) : null;
             Points = null;
             Gaps = EmptyRuns(buckets);
+            chartHeader.Update(metric, range, grouping, toolbar.Hours, Gaps.Count > 0);
             return;
         }
 
@@ -222,6 +228,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         Bars = null;
         Points = recent.Select(reading => new ChartPoint(reading.Timestamp, formatter.ToDisplay(metric, reading.ValueOf(metric)))).ToList();
         Gaps = MissingStretches(recent.Select(reading => reading.Timestamp).ToList(), interval);
+        chartHeader.Update(metric, range, grouping, toolbar.Hours, Gaps.Count > 0);
     }
 
     /// <summary>Where the period before the one starting at <paramref name="start"/> began: as long as the range (24 hours for Day, else whole local days).</summary>
@@ -256,6 +263,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         typicalDay.Update([]);
         ShowSleep = false;
         sleep.Update(null);
+        chartHeader.Update(toolbar.Metric, toolbar.Range, toolbar.Grouping, toolbar.Hours, hasGaps: false);
     }
 
     private List<ChartGap> Weekends(DateTimeOffset start, DateTimeOffset end)
