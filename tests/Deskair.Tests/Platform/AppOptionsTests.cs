@@ -24,6 +24,13 @@ public class AppOptionsTests
     }
 
     [Fact]
+    public void The_toast_spike_flag_is_found_and_is_off_by_default()
+    {
+        Assert.True(AppOptions.Parse(["--spike-s5", "--leave"]).SpikeS5);
+        Assert.False(AppOptions.Parse([]).SpikeS5);
+    }
+
+    [Fact]
     public void The_simulated_flag_is_found_next_to_other_arguments()
     {
         var options = AppOptions.Parse(["--other", "--simulated"]);

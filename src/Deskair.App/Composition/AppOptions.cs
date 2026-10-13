@@ -6,8 +6,9 @@ namespace Deskair.App.Composition;
 /// <c>--sensor &lt;address&gt;</c> runs the real app on that one sensor, also with its own data folder in the temp folder.
 /// <c>--first-run</c> runs the real app, with real Bluetooth, on an empty data folder in the temp folder that is wiped at every start, to try the welcome screen.
 /// <c>--spike-s1</c> runs the sensor history spike instead of the app; <c>--compare &lt;file&gt;</c> adds a phone export to compare against.
+/// <c>--spike-s5</c> runs the toast spike instead of the app (modes: <c>--leave</c>, <c>--cleanup</c>; Windows adds <c>-Embedding</c> when a toast click starts the app).
 /// </summary>
-public sealed record AppOptions(bool Gallery, bool Simulated = false, bool SpikeS1 = false, string? CompareFile = null, string? Sensor = null, bool FirstRun = false)
+public sealed record AppOptions(bool Gallery, bool Simulated = false, bool SpikeS1 = false, string? CompareFile = null, string? Sensor = null, bool FirstRun = false, bool SpikeS5 = false)
 {
     public static AppOptions Parse(IReadOnlyList<string> args)
     {
@@ -15,8 +16,9 @@ public sealed record AppOptions(bool Gallery, bool Simulated = false, bool Spike
         var simulated = args.Contains("--simulated", StringComparer.OrdinalIgnoreCase);
         var spikeS1 = args.Contains("--spike-s1", StringComparer.OrdinalIgnoreCase);
         var firstRun = args.Contains("--first-run", StringComparer.OrdinalIgnoreCase);
+        var spikeS5 = args.Contains("--spike-s5", StringComparer.OrdinalIgnoreCase);
 
-        return new AppOptions(gallery, simulated, spikeS1, ValueOf(args, "--compare"), ValueOf(args, "--sensor"), firstRun);
+        return new AppOptions(gallery, simulated, spikeS1, ValueOf(args, "--compare"), ValueOf(args, "--sensor"), firstRun, spikeS5);
     }
 
     private static string? ValueOf(IReadOnlyList<string> args, string name)
