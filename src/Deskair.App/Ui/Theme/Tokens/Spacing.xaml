@@ -21,6 +21,13 @@
   <sys:Double x:Key="Size.History.Stats.Width">360</sys:Double>
   <sys:Double x:Key="Size.History.Export.StatusWidth">280</sys:Double>
   <sys:Double x:Key="Size.Flyout.Width">360</sys:Double>
+  <!-- Flyout content (prototype: padding 14, gap 12, zone card 14 16, value 52, ribbon 22 high at its own size). -->
+  <Thickness x:Key="Space.Flyout.Padding">14</Thickness>
+  <Thickness x:Key="Space.Flyout.Gap">0,12,0,0</Thickness>
+  <Thickness x:Key="Space.Flyout.Zone">16,14,16,14</Thickness>
+  <Thickness x:Key="Space.Flyout.Legend">0,0,12,0</Thickness>
+  <Thickness x:Key="Space.Flyout.Footer">0,12,0,0</Thickness>
+  <sys:Double x:Key="Size.Flyout.Ribbon.Height">22</sys:Double>
   <sys:Double x:Key="Size.Toast.Edge">4</sys:Double>
   <sys:Double x:Key="Size.Toggle.Width">38</sys:Double>
   <sys:Double x:Key="Size.Toggle.Height">22</sys:Double>

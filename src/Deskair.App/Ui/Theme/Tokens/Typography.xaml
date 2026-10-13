@@ -9,6 +9,7 @@
   <sys:Double x:Key="Font.Size.MiniValue">32</sys:Double>
   <sys:Double x:Key="Font.Size.Title">16</sys:Double>
   <sys:Double x:Key="Font.Size.Welcome">22</sys:Double>
+  <sys:Double x:Key="Font.Size.Flyout.Value">52</sys:Double>
   <sys:Double x:Key="Font.Size.Body">14</sys:Double>
   <sys:Double x:Key="Font.Size.Secondary">13</sys:Double>
   <sys:Double x:Key="Font.Size.Caption">12</sys:Double>

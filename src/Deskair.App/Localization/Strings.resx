@@ -198,6 +198,9 @@
   <data name="Offline_Step_Battery" xml:space="preserve"><value>Check the sensor battery ({percent} when last seen)</value></data>
   <data name="Tray_AppName" xml:space="preserve"><value>Deskair</value></data>
   <data name="Tray_Quit" xml:space="preserve"><value>Quit</value></data>
+  <data name="Flyout_Updated" xml:space="preserve"><value>updated {sec} s ago</value></data>
+  <data name="Flyout_UpdatedMinutes" xml:space="preserve"><value>updated {min} min ago</value></data>
+  <data name="Duration_Hours" xml:space="preserve"><value>{h} h</value></data>
   <data name="Action_Import" xml:space="preserve"><value>Import</value></data>
   <data name="Action_Export" xml:space="preserve"><value>Export</value></data>
   <data name="Settings_Data_Folder" xml:space="preserve"><value>Data folder</value></data>

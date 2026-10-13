@@ -1,6 +1,8 @@
 using Deskair.App.ViewModels.Flyout;
+using Deskair.App.ViewModels.Shell;
 using Deskair.Domain.Analytics.Trend;
 using Deskair.Domain.Readings;
+using Deskair.Domain.Time;
 using Deskair.Domain.Zones;
 using Deskair.Tests.Fakes;
 
@@ -10,7 +12,14 @@ public class FlyoutViewModelTests
 {
     private static readonly DateTimeOffset now = Samples.Utc(2026, 10, 12, 12);
 
-    private readonly FlyoutViewModel viewModel = new(new FakeLocalizer());
+    private readonly FlyoutViewModel viewModel;
+    private readonly FakeWindowController windows = new();
+
+    public FlyoutViewModelTests()
+    {
+        var localizer = new FakeLocalizer();
+        viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), new LocalCalendar(TimeZoneInfo.Utc), windows);
+    }
 
     private static List<Reading> History(double earlierPpm, double recentPpm)
     {
@@ -86,5 +95,116 @@ public class FlyoutViewModelTests
         viewModel.Update(recent[^1], recent, now, "Office");
 
         Assert.False(viewModel.ShowNotConnected);
+    }
+
+    [Fact]
+    public void The_trend_and_the_zone_are_given_as_text()
+    {
+        var recent = History(1300, 1050);
+
+        viewModel.Update(recent[^1], recent, now, "Office");
+
+        Assert.Equal("Trend_Falling", viewModel.TrendText);
+        Assert.StartsWith("Trend_Detail(ppm=250", viewModel.TrendDetail);
+        Assert.Equal("Zone_Elevated", viewModel.ZoneText);
+        Assert.Equal(("1,050", "ppm"), (viewModel.ValueText, viewModel.UnitText));
+    }
+
+    [Fact]
+    public void The_updated_text_counts_seconds_and_then_minutes()
+    {
+        viewModel.Update(Samples.Co2(now.AddSeconds(-12), 700), [], now, "Office");
+        Assert.Equal("Flyout_Updated(sec=12)", viewModel.UpdatedText);
+
+        viewModel.Update(Samples.Co2(now.AddMinutes(-3), 700), [], now, "Office");
+        Assert.Equal("Flyout_UpdatedMinutes(min=3)", viewModel.UpdatedText);
+    }
+
+    [Fact]
+    public void The_other_readings_follow_the_unit_shown()
+    {
+        var reading = new Reading(now, 700, 22.3, 44, 975.3);
+
+        viewModel.Update(reading, [reading], now, "Office");
+
+        Assert.Equal(
+            [("Metric_Temperature", "22.3 °C"), ("Metric_Humidity", "44 %"), ("Metric_Pressure", "975.3 hPa")],
+            viewModel.OtherReadings.Select(item => (item.Label, item.Value)));
+    }
+
+    [Fact]
+    public void The_ribbon_covers_the_last_24_hours_with_five_hour_labels()
+    {
+        var recent = History(700, 700);
+
+        viewModel.Update(recent[^1], recent, now, "Office");
+
+        Assert.Equal(now, viewModel.RibbonEnd);
+        Assert.NotEmpty(viewModel.RibbonSegments);
+        Assert.Equal(["12:00", "18:00", "00:00", "06:00", "Chart_Now"], viewModel.RibbonLabels);
+    }
+
+    [Fact]
+    public void The_legend_gives_the_time_spent_in_each_zone_that_occurred()
+    {
+        var readings = new List<Reading>();
+
+        for (var slot = 0; slot < 6; slot++)
+        {
+            var ppm = slot < 3 ? 700 : slot < 5 ? 1100 : 1700;
+            readings.Add(Samples.Co2(now.AddMinutes(-60 + (slot * 10) + 1), ppm));
+        }
+
+        viewModel.Update(readings[^1], readings, now, "Office");
+
+        Assert.Equal(
+            [(Zone.Good, "Duration_Minutes(min=30)"), (Zone.Elevated, "Duration_Minutes(min=20)"), (Zone.High, "Duration_Minutes(min=10)")],
+            viewModel.ZoneTimes.Select(item => (item.Zone, item.Text)));
+    }
+
+    [Fact]
+    public void A_zone_that_did_not_occur_is_left_out_of_the_legend()
+    {
+        var readings = Enumerable.Range(0, 7).Select(slot => Samples.Co2(now.AddMinutes(-70 + (slot * 10) + 1), 700)).ToList();
+
+        viewModel.Update(readings[^1], readings, now, "Office");
+
+        Assert.Equal([Zone.Good], viewModel.ZoneTimes.Select(item => item.Zone));
+        Assert.Equal("Duration_HoursMinutes(h=1, min=10)", viewModel.ZoneTimes[0].Text);
+    }
+
+    [Fact]
+    public void Whole_hours_have_no_minutes()
+    {
+        var readings = Enumerable.Range(0, 6).Select(slot => Samples.Co2(now.AddMinutes(-60 + (slot * 10) + 1), 700)).ToList();
+
+        viewModel.Update(readings[^1], readings, now, "Office");
+
+        Assert.Equal("Duration_Hours(h=1)", viewModel.ZoneTimes[0].Text);
+    }
+
+    [Fact]
+    public void Not_connected_has_no_ribbon_legend_or_other_readings()
+    {
+        var recent = History(1300, 1050);
+        viewModel.Update(recent[^1], recent, now, "Office");
+
+        viewModel.Update(null, [], now, "Office");
+
+        Assert.Empty(viewModel.RibbonSegments);
+        Assert.Empty(viewModel.ZoneTimes);
+        Assert.Empty(viewModel.OtherReadings);
+        Assert.Null(viewModel.UpdatedText);
+        Assert.Null(viewModel.ZoneText);
+        Assert.Null(viewModel.TrendText);
+    }
+
+    [Fact]
+    public void Open_and_Settings_ask_the_window_controller()
+    {
+        viewModel.OpenCommand.Execute(null);
+        viewModel.OpenSettingsCommand.Execute(null);
+
+        Assert.Equal([null, ShellSection.Settings], windows.Shown);
     }
 }

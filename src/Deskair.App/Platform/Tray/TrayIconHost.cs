@@ -14,19 +14,21 @@ namespace Deskair.App.Platform.Tray;
 
 /// <summary>
 /// Owns the notification-area icon. The icon and tooltip follow <see cref="TrayViewModel"/>: the colour always updates, even when toasts are off.
-/// Left click opens the main window (until the flyout exists), right click opens the menu: Open Deskair, the status line, Settings, Quit.
+/// Left click opens the flyout (or closes it), right click opens the menu: Open Deskair, the status line, Settings, Quit.
 /// The icon is drawn at the size Windows uses for small icons, so it is sharp (docs/plans/spike-s4-tray-icons.md).
 /// </summary>
 public sealed class TrayIconHost : IDisposable
 {
     private readonly TrayViewModel viewModel;
+    private readonly FlyoutController flyout;
     private readonly ILogger<TrayIconHost> logger;
     private TaskbarIcon? icon;
     private Icon? currentIcon;
 
-    public TrayIconHost(TrayViewModel viewModel, ILogger<TrayIconHost> logger)
+    public TrayIconHost(TrayViewModel viewModel, FlyoutController flyout, ILogger<TrayIconHost> logger)
     {
         this.viewModel = viewModel;
+        this.flyout = flyout;
         this.logger = logger;
     }
 
@@ -41,7 +43,7 @@ public sealed class TrayIconHost : IDisposable
                 NoLeftClickDelay = true,
                 ContextMenu = BuildMenu()
             };
-            icon.TrayLeftMouseUp += (_, _) => viewModel.OpenCommand.Execute(null);
+            icon.TrayLeftMouseUp += (_, _) => _ = flyout.ToggleAsync();
             icon.SetBinding(TaskbarIcon.ToolTipTextProperty, new Binding(nameof(TrayViewModel.Tooltip)) { Source = viewModel });
             icon.ForceCreate(enablesEfficiencyMode: false);
 

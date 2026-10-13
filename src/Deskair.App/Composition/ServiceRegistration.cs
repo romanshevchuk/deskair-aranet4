@@ -16,6 +16,7 @@ using Deskair.App.Ui.Views.Gallery;
 using Deskair.App.Ui.Views.Shell;
 using Deskair.App.ViewModels.Connection;
 using Deskair.App.ViewModels.Data;
+using Deskair.App.ViewModels.Flyout;
 using Deskair.App.ViewModels.History;
 using Deskair.App.ViewModels.Live;
 using Deskair.App.ViewModels.Onboarding;
@@ -121,6 +122,8 @@ public static class ServiceRegistration
         services.AddSingleton<TrayViewModel>();
         services.AddSingleton<MainWindowController>();
         services.AddSingleton<IMainWindowController>(provider => provider.GetRequiredService<MainWindowController>());
+        services.AddSingleton<FlyoutViewModel>();
+        services.AddSingleton<FlyoutController>();
         services.AddSingleton<TrayIconHost>();
         services.AddSingleton<AppearanceSettingsViewModel>();
         services.AddSingleton<AlertsSettingsViewModel>();

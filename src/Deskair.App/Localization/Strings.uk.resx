@@ -200,6 +200,9 @@
   <data name="Offline_Step_Battery" xml:space="preserve"><value>Перевірте батарею датчика ({percent} востаннє)</value><comment>Draft: needs native review.</comment></data>
   <data name="Tray_AppName" xml:space="preserve"><value>Deskair</value><comment>Draft: needs native review.</comment></data>
   <data name="Tray_Quit" xml:space="preserve"><value>Вийти</value><comment>Draft: needs native review.</comment></data>
+  <data name="Flyout_Updated" xml:space="preserve"><value>оновлено {sec} с тому</value><comment>Draft: needs native review.</comment></data>
+  <data name="Flyout_UpdatedMinutes" xml:space="preserve"><value>оновлено {min} хв тому</value><comment>Draft: needs native review.</comment></data>
+  <data name="Duration_Hours" xml:space="preserve"><value>{h} год</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Import" xml:space="preserve"><value>Імпортувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Export" xml:space="preserve"><value>Експортувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Data_Folder" xml:space="preserve"><value>Тека даних</value><comment>Draft: needs native review.</comment></data>

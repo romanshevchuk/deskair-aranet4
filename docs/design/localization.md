@@ -141,3 +141,5 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Offline_LastReading / HistoryHint | Your last reading was {value} at {time}. / History is still available. | Останнє вимірювання: {value}, {time}. / Історія, як і раніше, доступна. |
 | Offline_Step_Range / Wake / Battery | Stay within about 10 m of the sensor / Press the button on the Aranet4 to wake it / Check the sensor battery ({percent} when last seen) | Тримайтеся приблизно в межах 10 м від датчика / Натисніть кнопку на Aranet4, щоб розбудити його / Перевірте батарею датчика ({percent} востаннє) |
 | Tray_AppName / Tray_Quit | Deskair / Quit | Deskair / Вийти |
+| Flyout_Updated / Flyout_UpdatedMinutes | updated {sec} s ago / updated {min} min ago | оновлено {sec} с тому / оновлено {min} хв тому |
+| Duration_Hours | {h} h | {h} год |

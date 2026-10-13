@@ -1,14 +1,203 @@
 <UserControl x:Class="Deskair.App.Ui.Views.Flyout.FlyoutView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(TRAY-02b) [M, haiku]
-       Spec: docs/design/screens-and-states.md "Screens" (Flyout); docs/design/design-tokens.md "Spacing" (flyout 360 px, radius 12)
-       Input : FlyoutViewModel.
-       Output: Room, value, zone, advice, 24 h ribbon at native size, other readings, Snooze, Open Deskair and Settings buttons.
-       Rules : Window hosting and positioning are separate (TRAY-02a, TRAY-02d).
-       Edge  : Not connected shows the grey state.
-       Done  : The gallery shows the flyout content. -->
-  <Grid>
-  </Grid>
+             xmlns:charts="clr-namespace:Deskair.App.Ui.Charts"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:trend="clr-namespace:Deskair.Domain.Analytics.Trend;assembly=Deskair.Domain">
+  <!-- DataContext: FlyoutViewModel. The 360 px tray flyout: room and age, the CO₂ card (value, zone, trend, advice), the 24 h ribbon at its own size (22 px high, hour labels,
+       time in each zone), the other readings and the buttons. Not connected shows the grey card with what to do. The window that hosts it and its position are separate. -->
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    <controls:TrendArrowConverter x:Key="TrendArrow" />
+
+    <Style x:Key="Flyout.WhenConnected" TargetType="{x:Type FrameworkElement}">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding ShowNotConnected}" Value="True">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Flyout.TrendText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Body}">
+      <Setter Property="Foreground" Value="{DynamicResource Text.Secondary.Brush}" />
+      <Setter Property="FontWeight" Value="{DynamicResource Font.Weight.SemiBold}" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding Trend}" Value="{x:Static trend:TrendDirection.Falling}">
+          <Setter Property="Foreground" Value="{DynamicResource Trend.Falling.Brush}" />
+        </DataTrigger>
+        <DataTrigger Binding="{Binding Trend}" Value="{x:Static trend:TrendDirection.Rising}">
+          <Setter Property="Foreground" Value="{DynamicResource Trend.Rising.Brush}" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+  </UserControl.Resources>
+
+  <!-- The margin leaves room for the shadow. -->
+  <Border Width="{StaticResource Size.Flyout.Width}"
+          Margin="{StaticResource Space.Menu.Shadow}"
+          Background="{DynamicResource Window.Bg.Brush}"
+          BorderBrush="{DynamicResource Border.Brush}"
+          BorderThickness="1"
+          CornerRadius="{DynamicResource Radius.Flyout}"
+          Effect="{StaticResource Shadow.Flyout}"
+          Padding="{StaticResource Space.Flyout.Padding}">
+    <StackPanel>
+      <Grid>
+        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+          <controls:StatusDot VerticalAlignment="Center" Zone="{Binding Zone}" />
+          <TextBlock Margin="{StaticResource Space.Inline}"
+                     VerticalAlignment="Center"
+                     FontWeight="{DynamicResource Font.Weight.SemiBold}"
+                     Style="{StaticResource Text.Body}"
+                     Text="{Binding RoomName}" />
+        </StackPanel>
+        <TextBlock HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   Style="{StaticResource Text.Caption}"
+                   Text="{Binding UpdatedText}" />
+      </Grid>
+
+      <controls:Card Margin="{StaticResource Space.Flyout.Gap}" Padding="{StaticResource Space.Flyout.Zone}" Zone="{Binding Zone}">
+        <Grid>
+          <StackPanel Style="{StaticResource Flyout.WhenConnected}">
+            <Grid>
+              <TextBlock VerticalAlignment="Center"
+                         FontWeight="{DynamicResource Font.Weight.SemiBold}"
+                         Style="{StaticResource Text.Body}"
+                         Text="{loc:T Metric_Co2}" />
+              <controls:Pill HorizontalAlignment="Right" Zone="{Binding Zone}">
+                <StackPanel Orientation="Horizontal">
+                  <controls:StatusDot VerticalAlignment="Center" Zone="{Binding Zone}" />
+                  <TextBlock Margin="{StaticResource Space.Inline}" Text="{Binding ZoneText}" />
+                </StackPanel>
+              </controls:Pill>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal">
+              <TextBlock FontSize="{DynamicResource Font.Size.Flyout.Value}"
+                         LineHeight="{DynamicResource Font.Size.Flyout.Value}"
+                         LineStackingStrategy="BlockLineHeight"
+                         Style="{StaticResource Text.Number}"
+                         FontWeight="{DynamicResource Font.Weight.Light}"
+                         Text="{Binding ValueText}" />
+              <TextBlock Margin="{StaticResource Space.Inline}"
+                         VerticalAlignment="Bottom"
+                         Style="{StaticResource Text.Secondary}"
+                         Text="{Binding UnitText}" />
+            </StackPanel>
+
+            <StackPanel Margin="{StaticResource Space.Hero.Trend}" Orientation="Horizontal">
+              <TextBlock Style="{StaticResource Flyout.TrendText}" Text="{Binding Trend, Converter={StaticResource TrendArrow}}" />
+              <TextBlock Margin="{StaticResource Space.Inline}" Style="{StaticResource Flyout.TrendText}" Text="{Binding TrendText}" />
+              <TextBlock Margin="{StaticResource Space.Inline}"
+                         VerticalAlignment="Center"
+                         Style="{StaticResource Text.Secondary}"
+                         Text="{Binding TrendDetail}" />
+            </StackPanel>
+
+            <TextBlock Margin="{StaticResource Space.Hero.Trend}"
+                       FontWeight="{DynamicResource Font.Weight.SemiBold}"
+                       Style="{StaticResource Text.Body}"
+                       Text="{Binding AdviceTitle}"
+                       TextWrapping="Wrap" />
+          </StackPanel>
+
+          <StackPanel>
+            <StackPanel.Style>
+              <Style TargetType="{x:Type StackPanel}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding ShowNotConnected}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </StackPanel.Style>
+            <TextBlock FontWeight="{DynamicResource Font.Weight.SemiBold}"
+                       Style="{StaticResource Text.Body}"
+                       Text="{loc:T Offline_Title}"
+                       TextWrapping="Wrap" />
+            <TextBlock Margin="{StaticResource Space.Hero.Trend}"
+                       Style="{StaticResource Text.Secondary}"
+                       Text="{loc:T Offline_Text}"
+                       TextWrapping="Wrap" />
+          </StackPanel>
+        </Grid>
+      </controls:Card>
+
+      <StackPanel Margin="{StaticResource Space.Flyout.Gap}" Style="{StaticResource Flyout.WhenConnected}">
+        <charts:ZoneRibbon Height="{StaticResource Size.Flyout.Ribbon.Height}"
+                           EndTime="{Binding RibbonEnd}"
+                           Segments="{Binding RibbonSegments}" />
+
+        <Grid Margin="{StaticResource Space.Chart.Ribbon}">
+          <Grid.ColumnDefinitions>
+            <!-- Half-width end columns put the middle labels at 25, 50 and 75 % of the ribbon. -->
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="0.5*" />
+          </Grid.ColumnDefinitions>
+          <TextBlock Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource Text.Caption}" Text="{Binding RibbonLabels[0]}" />
+          <TextBlock Grid.Column="1" HorizontalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{Binding RibbonLabels[1]}" />
+          <TextBlock Grid.Column="2" HorizontalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{Binding RibbonLabels[2]}" />
+          <TextBlock Grid.Column="3" HorizontalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{Binding RibbonLabels[3]}" />
+          <TextBlock Grid.Column="4" HorizontalAlignment="Right" Style="{StaticResource Text.Caption}" Text="{Binding RibbonLabels[4]}" />
+        </Grid>
+
+        <ItemsControl Margin="{StaticResource Space.Chart.Ribbon}" Focusable="False" IsTabStop="False" ItemsSource="{Binding ZoneTimes}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Margin="{StaticResource Space.Flyout.Legend}" Orientation="Horizontal">
+                <controls:StatusDot VerticalAlignment="Center" Zone="{Binding Zone}" />
+                <TextBlock Margin="{StaticResource Space.Inline}"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource Text.Caption}"
+                           Text="{Binding Text}" />
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+
+      <ItemsControl Margin="{StaticResource Space.Flyout.Gap}"
+                    Focusable="False"
+                    IsTabStop="False"
+                    ItemsSource="{Binding OtherReadings}"
+                    Style="{StaticResource Flyout.WhenConnected}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <UniformGrid Rows="1" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <controls:KeyValueCell Label="{Binding Label}" Value="{Binding Value}" ValueFirst="True" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
+      <Grid Margin="{StaticResource Space.Flyout.Footer}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <controls:PrimaryButton Grid.Column="0" Command="{Binding OpenCommand}" Content="{loc:T Action_OpenApp}" />
+        <controls:SecondaryButton Grid.Column="1"
+                                  Margin="{StaticResource Space.Inline}"
+                                  AutomationProperties.Name="{loc:T Nav_Settings}"
+                                  Command="{Binding OpenSettingsCommand}"
+                                  Content="&#xE713;"
+                                  FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" />
+      </Grid>
+    </StackPanel>
+  </Border>
 </UserControl>
