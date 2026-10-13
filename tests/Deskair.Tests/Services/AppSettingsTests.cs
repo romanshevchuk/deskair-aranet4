@@ -17,6 +17,7 @@ public class AppSettingsTests
         Assert.Equal(new TimeOnly(7, 0), settings.QuietHoursEnd);
         Assert.Equal(Deskair.Domain.Metrics.TemperatureUnit.Celsius, settings.TemperatureUnit);
         Assert.Null(settings.SelectedDevice);
+        Assert.False(settings.ShowValueOnTrayIcon);
     }
 
     [Fact]

@@ -24,7 +24,7 @@ public class AppearanceSettingsViewModelTests
     [Fact]
     public async Task Load_shows_the_current_settings()
     {
-        store.Stored = AppSettings.Default with { Language = LanguageChoice.Ukrainian, Theme = ThemeChoice.Dark, TemperatureUnit = Deskair.Domain.Metrics.TemperatureUnit.Fahrenheit };
+        store.Stored = AppSettings.Default with { Language = LanguageChoice.Ukrainian, Theme = ThemeChoice.Dark, TemperatureUnit = Deskair.Domain.Metrics.TemperatureUnit.Fahrenheit, ShowValueOnTrayIcon = true };
         await settings.LoadAsync(TestContext.Current.CancellationToken);
 
         viewModel.Load();
@@ -32,6 +32,7 @@ public class AppearanceSettingsViewModelTests
         Assert.Equal(LanguageChoice.Ukrainian, viewModel.Language);
         Assert.Equal(ThemeChoice.Dark, viewModel.Theme);
         Assert.Equal(Deskair.Domain.Metrics.TemperatureUnit.Fahrenheit, viewModel.TemperatureUnit);
+        Assert.True(viewModel.ShowValueOnTrayIcon);
     }
 
     [Fact]
@@ -44,11 +45,13 @@ public class AppearanceSettingsViewModelTests
         viewModel.Language = LanguageChoice.English;
         viewModel.Theme = ThemeChoice.Light;
         viewModel.TemperatureUnit = TemperatureUnit.Fahrenheit;
+        viewModel.ShowValueOnTrayIcon = true;
 
         var saved = store.Stored;
         Assert.Equal(LanguageChoice.English, saved.Language);
         Assert.Equal(ThemeChoice.Light, saved.Theme);
         Assert.Equal(TemperatureUnit.Fahrenheit, saved.TemperatureUnit);
+        Assert.True(saved.ShowValueOnTrayIcon);
         Assert.Equal(saved, received?.Settings);
     }
 

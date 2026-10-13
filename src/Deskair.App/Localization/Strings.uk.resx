@@ -206,6 +206,13 @@
   <data name="Toast_High_Title" xml:space="preserve"><value>Провітріть зараз · {room}</value><comment>Draft: needs native review.</comment></data>
   <data name="Toast_Elevated_Body" xml:space="preserve"><value>{value}. Відчиніть вікно приблизно на 10 хвилин.</value><comment>Draft: needs native review.</comment></data>
   <data name="Toast_High_Body" xml:space="preserve"><value>{value}. Відчиніть вікна повністю.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_TrayValue" xml:space="preserve"><value>Показувати CO₂ на значку в треї</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_TrayValue_Hint" xml:space="preserve"><value>Значок показує значення (1.1k) замість кільця</value><comment>Draft: needs native review.</comment></data>
+  <data name="Tray_SnoozeTomorrow" xml:space="preserve"><value>Відкласти до завтра</value><comment>Draft: needs native review.</comment></data>
+  <data name="Tray_ResumeUntil" xml:space="preserve"><value>Відновити сповіщення (відкладено до {time})</value><comment>Draft: needs native review.</comment></data>
+  <data name="Flyout_Snooze" xml:space="preserve"><value>Відкласти</value><comment>Draft: needs native review.</comment></data>
+  <data name="Flyout_SnoozedUntil" xml:space="preserve"><value>Відкладено до {time}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Flyout_Resume" xml:space="preserve"><value>Відновити сповіщення</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Import" xml:space="preserve"><value>Імпортувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Export" xml:space="preserve"><value>Експортувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Data_Folder" xml:space="preserve"><value>Тека даних</value><comment>Draft: needs native review.</comment></data>

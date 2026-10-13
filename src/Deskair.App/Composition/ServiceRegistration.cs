@@ -113,6 +113,7 @@ public static class ServiceRegistration
         services.AddSingleton<ThemeService>();
         services.AddSingleton<StartupSequence>();
         services.AddSingleton<MetricFormatter>();
+        services.AddSingleton<FriendlyTime>();
         services.AddSingleton<HeroStatsBuilder>();
         services.AddSingleton<HeroViewModel>();
         services.AddSingleton<GaugeViewModel>();
@@ -126,6 +127,7 @@ public static class ServiceRegistration
         services.AddSingleton<OnboardingViewModel>();
         services.AddSingleton<OfflineViewModel>();
         services.AddSingleton<TrayViewModel>();
+        services.AddSingleton<TrayMenuViewModel>();
         services.AddSingleton<MainWindowController>();
         services.AddSingleton<IMainWindowController>(provider => provider.GetRequiredService<MainWindowController>());
         services.AddSingleton<FlyoutViewModel>();

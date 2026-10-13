@@ -41,7 +41,8 @@ public sealed class JsonSettingsStoreTests : IDisposable
             NotifyAtHigh = false,
             QuietHoursEnabled = true,
             QuietHoursStart = new TimeOnly(23, 30),
-            QuietHoursEnd = new TimeOnly(6, 15)
+            QuietHoursEnd = new TimeOnly(6, 15),
+            ShowValueOnTrayIcon = true
         };
         await store.SaveAsync(saved, CancellationToken.None);
 

@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Messaging;
+using Deskair.App.Localization;
 using Deskair.App.ViewModels.Connection;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
@@ -44,8 +45,7 @@ public class OfflineViewModelTests
             new FakeUiDispatcher(),
             TestFormatter.Create(localizer),
             localizer,
-            calendar,
-            clock,
+            new FriendlyTime(localizer, calendar, clock),
             systemSettings);
     }
 

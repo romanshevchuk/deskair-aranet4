@@ -10,6 +10,7 @@ using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
 using Deskair.Domain.Zones;
+using Deskair.Services.Alerts;
 
 namespace Deskair.App.ViewModels.Flyout;
 
@@ -26,6 +27,8 @@ public sealed partial class FlyoutViewModel : ObservableObject
     private readonly MetricFormatter formatter;
     private readonly LocalCalendar calendar;
     private readonly IMainWindowController windows;
+    private readonly SnoozeService snooze;
+    private readonly FriendlyTime time;
 
     [ObservableProperty]
     private Zone? zone;
@@ -91,13 +94,33 @@ public sealed partial class FlyoutViewModel : ObservableObject
     [ObservableProperty]
     private IReadOnlyList<FlyoutReading> otherReadings = [];
 
-    public FlyoutViewModel(ILocalizer localizer, MetricFormatter formatter, LocalCalendar calendar, IMainWindowController windows)
+    /// <summary>True while alerts are snoozed: the button then says until when and the menu offers to resume.</summary>
+    [ObservableProperty]
+    private bool isSnoozed;
+
+    /// <summary>"Snooze", or "Snoozed until 14:30".</summary>
+    [ObservableProperty]
+    private string snoozeButtonText = string.Empty;
+
+    [ObservableProperty]
+    private string snoozeHourText = string.Empty;
+
+    [ObservableProperty]
+    private string snoozeTomorrowText = string.Empty;
+
+    [ObservableProperty]
+    private string resumeText = string.Empty;
+
+    public FlyoutViewModel(ILocalizer localizer, MetricFormatter formatter, LocalCalendar calendar, IMainWindowController windows, SnoozeService snooze, FriendlyTime time)
     {
         this.localizer = localizer;
         this.formatter = formatter;
         this.calendar = calendar;
         this.windows = windows;
+        this.snooze = snooze;
+        this.time = time;
         summaries = new AirSummaryBuilder(localizer);
+        RefreshSnooze();
     }
 
     [RelayCommand]
@@ -117,6 +140,7 @@ public sealed partial class FlyoutViewModel : ObservableObject
     public void Update(Reading? reading, IReadOnlyList<Reading> recent, DateTimeOffset now, string? room)
     {
         RoomName = room;
+        RefreshSnooze();
 
         if (reading is not { } latest)
         {
@@ -152,6 +176,39 @@ public sealed partial class FlyoutViewModel : ObservableObject
             Other(Metric.Humidity, latest.HumidityPct),
             Other(Metric.Pressure, latest.PressureHpa)
         ];
+    }
+
+    [RelayCommand]
+    private void SnoozeHour()
+    {
+        snooze.ForOneHour();
+        RefreshSnooze();
+    }
+
+    [RelayCommand]
+    private void SnoozeTomorrow()
+    {
+        snooze.UntilTomorrow();
+        RefreshSnooze();
+    }
+
+    [RelayCommand]
+    private void Resume()
+    {
+        snooze.Resume();
+        RefreshSnooze();
+    }
+
+    /// <summary>Looks at the snooze again and rebuilds its texts. A snooze ends without any event, so this runs each time the flyout opens.</summary>
+    private void RefreshSnooze()
+    {
+        var until = snooze.Until;
+
+        IsSnoozed = until is not null;
+        SnoozeButtonText = until is { } end ? localizer.Format("Flyout_SnoozedUntil", ("time", time.Text(end))) : localizer.Get("Flyout_Snooze");
+        SnoozeHourText = localizer.Get("Toast_Snooze");
+        SnoozeTomorrowText = localizer.Get("Tray_SnoozeTomorrow");
+        ResumeText = localizer.Get("Flyout_Resume");
     }
 
     private void ShowNoReading()

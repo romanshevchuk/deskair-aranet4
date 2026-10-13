@@ -34,6 +34,9 @@
           <ListBoxItem Content="{loc:T Unit_Fahrenheit}" Tag="{x:Static metrics:TemperatureUnit.Fahrenheit}" />
         </controls:SegmentedControl>
       </controls:SettingsRow>
+      <controls:SettingsRow Header="{loc:T Settings_TrayValue}" Description="{loc:T Settings_TrayValue_Hint}">
+        <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_TrayValue}" IsChecked="{Binding ShowValueOnTrayIcon, Mode=TwoWay}" />
+      </controls:SettingsRow>
     </StackPanel>
   </controls:SettingsCard>
 </UserControl>

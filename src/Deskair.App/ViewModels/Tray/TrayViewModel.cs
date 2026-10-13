@@ -1,21 +1,20 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
-using Deskair.App.ViewModels.Shell;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Zones;
 using Deskair.Services.Connection;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
 using Deskair.Services.Platform;
+using Deskair.Services.Settings;
 
 namespace Deskair.App.ViewModels.Tray;
 
 /// <summary>
-/// What the tray icon shows and offers: the zone and value for the icon, the tooltip ("Office · 1,068 ppm · Elevated"), the menu texts and commands.
-/// It follows readings, the connection state, the room and the language by itself, so the icon colour always updates (behaviour-rules.md "Alerts").
-/// The icon is grey while the sensor is not connected or there is no sensor yet.
+/// What the tray icon shows: the zone and value for the icon, whether the value replaces the ring (a setting), and the tooltip ("Office · 1,068 ppm · Elevated").
+/// It follows readings, the connection state, the room, the language and the setting by itself, so the icon colour always updates (behaviour-rules.md "Alerts").
+/// The icon is grey while the sensor is not connected or there is no sensor yet. The menu is <see cref="TrayMenuViewModel"/>.
 /// </summary>
 public sealed partial class TrayViewModel : ObservableObject
 {
@@ -23,7 +22,6 @@ public sealed partial class TrayViewModel : ObservableObject
     private readonly ILocalizer localizer;
     private readonly MetricFormatter formatter;
     private readonly IUiDispatcher dispatcher;
-    private readonly IMainWindowController windows;
     private ConnectionState connection = ConnectionState.Normal;
 
     /// <summary>The zone of the last reading, or null (grey icon) when there is none or the sensor is not connected.</summary>
@@ -34,18 +32,13 @@ public sealed partial class TrayViewModel : ObservableObject
     [ObservableProperty]
     private double? co2;
 
+    /// <summary>True when the icon shows the value ("1.1k") instead of the ring.</summary>
+    [ObservableProperty]
+    private bool showValue;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StatusText))]
     private string tooltip = string.Empty;
-
-    [ObservableProperty]
-    private string openText = string.Empty;
-
-    [ObservableProperty]
-    private string settingsText = string.Empty;
-
-    [ObservableProperty]
-    private string quitText = string.Empty;
 
     public TrayViewModel(
         DeviceRegistry devices,
@@ -53,43 +46,26 @@ public sealed partial class TrayViewModel : ObservableObject
         MetricFormatter formatter,
         IMessenger messenger,
         IUiDispatcher dispatcher,
-        IMainWindowController windows)
+        SettingsService settings)
     {
         this.devices = devices;
         this.localizer = localizer;
         this.formatter = formatter;
         this.dispatcher = dispatcher;
-        this.windows = windows;
+        ShowValue = settings.Current.ShowValueOnTrayIcon;
 
         messenger.Register<TrayViewModel, ReadingReceived>(this, static (self, message) => self.OnReading(message));
         messenger.Register<TrayViewModel, ConnectionStateChanged>(this, static (self, message) => self.OnConnection(message.State));
         messenger.Register<TrayViewModel, DeviceSelected>(this, static (self, _) => self.OnDeviceSelected());
-        messenger.Register<TrayViewModel, DeviceRenamed>(this, static (self, _) => self.dispatcher.Post(self.UpdateTexts));
-        messenger.Register<TrayViewModel, LanguageChanged>(this, static (self, _) => self.dispatcher.Post(self.UpdateTexts));
+        messenger.Register<TrayViewModel, DeviceRenamed>(this, static (self, _) => self.dispatcher.Post(self.UpdateTooltip));
+        messenger.Register<TrayViewModel, LanguageChanged>(this, static (self, _) => self.dispatcher.Post(self.UpdateTooltip));
+        messenger.Register<TrayViewModel, SettingsChanged>(this, static (self, message) => self.dispatcher.Post(() => self.ShowValue = message.Settings.ShowValueOnTrayIcon));
 
-        UpdateTexts();
+        UpdateTooltip();
     }
 
     /// <summary>The first line of the menu: the same status as the tooltip.</summary>
     public string StatusText => Tooltip;
-
-    [RelayCommand]
-    private void Open()
-    {
-        windows.Show();
-    }
-
-    [RelayCommand]
-    private void OpenSettings()
-    {
-        windows.Show(ShellSection.Settings);
-    }
-
-    [RelayCommand]
-    private void Quit()
-    {
-        windows.Quit();
-    }
 
     private void OnReading(ReadingReceived message)
     {
@@ -102,7 +78,7 @@ public sealed partial class TrayViewModel : ObservableObject
         {
             Co2 = message.Reading.Co2Ppm;
             Zone = double.IsNaN(message.Reading.Co2Ppm) ? null : ZoneClassifier.Classify(message.Reading.Co2Ppm);
-            UpdateTexts();
+            UpdateTooltip();
         });
     }
 
@@ -118,7 +94,7 @@ public sealed partial class TrayViewModel : ObservableObject
                 Co2 = null;
             }
 
-            UpdateTexts();
+            UpdateTooltip();
         });
     }
 
@@ -128,16 +104,13 @@ public sealed partial class TrayViewModel : ObservableObject
         {
             Zone = null;
             Co2 = null;
-            UpdateTexts();
+            UpdateTooltip();
         });
     }
 
-    private void UpdateTexts()
+    private void UpdateTooltip()
     {
         Tooltip = BuildTooltip();
-        OpenText = localizer.Get("Action_OpenApp");
-        SettingsText = localizer.Get("Nav_Settings");
-        QuitText = localizer.Get("Tray_Quit");
     }
 
     private string BuildTooltip()

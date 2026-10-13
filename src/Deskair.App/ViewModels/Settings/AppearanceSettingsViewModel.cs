@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Deskair.App.ViewModels.Settings;
 
-/// <summary>Language, theme and temperature unit. A change from the screen is saved at once (and announced, so the app follows); <see cref="Load"/> does not save.</summary>
+/// <summary>Language, theme, temperature unit and the value on the tray icon. A change from the screen is saved at once (and announced, so the app follows); <see cref="Load"/> does not save.</summary>
 public sealed partial class AppearanceSettingsViewModel : ObservableObject
 {
     private readonly SettingsService settings;
@@ -20,6 +20,9 @@ public sealed partial class AppearanceSettingsViewModel : ObservableObject
 
     [ObservableProperty]
     private TemperatureUnit temperatureUnit;
+
+    [ObservableProperty]
+    private bool showValueOnTrayIcon;
 
     public AppearanceSettingsViewModel(SettingsService settings, ILogger<AppearanceSettingsViewModel> logger)
     {
@@ -37,6 +40,7 @@ public sealed partial class AppearanceSettingsViewModel : ObservableObject
             Language = current.Language;
             Theme = current.Theme;
             TemperatureUnit = current.TemperatureUnit;
+            ShowValueOnTrayIcon = current.ShowValueOnTrayIcon;
         }
         finally
         {
@@ -46,7 +50,7 @@ public sealed partial class AppearanceSettingsViewModel : ObservableObject
 
     public Task ApplyAsync(CancellationToken cancellationToken)
     {
-        return settings.UpdateAsync(current => current with { Language = Language, Theme = Theme, TemperatureUnit = TemperatureUnit }, cancellationToken);
+        return settings.UpdateAsync(current => current with { Language = Language, Theme = Theme, TemperatureUnit = TemperatureUnit, ShowValueOnTrayIcon = ShowValueOnTrayIcon }, cancellationToken);
     }
 
     partial void OnLanguageChanged(LanguageChoice value) => ApplyLater();
@@ -54,6 +58,8 @@ public sealed partial class AppearanceSettingsViewModel : ObservableObject
     partial void OnThemeChanged(ThemeChoice value) => ApplyLater();
 
     partial void OnTemperatureUnitChanged(TemperatureUnit value) => ApplyLater();
+
+    partial void OnShowValueOnTrayIconChanged(bool value) => ApplyLater();
 
     private void ApplyLater()
     {

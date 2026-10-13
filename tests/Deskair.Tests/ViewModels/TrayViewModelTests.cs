@@ -1,12 +1,12 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
-using Deskair.App.ViewModels.Shell;
 using Deskair.App.ViewModels.Tray;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Zones;
 using Deskair.Services.Connection;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
+using Deskair.Services.Settings;
 using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.ViewModels;
@@ -19,12 +19,14 @@ public class TrayViewModelTests
 
     private readonly StrongReferenceMessenger messenger = new();
     private readonly FakeDeviceStore deviceStore = new();
-    private readonly FakeWindowController windows = new();
     private readonly DeviceRegistry registry;
+    private readonly FakeSettingsStore settingsStore = new();
+    private readonly SettingsService settings;
 
     public TrayViewModelTests()
     {
         registry = new DeviceRegistry(deviceStore);
+        settings = new SettingsService(settingsStore, messenger);
     }
 
     private async Task<TrayViewModel> CreateAsync(bool withDevice = true, ILocalizer? localizer = null)
@@ -37,7 +39,7 @@ public class TrayViewModelTests
         await registry.LoadAsync(TestContext.Current.CancellationToken);
         localizer ??= new FakeLocalizer();
 
-        return new TrayViewModel(registry, localizer, TestFormatter.Create(localizer), messenger, new FakeUiDispatcher(), windows);
+        return new TrayViewModel(registry, localizer, TestFormatter.Create(localizer), messenger, new FakeUiDispatcher(), settings);
     }
 
     private void Reading(double ppm, DeviceId? from = null)
@@ -176,7 +178,7 @@ public class TrayViewModelTests
     }
 
     [Fact]
-    public async Task A_new_language_rebuilds_the_texts()
+    public async Task A_new_language_rebuilds_the_tooltip()
     {
         var localizer = new SwitchableLocalizer();
         var viewModel = await CreateAsync(localizer: localizer);
@@ -188,45 +190,27 @@ public class TrayViewModelTests
         messenger.Send(new LanguageChanged("uk"));
 
         Assert.Contains(nameof(TrayViewModel.Tooltip), changed);
-        Assert.Contains(nameof(TrayViewModel.OpenText), changed);
-        Assert.Contains(nameof(TrayViewModel.SettingsText), changed);
-        Assert.Contains(nameof(TrayViewModel.QuitText), changed);
-    }
-
-    /// <summary>A localizer whose texts change when the language does.</summary>
-    private sealed class SwitchableLocalizer : ILocalizer
-    {
-        public string Prefix { get; set; } = string.Empty;
-
-        public System.Globalization.CultureInfo Culture { get; } = System.Globalization.CultureInfo.GetCultureInfo("en-US");
-
-        public string Get(string key) => Prefix + key;
-
-        public string Format(string key, params (string Name, object? Value)[] values) => Prefix + key;
-
-        public string Plural(string baseKey, long count, params (string Name, object? Value)[] values) => Prefix + baseKey;
+        Assert.Contains(nameof(TrayViewModel.StatusText), changed);
     }
 
     [Fact]
-    public async Task The_menu_texts_come_from_the_localizer()
+    public async Task The_icon_shows_the_ring_unless_the_value_is_asked_for()
     {
         var viewModel = await CreateAsync();
 
-        Assert.Equal("Action_OpenApp", viewModel.OpenText);
-        Assert.Equal("Nav_Settings", viewModel.SettingsText);
-        Assert.Equal("Tray_Quit", viewModel.QuitText);
+        Assert.False(viewModel.ShowValue);
     }
 
     [Fact]
-    public async Task The_menu_commands_ask_the_window_controller()
+    public async Task The_value_on_the_icon_follows_the_setting_at_start_and_when_it_changes()
     {
+        settingsStore.Stored = AppSettings.Default with { ShowValueOnTrayIcon = true };
+        await settings.LoadAsync(TestContext.Current.CancellationToken);
         var viewModel = await CreateAsync();
+        Assert.True(viewModel.ShowValue);
 
-        viewModel.OpenCommand.Execute(null);
-        viewModel.OpenSettingsCommand.Execute(null);
-        viewModel.QuitCommand.Execute(null);
+        await settings.UpdateAsync(current => current with { ShowValueOnTrayIcon = false }, TestContext.Current.CancellationToken);
 
-        Assert.Equal([null, ShellSection.Settings], windows.Shown);
-        Assert.Equal(1, windows.QuitRequests);
+        Assert.False(viewModel.ShowValue);
     }
 }

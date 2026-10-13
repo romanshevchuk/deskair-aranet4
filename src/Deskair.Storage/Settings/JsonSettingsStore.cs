@@ -99,6 +99,8 @@ public sealed class JsonSettingsStore : ISettingsStore
 
         public TimeOnly? QuietHoursEnd { get; init; }
 
+        public bool? ShowValueOnTrayIcon { get; init; }
+
         public static SettingsFile From(AppSettings settings) => new()
         {
             Version = FileVersion,
@@ -111,7 +113,8 @@ public sealed class JsonSettingsStore : ISettingsStore
             NotifyAtHigh = settings.NotifyAtHigh,
             QuietHoursEnabled = settings.QuietHoursEnabled,
             QuietHoursStart = settings.QuietHoursStart,
-            QuietHoursEnd = settings.QuietHoursEnd
+            QuietHoursEnd = settings.QuietHoursEnd,
+            ShowValueOnTrayIcon = settings.ShowValueOnTrayIcon
         };
 
         public AppSettings ApplyTo(AppSettings defaults) => defaults with
@@ -125,7 +128,8 @@ public sealed class JsonSettingsStore : ISettingsStore
             NotifyAtHigh = NotifyAtHigh ?? defaults.NotifyAtHigh,
             QuietHoursEnabled = QuietHoursEnabled ?? defaults.QuietHoursEnabled,
             QuietHoursStart = QuietHoursStart ?? defaults.QuietHoursStart,
-            QuietHoursEnd = QuietHoursEnd ?? defaults.QuietHoursEnd
+            QuietHoursEnd = QuietHoursEnd ?? defaults.QuietHoursEnd,
+            ShowValueOnTrayIcon = ShowValueOnTrayIcon ?? defaults.ShowValueOnTrayIcon
         };
     }
 }

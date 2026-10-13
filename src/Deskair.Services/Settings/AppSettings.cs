@@ -24,5 +24,8 @@ public sealed record AppSettings(
 
     public TimeOnly QuietHoursEnd { get; init; } = new(7, 0);
 
+    /// <summary>The tray icon shows the CO₂ value ("1.1k") instead of the ring (Settings, or the tray menu).</summary>
+    public bool ShowValueOnTrayIcon { get; init; }
+
     public static AppSettings Default { get; } = new(LanguageChoice.System, ThemeChoice.System, true);
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Deskair.App.ViewModels.Tray;
 using H.NotifyIcon;
@@ -14,20 +15,22 @@ namespace Deskair.App.Platform.Tray;
 
 /// <summary>
 /// Owns the notification-area icon. The icon and tooltip follow <see cref="TrayViewModel"/>: the colour always updates, even when toasts are off.
-/// Left click opens the flyout (or closes it), right click opens the menu: Open Deskair, the status line, Settings, Quit.
+/// Left click opens the flyout (or closes it), right click opens the menu (<see cref="TrayMenuViewModel"/>). With the setting on, the icon shows the value instead of the ring.
 /// The icon is drawn at the size Windows uses for small icons, so it is sharp (docs/plans/spike-s4-tray-icons.md).
 /// </summary>
 public sealed class TrayIconHost : IDisposable
 {
     private readonly TrayViewModel viewModel;
+    private readonly TrayMenuViewModel menuModel;
     private readonly FlyoutController flyout;
     private readonly ILogger<TrayIconHost> logger;
     private TaskbarIcon? icon;
     private Icon? currentIcon;
 
-    public TrayIconHost(TrayViewModel viewModel, FlyoutController flyout, ILogger<TrayIconHost> logger)
+    public TrayIconHost(TrayViewModel viewModel, TrayMenuViewModel menuModel, FlyoutController flyout, ILogger<TrayIconHost> logger)
     {
         this.viewModel = viewModel;
+        this.menuModel = menuModel;
         this.flyout = flyout;
         this.logger = logger;
     }
@@ -75,32 +78,49 @@ public sealed class TrayIconHost : IDisposable
 
     private ContextMenu BuildMenu()
     {
-        var open = new MenuItem { FontWeight = FontWeights.SemiBold, Command = viewModel.OpenCommand };
-        open.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding(nameof(TrayViewModel.OpenText)) { Source = viewModel });
+        var open = Item(menuModel.OpenCommand, nameof(TrayMenuViewModel.OpenText));
+        open.FontWeight = FontWeights.SemiBold;
 
         var status = new MenuItem { IsEnabled = false };
         status.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding(nameof(TrayViewModel.StatusText)) { Source = viewModel });
 
-        var settings = new MenuItem { Command = viewModel.OpenSettingsCommand };
-        settings.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding(nameof(TrayViewModel.SettingsText)) { Source = viewModel });
+        var resume = Item(menuModel.ResumeCommand, nameof(TrayMenuViewModel.ResumeText));
+        resume.SetBinding(UIElement.VisibilityProperty, new Binding(nameof(TrayMenuViewModel.IsSnoozed)) { Source = menuModel, Converter = new BooleanToVisibilityConverter() });
 
-        var quit = new MenuItem { Command = viewModel.QuitCommand };
-        quit.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding(nameof(TrayViewModel.QuitText)) { Source = viewModel });
+        // The tick shows the setting; choosing the item changes the setting, and the tick follows it.
+        var showValue = Item(menuModel.ToggleShowValueCommand, nameof(TrayMenuViewModel.ShowValueText));
+        showValue.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(TrayMenuViewModel.ShowValue)) { Source = menuModel, Mode = BindingMode.OneWay });
 
         var menu = new ContextMenu();
         menu.Items.Add(open);
         menu.Items.Add(status);
         menu.Items.Add(new Separator());
-        menu.Items.Add(settings);
+        menu.Items.Add(Item(menuModel.SnoozeHourCommand, nameof(TrayMenuViewModel.SnoozeHourText)));
+        menu.Items.Add(Item(menuModel.SnoozeTomorrowCommand, nameof(TrayMenuViewModel.SnoozeTomorrowText)));
+        menu.Items.Add(resume);
         menu.Items.Add(new Separator());
-        menu.Items.Add(quit);
+        menu.Items.Add(showValue);
+        menu.Items.Add(Item(menuModel.OpenSettingsCommand, nameof(TrayMenuViewModel.SettingsText)));
+        menu.Items.Add(new Separator());
+        menu.Items.Add(Item(menuModel.QuitCommand, nameof(TrayMenuViewModel.QuitText)));
+
+        // A snooze ends by itself, without an event, so the menu looks again each time it opens.
+        menu.Opened += (_, _) => menuModel.Refresh();
 
         return menu;
     }
 
+    private MenuItem Item(ICommand command, string textProperty)
+    {
+        var item = new MenuItem { Command = command };
+        item.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding(textProperty) { Source = menuModel });
+
+        return item;
+    }
+
     private void OnViewModelChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(TrayViewModel.Zone) or nameof(TrayViewModel.Co2))
+        if (e.PropertyName is nameof(TrayViewModel.Zone) or nameof(TrayViewModel.Co2) or nameof(TrayViewModel.ShowValue))
         {
             ShowCurrentIcon();
         }
@@ -115,7 +135,7 @@ public sealed class TrayIconHost : IDisposable
 
         var width = NativeMethods.GetSystemMetrics(NativeMethods.SmallIconWidth);
         var size = width > 0 ? width : 16;
-        var next = ToIcon(TrayIconRenderer.Render(viewModel.Zone, size, null));
+        var next = ToIcon(TrayIconRenderer.Render(viewModel.Zone, size, viewModel.ShowValue ? viewModel.Co2 : null));
         var previous = currentIcon;
 
         icon.Icon = next;

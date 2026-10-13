@@ -30,8 +30,7 @@ public sealed partial class OfflineViewModel : ObservableObject
     private readonly IUiDispatcher dispatcher;
     private readonly MetricFormatter formatter;
     private readonly ILocalizer localizer;
-    private readonly LocalCalendar calendar;
-    private readonly TimeProvider timeProvider;
+    private readonly FriendlyTime time;
     private readonly ISystemSettings systemSettings;
     private Reading? lastReading;
     private int? batteryPercent;
@@ -58,8 +57,7 @@ public sealed partial class OfflineViewModel : ObservableObject
         IUiDispatcher dispatcher,
         MetricFormatter formatter,
         ILocalizer localizer,
-        LocalCalendar calendar,
-        TimeProvider timeProvider,
+        FriendlyTime time,
         ISystemSettings systemSettings)
     {
         this.devices = devices;
@@ -69,8 +67,7 @@ public sealed partial class OfflineViewModel : ObservableObject
         this.dispatcher = dispatcher;
         this.formatter = formatter;
         this.localizer = localizer;
-        this.calendar = calendar;
-        this.timeProvider = timeProvider;
+        this.time = time;
         this.systemSettings = systemSettings;
 
         messenger.Register<OfflineViewModel, ReadingReceived>(this, static (self, message) => self.OnReading(message));
@@ -192,18 +189,9 @@ public sealed partial class OfflineViewModel : ObservableObject
         LastReadingText = localizer.Format(
             "Offline_LastReading",
             ("value", $"{formatter.Value(Metric.Co2, reading.Co2Ppm)} {formatter.Unit(Metric.Co2)}"),
-            ("time", When(reading.Timestamp)));
+            ("time", time.Text(reading.Timestamp)));
     }
 
-    private string When(DateTimeOffset instant)
-    {
-        var local = TimeZoneInfo.ConvertTime(instant, calendar.Zone);
-        var today = calendar.LocalDateOf(timeProvider.GetUtcNow());
-
-        return calendar.LocalDateOf(instant) == today
-            ? local.ToString("HH:mm", localizer.Culture)
-            : local.ToString("d MMM, HH:mm", localizer.Culture);
-    }
 
     private void UpdateSteps()
     {

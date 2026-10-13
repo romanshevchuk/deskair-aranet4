@@ -1,24 +1,37 @@
+using CommunityToolkit.Mvvm.Messaging;
+using Deskair.App.Localization;
 using Deskair.App.ViewModels.Flyout;
 using Deskair.App.ViewModels.Shell;
 using Deskair.Domain.Analytics.Trend;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
 using Deskair.Domain.Zones;
+using Deskair.Services.Alerts;
 using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.ViewModels;
 
-public class FlyoutViewModelTests
+public sealed class FlyoutViewModelTests : IDisposable
 {
     private static readonly DateTimeOffset now = Samples.Utc(2026, 10, 12, 12);
 
     private readonly FlyoutViewModel viewModel;
     private readonly FakeWindowController windows = new();
+    private readonly FakeClock clock = new(now);
+    private readonly AlertEngine engine;
+    private readonly SnoozeService snooze;
 
     public FlyoutViewModelTests()
     {
         var localizer = new FakeLocalizer();
-        viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), new LocalCalendar(TimeZoneInfo.Utc), windows);
+        var calendar = new LocalCalendar(TimeZoneInfo.Utc);
+        (engine, snooze) = TestSnooze.Create(clock, new StrongReferenceMessenger());
+        viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), calendar, windows, snooze, new FriendlyTime(localizer, calendar, clock));
+    }
+
+    public void Dispose()
+    {
+        engine.Dispose();
     }
 
     private static List<Reading> History(double earlierPpm, double recentPpm)
@@ -206,5 +219,66 @@ public class FlyoutViewModelTests
         viewModel.OpenSettingsCommand.Execute(null);
 
         Assert.Equal([null, ShellSection.Settings], windows.Shown);
+    }
+
+    [Fact]
+    public void Alerts_that_are_not_snoozed_show_a_plain_Snooze_button()
+    {
+        Assert.False(viewModel.IsSnoozed);
+        Assert.Equal("Flyout_Snooze", viewModel.SnoozeButtonText);
+        Assert.Equal(("Toast_Snooze", "Tray_SnoozeTomorrow", "Flyout_Resume"), (viewModel.SnoozeHourText, viewModel.SnoozeTomorrowText, viewModel.ResumeText));
+    }
+
+    [Fact]
+    public void Snoozing_for_an_hour_shows_until_when()
+    {
+        viewModel.SnoozeHourCommand.Execute(null);
+
+        Assert.Equal(now.AddHours(1), snooze.Until);
+        Assert.True(viewModel.IsSnoozed);
+        Assert.Equal("Flyout_SnoozedUntil(time=13:00)", viewModel.SnoozeButtonText);
+    }
+
+    [Fact]
+    public void Snoozing_until_tomorrow_shows_the_morning()
+    {
+        viewModel.SnoozeTomorrowCommand.Execute(null);
+
+        Assert.Equal(Samples.Utc(2026, 10, 13, 7), snooze.Until);
+        Assert.Equal("Flyout_SnoozedUntil(time=13 Oct, 07:00)", viewModel.SnoozeButtonText);
+    }
+
+    [Fact]
+    public void Resuming_goes_back_to_the_plain_button()
+    {
+        viewModel.SnoozeHourCommand.Execute(null);
+
+        viewModel.ResumeCommand.Execute(null);
+
+        Assert.False(viewModel.IsSnoozed);
+        Assert.Equal("Flyout_Snooze", viewModel.SnoozeButtonText);
+        Assert.Null(snooze.Until);
+    }
+
+    [Fact]
+    public void Opening_the_flyout_looks_at_the_snooze_again()
+    {
+        snooze.ForOneHour();
+        Assert.False(viewModel.IsSnoozed);
+
+        viewModel.Update(null, [], now, "Office");
+
+        Assert.True(viewModel.IsSnoozed);
+    }
+
+    [Fact]
+    public void A_snooze_that_ended_is_gone_the_next_time_the_flyout_opens()
+    {
+        viewModel.SnoozeHourCommand.Execute(null);
+        clock.Advance(TimeSpan.FromMinutes(61));
+
+        viewModel.Update(null, [], now.AddMinutes(61), "Office");
+
+        Assert.False(viewModel.IsSnoozed);
     }
 }

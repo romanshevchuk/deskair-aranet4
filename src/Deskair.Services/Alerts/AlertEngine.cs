@@ -34,6 +34,11 @@ public sealed class AlertEngine : IDisposable
 
     public DateTimeOffset? SnoozedUntil { get; private set; }
 
+    public void ClearSnooze()
+    {
+        SnoozedUntil = null;
+    }
+
     public void SnoozeUntil(DateTimeOffset until)
     {
         SnoozedUntil = until;

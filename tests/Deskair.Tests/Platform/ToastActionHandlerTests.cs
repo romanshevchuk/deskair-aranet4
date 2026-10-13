@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Platform.Notifications;
 using Deskair.App.ViewModels.Shell;
+using Deskair.Domain.Time;
 using Deskair.Services.Alerts;
 using Deskair.Services.Settings;
 using Deskair.Tests.Fakes;
@@ -38,7 +39,7 @@ public sealed class ToastActionHandlerTests : IDisposable
     public ToastActionHandlerTests()
     {
         engine = new AlertEngine(new NoNotifier(), new NoDoNotDisturb(), new SettingsService(new DefaultSettingsStore(), new StrongReferenceMessenger()), clock);
-        handler = new ToastActionHandler(engine, windows, clock, dispatcher, NullLogger<ToastActionHandler>.Instance);
+        handler = new ToastActionHandler(new SnoozeService(engine, clock, new LocalCalendar(TimeZoneInfo.Utc), new StrongReferenceMessenger()), windows, dispatcher, NullLogger<ToastActionHandler>.Instance);
     }
 
     public void Dispose()

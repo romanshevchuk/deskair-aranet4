@@ -187,11 +187,34 @@
 
       <Grid Margin="{StaticResource Space.Flyout.Footer}">
         <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <controls:PrimaryButton Grid.Column="0" Command="{Binding OpenCommand}" Content="{loc:T Action_OpenApp}" />
-        <controls:SecondaryButton Grid.Column="1"
+        <controls:SecondaryButton Grid.Column="0" Click="OnSnoozeClick">
+          <controls:SecondaryButton.Content>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock VerticalAlignment="Center" Text="{Binding SnoozeButtonText}" />
+              <TextBlock Margin="{StaticResource Space.Inline.Tight}"
+                         VerticalAlignment="Center"
+                         FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                         FontSize="{DynamicResource Font.Size.Caption}"
+                         Text="&#xE70D;" />
+            </StackPanel>
+          </controls:SecondaryButton.Content>
+          <!-- The menu is not in the visual tree, so it takes the data context from the button it belongs to. -->
+          <controls:SecondaryButton.ContextMenu>
+            <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+              <MenuItem Command="{Binding SnoozeHourCommand}" Header="{Binding SnoozeHourText}" />
+              <MenuItem Command="{Binding SnoozeTomorrowCommand}" Header="{Binding SnoozeTomorrowText}" />
+              <MenuItem Command="{Binding ResumeCommand}"
+                        Header="{Binding ResumeText}"
+                        Visibility="{Binding IsSnoozed, Converter={StaticResource BoolToVisibility}}" />
+            </ContextMenu>
+          </controls:SecondaryButton.ContextMenu>
+        </controls:SecondaryButton>
+        <controls:PrimaryButton Grid.Column="1" Margin="{StaticResource Space.Inline}" Command="{Binding OpenCommand}" Content="{loc:T Action_OpenApp}" />
+        <controls:SecondaryButton Grid.Column="2"
                                   Margin="{StaticResource Space.Inline}"
                                   AutomationProperties.Name="{loc:T Nav_Settings}"
                                   Command="{Binding OpenSettingsCommand}"

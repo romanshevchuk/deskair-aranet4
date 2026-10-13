@@ -123,7 +123,7 @@ public class MainWindowRenderTests
         connection.Update(state);
 
         var radio = new FakeBluetoothRadio { IsOn = !bluetoothOff };
-        var offline = new OfflineViewModel(registry, query, radio, messenger, dispatcher, formatter, localizer, calendar, clock, new FakeSystemSettings());
+        var offline = new OfflineViewModel(registry, query, radio, messenger, dispatcher, formatter, localizer, new FriendlyTime(localizer, calendar, clock), new FakeSystemSettings());
         messenger.Send(new ReadingReceived(device, store.Readings[^1]));
 
         return new ShellViewModel { Live = live, Connection = connection, Footer = footer, Room = room, Offline = offline };

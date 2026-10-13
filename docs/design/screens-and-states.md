@@ -9,8 +9,8 @@
 | Live | Hero (CO₂) left; chart card right with metric tabs, 1h / 6h / 24h, and the 24 h ribbon; three mini cards below |
 | History | Toolbar (metric, Hours filter, group by, range, export); main chart; typical-day chart or sleep card; stats card |
 | Settings | Two columns: Appearance and units, Alerts; Devices, Data and storage, Start-up |
-| Flyout | 360 px: room, value, zone, advice, 24 h ribbon drawn at native size (22 px tall, 12 px hour labels, legend with hours per zone, never a scaled-down copy of the Live ribbon), other readings, Snooze, Open Deskair, Settings |
-| Tray menu | Open, status line, Snooze 1 h, Snooze until tomorrow, Show CO₂ on tray icon, Settings, Quit |
+| Flyout | 360 px: room, value, zone, advice, 24 h ribbon drawn at native size (22 px tall, 12 px hour labels, legend with hours per zone, never a scaled-down copy of the Live ribbon), other readings, Snooze ▾ (1 h, until tomorrow, Resume), Open Deskair, Settings |
+| Tray menu | Open, status line, Snooze 1 h, Snooze until tomorrow (and Resume alerts while snoozed), Show CO₂ on tray icon, Settings, Quit |
 | Toasts | Elevated, High (v1); Fresh again, Last night (later) |
 
 Left-click on the tray icon opens the flyout. Right-click opens the menu. Double-click may open the window. The flyout has a filled "Open Deskair" button, closes on click-away or Esc, and closing the main window keeps the tray running. Windows 11 hides new tray icons in the overflow, so first run shows a tip to drag the icon out.
@@ -62,6 +62,6 @@ Good, Elevated, High: ring in zone colour. Not connected: grey dashed ring with 
 | Import from phone app | n/a | Reads the phone's .xlsx export |
 | Export CSV | n/a | Writes readings for a chosen range |
 | Start with Windows / Keep in tray | On / On | |
-| Show CO₂ on tray icon | Off | Value rendering |
+| Show CO₂ on tray icon | Off | Value rendering; Settings → Appearance and units, and the tray menu |
 
 Pressure unit and read interval are not app settings (the interval is set in the phone app).

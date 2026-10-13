@@ -145,3 +145,6 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Duration_Hours | {h} h | {h} год |
 | Toast_High_Title | Ventilate now · {room} | Провітріть зараз · {room} |
 | Toast_Elevated_Body / Toast_High_Body | {value}. Open a window for about 10 minutes. / {value}. Open windows fully. | {value}. Відчиніть вікно приблизно на 10 хвилин. / {value}. Відчиніть вікна повністю. |
+| Settings_TrayValue / Settings_TrayValue_Hint | Show CO₂ on tray icon / The icon shows the value (1.1k) instead of a ring | Показувати CO₂ на значку в треї / Значок показує значення (1.1k) замість кільця |
+| Tray_SnoozeTomorrow / Tray_ResumeUntil | Snooze until tomorrow / Resume alerts (snoozed until {time}) | Відкласти до завтра / Відновити сповіщення (відкладено до {time}) |
+| Flyout_Snooze / Flyout_SnoozedUntil / Flyout_Resume | Snooze / Snoozed until {time} / Resume alerts | Відкласти / Відкладено до {time} / Відновити сповіщення |

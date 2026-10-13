@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
 using Deskair.App.Ui.Views.Flyout;
 using Deskair.App.ViewModels.Flyout;
@@ -26,7 +27,8 @@ public class FlyoutRenderTests
     [InlineData(ThemeChoice.Light, "uk-UA", false)]
     [InlineData(ThemeChoice.Light, "en-US", true)]
     [InlineData(ThemeChoice.Dark, "uk-UA", true)]
-    public void Render_the_flyout(ThemeChoice theme, string culture, bool notConnected)
+    [InlineData(ThemeChoice.Light, "en-US", false, true)]
+    public void Render_the_flyout(ThemeChoice theme, string culture, bool notConnected, bool snoozed = false)
     {
         Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the images.");
 
@@ -36,7 +38,17 @@ public class FlyoutRenderTests
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
 
             var localizer = UiHost.Localizer;
-            var viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), new LocalCalendar(TimeZoneInfo.Utc), new FakeWindowController());
+            var calendar = new LocalCalendar(TimeZoneInfo.Utc);
+            var clock = new FakeClock(now);
+            var (engine, snooze) = TestSnooze.Create(clock, new StrongReferenceMessenger());
+            using var alerts = engine;
+
+            if (snoozed)
+            {
+                snooze.ForOneHour();
+            }
+
+            var viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), calendar, new FakeWindowController(), snooze, new FriendlyTime(localizer, calendar, clock));
             var recent = new List<Reading>();
 
             for (var time = now.AddHours(-24); time <= now; time += TimeSpan.FromMinutes(2))
@@ -52,6 +64,6 @@ public class FlyoutRenderTests
         });
 
         Directory.CreateDirectory(OutputFolder());
-        File.WriteAllBytes(Path.Combine(OutputFolder(), $"flyout-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{(notConnected ? "offline" : "live")}.png"), png);
+        File.WriteAllBytes(Path.Combine(OutputFolder(), $"flyout-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{(notConnected ? "offline" : snoozed ? "snoozed" : "live")}.png"), png);
     }
 }
