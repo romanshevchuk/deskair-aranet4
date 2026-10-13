@@ -1,5 +1,6 @@
 using System.Windows;
 using Deskair.App.Localization;
+using Deskair.App.Platform.Tray;
 using Deskair.App.Ui.Theme;
 using Deskair.App.Ui.Views.Gallery;
 using Deskair.App.Ui.Views.Shell;
@@ -11,7 +12,7 @@ namespace Deskair.App.Composition;
 
 /// <summary>
 /// Startup order (docs/engineering/architecture.md section 11): settings, localization and theme first so the window opens in the right
-/// language and colours, then the window, then the services that fill it (devices, readings, sensor). The tray comes with its own cards.
+/// language and colours, then the window, then the services that fill it (devices, readings, sensor). The tray icon starts right after the window.
 /// A sync failure never blocks the window: the services start after it is shown and report problems as connection states.
 /// </summary>
 public sealed class StartupSequence : IDisposable
@@ -50,10 +51,27 @@ public sealed class StartupSequence : IDisposable
             return;
         }
 
-        services.GetRequiredService<MainWindow>().Show();
+        var window = services.GetRequiredService<MainWindow>();
+        window.Show();
+        StartTray(window);
 
         running = new CancellationTokenSource();
         await services.GetRequiredService<AppServicesStarter>().StartAsync(running.Token);
+    }
+
+    /// <summary>
+    /// Puts the icon in the notification area. Only when that worked does closing the main window hide it instead of closing it, so a failing tray
+    /// never leaves the user with a running app and no way to reach it.
+    /// </summary>
+    private void StartTray(MainWindow window)
+    {
+        var controller = services.GetRequiredService<MainWindowController>();
+        controller.Attach(window);
+
+        if (services.GetRequiredService<TrayIconHost>().Start())
+        {
+            controller.KeepInTray();
+        }
     }
 
     public void Dispose()

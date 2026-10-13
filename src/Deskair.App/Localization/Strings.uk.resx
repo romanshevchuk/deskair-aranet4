@@ -198,6 +198,8 @@
   <data name="Offline_Step_Range" xml:space="preserve"><value>Тримайтеся приблизно в межах 10 м від датчика</value><comment>Draft: needs native review.</comment></data>
   <data name="Offline_Step_Wake" xml:space="preserve"><value>Натисніть кнопку на Aranet4, щоб розбудити його</value><comment>Draft: needs native review.</comment></data>
   <data name="Offline_Step_Battery" xml:space="preserve"><value>Перевірте батарею датчика ({percent} востаннє)</value><comment>Draft: needs native review.</comment></data>
+  <data name="Tray_AppName" xml:space="preserve"><value>Deskair</value><comment>Draft: needs native review.</comment></data>
+  <data name="Tray_Quit" xml:space="preserve"><value>Вийти</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Import" xml:space="preserve"><value>Імпортувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Export" xml:space="preserve"><value>Експортувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Data_Folder" xml:space="preserve"><value>Тека даних</value><comment>Draft: needs native review.</comment></data>
