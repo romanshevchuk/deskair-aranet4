@@ -17,4 +17,7 @@ public static class Wait
             await Task.Delay(5, TestContext.Current.CancellationToken);
         }
     }
+
+    /// <summary>Gives a background loop a moment to do something it should not, before a test asserts that nothing happened. A real-time pause, so it can only miss a late failure, never fail by itself.</summary>
+    public static Task Quiet() => Task.Delay(50, TestContext.Current.CancellationToken);
 }

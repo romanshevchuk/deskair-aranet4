@@ -94,7 +94,7 @@ public sealed class DoNotDisturbMonitorTests : IDisposable
 
         clock.Advance(DoNotDisturbMonitor.PollEvery);
         clock.Advance(DoNotDisturbMonitor.PollEvery);
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Empty(changes);
     }
@@ -136,7 +136,7 @@ public sealed class DoNotDisturbMonitorTests : IDisposable
         var reads = reader.Reads;
 
         clock.Advance(DoNotDisturbMonitor.PollEvery);
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Equal(reads, reader.Reads);
     }

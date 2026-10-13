@@ -35,9 +35,6 @@ public class OnboardingRenderTests
         AddingSensor
     }
 
-    private static string OutputFolder([CallerFilePath] string thisFile = "")
-        => Path.GetFullPath(Path.Combine(Path.GetDirectoryName(thisFile)!, "..", "..", "..", "artifacts", "visual"));
-
     [Theory]
     [InlineData(ThemeChoice.Light, "en-US", Step.Searching)]
     [InlineData(ThemeChoice.Light, "en-US", Step.Found)]
@@ -49,7 +46,7 @@ public class OnboardingRenderTests
     [InlineData(ThemeChoice.Light, "en-US", Step.AddingSensor)]
     public void Render_the_first_run_screen(ThemeChoice theme, string culture, Step step)
     {
-        Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the window images.");
+        RenderOutput.Require();
 
         var png = UiHost.Run(theme, () =>
         {
@@ -66,8 +63,7 @@ public class OnboardingRenderTests
             return ControlRenderer.ToPng(content, 1200, 700);
         });
 
-        Directory.CreateDirectory(OutputFolder());
-        File.WriteAllBytes(Path.Combine(OutputFolder(), $"firstrun-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{step.ToString().ToLowerInvariant()}.png"), png);
+        RenderOutput.Save($"firstrun-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{step.ToString().ToLowerInvariant()}.png", png);
     }
 
     private static ShellViewModel BuildShell(Step step)

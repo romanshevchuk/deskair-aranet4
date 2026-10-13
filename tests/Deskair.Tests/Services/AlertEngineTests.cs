@@ -13,32 +13,9 @@ public sealed class AlertEngineTests : IDisposable
     private static readonly DeviceId bedroom = new("aranet4", "AA:02");
     private static readonly DateTimeOffset start = Samples.Utc(2026, 10, 9, 12);
 
-    private sealed class FakeNotifier : INotifier
-    {
-        public List<AlertNotification> Sent { get; } = [];
-
-        public Task NotifyAsync(AlertNotification notification, CancellationToken cancellationToken)
-        {
-            Sent.Add(notification);
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class FakeDoNotDisturb : IDoNotDisturb
-    {
-        public bool IsActive { get; set; }
-    }
-
-    private sealed class MemorySettingsStore : ISettingsStore
-    {
-        public Task<AppSettings> LoadAsync(CancellationToken cancellationToken) => Task.FromResult(AppSettings.Default);
-
-        public Task SaveAsync(AppSettings settings, CancellationToken cancellationToken) => Task.CompletedTask;
-    }
-
     private readonly FakeNotifier notifier = new();
     private readonly FakeDoNotDisturb doNotDisturb = new();
-    private readonly SettingsService settings = new(new MemorySettingsStore(), new StrongReferenceMessenger());
+    private readonly SettingsService settings = new(new FakeSettingsStore(), new StrongReferenceMessenger());
     private readonly FakeClock clock;
     private readonly AlertEngine engine;
 

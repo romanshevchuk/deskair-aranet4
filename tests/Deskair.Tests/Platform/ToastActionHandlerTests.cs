@@ -13,23 +13,6 @@ public sealed class ToastActionHandlerTests : IDisposable
 {
     private static readonly DateTimeOffset now = Samples.Utc(2026, 10, 13, 12);
 
-    private sealed class NoNotifier : INotifier
-    {
-        public Task NotifyAsync(AlertNotification notification, CancellationToken cancellationToken) => Task.CompletedTask;
-    }
-
-    private sealed class NoDoNotDisturb : IDoNotDisturb
-    {
-        public bool IsActive => false;
-    }
-
-    private sealed class DefaultSettingsStore : ISettingsStore
-    {
-        public Task<AppSettings> LoadAsync(CancellationToken cancellationToken) => Task.FromResult(AppSettings.Default);
-
-        public Task SaveAsync(AppSettings settings, CancellationToken cancellationToken) => Task.CompletedTask;
-    }
-
     private readonly FakeClock clock = new(now);
     private readonly FakeWindowController windows = new();
     private readonly FakeUiDispatcher dispatcher = new();
@@ -38,8 +21,9 @@ public sealed class ToastActionHandlerTests : IDisposable
 
     public ToastActionHandlerTests()
     {
-        engine = new AlertEngine(new NoNotifier(), new NoDoNotDisturb(), new SettingsService(new DefaultSettingsStore(), new StrongReferenceMessenger()), clock);
-        handler = new ToastActionHandler(new SnoozeService(engine, clock, new LocalCalendar(TimeZoneInfo.Utc), new StrongReferenceMessenger()), windows, dispatcher, NullLogger<ToastActionHandler>.Instance);
+        var (alertEngine, snooze) = TestSnooze.Create(clock, new StrongReferenceMessenger());
+        engine = alertEngine;
+        handler = new ToastActionHandler(snooze, windows, dispatcher, NullLogger<ToastActionHandler>.Instance);
     }
 
     public void Dispose()

@@ -81,7 +81,7 @@ public sealed class LiveFeedTests : IDisposable
     {
         var running = feed.RunAsync(sensor, device, interval, stop.Token, pollFirst: false);
         await Wait.Until(() => clock.PendingTimers == 1);
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
         Assert.Empty(received);
 
         clock.Advance(interval);
@@ -99,7 +99,7 @@ public sealed class LiveFeedTests : IDisposable
         await Wait.Until(() => clock.PendingTimers == 1);
 
         clock.Advance(TimeSpan.FromMinutes(1));
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
         Assert.Equal(1, sensor.ReadCurrentCalls);
 
         clock.Advance(TimeSpan.FromMinutes(1));

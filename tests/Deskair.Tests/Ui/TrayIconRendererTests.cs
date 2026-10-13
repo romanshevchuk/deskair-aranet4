@@ -177,7 +177,7 @@ public class TrayIconRendererTests
     [Fact]
     public void Render_the_icon_sheet()
     {
-        Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the icon sheet.");
+        RenderOutput.Require();
 
         var png = UiHost.Run(ThemeChoice.Light, () => IconSheet.ToPng());
         var folder = System.IO.Path.GetFullPath(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ThisFile())!, "..", "..", "..", "artifacts", "visual"));

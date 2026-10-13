@@ -32,9 +32,6 @@ public class MainWindowRenderTests
     private static readonly DateTimeOffset now = new(2026, 10, 12, 18, 40, 0, TimeSpan.Zero);
     private static readonly DeviceId device = new("simulated", "SIM-0001");
 
-    private static string OutputFolder([CallerFilePath] string thisFile = "")
-        => Path.GetFullPath(Path.Combine(Path.GetDirectoryName(thisFile)!, "..", "..", "..", "artifacts", "visual"));
-
     [Theory]
     [InlineData(ThemeChoice.Light, "en-US", ConnectionState.Normal, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Dark, "en-US", ConnectionState.Normal, TemperatureUnit.Celsius)]
@@ -45,7 +42,7 @@ public class MainWindowRenderTests
     [InlineData(ThemeChoice.Dark, "uk-UA", ConnectionState.NotConnected, TemperatureUnit.Celsius)]
     public void Render_the_live_screen(ThemeChoice theme, string culture, ConnectionState state, TemperatureUnit unit)
     {
-        Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the window images.");
+        RenderOutput.Require();
 
         var png = UiHost.Run(theme, () =>
         {
@@ -64,8 +61,7 @@ public class MainWindowRenderTests
             return ControlRenderer.ToPng(content, 1200, 700);
         });
 
-        Directory.CreateDirectory(OutputFolder());
-        File.WriteAllBytes(Path.Combine(OutputFolder(), $"live-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{state.ToString().ToLowerInvariant()}-{unit.ToString().ToLowerInvariant()}.png"), png);
+        RenderOutput.Save($"live-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{state.ToString().ToLowerInvariant()}-{unit.ToString().ToLowerInvariant()}.png", png);
     }
 
     private static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit, bool bluetoothOff = false)

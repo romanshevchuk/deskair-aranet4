@@ -25,16 +25,13 @@ namespace Deskair.Tests.Ui;
 /// </summary>
 public class SettingsRenderTests
 {
-    private static string OutputFolder([CallerFilePath] string thisFile = "")
-        => Path.GetFullPath(Path.Combine(Path.GetDirectoryName(thisFile)!, "..", "..", "..", "artifacts", "visual"));
-
     [Theory]
     [InlineData(ThemeChoice.Light, "en-US")]
     [InlineData(ThemeChoice.Dark, "en-US")]
     [InlineData(ThemeChoice.Light, "uk-UA")]
     public void Render_the_settings_screen(ThemeChoice theme, string culture)
     {
-        Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the window images.");
+        RenderOutput.Require();
 
         var png = UiHost.Run(theme, () =>
         {
@@ -51,8 +48,7 @@ public class SettingsRenderTests
             return ControlRenderer.ToPng(content, 1200, 700);
         });
 
-        Directory.CreateDirectory(OutputFolder());
-        File.WriteAllBytes(Path.Combine(OutputFolder(), $"settings-{theme.ToString().ToLowerInvariant()}-{culture[..2]}.png"), png);
+        RenderOutput.Save($"settings-{theme.ToString().ToLowerInvariant()}-{culture[..2]}.png", png);
     }
 
     private static ShellViewModel BuildShell(ThemeChoice theme, string culture)

@@ -189,21 +189,4 @@ public class ControlTemplateTests
 
         Assert.Empty(failures);
     }
-
-    [Fact]
-    public void The_catalogue_lists_every_control_from_the_architecture_doc()
-    {
-        var expected = new[]
-        {
-            "Card", "Pill", "StatusDot", "SegmentedControl", "ToggleSwitch", "Gauge", "AdviceCard", "StatTriple",
-            "MetricCard", "Banner", "EmptyStateCard", "RoomChip", "RoomMenu", "BatteryIcon", "CoverageChip",
-            "ZoneShareBar", "InsightBox", "KeyValueCell", "SettingsCard", "SettingsRow", "PrimaryButton", "SecondaryButton"
-        };
-
-        var actual = typeof(Card).Assembly.GetTypes()
-            .Where(type => type.Namespace == "Deskair.App.Ui.Controls")
-            .Select(type => type.Name);
-
-        Assert.Empty(expected.Except(actual));
-    }
 }

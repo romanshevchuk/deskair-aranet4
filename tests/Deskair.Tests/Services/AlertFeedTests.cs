@@ -13,34 +13,8 @@ public sealed class AlertFeedTests : IDisposable
     private static readonly DeviceId office = new("aranet4", "AA:01");
     private static readonly DateTimeOffset start = Samples.Utc(2026, 10, 9, 12);
 
-    private sealed class RecordingNotifier : INotifier
-    {
-        private readonly ThreadSafeLog<AlertNotification> sent = new();
-
-        public ThreadSafeLog<AlertNotification> Sent => sent;
-
-        public Task NotifyAsync(AlertNotification notification, CancellationToken cancellationToken)
-        {
-            sent.Add(notification);
-
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class NoDoNotDisturb : IDoNotDisturb
-    {
-        public bool IsActive => false;
-    }
-
-    private sealed class DefaultSettingsStore : ISettingsStore
-    {
-        public Task<AppSettings> LoadAsync(CancellationToken cancellationToken) => Task.FromResult(AppSettings.Default);
-
-        public Task SaveAsync(AppSettings settings, CancellationToken cancellationToken) => Task.CompletedTask;
-    }
-
     private readonly StrongReferenceMessenger messenger = new();
-    private readonly RecordingNotifier notifier = new();
+    private readonly FakeNotifier notifier = new();
     private readonly FakeClock clock = new(start);
     private readonly FakeDeviceStore deviceStore = new();
     private readonly CancellationTokenSource stop = new();
@@ -50,7 +24,7 @@ public sealed class AlertFeedTests : IDisposable
 
     public AlertFeedTests()
     {
-        engine = new AlertEngine(notifier, new NoDoNotDisturb(), new SettingsService(new DefaultSettingsStore(), messenger), clock);
+        engine = new AlertEngine(notifier, new FakeDoNotDisturb(), new SettingsService(new FakeSettingsStore(), messenger), clock);
         registry = new DeviceRegistry(deviceStore);
         deviceStore.Devices.Add(new DeviceInfo(office, "Office", null, [], null));
     }
@@ -96,7 +70,7 @@ public sealed class AlertFeedTests : IDisposable
         Reading(600);
         clock.Advance(TimeSpan.FromMinutes(30));
         Reading(600);
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Empty(notifier.Sent);
     }
@@ -119,7 +93,7 @@ public sealed class AlertFeedTests : IDisposable
     public async Task A_notifier_that_fails_is_logged_and_later_readings_still_count()
     {
         var failing = new FailingOnceNotifier();
-        using var failingEngine = new AlertEngine(failing, new NoDoNotDisturb(), new SettingsService(new DefaultSettingsStore(), messenger), clock);
+        using var failingEngine = new AlertEngine(failing, new FakeDoNotDisturb(), new SettingsService(new FakeSettingsStore(), messenger), clock);
         await registry.LoadAsync(TestContext.Current.CancellationToken);
         new AlertFeed(messenger, registry, failingEngine, logger).Start(stop.Token);
 
@@ -142,7 +116,7 @@ public sealed class AlertFeedTests : IDisposable
         Reading(1100);
         clock.Advance(TimeSpan.FromMinutes(6));
         Reading(1100);
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Empty(notifier.Sent);
     }

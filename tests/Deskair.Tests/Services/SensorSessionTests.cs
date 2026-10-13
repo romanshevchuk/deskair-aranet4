@@ -97,7 +97,7 @@ public sealed class SensorSessionTests : IAsyncDisposable
         await session.StartAsync(device);
         await Wait.Until(() => messages.OfType<SyncCompleted>().Any());
         await Wait.Until(() => clock.PendingTimers >= 1);
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Single(messages.OfType<ReadingReceived>());
 
@@ -164,7 +164,7 @@ public sealed class SensorSessionTests : IAsyncDisposable
         await session.StopAsync();
         var count = messages.OfType<ReadingReceived>().Count();
         clock.Advance(TimeSpan.FromMinutes(10));
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Equal(count, messages.OfType<ReadingReceived>().Count());
     }
@@ -241,7 +241,7 @@ public sealed class SensorSessionTests : IAsyncDisposable
         session.Dispose();
         var count = messages.OfType<ReadingReceived>().Count();
         clock.Advance(TimeSpan.FromMinutes(10));
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Equal(count, messages.OfType<ReadingReceived>().Count());
     }

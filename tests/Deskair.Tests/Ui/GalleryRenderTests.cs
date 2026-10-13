@@ -17,9 +17,6 @@ public class GalleryRenderTests
 {
     private const double PageWidth = 1200;
 
-    private static string OutputFolder([CallerFilePath] string thisFile = "")
-        => Path.GetFullPath(Path.Combine(Path.GetDirectoryName(thisFile)!, "..", "..", "..", "artifacts", "visual"));
-
     [Theory]
     [InlineData(ThemeChoice.Light, "en-US")]
     [InlineData(ThemeChoice.Dark, "en-US")]
@@ -27,7 +24,7 @@ public class GalleryRenderTests
     [InlineData(ThemeChoice.Dark, "uk-UA")]
     public void Render_the_gallery(ThemeChoice theme, string culture)
     {
-        Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the gallery images.");
+        RenderOutput.Require();
 
         var png = UiHost.Run(theme, () =>
         {
@@ -47,8 +44,7 @@ public class GalleryRenderTests
             return ControlRenderer.ToPng(page, PageWidth);
         });
 
-        Directory.CreateDirectory(OutputFolder());
-        File.WriteAllBytes(Path.Combine(OutputFolder(), $"gallery-{theme.ToString().ToLowerInvariant()}-{culture[..2]}.png"), png);
+        RenderOutput.Save($"gallery-{theme.ToString().ToLowerInvariant()}-{culture[..2]}.png", png);
     }
 
     private static ScrollViewer FindScrollViewer(GalleryWindow window)

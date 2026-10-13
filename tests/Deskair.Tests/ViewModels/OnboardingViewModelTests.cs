@@ -300,7 +300,7 @@ public class OnboardingViewModelTests
         await Wait.Until(() => viewModel.Nearby.Count == 1);
 
         clock.Advance(OnboardingViewModel.NoSensorAfter);
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.False(viewModel.NoSensorFound);
     }
@@ -417,7 +417,7 @@ public class OnboardingViewModelTests
         await Wait.Until(() => viewModel.Nearby.Count == 1);
 
         clock.Advance(OnboardingViewModel.RescanAfter);
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Equal(1, provider.Scans);
         Assert.True(viewModel.IsScanning);
@@ -478,7 +478,7 @@ public class OnboardingViewModelTests
         viewModel.CancelCommand.Execute(null);
 
         radio.IsOn = true;
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Equal(0, provider.Scans);
     }

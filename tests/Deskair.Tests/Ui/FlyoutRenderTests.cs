@@ -18,9 +18,6 @@ public class FlyoutRenderTests
 {
     private static readonly DateTimeOffset now = new(2026, 10, 12, 18, 40, 0, TimeSpan.Zero);
 
-    private static string OutputFolder([CallerFilePath] string thisFile = "")
-        => Path.GetFullPath(Path.Combine(Path.GetDirectoryName(thisFile)!, "..", "..", "..", "artifacts", "visual"));
-
     [Theory]
     [InlineData(ThemeChoice.Light, "en-US", false)]
     [InlineData(ThemeChoice.Dark, "en-US", false)]
@@ -30,7 +27,7 @@ public class FlyoutRenderTests
     [InlineData(ThemeChoice.Light, "en-US", false, true)]
     public void Render_the_flyout(ThemeChoice theme, string culture, bool notConnected, bool snoozed = false)
     {
-        Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the images.");
+        RenderOutput.Require();
 
         var png = UiHost.Run(theme, () =>
         {
@@ -63,7 +60,6 @@ public class FlyoutRenderTests
             return ControlRenderer.ToPng(view, 420);
         });
 
-        Directory.CreateDirectory(OutputFolder());
-        File.WriteAllBytes(Path.Combine(OutputFolder(), $"flyout-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{(notConnected ? "offline" : snoozed ? "snoozed" : "live")}.png"), png);
+        RenderOutput.Save($"flyout-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{(notConnected ? "offline" : snoozed ? "snoozed" : "live")}.png", png);
     }
 }

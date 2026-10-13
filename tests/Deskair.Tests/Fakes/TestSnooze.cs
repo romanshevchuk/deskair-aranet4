@@ -11,21 +11,11 @@ public static class TestSnooze
     public static (AlertEngine Engine, SnoozeService Snooze) Create(FakeClock clock, IMessenger messenger, SettingsService? settings = null, TimeZoneInfo? zone = null)
     {
         var engine = new AlertEngine(
-            new NoNotifier(),
-            new NoDoNotDisturb(),
+            new FakeNotifier(),
+            new FakeDoNotDisturb(),
             settings ?? new SettingsService(new FakeSettingsStore(), messenger),
             clock);
 
         return (engine, new SnoozeService(engine, clock, new LocalCalendar(zone ?? TimeZoneInfo.Utc), messenger));
-    }
-
-    private sealed class NoNotifier : INotifier
-    {
-        public Task NotifyAsync(AlertNotification notification, CancellationToken cancellationToken) => Task.CompletedTask;
-    }
-
-    private sealed class NoDoNotDisturb : IDoNotDisturb
-    {
-        public bool IsActive => false;
     }
 }

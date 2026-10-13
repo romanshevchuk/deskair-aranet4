@@ -284,7 +284,7 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
         await cts.CancelAsync();
 
         messenger.Send(new DeviceSelected(new DeviceId(SimulatedProvider.ProviderId, "SIM-0002")));
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Single(provider.Created);
         Assert.DoesNotContain(logger.Entries, entry => entry.Level >= LogLevel.Error);
@@ -322,7 +322,7 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
         await Create(simulated: false).StartAsync(cts.Token);
 
         messenger.Send(new SystemResumed());
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await Wait.Quiet();
 
         Assert.Empty(provider.Created);
     }

@@ -12,23 +12,6 @@ public sealed class SnoozeServiceTests : IDisposable
 {
     private static readonly DateTimeOffset noon = Samples.Utc(2026, 10, 13, 12);
 
-    private sealed class NoNotifier : INotifier
-    {
-        public Task NotifyAsync(AlertNotification notification, CancellationToken cancellationToken) => Task.CompletedTask;
-    }
-
-    private sealed class NoDoNotDisturb : IDoNotDisturb
-    {
-        public bool IsActive => false;
-    }
-
-    private sealed class DefaultSettingsStore : ISettingsStore
-    {
-        public Task<AppSettings> LoadAsync(CancellationToken cancellationToken) => Task.FromResult(AppSettings.Default);
-
-        public Task SaveAsync(AppSettings settings, CancellationToken cancellationToken) => Task.CompletedTask;
-    }
-
     private readonly StrongReferenceMessenger messenger = new();
     private readonly List<AlertsSnoozeChanged> announced = [];
     private readonly FakeClock clock = new(noon);
@@ -37,8 +20,7 @@ public sealed class SnoozeServiceTests : IDisposable
 
     public SnoozeServiceTests()
     {
-        engine = new AlertEngine(new NoNotifier(), new NoDoNotDisturb(), new SettingsService(new DefaultSettingsStore(), messenger), clock);
-        snooze = new SnoozeService(engine, clock, new LocalCalendar(TimeZoneInfo.Utc), messenger);
+        (engine, snooze) = TestSnooze.Create(clock, messenger);
         messenger.Register<AlertsSnoozeChanged>(this, (_, message) => announced.Add(message));
     }
 
@@ -83,8 +65,8 @@ public sealed class SnoozeServiceTests : IDisposable
     {
         var kyiv = Samples.Kyiv;
         var local = new FakeClock(new DateTimeOffset(2026, 10, 24, 20, 0, 0, TimeSpan.FromHours(3)), kyiv);
-        using var localEngine = new AlertEngine(new NoNotifier(), new NoDoNotDisturb(), new SettingsService(new DefaultSettingsStore(), messenger), local);
-        var service = new SnoozeService(localEngine, local, new LocalCalendar(kyiv), messenger);
+        var (localEngine, service) = TestSnooze.Create(local, messenger, zone: kyiv);
+        using var disposeEngine = localEngine;
 
         service.UntilTomorrow();
 

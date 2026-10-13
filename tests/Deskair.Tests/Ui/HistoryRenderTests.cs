@@ -30,9 +30,6 @@ public class HistoryRenderTests
     private static readonly DateTimeOffset now = new(2026, 10, 12, 18, 40, 0, TimeSpan.Zero);
     private static readonly DeviceId device = new("simulated", "SIM-0001");
 
-    private static string OutputFolder([CallerFilePath] string thisFile = "")
-        => Path.GetFullPath(Path.Combine(Path.GetDirectoryName(thisFile)!, "..", "..", "..", "artifacts", "visual"));
-
     [Theory]
     [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Co2, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Dark, "en-US", Period.Month, Metric.Co2, TemperatureUnit.Celsius)]
@@ -42,7 +39,7 @@ public class HistoryRenderTests
     [InlineData(ThemeChoice.Light, "en-US", Period.Day, Metric.Humidity, TemperatureUnit.Celsius)]
     public async Task Render_the_history_screen(ThemeChoice theme, string culture, Period range, Metric metric, TemperatureUnit unit)
     {
-        Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the window images.");
+        RenderOutput.Require();
 
         UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo(culture));
         var shell = await BuildShellAsync(range, metric, unit);
@@ -55,7 +52,7 @@ public class HistoryRenderTests
     [InlineData(ThemeChoice.Dark, "uk-UA")]
     public async Task Render_the_history_screen_before_any_data_is_stored(ThemeChoice theme, string culture)
     {
-        Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the window images.");
+        RenderOutput.Require();
 
         UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo(culture));
         var shell = await BuildShellAsync(Period.Week, Metric.Co2, TemperatureUnit.Celsius, withReadings: false);
@@ -79,8 +76,7 @@ public class HistoryRenderTests
             return ControlRenderer.ToPng(content, 1200, 700);
         });
 
-        Directory.CreateDirectory(OutputFolder());
-        File.WriteAllBytes(Path.Combine(OutputFolder(), $"history-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{name}.png"), png);
+        RenderOutput.Save($"history-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{name}.png", png);
     }
 
     private static async Task<ShellViewModel> BuildShellAsync(Period range, Metric metric, TemperatureUnit unit, bool withReadings = true)
