@@ -59,6 +59,13 @@
   <SolidColorBrush x:Key="Zone.High.PillText.Brush" Color="{StaticResource Zone.High.PillText.Color}" />
   <Color x:Key="Zone.High.Dot.Color">#C7453A</Color>
   <SolidColorBrush x:Key="Zone.High.Dot.Brush" Color="{StaticResource Zone.High.Dot.Color}" />
+  <!-- Tray icon: the same in both themes, because the taskbar has its own light or dark colour (design-tokens.md "Icons"). -->
+  <Color x:Key="Tray.Offline.Color">#7B858D</Color>
+  <SolidColorBrush x:Key="Tray.Offline.Brush" Color="{StaticResource Tray.Offline.Color}" />
+  <Color x:Key="Tray.Value.OnLight.Color">#FFFFFF</Color>
+  <SolidColorBrush x:Key="Tray.Value.OnLight.Brush" Color="{StaticResource Tray.Value.OnLight.Color}" />
+  <Color x:Key="Tray.Value.OnAmber.Color">#182026</Color>
+  <SolidColorBrush x:Key="Tray.Value.OnAmber.Brush" Color="{StaticResource Tray.Value.OnAmber.Color}" />
   <Color x:Key="Zone.High.AdviceBg.Color">#35201D</Color>
   <SolidColorBrush x:Key="Zone.High.AdviceBg.Brush" Color="{StaticResource Zone.High.AdviceBg.Color}" />
   <Color x:Key="Zone.High.AdviceBorder.Color">#6B3029</Color>

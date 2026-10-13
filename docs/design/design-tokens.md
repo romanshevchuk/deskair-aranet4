@@ -83,7 +83,7 @@ Segoe UI Variable Text, falling back to Segoe UI. Minimum size 12 px. Tabular fi
 
 ## Icons
 
-Logo and tray ring: 28 × 28 viewbox, circle r 11, stroke 2.75 to 3, centre dot r 4.5, in the zone colour. Advice icons: 18 × 18 line icons (window, check circle, warning triangle), 1.6 px stroke. Window glyph: 10 × 10. Battery: 26 × 12; green above 20 %, amber at 20 % or below, red at 10 % or below.
+Logo and tray ring: 28 × 28 viewbox, circle r 11, stroke 2.75 to 3, centre dot r 4.5, in the zone colour (the zone dot colours, the same in both themes). Tray icon not connected: dashed ring and slash in `Tray.Offline` (#7B858D). Tray icon with the value: rounded square in the zone colour with the CO₂ in thousands ("1.1k"), text `Tray.Value.OnLight` (#FFFFFF) on green and red and `Tray.Value.OnAmber` (#182026) on amber. Advice icons: 18 × 18 line icons (window, check circle, warning triangle), 1.6 px stroke. Window glyph: 10 × 10. Battery: 26 × 12; green above 20 %, amber at 20 % or below, red at 10 % or below.
 
 ## Contrast
 
