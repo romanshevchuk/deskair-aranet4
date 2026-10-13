@@ -1,5 +1,7 @@
 # Spikes (milestone M0)
 
+S1, S3 and S5 are finished and their throwaway code is removed (2026-10-13, last in commit `07d4f12`); the notes stay as records. S2 and S4 are checked through the real flyout and tray code.
+
 *Last reviewed: 2026-10*
 
 Each spike is time-boxed to 2 to 3 days. Output: a short note in this folder with the answer and a recommendation.

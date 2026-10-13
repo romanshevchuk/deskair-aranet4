@@ -4,6 +4,8 @@
 
 Question (from [spikes.md](spikes.md)): which title bar approach keeps snap layouts and Mica? Exit: the chosen approach works on Windows 11; the Windows 10 fallback looks right.
 
+> **The spike code was removed on 2026-10-13** (last present in commit `07d4f12`, folder `src/Deskair.App/Composition/Spikes/`). The commands in this note no longer exist; the note stays as the record of what was tried and found. The result is in the real window (`MainWindow`, `HeaderBar`, `BackdropService`).
+
 ## Options (researched 2026-10-13)
 
 | Option | Verdict | Why |

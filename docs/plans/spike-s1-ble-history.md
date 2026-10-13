@@ -4,6 +4,8 @@
 
 Question (from [spikes.md](spikes.md)): can we read the sensor's stored history reliably (about 7 days) and match the phone export?
 
+> **The spike code was removed on 2026-10-13** (last present in commit `07d4f12`, folder `src/Deskair.App/Composition/Spikes/`). The commands in this note no longer exist; the note stays as the record of what was tried and found. What the spike proved is covered by the production code and its tests: `Aranet4Parser`, `Aranet4Sensor` and `SyncService` with the captured download (`tests/Deskair.Tests/TestData/aranet4-history-capture.txt`) and the phone export (`PhoneExportGoldenTests`). A live comparison of a sensor with a phone export on hardware is a manual check; use the git history to bring the tool back.
+
 The spike is `dotnet run --project src/Deskair.App -- --spike-s1`. It is throwaway code in `src/Deskair.App/Composition/Spikes/`. The real code comes with the ARANET and BLE cards after the results are in.
 
 ## What it does

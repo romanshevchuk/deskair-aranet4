@@ -1,5 +1,4 @@
 using Deskair.App.Composition;
-using Deskair.App.Composition.Spikes;
 using Deskair.App.Platform;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,21 +15,6 @@ public static class Program
         if (options.FirstRun)
         {
             KnownFolders.ResetFirstRunFolder();
-        }
-
-        if (options.SpikeS3)
-        {
-            return SpikeS3.Run(args);
-        }
-
-        if (options.SpikeS5)
-        {
-            return SpikeS5.Run(args);
-        }
-
-        if (options.SpikeS1)
-        {
-            return SpikeS1.Run(options);
         }
 
         // The gallery is a development tool, so it may run next to the real app.

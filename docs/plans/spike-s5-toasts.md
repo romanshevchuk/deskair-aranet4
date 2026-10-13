@@ -4,6 +4,8 @@
 
 Question (from [spikes.md](spikes.md)): toast setup for packaged and unpackaged builds. A minimal toast with Snooze and Open actions; the actions must work in both builds with one code path.
 
+> **The spike code was removed on 2026-10-13** (last present in commit `07d4f12`, folder `src/Deskair.App/Composition/Spikes/`). The commands in this note no longer exist; the note stays as the record of what was tried and found. The result is the real toast code in `Platform/Notifications`. The spike used its own app identity `Deskair.SpikeS5`; if a `--cleanup` was never run on some machine, delete `HKCUSoftwareClassesDeskair.SpikeS5` and the COM class `{5C7E6B0A-...}` by hand (none are left on the owner's machine, checked 2026-10-13).
+
 ## Choosing the approach (researched 2026-10-13)
 
 | Option | Verdict | Why |

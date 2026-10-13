@@ -24,14 +24,6 @@ public class AppOptionsTests
     }
 
     [Fact]
-    public void The_spike_flags_are_found_and_are_off_by_default()
-    {
-        Assert.True(AppOptions.Parse(["--spike-s5", "--leave"]).SpikeS5);
-        Assert.True(AppOptions.Parse(["--spike-s3", "--variant", "custom"]).SpikeS3);
-        Assert.False(AppOptions.Parse([]).SpikeS5);
-    }
-
-    [Fact]
     public void The_simulated_flag_is_found_next_to_other_arguments()
     {
         var options = AppOptions.Parse(["--other", "--simulated"]);
@@ -51,5 +43,15 @@ public class AppOptionsTests
     public void The_first_run_option_is_read()
     {
         Assert.True(AppOptions.Parse(["--first-run"]).FirstRun);
+    }
+
+    [Theory]
+    [InlineData("-ToastActivated")]
+    [InlineData("-Embedding")]
+    [InlineData("-embedding")]
+    public void A_start_caused_by_a_toast_press_is_recognised(string argument)
+    {
+        Assert.True(AppOptions.Parse([argument]).StartedByToast);
+        Assert.False(AppOptions.Parse([]).StartedByToast);
     }
 }
