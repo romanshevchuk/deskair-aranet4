@@ -191,6 +191,13 @@
   <data name="Stats_Period_Month" xml:space="preserve"><value>місяць</value><comment>Draft: needs native review.</comment></data>
   <data name="Insight_WorstHours" xml:space="preserve"><value>Найгірші години: {from}–{to} (середнє {value}). Відчинене вікно незадовго до цього тримає повітря в зеленій зоні.</value><comment>Draft: needs native review.</comment></data>
   <data name="Insight_AllGood" xml:space="preserve"><value>Зазвичай CO₂ залишається в зеленій зоні, навіть у найгірші години, {from}–{to} (середнє {value}).</value><comment>Draft: needs native review.</comment></data>
+  <data name="Offline_Text" xml:space="preserve"><value>Датчик може бути поза зоною дії або «спати».</value><comment>Draft: needs native review.</comment></data>
+  <data name="Offline_Text_BluetoothOff" xml:space="preserve"><value>Bluetooth вимкнено, тож Deskair не може зв&apos;язатися з датчиком.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Offline_LastReading" xml:space="preserve"><value>Останнє вимірювання: {value}, {time}.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Offline_HistoryHint" xml:space="preserve"><value>Історія, як і раніше, доступна.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Offline_Step_Range" xml:space="preserve"><value>Тримайтеся приблизно в межах 10 м від датчика</value><comment>Draft: needs native review.</comment></data>
+  <data name="Offline_Step_Wake" xml:space="preserve"><value>Натисніть кнопку на Aranet4, щоб розбудити його</value><comment>Draft: needs native review.</comment></data>
+  <data name="Offline_Step_Battery" xml:space="preserve"><value>Перевірте батарею датчика ({percent} востаннє)</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Import" xml:space="preserve"><value>Імпортувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Export" xml:space="preserve"><value>Експортувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Data_Folder" xml:space="preserve"><value>Тека даних</value><comment>Draft: needs native review.</comment></data>

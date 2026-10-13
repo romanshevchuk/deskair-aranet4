@@ -5,6 +5,7 @@ using Deskair.App.Localization;
 using Deskair.App.Platform;
 using Deskair.App.Platform.Bluetooth;
 using Deskair.App.Platform.Files;
+using Deskair.App.Platform.Launch;
 using Deskair.App.Platform.Notifications;
 using Deskair.App.Platform.Startup;
 using Deskair.App.Platform.Theming;
@@ -81,6 +82,7 @@ public static class ServiceRegistration
         services.AddSingleton<IStartupRegistration, StartupRegistration>();
         services.AddSingleton<IFileDialogs, WindowsFileDialogs>();
         services.AddSingleton<IFolderOpener, ExplorerFolderOpener>();
+        services.AddSingleton<ISystemSettings, WindowsSystemSettings>();
 
         return services;
     }
@@ -113,6 +115,7 @@ public static class ServiceRegistration
         services.AddSingleton<FooterViewModel>();
         services.AddSingleton<RoomChipViewModel>();
         services.AddSingleton<OnboardingViewModel>();
+        services.AddSingleton<OfflineViewModel>();
         services.AddSingleton<AppearanceSettingsViewModel>();
         services.AddSingleton<AlertsSettingsViewModel>();
         services.AddSingleton<DevicesSettingsViewModel>();
@@ -132,6 +135,7 @@ public static class ServiceRegistration
             Footer = provider.GetRequiredService<FooterViewModel>(),
             Room = provider.GetRequiredService<RoomChipViewModel>(),
             Onboarding = provider.GetRequiredService<OnboardingViewModel>(),
+            Offline = provider.GetRequiredService<OfflineViewModel>(),
             Settings = provider.GetRequiredService<SettingsViewModel>(),
             History = provider.GetRequiredService<HistoryViewModel>()
         });

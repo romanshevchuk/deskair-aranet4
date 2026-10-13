@@ -41,6 +41,8 @@ public class MainWindowRenderTests
     [InlineData(ThemeChoice.Light, "uk-UA", ConnectionState.Normal, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Light, "en-US", ConnectionState.Stale, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Light, "en-US", ConnectionState.LowBattery, TemperatureUnit.Fahrenheit)]
+    [InlineData(ThemeChoice.Light, "en-US", ConnectionState.NotConnected, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Dark, "uk-UA", ConnectionState.NotConnected, TemperatureUnit.Celsius)]
     public void Render_the_live_screen(ThemeChoice theme, string culture, ConnectionState state, TemperatureUnit unit)
     {
         Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the window images.");
@@ -50,7 +52,8 @@ public class MainWindowRenderTests
             UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo(culture));
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
 
-            var shell = BuildShell(state, unit);
+            // The dark Ukrainian offline image is the one with Bluetooth off.
+            var shell = BuildShell(state, unit, bluetoothOff: theme == ThemeChoice.Dark);
             var window = new MainWindow(shell);
             var content = (FrameworkElement)window.Content;
 
@@ -65,7 +68,7 @@ public class MainWindowRenderTests
         File.WriteAllBytes(Path.Combine(OutputFolder(), $"live-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{state.ToString().ToLowerInvariant()}-{unit.ToString().ToLowerInvariant()}.png"), png);
     }
 
-    private static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit)
+    private static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit, bool bluetoothOff = false)
     {
         var messenger = new StrongReferenceMessenger();
         var dispatcher = new FakeUiDispatcher();
@@ -119,6 +122,10 @@ public class MainWindowRenderTests
         var connection = new ConnectionViewModel(messenger, dispatcher);
         connection.Update(state);
 
-        return new ShellViewModel { Live = live, Connection = connection, Footer = footer, Room = room };
+        var radio = new FakeBluetoothRadio { IsOn = !bluetoothOff };
+        var offline = new OfflineViewModel(registry, query, radio, messenger, dispatcher, formatter, localizer, calendar, clock, new FakeSystemSettings());
+        messenger.Send(new ReadingReceived(device, store.Readings[^1]));
+
+        return new ShellViewModel { Live = live, Connection = connection, Footer = footer, Room = room, Offline = offline };
     }
 }

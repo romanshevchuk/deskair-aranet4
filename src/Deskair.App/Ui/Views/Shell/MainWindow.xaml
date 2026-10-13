@@ -6,6 +6,7 @@
         xmlns:live="clr-namespace:Deskair.App.Ui.Views.Live"
         xmlns:history="clr-namespace:Deskair.App.Ui.Views.History"
         xmlns:onboarding="clr-namespace:Deskair.App.Ui.Views.Onboarding"
+        xmlns:states="clr-namespace:Deskair.App.Ui.Views.States"
         xmlns:settings="clr-namespace:Deskair.App.Ui.Views.Settings"
         xmlns:vm="clr-namespace:Deskair.App.ViewModels.Shell"
         Style="{StaticResource Window.Base}"
@@ -15,13 +16,17 @@
   <Window.Resources>
     <DataTemplate x:Key="Section.LiveScreen"><live:LiveView /></DataTemplate>
     <DataTemplate x:Key="Section.FirstRun"><onboarding:OnboardingView DataContext="{Binding Onboarding}" /></DataTemplate>
-    <!-- Live, or the welcome screen while there is no sensor. -->
+    <DataTemplate x:Key="Section.Offline"><states:OfflineView DataContext="{Binding Offline}" /></DataTemplate>
+    <!-- Live; the welcome screen while there is no sensor; the offline view while the sensor cannot be reached (adding a sensor wins over both). -->
     <DataTemplate x:Key="Section.Live">
       <ContentControl Content="{Binding}" Focusable="False" IsTabStop="False">
         <ContentControl.Style>
           <Style TargetType="{x:Type ContentControl}">
             <Setter Property="ContentTemplate" Value="{StaticResource Section.LiveScreen}" />
             <Style.Triggers>
+              <DataTrigger Binding="{Binding Connection.ShowOfflineView}" Value="True">
+                <Setter Property="ContentTemplate" Value="{StaticResource Section.Offline}" />
+              </DataTrigger>
               <DataTrigger Binding="{Binding Connection.ShowFirstRunView}" Value="True">
                 <Setter Property="ContentTemplate" Value="{StaticResource Section.FirstRun}" />
               </DataTrigger>

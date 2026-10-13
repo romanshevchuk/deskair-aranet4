@@ -32,6 +32,10 @@ public sealed partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private OnboardingViewModel? onboarding;
 
+    /// <summary>Not connected: the full-screen "can't reach your sensor" view that takes the place of Live.</summary>
+    [ObservableProperty]
+    private OfflineViewModel? offline;
+
     [ObservableProperty]
     private SettingsViewModel? settings;
 

@@ -1,14 +1,36 @@
 <UserControl x:Class="Deskair.App.Ui.Views.States.OfflineView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(STATE-01b) [M, haiku]
-       Spec: docs/design/screens-and-states.md "Live conditions" (Not connected)
-       Input : ConnectionViewModel and the last reading.
-       Output: A full-screen state with the last reading and recovery steps; Offline_Title, Offline_Bluetooth, Action_Retry.
-       Rules : History stays available.
-       Edge  : Bluetooth off shows Offline_Bluetooth first.
-       Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass. -->
-  <Grid>
-  </Grid>
+  <!-- DataContext: OfflineViewModel. The whole Live area while the sensor cannot be reached: the likely cause, the last reading, what to try and the buttons.
+       With Bluetooth off, "Turn on Bluetooth" comes first; Try again is always there. History stays available from the header. -->
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+  </UserControl.Resources>
+
+  <controls:EmptyStateCard VerticalAlignment="Top"
+                           Icon="&#xE702;"
+                           Message="{Binding Message}"
+                           Title="{loc:T Offline_Title}">
+    <StackPanel>
+      <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+        <controls:PrimaryButton Command="{Binding TurnOnBluetoothCommand}"
+                                Content="{loc:T Offline_Bluetooth}"
+                                Visibility="{Binding BluetoothOff, Converter={StaticResource BoolToVisibility}}" />
+        <controls:SecondaryButton Margin="{StaticResource Space.Inline}" Command="{Binding RetryCommand}" Content="{loc:T Action_Retry}" />
+      </StackPanel>
+
+      <ItemsControl Margin="{StaticResource Space.Empty.Content}"
+                    Focusable="False"
+                    IsTabStop="False"
+                    ItemsSource="{Binding Steps}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </StackPanel>
+  </controls:EmptyStateCard>
 </UserControl>

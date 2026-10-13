@@ -189,6 +189,13 @@
   <data name="Stats_Period_Month" xml:space="preserve"><value>month</value></data>
   <data name="Insight_WorstHours" xml:space="preserve"><value>Worst hours: {from}–{to} (avg {value}). Opening a window shortly before keeps you in the good zone.</value></data>
   <data name="Insight_AllGood" xml:space="preserve"><value>On a typical day CO₂ stays in the good zone, even at its worst around {from}–{to} (avg {value}).</value></data>
+  <data name="Offline_Text" xml:space="preserve"><value>The sensor may be out of range or asleep.</value></data>
+  <data name="Offline_Text_BluetoothOff" xml:space="preserve"><value>Bluetooth is off, so Deskair cannot reach the sensor.</value></data>
+  <data name="Offline_LastReading" xml:space="preserve"><value>Your last reading was {value} at {time}.</value></data>
+  <data name="Offline_HistoryHint" xml:space="preserve"><value>History is still available.</value></data>
+  <data name="Offline_Step_Range" xml:space="preserve"><value>Stay within about 10 m of the sensor</value></data>
+  <data name="Offline_Step_Wake" xml:space="preserve"><value>Press the button on the Aranet4 to wake it</value></data>
+  <data name="Offline_Step_Battery" xml:space="preserve"><value>Check the sensor battery ({percent} when last seen)</value></data>
   <data name="Action_Import" xml:space="preserve"><value>Import</value></data>
   <data name="Action_Export" xml:space="preserve"><value>Export</value></data>
   <data name="Settings_Data_Folder" xml:space="preserve"><value>Data folder</value></data>
