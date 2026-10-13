@@ -27,6 +27,7 @@ public class AppOptionsTests
     public void The_toast_spike_flag_is_found_and_is_off_by_default()
     {
         Assert.True(AppOptions.Parse(["--spike-s5", "--leave"]).SpikeS5);
+        Assert.True(AppOptions.Parse(["--spike-s3", "--variant", "custom"]).SpikeS3);
         Assert.False(AppOptions.Parse([]).SpikeS5);
     }
 

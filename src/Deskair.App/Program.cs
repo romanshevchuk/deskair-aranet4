@@ -18,6 +18,11 @@ public static class Program
             KnownFolders.ResetFirstRunFolder();
         }
 
+        if (options.SpikeS3)
+        {
+            return SpikeS3.Run(args);
+        }
+
         if (options.SpikeS5)
         {
             return SpikeS5.Run(args);
