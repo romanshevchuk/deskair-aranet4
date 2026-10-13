@@ -6,7 +6,7 @@ namespace Deskair.App.Ui.Markup;
 
 /// <summary>
 /// A little markup for localized sentences that start with a bold lead ("**Worst hours: 15:00–18:00** (avg 1,249 ppm). Opening a window ..."). <c>**</c> switches bold on and off;
-/// anything else is plain text. Set <see cref="TextProperty"/> on a TextBlock instead of its Text. An odd number of markers leaves the rest in bold, and an empty or null text clears the block.
+/// anything else is plain text; bold is semibold, the weight the design uses. Set <see cref="TextProperty"/> on a TextBlock instead of its Text. An odd number of markers leaves the rest in bold, and an empty or null text clears the block.
 /// </summary>
 public static class InlineMarkup
 {
@@ -58,7 +58,14 @@ public static class InlineMarkup
 
         foreach (var (text, bold) in Parse((string?)e.NewValue))
         {
-            block.Inlines.Add(bold ? new Bold(new Run(text)) : new Run(text));
+            var run = new Run(text);
+
+            if (bold)
+            {
+                run.FontWeight = FontWeights.SemiBold;
+            }
+
+            block.Inlines.Add(run);
         }
     }
 }

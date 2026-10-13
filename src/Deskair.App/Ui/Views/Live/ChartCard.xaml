@@ -4,7 +4,8 @@
              xmlns:charts="clr-namespace:Deskair.App.Ui.Charts"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:live="clr-namespace:Deskair.App.Ui.Views.Live"
-             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:markup="clr-namespace:Deskair.App.Ui.Markup">
   <!-- DataContext: LiveViewModel (the tabs and the chart card). The 24 h ribbon shows for CO2 on 1h and 6h only. -->
   <controls:Card Padding="{StaticResource Space.Chart.Card}">
     <Grid>
@@ -20,10 +21,11 @@
       <TextBlock Grid.Row="1"
                  Margin="{StaticResource Space.Chart.Caption}"
                  Style="{StaticResource Text.Caption}"
-                 Foreground="{DynamicResource Text.Secondary.Brush}"
-                 Text="{Binding ChartCard.SummaryText}" />
+                 markup:InlineMarkup.Text="{Binding ChartCard.SummaryText}"
+                 Foreground="{DynamicResource Text.Secondary.Brush}" />
 
       <charts:LiveChart Grid.Row="2"
+                        Margin="0,12,0,0"
                         Metric="{Binding Tabs.SelectedMetric}"
                         Points="{Binding ChartCard.Points}"
                         Unit="{Binding ChartCard.Unit}"
@@ -35,13 +37,14 @@
                         NowLabel="{loc:T Chart_Now}"
                         NoDataText="{loc:T Chart_NoData}" />
 
-      <charts:ZoneRibbon Grid.Row="3"
-                         Margin="{StaticResource Space.Chart.Ribbon}"
-                         Height="{StaticResource Size.Ribbon.Height}"
-                         Segments="{Binding ChartCard.RibbonSegments}"
-                         EndTime="{Binding ChartCard.EndTime}">
-        <charts:ZoneRibbon.Style>
-          <Style TargetType="{x:Type charts:ZoneRibbon}">
+      <!-- The 24 h ribbon with its caption and hours, under a divider (prototype). Only for CO2 on 1h and 6h. -->
+      <Border Grid.Row="3"
+              Margin="0,12,0,0"
+              BorderBrush="{DynamicResource Divider.Brush}"
+              BorderThickness="0,1,0,0"
+              Padding="0,8,0,0">
+        <Border.Style>
+          <Style TargetType="{x:Type Border}">
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
               <DataTrigger Binding="{Binding Tabs.ShowRibbon}" Value="True">
@@ -49,8 +52,12 @@
               </DataTrigger>
             </Style.Triggers>
           </Style>
-        </charts:ZoneRibbon.Style>
-      </charts:ZoneRibbon>
+        </Border.Style>
+        <charts:ZoneRibbon Caption="{loc:T Ribbon_Caption}"
+                           EndTime="{Binding ChartCard.EndTime}"
+                           Height="{StaticResource Size.Ribbon.Labelled.Height}"
+                           Segments="{Binding ChartCard.RibbonSegments}" />
+      </Border>
     </Grid>
   </controls:Card>
 </UserControl>

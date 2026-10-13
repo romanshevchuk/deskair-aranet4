@@ -4,8 +4,8 @@
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
   <!-- DataContext: ShellViewModel; the footer view model is its Footer. Status on the left; room, sensor id, signal and battery on the right. -->
-  <Border Background="{DynamicResource Surface.Brush}"
-          BorderBrush="{DynamicResource Divider.Brush}"
+  <Border Background="Transparent"
+          BorderBrush="{DynamicResource Border.Brush}"
           BorderThickness="0,1,0,0"
           Padding="{StaticResource Space.Bar.Padding}"
           DataContext="{Binding Footer}">

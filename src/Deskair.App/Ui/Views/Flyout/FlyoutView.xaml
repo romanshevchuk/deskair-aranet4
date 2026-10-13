@@ -76,7 +76,8 @@
             </Grid>
 
             <StackPanel Orientation="Horizontal">
-              <TextBlock FontSize="{DynamicResource Font.Size.Flyout.Value}"
+              <TextBlock FontFamily="{DynamicResource Font.Family.Display}"
+                         FontSize="{DynamicResource Font.Size.Flyout.Value}"
                          LineHeight="{DynamicResource Font.Size.Flyout.Value}"
                          LineStackingStrategy="BlockLineHeight"
                          Style="{StaticResource Text.Number}"

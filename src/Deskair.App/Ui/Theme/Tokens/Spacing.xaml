@@ -80,7 +80,7 @@
   <Thickness x:Key="Space.Hero.Gauge">0,16,0,0</Thickness>
   <Thickness x:Key="Space.Hero.Advice">0,18,0,0</Thickness>
   <Thickness x:Key="Space.Hero.Stats">0,16,0,0</Thickness>
-  <Thickness x:Key="Space.Hero.Unit">8,0,0,16</Thickness>
+  <Thickness x:Key="Space.Hero.Unit">8,0,0,6</Thickness>
   <Thickness x:Key="Space.Mini.Gap">8,0,8,0</Thickness>
   <Thickness x:Key="Space.Mini.Row">-8,0,-8,0</Thickness>
   <Thickness x:Key="Space.Chart.Card">24,20,24,16</Thickness>
@@ -91,7 +91,7 @@
   <Thickness x:Key="Space.Chart.Caption">0,10,0,0</Thickness>
   <Thickness x:Key="Space.Chart.Ribbon">0,8,0,0</Thickness>
   <Thickness x:Key="Space.Banner.Below">0,0,0,12</Thickness>
-  <sys:Double x:Key="Size.Ribbon.Height">14</sys:Double>
+  <sys:Double x:Key="Size.Ribbon.Labelled.Height">34</sys:Double>
   <sys:Double x:Key="Size.Logo">28</sys:Double>
   <Thickness x:Key="Space.Menu.Padding">6</Thickness>
   <Thickness x:Key="Space.Menu.Shadow">16,4,16,28</Thickness>

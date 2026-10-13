@@ -7,14 +7,15 @@
   .\prototype-shot.ps1 -Name live-elev -Js "K='elev';V='live'"
 
   -Js runs before the prototype draws its window: K is the zone (good, elev, high), V the view (live, hist, set), H the History choices
-  (m metric, r range day/week/month/year, hf hours all/night). The picture goes to artifacts/proto/<Name>.png (git-ignored), 1200 x 728 at 100 %.
+  (m metric, r range day/week/month/year, hf hours all/night). The picture goes to artifacts/proto/<Name>.png (git-ignored), 1200 x 728 at 100 %; -Scale 2 gives 2400 x 1456 like the app renders.
   Needs Microsoft Edge.
 #>
 param(
     [Parameter(Mandatory)][string]$Name,
     [string]$Js = '',
     [int]$Width = 1200,
-    [int]$Height = 728
+    [int]$Height = 728,
+    [double]$Scale = 1
 )
 
 $root = Split-Path -Parent $PSScriptRoot
@@ -32,6 +33,6 @@ $png = Join-Path $folder "$Name.png"
 $edge = @('C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe', 'C:\Program Files\Microsoft\Edge\Application\msedge.exe') | Where-Object { Test-Path $_ } | Select-Object -First 1
 if (-not $edge) { throw 'Microsoft Edge was not found.' }
 
-& $edge --headless=new --disable-gpu --hide-scrollbars "--window-size=$Width,$Height" "--screenshot=$png" ('file:///' + $page.Replace('\', '/')) 2>$null | Out-Null
+& $edge --headless=new --disable-gpu --hide-scrollbars "--window-size=$Width,$Height" "--force-device-scale-factor=$Scale" "--screenshot=$png" ('file:///' + $page.Replace('\', '/')) 2>$null | Out-Null
 Start-Sleep -Milliseconds 500
 Write-Output $png

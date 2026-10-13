@@ -43,6 +43,7 @@
                          VerticalAlignment="Center" />
                 <TextBlock Margin="{DynamicResource Space.Chip.Gap}"
                            Style="{DynamicResource Text.Secondary}"
+                           FontSize="{DynamicResource Font.Size.MiniLabel}"
                            FontWeight="{DynamicResource Font.Weight.SemiBold}"
                            Text="{TemplateBinding Title}" />
               </StackPanel>

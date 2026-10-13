@@ -19,7 +19,8 @@
 
       <Grid Grid.Row="0">
         <TextBlock VerticalAlignment="Center"
-                   Style="{StaticResource Text.Secondary}"
+                   Style="{StaticResource Text.Body}"
+                   FontSize="{StaticResource Font.Size.HeroTitle}"
                    FontWeight="{StaticResource Font.Weight.SemiBold}"
                    Foreground="{DynamicResource Text.Primary.Brush}"
                    Text="{loc:T Metric_Co2}" />

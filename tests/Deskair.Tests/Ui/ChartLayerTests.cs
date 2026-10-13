@@ -103,6 +103,25 @@ public class ChartLayerTests
         });
     }
 
+
+    [Fact]
+    public void Both_dashed_limits_are_the_same_neutral_grey()
+    {
+        UiHost.Run(() =>
+        {
+            var area = LayerRenderer.Area();
+            var bitmap = LayerRenderer.Render(new DashedZoneLinesLayer(), area);
+            var expected = LayerRenderer.Token("Card.Border.Hover.Brush");
+
+            foreach (var limit in new[] { 1000.0, 1400.0 })
+            {
+                var y = PixelY(area, limit);
+                var pixel = Enumerable.Range(45, 200).Select(x => LayerRenderer.Pixel(bitmap, x, y)).First(candidate => candidate.A > 200);
+
+                Assert.Equal(expected, Color.FromRgb(pixel.R, pixel.G, pixel.B));
+            }
+        });
+    }
     [Fact]
     public void Zone_line_is_coloured_by_zone()
     {

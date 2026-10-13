@@ -7,6 +7,7 @@ namespace Deskair.App.Ui.Charts;
 /// <summary>The 24 h ribbon of zone-coloured segments. It draws at the size it is given (the flyout uses a 22 px tall one), never a scaled-down copy.</summary>
 public sealed class ZoneRibbon : ChartBase
 {
+    private const double LabelRoom = 20;
     public static readonly DependencyProperty SegmentsProperty = DependencyProperty.Register(
         nameof(Segments),
         typeof(IReadOnlyList<ChartZoneSegment>),
@@ -45,7 +46,37 @@ public sealed class ZoneRibbon : ChartBase
         set => SetValue(EndTimeProperty, value);
     }
 
-    protected override Thickness PlotMargin => new(0);
+    public static readonly DependencyProperty CaptionProperty = DependencyProperty.Register(
+        nameof(Caption),
+        typeof(string),
+        typeof(ZoneRibbon),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+    /// <summary>Set to label the ribbon the way the Live chart does: this caption ("24 h") at the left and the hours 00, 06, 12 and 18 under it. The ribbon then lines up with the chart above it.</summary>
+    public string? Caption
+    {
+        get => (string?)GetValue(CaptionProperty);
+        set => SetValue(CaptionProperty, value);
+    }
+
+    public TimeZoneInfo TimeZone { get; set; } = TimeZoneInfo.Local;
+
+    private bool Labelled => !string.IsNullOrEmpty(Caption);
+
+    protected override Thickness PlotMargin
+    {
+        get
+        {
+            if (!Labelled)
+            {
+                return new Thickness(0);
+            }
+
+            var chart = base.PlotMargin;
+
+            return new Thickness(chart.Left, 0, chart.Right, LabelRoom);
+        }
+    }
 
     protected override ChartRanges GetDataRanges()
     {
@@ -54,5 +85,6 @@ public sealed class ZoneRibbon : ChartBase
         return new ChartRanges(end - Window.Ticks, end, 0, 1);
     }
 
-    protected override IReadOnlyList<IChartLayer> CreateLayers() => [new RibbonLayer { Segments = Segments }];
+    protected override IReadOnlyList<IChartLayer> CreateLayers()
+        => Labelled ? [new RibbonLayer { Segments = Segments }, new RibbonLabelLayer { Caption = Caption, TimeZone = TimeZone }] : [new RibbonLayer { Segments = Segments }];
 }

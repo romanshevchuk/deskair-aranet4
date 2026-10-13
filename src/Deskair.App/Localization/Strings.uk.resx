@@ -172,6 +172,7 @@
   <data name="Gallery_Section_Chart" xml:space="preserve"><value>Графік наживо</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_ZoneRibbon" xml:space="preserve"><value>24-годинна стрічка</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Now" xml:space="preserve"><value>Зараз</value><comment>Draft: needs native review.</comment></data>
+  <data name="Ribbon_Caption" xml:space="preserve"><value>24 год</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Today" xml:space="preserve"><value>Сьогодні</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Avg" xml:space="preserve"><value>сер.</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ідеально 20–24</value><comment>Draft: needs native review.</comment></data>
@@ -183,9 +184,9 @@
   <data name="Duration_Minutes" xml:space="preserve"><value>{min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Duration_HoursMinutes" xml:space="preserve"><value>{h} год {min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Ideal" xml:space="preserve"><value>ідеально {min}–{max}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Chart_Summary_OneHour" xml:space="preserve"><value>Остання година · Мін. {low} · Сер. {avg} · Макс. {high} {unit}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Chart_Summary_SixHours" xml:space="preserve"><value>Останні 6 годин · Мін. {low} · Сер. {avg} · Макс. {high} {unit}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Chart_Summary_TwentyFourHours" xml:space="preserve"><value>Останні 24 години · Мін. {low} · Сер. {avg} · Макс. {high} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Summary_OneHour" xml:space="preserve"><value>Остання година · Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Summary_SixHours" xml:space="preserve"><value>Останні 6 годин · Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Summary_TwentyFourHours" xml:space="preserve"><value>Останні 24 години · Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_1h" xml:space="preserve"><value>1 год</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_6h" xml:space="preserve"><value>6 год</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_24h" xml:space="preserve"><value>24 год</value><comment>Draft: needs native review.</comment></data>

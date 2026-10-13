@@ -53,7 +53,7 @@ public class InlineMarkupTests
             InlineMarkup.SetText(block, "**Lead** and the rest");
 
             Assert.Equal(2, block.Inlines.Count);
-            Assert.IsType<Bold>(block.Inlines.First());
+            Assert.Equal(System.Windows.FontWeights.SemiBold, ((Run)block.Inlines.First()).FontWeight);
             Assert.Equal("Lead and the rest", new TextRange(block.ContentStart, block.ContentEnd).Text.Trim());
         });
     }

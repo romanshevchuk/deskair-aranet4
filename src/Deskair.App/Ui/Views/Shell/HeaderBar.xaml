@@ -9,9 +9,10 @@
        three caption buttons at the right edge (docs/plans/spike-s3-title-bar.md). -->
   <Grid Margin="{StaticResource Space.Header.Padding}">
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
 
     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
@@ -25,6 +26,9 @@
     </StackPanel>
 
     <controls:SegmentedControl Grid.Column="1"
+                               Margin="20,0,0,0"
+                               Background="Transparent"
+                               Padding="0"
                                VerticalAlignment="Center"
                                WindowChrome.IsHitTestVisibleInChrome="True"
                                AutomationProperties.Name="{loc:T Nav_Main}"
@@ -36,7 +40,7 @@
     </controls:SegmentedControl>
 
     <!-- No rooms yet (first run): no chip. -->
-    <StackPanel Grid.Column="2"
+    <StackPanel Grid.Column="3"
                 Margin="{StaticResource Space.Header.Chip}"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"

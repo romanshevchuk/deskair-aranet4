@@ -27,7 +27,7 @@
           <ControlTemplate.Triggers>
             <Trigger Property="ValueFirst" Value="True">
               <Setter TargetName="Value" Property="Grid.Row" Value="0" />
-              <Setter TargetName="Value" Property="FontSize" Value="{DynamicResource Font.Size.Title}" />
+              <Setter TargetName="Value" Property="FontSize" Value="{DynamicResource Font.Size.StatValue}" />
               <Setter TargetName="Label" Property="Grid.Row" Value="1" />
             </Trigger>
           </ControlTemplate.Triggers>

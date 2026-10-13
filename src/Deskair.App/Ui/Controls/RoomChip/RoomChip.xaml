@@ -5,7 +5,7 @@
     <Setter Property="Background" Value="{DynamicResource Surface.Brush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource Border.Brush}" />
     <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="Foreground" Value="{DynamicResource Text.Primary.Brush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Text.Secondary.Brush}" />
     <Setter Property="FontSize" Value="{DynamicResource Font.Size.Secondary}" />
     <Setter Property="Padding" Value="{DynamicResource Space.Chip.Padding}" />
     <Setter Property="Cursor" Value="Hand" />
@@ -17,7 +17,7 @@
                   Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}"
-                  CornerRadius="{DynamicResource Radius.Chip}"
+                  CornerRadius="{DynamicResource Radius.Segment}"
                   Padding="{TemplateBinding Padding}"
                   ToolTip="{TemplateBinding RoomName}">
             <StackPanel Orientation="Horizontal">
@@ -25,7 +25,7 @@
               <TextBlock Margin="{DynamicResource Space.Chip.Gap}"
                          MaxWidth="{DynamicResource Size.Chip.MaxName}"
                          VerticalAlignment="Center"
-                         FontWeight="{DynamicResource Font.Weight.Medium}"
+                         FontWeight="{DynamicResource Font.Weight.Normal}"
                          TextTrimming="CharacterEllipsis"
                          Text="{TemplateBinding RoomName}" />
               <TextBlock x:Name="Value"
@@ -37,8 +37,8 @@
               <Path Margin="{DynamicResource Space.Chip.Gap}"
                     VerticalAlignment="Center"
                     Data="M1,1 L5,5 L9,1"
-                    Stroke="{DynamicResource Text.Secondary.Brush}"
-                    StrokeThickness="1.5"
+                    Stroke="{DynamicResource Text.Tertiary.Brush}"
+                    StrokeThickness="1.2"
                     StrokeStartLineCap="Round"
                     StrokeEndLineCap="Round"
                     StrokeLineJoin="Round" />
