@@ -86,14 +86,15 @@ public class OnboardingViewModelTests
     }
 
     [Fact]
-    public async Task Bluetooth_off_ends_the_scan_with_the_hint()
+    public async Task Bluetooth_off_ends_the_scan_with_the_hint_and_no_sensor()
     {
         radio.IsOn = false;
         var provider = new ControlledProvider("first");
         var viewModel = Create(provider);
 
-        await viewModel.ScanAsync(TestContext.Current.CancellationToken);
+        viewModel.Start(TestContext.Current.CancellationToken);
 
+        await Wait.Until(() => viewModel.NoSensorFound);
         Assert.True(viewModel.BluetoothOff);
         Assert.Empty(viewModel.Nearby);
         Assert.Equal(0, provider.Scans);
@@ -316,18 +317,6 @@ public class OnboardingViewModelTests
 
         await Wait.Until(() => viewModel.NoSensorFound);
         Assert.False(viewModel.IsScanning);
-    }
-
-    [Fact]
-    public async Task Bluetooth_off_says_so_and_shows_no_sensor()
-    {
-        radio.IsOn = false;
-        var viewModel = Create(new ControlledProvider("first"));
-
-        viewModel.Start(TestContext.Current.CancellationToken);
-
-        await Wait.Until(() => viewModel.NoSensorFound);
-        Assert.True(viewModel.BluetoothOff);
     }
 
     [Fact]

@@ -126,8 +126,11 @@ public class BackdropServiceTests
             window.Close();
 
             // Changing the theme after the window is gone must not throw.
-            UiHost.Theme.Apply(ThemeChoice.Dark);
-            UiHost.Theme.Apply(ThemeChoice.Light);
+            Assert.Null(Record.Exception(() =>
+            {
+                UiHost.Theme.Apply(ThemeChoice.Dark);
+                UiHost.Theme.Apply(ThemeChoice.Light);
+            }));
         });
     }
 }

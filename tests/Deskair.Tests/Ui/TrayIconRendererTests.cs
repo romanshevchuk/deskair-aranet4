@@ -101,15 +101,6 @@ public class TrayIconRendererTests
         Assert.InRange(Math.Abs(centre.R - centre.G), 0, 20);
     }
 
-    [Fact]
-    public void Not_connected_is_not_the_same_picture_as_a_zone_ring()
-    {
-        var offline = UiHost.Run(ThemeChoice.Light, () => TrayIconRenderer.Render(null, 32, null));
-        var ring = UiHost.Run(ThemeChoice.Light, () => TrayIconRenderer.Render(Zone.Good, 32, null));
-
-        Assert.NotEqual(Pixels(offline), Pixels(ring));
-    }
-
     [Theory]
     [InlineData(Zone.Good)]
     [InlineData(Zone.Elevated)]

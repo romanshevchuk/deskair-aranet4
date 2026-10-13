@@ -124,6 +124,8 @@ public class MainWindowControllerTests
     [Fact]
     public void Show_before_a_window_is_attached_does_nothing()
     {
-        new MainWindowController(new ShellViewModel(), () => { }).Show(ShellSection.Settings);
+        var controller = new MainWindowController(new ShellViewModel(), () => { });
+
+        Assert.Null(Record.Exception(() => controller.Show(ShellSection.Settings)));
     }
 }

@@ -5,6 +5,7 @@ using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
 using Deskair.Services.Devices;
+using Deskair.Services.Messages;
 using Deskair.Services.Queries;
 using Deskair.Services.Storage;
 using Deskair.Tests.Fakes;
@@ -68,6 +69,7 @@ public class HistoryViewModelTests
         Assert.Empty(viewModel.Points!);
         Assert.Empty(viewModel.Gaps!);
         Assert.Null(stats.Average);
+        Assert.True(viewModel.IsEmpty);
     }
 
     [Fact]
@@ -285,8 +287,10 @@ public class HistoryViewModelTests
         await Wait.Until(() => viewModel.Bars is { Count: 5 });
     }
 
-    [Fact]
-    public async Task A_finished_sync_loads_the_screen_again()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task New_readings_from_a_sync_or_an_import_load_the_screen_again(bool imported)
     {
         await SelectDeviceAsync();
         var viewModel = Create();
@@ -295,7 +299,14 @@ public class HistoryViewModelTests
         await Wait.Until(() => viewModel.Bars is { Count: 7 });
         AddDay(Samples.Utc(2026, 10, 11), 1500);
 
-        messenger.Send(new Deskair.Services.Messages.SyncCompleted(device, 100));
+        if (imported)
+        {
+            messenger.Send(new ReadingsImported(device, 720));
+        }
+        else
+        {
+            messenger.Send(new SyncCompleted(device, 100));
+        }
 
         await Wait.Until(() => viewModel.Bars![5].Average == 1500);
     }
@@ -360,49 +371,15 @@ public class HistoryViewModelTests
     }
 
     [Fact]
-    public async Task Imported_readings_load_the_screen_again()
+    public async Task The_screen_is_empty_until_readings_are_stored()
     {
         await SelectDeviceAsync();
         var viewModel = Create();
-        toolbar.Range = Period.Week;
-        viewModel.Refresh();
-        await Wait.Until(() => viewModel.Bars is { Count: 7 });
-        AddDay(Samples.Utc(2026, 10, 11), 1500);
-
-        messenger.Send(new Deskair.Services.Messages.ReadingsImported(device, 720));
-
-        await Wait.Until(() => viewModel.Bars![5].Average == 1500);
-    }
-
-    [Fact]
-    public async Task Without_a_selected_device_the_screen_is_empty()
-    {
-        var viewModel = Create();
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
         Assert.True(viewModel.IsEmpty);
-    }
 
-    [Fact]
-    public async Task A_device_without_stored_readings_is_empty()
-    {
-        await SelectDeviceAsync();
-        var viewModel = Create();
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        Assert.True(viewModel.IsEmpty);
-    }
-
-    [Fact]
-    public async Task Once_readings_are_stored_the_screen_is_not_empty()
-    {
-        await SelectDeviceAsync();
-        var viewModel = Create();
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
         AddDay(Samples.Utc(2026, 10, 11), 800);
-
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
         Assert.False(viewModel.IsEmpty);
@@ -413,7 +390,7 @@ public class HistoryViewModelTests
     {
         var viewModel = Create();
         var requests = 0;
-        messenger.Register<Deskair.Services.Messages.ImportRequested>(this, (_, _) => requests++);
+        messenger.Register<ImportRequested>(this, (_, _) => requests++);
 
         viewModel.ImportCommand.Execute(null);
 

@@ -59,10 +59,10 @@ public class ConnectionViewModelTests
     public void It_follows_connection_messages_through_the_dispatcher()
     {
         var messenger = new StrongReferenceMessenger();
-        var dispatcher = new Deskair.Tests.Fakes.FakeUiDispatcher();
+        var dispatcher = new FakeUiDispatcher();
         var viewModel = new ConnectionViewModel(messenger, dispatcher, new FakeLocalizer());
 
-        messenger.Send(new Deskair.Services.Messages.ConnectionStateChanged(ConnectionState.Stale));
+        messenger.Send(new ConnectionStateChanged(ConnectionState.Stale));
 
         Assert.Equal(ConnectionState.Stale, viewModel.State);
         Assert.True(viewModel.ShowStaleBanner);
@@ -75,7 +75,7 @@ public class ConnectionViewModelTests
         var messenger = new StrongReferenceMessenger();
         var viewModel = new ConnectionViewModel(messenger, new FakeUiDispatcher(), new FakeLocalizer());
         var asked = 0;
-        messenger.Register<Deskair.Services.Messages.RetryRequested>(this, (_, _) => asked++);
+        messenger.Register<RetryRequested>(this, (_, _) => asked++);
 
         viewModel.RetryCommand.Execute(null);
 

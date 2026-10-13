@@ -98,6 +98,6 @@ public sealed class SingleInstanceTests : IDisposable
     [Fact]
     public void An_instance_that_never_listened_can_be_disposed()
     {
-        Start().Dispose();
+        Assert.Null(Record.Exception(() => Start().Dispose()));
     }
 }

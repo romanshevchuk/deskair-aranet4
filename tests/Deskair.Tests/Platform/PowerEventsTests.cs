@@ -77,7 +77,10 @@ public sealed class PowerEventsTests : IDisposable
     [Fact]
     public void Starting_and_disposing_use_the_real_system_event_without_failing()
     {
-        power.Start();
-        power.Dispose();
+        Assert.Null(Record.Exception(() =>
+        {
+            power.Start();
+            power.Dispose();
+        }));
     }
 }

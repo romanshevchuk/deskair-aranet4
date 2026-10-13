@@ -1,6 +1,7 @@
 using System.Windows;
 using Deskair.App.Ui.Charts;
 using Deskair.App.Ui.Charts.Layers;
+using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.Ui;
 
@@ -62,7 +63,7 @@ public class ChartTicksTests
     [Fact]
     public void Round_times_are_in_the_local_time_zone_not_utc()
     {
-        var kyiv = Deskair.Tests.Fakes.Samples.Kyiv;
+        var kyiv = Samples.Kyiv;
         var start = new DateTimeOffset(2026, 10, 12, 8, 3, 0, TimeSpan.Zero);
         var layer = new AxisLabelLayer { TimeZone = kyiv };
 
