@@ -54,6 +54,7 @@ public sealed class StartupSequence : IDisposable
         var window = services.GetRequiredService<MainWindow>();
         window.Show();
         StartTray(window);
+        ShowWindowOnSecondLaunch(window);
 
         running = new CancellationTokenSource();
         await services.GetRequiredService<AppServicesStarter>().StartAsync(running.Token);
@@ -72,6 +73,14 @@ public sealed class StartupSequence : IDisposable
         {
             controller.KeepInTray();
         }
+    }
+
+    /// <summary>A second launch of the app brings this window back, also when it is hidden in the tray or minimized.</summary>
+    private void ShowWindowOnSecondLaunch(MainWindow window)
+    {
+        var controller = services.GetRequiredService<MainWindowController>();
+
+        services.GetService<SingleInstance>()?.Listen(() => window.Dispatcher.BeginInvoke(() => controller.Show()));
     }
 
     public void Dispose()

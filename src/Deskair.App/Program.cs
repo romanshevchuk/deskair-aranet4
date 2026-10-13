@@ -28,11 +28,14 @@ public static class Program
 
         if (!instance.IsFirst)
         {
+            // Another Deskair is running: ask it to show its window (it may be hidden in the tray) and leave.
+            instance.SignalFirstInstance();
             return 0;
         }
 
         var builder = Host.CreateApplicationBuilder(args);
         builder.Services.AddDeskair(options);
+        builder.Services.AddSingleton(instance);
 
         using var host = builder.Build();
 
