@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:settings="clr-namespace:Deskair.App.Ui.Views.Settings">
-  <!-- DataContext: SettingsViewModel. Two columns: Appearance and units, Alerts, Sleep; Devices, Data and storage, Start-up. -->
+  <!-- DataContext: SettingsViewModel. Two columns: Appearance and units, Alerts; Devices, Data and storage, Sleep, Start-up. -->
   <ScrollViewer VerticalScrollBarVisibility="Auto">
     <Grid>
       <Grid.ColumnDefinitions>
@@ -13,13 +13,13 @@
 
       <StackPanel Grid.Column="0">
         <settings:AppearanceSettingsView Margin="0,0,0,16" DataContext="{Binding Appearance}" />
-        <settings:AlertsSettingsView Margin="0,0,0,16" DataContext="{Binding Alerts}" />
-        <settings:SleepSettingsView DataContext="{Binding Sleep}" />
+        <settings:AlertsSettingsView DataContext="{Binding Alerts}" />
       </StackPanel>
 
       <StackPanel Grid.Column="2">
         <settings:DevicesSettingsView Margin="0,0,0,16" DataContext="{Binding Devices}" />
         <settings:DataSettingsView Margin="0,0,0,16" DataContext="{Binding Data}" />
+        <settings:SleepSettingsView Margin="0,0,0,16" DataContext="{Binding Sleep}" />
         <settings:StartupSettingsView DataContext="{Binding Startup}" />
       </StackPanel>
     </Grid>

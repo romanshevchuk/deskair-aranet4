@@ -1,6 +1,6 @@
 # Behaviour rules
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-13*
 
 ## CO₂ zones
 
@@ -27,7 +27,7 @@ Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 3
 4. A bucket with under 80 % of its expected readings is "partial" (dashed, lighter). A bucket with none is "no data" (hatched).
 5. The coverage chip shows "Based on N % of expected readings" and is hidden at 98 % or more with no empty buckets.
 6. Typical day: the average per hour of day over the last 7 days (Day, Week), the selected range (Month), or the last 90 days (Year). The worst three-hour window is outlined.
-7. Night filter: 22:00 to 07:00. A night belongs to the evening it starts on. There is no Work filter in v1.
+7. Night filter: the night hours from Settings → Sleep, 22:00 to 07:00 by default (any start and end; the night may cross midnight; the start must differ from the end). A night belongs to the evening it starts on. There is no Work filter in v1.
 
 ## Semantics
 
@@ -63,8 +63,16 @@ When several apply, the first of this list wins: First run, Not connected, Stale
 - Respect quiet hours, Snooze, and Windows Do Not Disturb. Never override Do Not Disturb. Show "Alerts paused by Windows" in the tray tooltip and in Settings.
 - The tray icon colour always updates, even when toasts are off.
 
+## Sleep (the sleep card)
+
+1. **Where:** History with the Day range and the Night hours filter shows the sleep card in place of the typical day. The chart above it stays as it is (the last 24 hours).
+2. **Which night:** the most recent night that has ended, in the night hours from Settings → Sleep (22:00 to 07:00 by default). The night in progress is not "last night": at 23:00 the card still shows the night that ended that morning. Times are local, and a night with a clock change is an hour longer or shorter.
+3. **Verdict (CO₂ only):** Good = average under 1,000 ppm and at most 1 hour at or above 1,000 ppm; Poor = average above 1,400 ppm or 5 hours or more at or above 1,000 ppm; otherwise Fair. A reading counts for one sensor interval.
+4. **Numbers:** time at or above 1,000 ppm (out of the hours recorded), the peak with its time, and the average between 02:00 and 05:00 local (deep sleep; shown as "–" when the night has none). Other metrics have no verdict and show the lowest value first.
+5. **Missing data:** under 80 % of the night recorded shows "Only N of M hours were recorded". A night without readings says so. Nothing is interpolated.
+6. **Not built yet:** the morning toast (SLEEP-01), one average per night for Week, Month and Year (the Night filter already averages the night hours per day).
+
 ## Later features (documented only)
 
 - **Airing detection:** CO₂ at or above 1,000 and a drop of 150 ppm within 10 minutes. Ends when below 1,000, when it flattens (under 10 ppm per 5 min), or after 45 minutes. Call it "air improved", not "window opened".
-- **Sleep verdict:** Good = average under 1,000 and at most 1 h above; Poor = average above 1,400 or 5 h or more above; otherwise Fair.
 - **Drill-down:** month bar to Month, week bar to Week, day bar to Day; needs a date cursor and a breadcrumb.

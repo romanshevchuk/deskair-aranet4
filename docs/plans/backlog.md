@@ -46,7 +46,7 @@ Status: `todo`, `doing`, `done`. Update this file in the same change as the work
 | ID | Item | Status |
 |---|---|---|
 | AIR-01 | Airing feedback | later |
-| SLEEP-01 | Sleep verdict and morning toast | later |
+| SLEEP-01 | Sleep verdict card (done, SLEEP-01a) and morning toast (later) | partly done |
 | HIST-07 | Click a bar to drill in | later |
 | REPORT-01 | Shareable report | later |
 | ROOMS-01 | All-rooms view | later |

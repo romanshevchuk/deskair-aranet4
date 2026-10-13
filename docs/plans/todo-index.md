@@ -9,8 +9,7 @@ Every TODO card in the code, with its size and the model that should take it. Fo
 - **Test:** `skipped test` means a skipped test with reason `TODO(ID)` already exists; unskip it and make it pass. `manual / gallery` means the card is done when the gallery or a manual check shows it.
 - Controls, views and Windows glue are stubs too: an empty control template, an empty view, or a method that throws `NotImplementedException("TODO(ID)")`. The card sits above the stub (in the XAML file for templates and views; for controls, in both the `.cs` and the `.xaml` file).
 
-Totals: 1 card. Sizes: M: 1. Suggested models: haiku: 1.
+Totals: 0 cards.
 
 | ID | File | Size | Suggested model | Status | Test |
 |---|---|---|---|---|---|
-| SLEEP-01a | src/Deskair.App/Ui/Views/History/SleepCard.xaml | M | haiku | todo | manual / gallery |

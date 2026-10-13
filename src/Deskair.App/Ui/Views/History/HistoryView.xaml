@@ -6,13 +6,28 @@
              xmlns:history="clr-namespace:Deskair.App.Ui.Views.History"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
              xmlns:states="clr-namespace:Deskair.App.Ui.Views.States">
-  <!-- DataContext: HistoryViewModel. The toolbar on top; below it the main chart and the typical day on the left and the stats card (360 px) on the right.
+  <!-- DataContext: HistoryViewModel. The toolbar on top; below it the main chart and the typical day (or the sleep card, for Day plus Night) on the left and the stats card (360 px) on the right.
        While nothing is stored for the room, "collecting your first data" takes the place of all of it. -->
   <UserControl.Resources>
     <Style x:Key="History.Content" TargetType="{x:Type Grid}">
       <Style.Triggers>
         <DataTrigger Binding="{Binding IsEmpty}" Value="True">
           <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="History.TypicalDay" TargetType="{x:Type history:TypicalDayCard}">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding DataContext.ShowSleep, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="True">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="History.Sleep" TargetType="{x:Type history:SleepCard}">
+      <Setter Property="Visibility" Value="Collapsed" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding DataContext.ShowSleep, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="True">
+          <Setter Property="Visibility" Value="Visible" />
         </DataTrigger>
       </Style.Triggers>
     </Style>
@@ -79,7 +94,8 @@
             </Grid>
           </controls:Card>
 
-          <history:TypicalDayCard Grid.Row="2" DataContext="{Binding TypicalDay}" />
+          <history:TypicalDayCard Grid.Row="2" DataContext="{Binding TypicalDay}" Style="{StaticResource History.TypicalDay}" />
+          <history:SleepCard Grid.Row="2" DataContext="{Binding Sleep}" Style="{StaticResource History.Sleep}" />
         </Grid>
 
         <history:StatsCard Grid.Column="2" VerticalAlignment="Top" DataContext="{Binding Stats}" />

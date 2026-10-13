@@ -1,6 +1,6 @@
 # Localization
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-13*
 
 ## Languages
 
@@ -149,6 +149,17 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Tray_SnoozeTomorrow / Tray_ResumeUntil | Snooze until tomorrow / Resume alerts (snoozed until {time}) | Відкласти до завтра / Відновити сповіщення (відкладено до {time}) |
 | Flyout_Snooze / Flyout_SnoozedUntil / Flyout_Resume | Snooze / Snoozed until {time} / Resume alerts | Відкласти / Відкладено до {time} / Відновити сповіщення |
 | Action_Retrying / Action_RetryFailed | Trying… / Still can't reach it. Try again | Пробуємо… / Досі не вдається підключитися. Спробувати ще раз |
+| Settings_Sleep / Settings_Sleep_Start / Settings_Sleep_End | Sleep / Night starts / Night ends | Сон / Ніч починається / Ніч закінчується |
+| Settings_Sleep_Hint | The Night filter in History and the sleep card use these hours | Ці години використовують фільтр «Ніч» в Історії та картка сну |
+| Settings_Sleep_SameTime | The night must start and end at different times. | Ніч має починатися й закінчуватися в різний час. |
+| Sleep_Title | Sleep · {from} – {to} | Сон · {from} – {to} |
+| Sleep_Verdict_Good / Fair / Poor | Good night / Fair night / Poor night | Гарна ніч / Посередня ніч / Погана ніч |
+| Sleep_TimeAbove / Sleep_HoursOf | Time above {limit} {unit} / {hours} h of {total} h | Час вище {limit} {unit} / {hours} год із {total} год |
+| Sleep_Peak / Sleep_Deep | Peak at {time} / Deep sleep avg (02–05 h) | Пік о {time} / Середнє в глибокому сні (02–05) |
+| Sleep_Tip_Ajar | Leaving the bedroom door ajar or a window tilted usually shortens the time above the limit. | Прочинені двері спальні або відхилене вікно зазвичай скорочують час вище межі. |
+| Sleep_Tip_Fresh / Sleep_Tip_Other | Air stayed fresh through the night. / Overnight values for the night hours. | Повітря залишалося свіжим усю ніч. / Нічні значення за години ночі. |
+| Sleep_Partial | Only {recorded} of {total} hours were recorded: Deskair was not connected for the rest. | Записано лише {recorded} із {total} год: Deskair не був підключений решту часу. |
+| Sleep_Empty | No readings from last night. | Немає даних за минулу ніч. |
 | Tray_AlertsPausedByWindows | Alerts paused by Windows | Сповіщення призупинено Windows |
 | Settings_Alerts_PausedByWindows | Alerts paused by Windows: Do Not Disturb is on, so Windows holds the notifications. | Сповіщення призупинено Windows: увімкнено «Не турбувати», тому Windows утримує сповіщення. |
 | Settings_QuietHours_From / To / Invalid | From / Until / Use hours and minutes, like 22:00. | З / До / Вкажіть години й хвилини, наприклад 22:00. |

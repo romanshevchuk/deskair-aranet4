@@ -5,6 +5,7 @@ using Deskair.App.Localization;
 using Deskair.App.ViewModels.ChartModels;
 using Deskair.App.ViewModels.Data;
 using Deskair.Domain.Analytics.Aggregation;
+using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
@@ -20,6 +21,7 @@ public sealed partial class HistoryViewModel : ObservableObject
     private readonly HistoryToolbarViewModel toolbar;
     private readonly StatsViewModel stats;
     private readonly TypicalDayViewModel typicalDay;
+    private readonly SleepViewModel sleep;
     private readonly ReadingQueryService query;
     private readonly DeviceRegistry devices;
     private readonly LocalCalendar calendar;
@@ -47,10 +49,15 @@ public sealed partial class HistoryViewModel : ObservableObject
     [ObservableProperty]
     private bool isEmpty;
 
+    /// <summary>The sleep card (last night) takes the place of the typical day while the range is Day and the hours filter is Night.</summary>
+    [ObservableProperty]
+    private bool showSleep;
+
     public HistoryViewModel(
         HistoryToolbarViewModel toolbar,
         StatsViewModel stats,
         TypicalDayViewModel typicalDay,
+        SleepViewModel sleep,
         ExportViewModel export,
         ReadingQueryService query,
         DeviceRegistry devices,
@@ -63,6 +70,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         this.toolbar = toolbar;
         this.stats = stats;
         this.typicalDay = typicalDay;
+        this.sleep = sleep;
         Export = export;
         this.query = query;
         this.devices = devices;
@@ -78,6 +86,8 @@ public sealed partial class HistoryViewModel : ObservableObject
     public StatsViewModel Stats => stats;
 
     public TypicalDayViewModel TypicalDay => typicalDay;
+
+    public SleepViewModel Sleep => sleep;
 
     /// <summary>Saves all readings of the selected room to a file. The toolbar shows its button.</summary>
     public ExportViewModel Export { get; }
@@ -179,6 +189,8 @@ public sealed partial class HistoryViewModel : ObservableObject
             token);
         var zoneShare = metric == Metric.Co2 ? await query.GetZoneShareAsync(device, start, end, toolbar.Hours, token) : null;
         var recent = range == Period.Day ? await query.GetRecentAsync(device, end - start, token) : null;
+        var wantSleep = range == Period.Day && toolbar.Hours == HoursFilterMode.Night;
+        var lastNight = wantSleep ? await query.GetLastNightAsync(device, metric, token) : null;
 
         token.ThrowIfCancellationRequested();
 
@@ -193,6 +205,9 @@ public sealed partial class HistoryViewModel : ObservableObject
             TypicalDay = hours
         });
         typicalDay.Update(hours);
+
+        ShowSleep = wantSleep;
+        sleep.Update(lastNight);
 
         if (recent is null)
         {
@@ -239,6 +254,8 @@ public sealed partial class HistoryViewModel : ObservableObject
         Gaps = [];
         stats.Update([]);
         typicalDay.Update([]);
+        ShowSleep = false;
+        sleep.Update(null);
     }
 
     private List<ChartGap> Weekends(DateTimeOffset start, DateTimeOffset end)

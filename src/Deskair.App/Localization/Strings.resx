@@ -89,6 +89,19 @@
   <data name="Settings_Sleep_End" xml:space="preserve"><value>Night ends</value></data>
   <data name="Settings_Sleep_Hint" xml:space="preserve"><value>The Night filter in History and the sleep card use these hours</value></data>
   <data name="Settings_Sleep_SameTime" xml:space="preserve"><value>The night must start and end at different times.</value></data>
+  <data name="Sleep_Title" xml:space="preserve"><value>Sleep · {from} – {to}</value></data>
+  <data name="Sleep_Verdict_Good" xml:space="preserve"><value>Good night</value></data>
+  <data name="Sleep_Verdict_Fair" xml:space="preserve"><value>Fair night</value></data>
+  <data name="Sleep_Verdict_Poor" xml:space="preserve"><value>Poor night</value></data>
+  <data name="Sleep_TimeAbove" xml:space="preserve"><value>Time above {limit} {unit}</value></data>
+  <data name="Sleep_HoursOf" xml:space="preserve"><value>{hours} h of {total} h</value></data>
+  <data name="Sleep_Peak" xml:space="preserve"><value>Peak at {time}</value></data>
+  <data name="Sleep_Deep" xml:space="preserve"><value>Deep sleep avg (02–05 h)</value></data>
+  <data name="Sleep_Tip_Ajar" xml:space="preserve"><value>Leaving the bedroom door ajar or a window tilted usually shortens the time above the limit.</value></data>
+  <data name="Sleep_Tip_Fresh" xml:space="preserve"><value>Air stayed fresh through the night.</value></data>
+  <data name="Sleep_Tip_Other" xml:space="preserve"><value>Overnight values for the night hours.</value></data>
+  <data name="Sleep_Partial" xml:space="preserve"><value>Only {recorded} of {total} hours were recorded: Deskair was not connected for the rest.</value></data>
+  <data name="Sleep_Empty" xml:space="preserve"><value>No readings from last night.</value></data>
   <data name="Settings_Alerts_PausedByWindows" xml:space="preserve"><value>Alerts paused by Windows: Do Not Disturb is on, so Windows holds the notifications.</value></data>
   <data name="Settings_Startup_Windows" xml:space="preserve"><value>Start with Windows</value></data>
   <data name="Settings_Startup_WindowsHint" xml:space="preserve"><value>Deskair opens when you sign in</value></data>

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.ViewModels.History;
 using Deskair.Domain.Analytics.Aggregation;
+using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
@@ -25,6 +26,7 @@ public class HistoryViewModelTests
     private readonly HistoryToolbarViewModel toolbar = new();
     private readonly StatsViewModel stats;
     private readonly TypicalDayViewModel typicalDay = new();
+    private readonly SleepViewModel sleep;
     private readonly StrongReferenceMessenger messenger = new();
 
     public HistoryViewModelTests()
@@ -32,6 +34,7 @@ public class HistoryViewModelTests
         registry = new DeviceRegistry(deviceStore);
         var localizer = new FakeLocalizer();
         stats = new StatsViewModel(TestFormatter.Create(localizer), localizer, new LocalCalendar(TimeZoneInfo.Utc));
+        sleep = new SleepViewModel(localizer, TestFormatter.Create(localizer), new LocalCalendar(TimeZoneInfo.Utc));
     }
 
     private HistoryViewModel Create(IReadingStore? readingStore = null)
@@ -40,7 +43,7 @@ public class HistoryViewModelTests
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(readingStore ?? store, registry, clock, calendar);
 
-        return new HistoryViewModel(toolbar, stats, typicalDay, TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), NullLogger<HistoryViewModel>.Instance);
+        return new HistoryViewModel(toolbar, stats, typicalDay, sleep, TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), NullLogger<HistoryViewModel>.Instance);
     }
 
     private async Task SelectDeviceAsync()
@@ -397,6 +400,85 @@ public class HistoryViewModelTests
         Assert.Equal(1, requests);
     }
 
+
+    [Fact]
+    public async Task Day_with_the_night_filter_shows_the_sleep_card_for_last_night()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 11, 22), 700, hours: 9);
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+        toolbar.Hours = HoursFilterMode.Night;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.True(viewModel.ShowSleep);
+        Assert.True(sleep.HasData);
+        Assert.Equal("Sleep_Verdict_Good", sleep.VerdictText);
+        Assert.Equal("Sleep_Title(from=22:00, to=07:00)", sleep.Title);
+    }
+
+    [Fact]
+    public async Task A_night_without_readings_still_shows_the_card_and_says_so()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 10), 700, hours: 8);
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+        toolbar.Hours = HoursFilterMode.Night;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.True(viewModel.ShowSleep);
+        Assert.False(sleep.HasData);
+        Assert.Equal("Sleep_Empty", sleep.Tip);
+    }
+
+    [Theory]
+    [InlineData(Period.Day, HoursFilterMode.AllDay)]
+    [InlineData(Period.Week, HoursFilterMode.Night)]
+    [InlineData(Period.Month, HoursFilterMode.Night)]
+    public async Task The_sleep_card_is_only_for_the_day_with_the_night_filter(Period range, HoursFilterMode hours)
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 11, 22), 700, hours: 9);
+        var viewModel = Create();
+        toolbar.Range = range;
+        toolbar.Hours = hours;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.False(viewModel.ShowSleep);
+        Assert.False(sleep.HasData);
+    }
+
+    [Fact]
+    public async Task Leaving_the_night_filter_takes_the_card_away_again()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 11, 22), 700, hours: 9);
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+        toolbar.Hours = HoursFilterMode.Night;
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        toolbar.Hours = HoursFilterMode.AllDay;
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.False(viewModel.ShowSleep);
+    }
+
+    [Fact]
+    public async Task Without_a_selected_device_there_is_no_sleep_card()
+    {
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+        toolbar.Hours = HoursFilterMode.Night;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.False(viewModel.ShowSleep);
+    }
     [Fact]
     public async Task A_failing_load_is_logged_not_thrown()
     {
@@ -405,7 +487,7 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(new ThrowingReadingStore(), registry, clock, calendar);
-        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), logger);
+        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), logger);
 
         viewModel.Refresh();
 

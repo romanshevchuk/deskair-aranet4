@@ -1,6 +1,6 @@
 # Screens and states
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-13*
 
 ## Screens
 
@@ -33,7 +33,7 @@ Each condition combines with the three zones and both themes. Live has metric (4
 |---|---|
 | Metric | CO₂, Temperature, Humidity, Pressure |
 | Range | Day (last 24 h), Week (7 days), Month (30 days), Year (365 days) |
-| Hours | All day, Night (22:00 to 07:00). Day + Night shows last night with the sleep card |
+| Hours | All day, Night (the night hours from Settings → Sleep, 22:00 to 07:00 by default). Day + Night shows last night with the sleep card |
 | Group by | Month: by day or by week. Year: by week or by month |
 
 Chart type: hourly line for Day, floating bars otherwise.
@@ -57,6 +57,7 @@ Good, Elevated, High: ring in zone colour. Not connected: grey dashed ring with 
 | Temperature unit | °C | Live, History, flyout, toasts (stored data and exports stay in °C) |
 | Notify at Elevated / High | On / On | Toasts |
 | Quiet hours 22:00 to 07:00 | Off | Mutes toasts only |
+| Night starts / ends (Sleep) | 22:00 / 07:00 | The Night filter in History and the sleep card; typed as HH:mm, saved when valid; the start must differ from the end |
 | Devices | Rename, Add | Per-device data folder; the selected device is remembered |
 | Data folder | Documents\Deskair | Open folder; change (used after a restart, files are not copied; Q34) |
 | Import from phone app | n/a | Reads the phone's .xlsx export |
