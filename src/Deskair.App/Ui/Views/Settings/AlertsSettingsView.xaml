@@ -10,12 +10,12 @@
   </UserControl.Resources>
   <controls:SettingsCard Header="{loc:T Settings_Alerts}">
     <StackPanel>
+      <controls:Banner Margin="0,0,0,8"
+                       Message="{loc:T Settings_Alerts_PausedByWindows}"
+                       Visibility="{Binding IsPausedByWindows, Converter={StaticResource BoolToVisibility}}" />
       <controls:SettingsRow Header="{loc:T Settings_Alerts_Enabled}" Description="{loc:T Settings_Alerts_EnabledHint}">
         <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_Enabled}" IsChecked="{Binding AlertsEnabled, Mode=TwoWay}" />
       </controls:SettingsRow>
-      <controls:SettingsRow Header="{loc:T Settings_Alerts_PausedByWindows}"
-                            Description="{loc:T Settings_Alerts_PausedByWindowsHint}"
-                            Visibility="{Binding IsPausedByWindows, Converter={StaticResource BoolToVisibility}}" />
       <controls:SettingsRow Header="{loc:T Settings_Alerts_Elevated}">
         <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_Elevated}" IsChecked="{Binding NotifyAtElevated, Mode=TwoWay}" />
       </controls:SettingsRow>

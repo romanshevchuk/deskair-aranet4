@@ -148,6 +148,6 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Settings_TrayValue / Settings_TrayValue_Hint | Show CO₂ on tray icon / The icon shows the value (1.1k) instead of a ring | Показувати CO₂ на значку в треї / Значок показує значення (1.1k) замість кільця |
 | Tray_SnoozeTomorrow / Tray_ResumeUntil | Snooze until tomorrow / Resume alerts (snoozed until {time}) | Відкласти до завтра / Відновити сповіщення (відкладено до {time}) |
 | Flyout_Snooze / Flyout_SnoozedUntil / Flyout_Resume | Snooze / Snoozed until {time} / Resume alerts | Відкласти / Відкладено до {time} / Відновити сповіщення |
-| Tray_AlertsPausedByWindows / Settings_Alerts_PausedByWindows | Alerts paused by Windows | Сповіщення призупинено Windows |
-| Settings_Alerts_PausedByWindowsHint | Do Not Disturb is on, so Windows holds Deskair's notifications. | Увімкнено «Не турбувати», тому Windows утримує сповіщення Deskair. |
+| Tray_AlertsPausedByWindows | Alerts paused by Windows | Сповіщення призупинено Windows |
+| Settings_Alerts_PausedByWindows | Alerts paused by Windows: Do Not Disturb is on, so Windows holds the notifications. | Сповіщення призупинено Windows: увімкнено «Не турбувати», тому Windows утримує сповіщення. |
 | Settings_QuietHours_From / To / Invalid | From / Until / Use hours and minutes, like 22:00. | З / До / Вкажіть години й хвилини, наприклад 22:00. |
