@@ -31,6 +31,7 @@ public sealed partial class OnboardingViewModel : ObservableObject
     private CancellationTokenSource? scan;
     private CancellationTokenSource? running;
     private CancellationToken lifetime;
+    private bool active;
 
     [ObservableProperty]
     private int stepIndex;
@@ -66,6 +67,10 @@ public sealed partial class OnboardingViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(ShowSearching))]
     [NotifyPropertyChangedFor(nameof(ShowNoSensor))]
     private bool noSensorFound;
+
+    /// <summary>True while the sensor search is shown on top of Live because the user asked to add another sensor (not at first run). The view then offers Cancel.</summary>
+    [ObservableProperty]
+    private bool isOpen;
 
     [ObservableProperty]
     private bool isPairing;
@@ -104,6 +109,7 @@ public sealed partial class OnboardingViewModel : ObservableObject
     public void Start(CancellationToken cancellationToken)
     {
         lifetime = cancellationToken;
+        active = true;
         radio.StateChanged -= OnRadioTurnedOn;
         radio.StateChanged += OnRadioTurnedOn;
         cancellationToken.Register(() => radio.StateChanged -= OnRadioTurnedOn);
@@ -161,6 +167,20 @@ public sealed partial class OnboardingViewModel : ObservableObject
         Checklist = BuildChecklist();
     }
 
+    /// <summary>Settings → Devices → Add: shows the sensor search on top of Live and starts scanning.</summary>
+    public void OpenToAddSensor()
+    {
+        PairFailed = false;
+        IsOpen = true;
+        Start(lifetime);
+    }
+
+    [RelayCommand]
+    private void Cancel()
+    {
+        Close();
+    }
+
     [RelayCommand]
     private void Retry()
     {
@@ -177,7 +197,7 @@ public sealed partial class OnboardingViewModel : ObservableObject
         {
             var name = string.IsNullOrWhiteSpace(RoomName) ? localizer.Get("Onboarding_Room_DefaultName") : RoomName;
             await enrollment.EnrollAsync(sensor.Id, name, CancellationToken.None);
-            running?.Cancel();
+            Close();
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
@@ -197,10 +217,17 @@ public sealed partial class OnboardingViewModel : ObservableObject
     /// <summary>Bluetooth came on (for example just after the app started, before Windows had reported it): scan again.</summary>
     private void OnRadioTurnedOn(object? sender, EventArgs args)
     {
-        if (radio.IsOn && BluetoothOff && !lifetime.IsCancellationRequested)
+        if (active && radio.IsOn && BluetoothOff && !lifetime.IsCancellationRequested)
         {
             Start(lifetime);
         }
+    }
+
+    private void Close()
+    {
+        IsOpen = false;
+        active = false;
+        running?.Cancel();
     }
 
     private async Task RunAsync(CancellationToken cancellationToken)

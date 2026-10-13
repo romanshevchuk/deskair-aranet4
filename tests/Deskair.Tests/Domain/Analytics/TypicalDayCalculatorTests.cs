@@ -72,4 +72,20 @@ public class TypicalDayCalculatorTests
 
         Assert.Null(TypicalDayCalculator.WorstWindowStartHour(hours));
     }
+
+    [Fact]
+    public void The_worst_window_has_its_average()
+    {
+        var hours = Day((22, 1500), (23, 1400), (0, 1300), (12, 500));
+
+        var window = TypicalDayCalculator.WorstWindow(hours);
+
+        Assert.Equal(new HourWindow(22, 1400), window);
+    }
+
+    [Fact]
+    public void No_worst_window_means_no_average_either()
+    {
+        Assert.Null(TypicalDayCalculator.WorstWindow(Day((8, 900))));
+    }
 }

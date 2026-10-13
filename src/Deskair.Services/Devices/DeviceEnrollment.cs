@@ -55,4 +55,26 @@ public sealed class DeviceEnrollment
 
         return device;
     }
+
+    /// <summary>
+    /// Gives a known room another name (trimmed) and announces it with <see cref="DeviceRenamed"/>. Returns false, and changes nothing, for a blank name,
+    /// an unknown device or the name it already has.
+    /// </summary>
+    public async Task<bool> RenameAsync(DeviceId id, string roomName, CancellationToken cancellationToken)
+    {
+        var name = roomName.Trim();
+        var known = await registry.LoadAsync(cancellationToken);
+        var device = known.FirstOrDefault(candidate => candidate.Id == id);
+
+        if (name.Length == 0 || device is null || device.RoomName == name)
+        {
+            return false;
+        }
+
+        await store.SaveAsync(device with { RoomName = name }, cancellationToken);
+        await registry.LoadAsync(cancellationToken);
+        messenger.Send(new DeviceRenamed(id));
+
+        return true;
+    }
 }

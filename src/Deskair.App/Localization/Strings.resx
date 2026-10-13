@@ -81,6 +81,23 @@
   <data name="Settings_QuietHours_Hint" xml:space="preserve"><value>No notifications at night</value></data>
   <data name="Settings_Startup_Windows" xml:space="preserve"><value>Start with Windows</value></data>
   <data name="Settings_Startup_WindowsHint" xml:space="preserve"><value>Deskair opens when you sign in</value></data>
+  <data name="Settings_Devices_RoomName" xml:space="preserve"><value>Room name</value></data>
+  <data name="Settings_Devices_None" xml:space="preserve"><value>No sensors yet</value></data>
+  <data name="Settings_Devices_Add" xml:space="preserve"><value>Add a sensor</value></data>
+  <data name="Settings_Devices_AddHint" xml:space="preserve"><value>Look for another sensor nearby</value></data>
+  <data name="Action_Add" xml:space="preserve"><value>Add</value></data>
+  <data name="Action_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Unit_Ppm" xml:space="preserve"><value>ppm</value></data>
+  <data name="Chart_Partial" xml:space="preserve"><value>only {recorded} of {expected} h recorded</value></data>
+  <data name="Toolbar_Metric" xml:space="preserve"><value>Metric</value></data>
+  <data name="Toolbar_Hours" xml:space="preserve"><value>Hours</value></data>
+  <data name="Toolbar_GroupBy" xml:space="preserve"><value>Group by</value></data>
+  <data name="Toolbar_Range" xml:space="preserve"><value>Range</value></data>
+  <data name="Coverage_Chip" xml:space="preserve"><value>Based on {percent} % of expected readings</value></data>
+  <data name="Gallery_Section_CoverageChip" xml:space="preserve"><value>Coverage chip</value></data>
+  <data name="Gallery_Section_ZoneShareBar" xml:space="preserve"><value>Zone share bar</value></data>
+  <data name="Gallery_Section_InsightBox" xml:space="preserve"><value>Insight box</value></data>
+  <data name="Gallery_Sample_Insight" xml:space="preserve"><value>Worst hours: 14:00–16:00. Opening a window shortly before keeps you in the good zone.</value></data>
   <data name="Toast_Elevated_Title" xml:space="preserve"><value>CO₂ is elevated · {room}</value></data>
   <data name="Toast_Snooze" xml:space="preserve"><value>Snooze 1 h</value></data>
   <data name="Toast_Dismiss" xml:space="preserve"><value>Dismiss</value></data>
@@ -158,4 +175,49 @@
   <data name="Gallery_Section_SettingsCard" xml:space="preserve"><value>Settings card and rows</value></data>
   <data name="Gallery_Sample_RowDescription" xml:space="preserve"><value>A short explanation under the label</value></data>
   <data name="Nav_Main" xml:space="preserve"><value>Main navigation</value></data>
+  <data name="Stats_Change_Day" xml:space="preserve"><value>vs previous 24 hours</value></data>
+  <data name="Stats_Change_Week" xml:space="preserve"><value>vs previous week</value></data>
+  <data name="Stats_Change_Month" xml:space="preserve"><value>vs previous 30 days</value></data>
+  <data name="Stats_Change_Year" xml:space="preserve"><value>vs previous 12 months</value></data>
+  <data name="Stats_Change_None" xml:space="preserve"><value>no earlier data to compare</value></data>
+  <data name="Stats_BestPeriod" xml:space="preserve"><value>Best {period}</value></data>
+  <data name="Stats_WorstPeriod" xml:space="preserve"><value>Worst {period}</value></data>
+  <data name="Stats_LowestPeriod" xml:space="preserve"><value>Lowest {period}</value></data>
+  <data name="Stats_HighestPeriod" xml:space="preserve"><value>Highest {period}</value></data>
+  <data name="Stats_Period_Day" xml:space="preserve"><value>day</value></data>
+  <data name="Stats_Period_Week" xml:space="preserve"><value>week</value></data>
+  <data name="Stats_Period_Month" xml:space="preserve"><value>month</value></data>
+  <data name="Insight_WorstHours" xml:space="preserve"><value>Worst hours: {from}–{to} (avg {value}). Opening a window shortly before keeps you in the good zone.</value></data>
+  <data name="Insight_AllGood" xml:space="preserve"><value>On a typical day CO₂ stays in the good zone, even at its worst around {from}–{to} (avg {value}).</value></data>
+  <data name="Action_Import" xml:space="preserve"><value>Import</value></data>
+  <data name="Action_Export" xml:space="preserve"><value>Export</value></data>
+  <data name="Settings_Data_Folder" xml:space="preserve"><value>Data folder</value></data>
+  <data name="Settings_Data_OpenFolder" xml:space="preserve"><value>Open folder</value></data>
+  <data name="Settings_Data_ChangeFolder" xml:space="preserve"><value>Change</value></data>
+  <data name="Settings_Data_ChangeTitle" xml:space="preserve"><value>Choose the data folder</value></data>
+  <data name="Data_Folder_Restart" xml:space="preserve"><value>Deskair will use {folder} after you restart it. Your existing files are not moved: copy them there yourself to keep your history.</value></data>
+  <data name="Data_Folder_Failed" xml:space="preserve"><value>Could not use this folder. Choose another one.</value></data>
+  <data name="Settings_Data_Import" xml:space="preserve"><value>Import from the phone app</value></data>
+  <data name="Settings_Data_ImportHint" xml:space="preserve"><value>Fills gaps with the readings in the phone app’s export</value></data>
+  <data name="Settings_Data_ChooseFile" xml:space="preserve"><value>Choose file</value></data>
+  <data name="Settings_Data_Export" xml:space="preserve"><value>Export to CSV</value></data>
+  <data name="Settings_Data_ExportHint" xml:space="preserve"><value>All stored readings of the selected room</value></data>
+  <data name="Data_NoSensor" xml:space="preserve"><value>Add a sensor first.</value></data>
+  <data name="Dialog_AllFiles" xml:space="preserve"><value>All files</value></data>
+  <data name="Import_DialogTitle" xml:space="preserve"><value>Choose the phone app’s export</value></data>
+  <data name="Import_Preview_One" xml:space="preserve"><value>{count} reading, {first} to {last} · {new} new · {present} already present</value></data>
+  <data name="Import_Preview_Other" xml:space="preserve"><value>{count} readings, {first} to {last} · {new} new · {present} already present</value></data>
+  <data name="Import_Done_One" xml:space="preserve"><value>{count} new reading added.</value></data>
+  <data name="Import_Done_Other" xml:space="preserve"><value>{count} new readings added.</value></data>
+  <data name="Import_Empty" xml:space="preserve"><value>This file has no readings Deskair can use.</value></data>
+  <data name="Import_Failed" xml:space="preserve"><value>Could not read this file. Is it the phone app’s export?</value></data>
+  <data name="Import_Unavailable" xml:space="preserve"><value>Importing is not available for this sensor.</value></data>
+  <data name="Export_DialogTitle" xml:space="preserve"><value>Export readings</value></data>
+  <data name="Export_FileType" xml:space="preserve"><value>CSV file</value></data>
+  <data name="Export_Done" xml:space="preserve"><value>Saved {file}.</value></data>
+  <data name="Export_Failed" xml:space="preserve"><value>Could not save the file.</value></data>
+  <data name="History_Empty_Title" xml:space="preserve"><value>Collecting your first data</value></data>
+  <data name="History_Empty_Text" xml:space="preserve"><value>Deskair keeps every reading from your sensor, so History fills up as time goes by. To see the past days now, import the history from the phone app.</value></data>
+  <data name="History_Empty_Import" xml:space="preserve"><value>Import from the phone app</value></data>
+  <data name="Gallery_Section_EmptyStateCard" xml:space="preserve"><value>Empty state card</value></data>
 </root>

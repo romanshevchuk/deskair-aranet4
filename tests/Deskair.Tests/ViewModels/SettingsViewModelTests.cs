@@ -29,12 +29,10 @@ public sealed class SettingsViewModelTests : IDisposable
         settings = new SettingsService(settingsStore, new StrongReferenceMessenger());
         appearance = new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance);
         alerts = new AlertsSettingsViewModel(settings, NullLogger<AlertsSettingsViewModel>.Instance);
-        devices = new DevicesSettingsViewModel(new DeviceRegistry(deviceStore));
-        var readings = new FakeReadingStore();
-        data = new DataSettingsViewModel(
-            new ImportService(readings, TimeZoneInfo.Utc),
-            new ExportService(readings, new CsvExporter(), TimeZoneInfo.Utc),
-            folders);
+        var messenger = new StrongReferenceMessenger();
+        var registry = new DeviceRegistry(deviceStore);
+        devices = new DevicesSettingsViewModel(registry, new DeviceEnrollment(deviceStore, registry, settings, messenger), messenger, NullLogger<DevicesSettingsViewModel>.Instance);
+        data = DataSettingsViewModelTests.Create(folders);
         startup = new StartupSettingsViewModel(registration, NullLogger<StartupSettingsViewModel>.Instance);
         viewModel = new SettingsViewModel(appearance, alerts, devices, data, startup);
     }
@@ -66,7 +64,9 @@ public sealed class SettingsViewModelTests : IDisposable
     {
         settingsStore.Stored = AppSettings.Default with { Theme = ThemeChoice.Dark };
         await settings.LoadAsync(TestContext.Current.CancellationToken);
-        var failing = new DevicesSettingsViewModel(new DeviceRegistry(new ThrowingDeviceStore()));
+        var failingStore = new ThrowingDeviceStore();
+        var failingRegistry = new DeviceRegistry(failingStore);
+        var failing = new DevicesSettingsViewModel(failingRegistry, new DeviceEnrollment(failingStore, failingRegistry, settings, new StrongReferenceMessenger()), new StrongReferenceMessenger(), NullLogger<DevicesSettingsViewModel>.Instance);
         var model = new SettingsViewModel(appearance, alerts, failing, data, startup);
         registration.IsEnabled = true;
 

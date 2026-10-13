@@ -25,12 +25,15 @@
               <DataTrigger Binding="{Binding Connection.ShowFirstRunView}" Value="True">
                 <Setter Property="ContentTemplate" Value="{StaticResource Section.FirstRun}" />
               </DataTrigger>
+              <DataTrigger Binding="{Binding Onboarding.IsOpen}" Value="True">
+                <Setter Property="ContentTemplate" Value="{StaticResource Section.FirstRun}" />
+              </DataTrigger>
             </Style.Triggers>
           </Style>
         </ContentControl.Style>
       </ContentControl>
     </DataTemplate>
-    <DataTemplate x:Key="Section.History"><history:HistoryView /></DataTemplate>
+    <DataTemplate x:Key="Section.History"><history:HistoryView DataContext="{Binding History}" /></DataTemplate>
     <DataTemplate x:Key="Section.Settings"><settings:SettingsView DataContext="{Binding Settings}" /></DataTemplate>
 
     <Style x:Key="Shell.Content" TargetType="{x:Type ContentControl}">

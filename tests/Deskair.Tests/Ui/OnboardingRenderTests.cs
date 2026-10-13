@@ -31,7 +31,8 @@ public class OnboardingRenderTests
         Found,
         NoSensor,
         BluetoothOff,
-        PairFailed
+        PairFailed,
+        AddingSensor
     }
 
     private static string OutputFolder([CallerFilePath] string thisFile = "")
@@ -45,6 +46,7 @@ public class OnboardingRenderTests
     [InlineData(ThemeChoice.Light, "en-US", Step.NoSensor)]
     [InlineData(ThemeChoice.Light, "en-US", Step.BluetoothOff)]
     [InlineData(ThemeChoice.Light, "en-US", Step.PairFailed)]
+    [InlineData(ThemeChoice.Light, "en-US", Step.AddingSensor)]
     public void Render_the_first_run_screen(ThemeChoice theme, string culture, Step step)
     {
         Assert.SkipUnless(Environment.GetEnvironmentVariable("DESKAIR_RENDER") == "1", "Set DESKAIR_RENDER=1 to write the window images.");
@@ -75,14 +77,21 @@ public class OnboardingRenderTests
         var clock = new FakeClock(new DateTimeOffset(2026, 10, 12, 18, 40, 0, TimeSpan.Zero));
         var localizer = UiHost.Localizer;
         var deviceStore = new FakeDeviceStore();
+        var adding = step == Step.AddingSensor;
+        if (adding)
+        {
+            deviceStore.Devices.Add(new DeviceInfo(new DeviceId("aranet4", "AABBCCDDEEFF"), "Office", null, [], null));
+        }
+
         var registry = new DeviceRegistry(deviceStore);
         var settings = new SettingsService(new FakeSettingsStore(), messenger);
         var formatter = new MetricFormatter(localizer, settings);
 
         var footer = new FooterViewModel(registry, messenger, dispatcher, clock, localizer);
-        footer.Start(ConnectionState.FirstRun, null, CancellationToken.None);
+        footer.Start(adding ? ConnectionState.Normal : ConnectionState.FirstRun, null, CancellationToken.None);
         var connection = new ConnectionViewModel(messenger, dispatcher);
-        connection.Update(ConnectionState.FirstRun);
+        connection.Update(adding ? ConnectionState.Normal : ConnectionState.FirstRun);
+        registry.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
         var room = new RoomChipViewModel(registry, settings, messenger, dispatcher, formatter);
         room.Load();
 
@@ -109,12 +118,14 @@ public class OnboardingRenderTests
                 break;
             case Step.Found:
             case Step.PairFailed:
+            case Step.AddingSensor:
                 onboarding.Nearby =
                 [
                     new DiscoveredSensor(new DeviceId("aranet4", "C3DEC8FCC7C6"), "Aranet4 0A0B3", -52),
                     new DiscoveredSensor(new DeviceId("aranet4", "AABBCCDD7C41"), "Aranet4 7C41D", -78)
                 ];
                 onboarding.PairFailed = step == Step.PairFailed;
+                onboarding.IsOpen = step == Step.AddingSensor;
                 break;
             case Step.NoSensor:
                 onboarding.NoSensorFound = true;

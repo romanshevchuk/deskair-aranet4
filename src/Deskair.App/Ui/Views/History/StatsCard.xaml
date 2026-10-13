@@ -1,14 +1,95 @@
 <UserControl x:Class="Deskair.App.Ui.Views.History.StatsCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(HIST-06c) [M, haiku]
-       Spec: docs/design/components.md "Stats card"; docs/design/design-tokens.md "Spacing" (stats card 360 px wide)
-       Input : StatsViewModel.
-       Output: Average, change, coverage chip, highest and lowest, best and worst period, zone share, insight.
-       Rules : Uses KeyValueCell, CoverageChip, ZoneShareBar and InsightBox.
-       Edge  : No earlier data says so (behaviour-rules.md "Aggregation" rule 3).
-       Done  : The gallery shows full and sparse data. -->
-  <Grid>
-  </Grid>
+  <!-- DataContext: StatsViewModel. Average with its change against the period before, the coverage chip, highest and lowest reading, best and worst period, time in each zone (CO₂) and the insight.
+       A part without numbers is hidden. -->
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+  </UserControl.Resources>
+
+  <controls:Card Padding="{StaticResource Space.Chart.Card}">
+    <StackPanel>
+      <controls:KeyValueCell Label="{loc:T Stats_Average}" Value="{Binding AverageText}" />
+
+      <StackPanel Margin="{StaticResource Space.Stats.Change}"
+                  Orientation="Horizontal"
+                  Visibility="{Binding HasChange, Converter={StaticResource BoolToVisibility}}">
+        <controls:Pill VerticalAlignment="Center" Content="{Binding ChangeText}" Zone="{Binding ChangeZone}" />
+        <TextBlock Margin="{StaticResource Space.Inline}"
+                   VerticalAlignment="Center"
+                   Style="{StaticResource Text.Secondary}"
+                   Text="{Binding ChangeCaption}" />
+      </StackPanel>
+
+      <controls:CoverageChip Margin="{StaticResource Space.Stats.Block}"
+                             HorizontalAlignment="Left"
+                             Fraction="{Binding Coverage}">
+        <controls:CoverageChip.Style>
+          <Style BasedOn="{StaticResource {x:Type controls:CoverageChip}}" TargetType="{x:Type controls:CoverageChip}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding ShowCoverage}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </controls:CoverageChip.Style>
+      </controls:CoverageChip>
+
+      <Grid Margin="{StaticResource Space.Stats.Block}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <controls:KeyValueCell Grid.Column="0" Label="{loc:T Stats_Highest}" Value="{Binding HighestText}" />
+        <controls:KeyValueCell Grid.Column="1" Label="{loc:T Stats_Lowest}" Value="{Binding LowestText}" />
+      </Grid>
+
+      <Grid Margin="{StaticResource Space.Stats.Block}" Visibility="{Binding HasPeriods, Converter={StaticResource BoolToVisibility}}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+          <controls:KeyValueCell Label="{Binding BestLabel}" Value="{Binding BestText}" />
+          <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding BestWhen}" />
+        </StackPanel>
+        <StackPanel Grid.Column="1">
+          <controls:KeyValueCell Label="{Binding WorstLabel}" Value="{Binding WorstText}" />
+          <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding WorstWhen}" />
+        </StackPanel>
+      </Grid>
+
+      <StackPanel Margin="{StaticResource Space.Stats.Block}" Visibility="{Binding HasZoneShare, Converter={StaticResource BoolToVisibility}}">
+        <TextBlock Margin="{StaticResource Space.SectionLabel}"
+                   FontWeight="{DynamicResource Font.Weight.SemiBold}"
+                   Style="{StaticResource Text.Body}"
+                   Text="{loc:T Stats_ZoneShare}" />
+        <controls:ZoneShareBar Elevated="{Binding ZoneElevated}" Good="{Binding ZoneGood}" High="{Binding ZoneHigh}" />
+        <Grid Margin="{StaticResource Space.Chart.Caption}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0" Margin="{StaticResource Space.Stats.Legend}" Orientation="Horizontal">
+            <TextBlock FontWeight="{DynamicResource Font.Weight.SemiBold}" Style="{StaticResource Text.Caption}" Text="{Binding ZoneGoodText}" />
+            <TextBlock Margin="{StaticResource Space.Inline.Tight}" Style="{StaticResource Text.Caption}" Text="{loc:T Zone_Good}" />
+          </StackPanel>
+          <StackPanel Grid.Column="1" Margin="{StaticResource Space.Stats.Legend}" Orientation="Horizontal">
+            <TextBlock FontWeight="{DynamicResource Font.Weight.SemiBold}" Style="{StaticResource Text.Caption}" Text="{Binding ZoneElevatedText}" />
+            <TextBlock Margin="{StaticResource Space.Inline.Tight}" Style="{StaticResource Text.Caption}" Text="{loc:T Zone_Elevated}" />
+          </StackPanel>
+          <StackPanel Grid.Column="2" Orientation="Horizontal">
+            <TextBlock FontWeight="{DynamicResource Font.Weight.SemiBold}" Style="{StaticResource Text.Caption}" Text="{Binding ZoneHighText}" />
+            <TextBlock Margin="{StaticResource Space.Inline.Tight}" Style="{StaticResource Text.Caption}" Text="{loc:T Zone_High}" />
+          </StackPanel>
+        </Grid>
+      </StackPanel>
+
+      <controls:InsightBox Margin="{StaticResource Space.Stats.Block}" Content="{Binding InsightText}" />
+    </StackPanel>
+  </controls:Card>
 </UserControl>

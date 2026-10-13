@@ -1,14 +1,108 @@
 <UserControl x:Class="Deskair.App.Ui.Views.History.HistoryToolbar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(HIST-01c) [M, haiku]
-       Spec: docs/design/screens-and-states.md "History controls"
-       Input : HistoryToolbarViewModel.
-       Output: Segmented controls for metric, hours filter, group by and range, plus the export button; 40 px high.
-       Rules : Group by shows only the options allowed for the range; it must still fit in Ukrainian.
-       Edge  : Day range hides group by.
-       Done  : The gallery shows the toolbar in English and Ukrainian. -->
-  <Grid>
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:analytics="clr-namespace:Deskair.Domain.Analytics.HoursFilter;assembly=Deskair.Domain"
+             xmlns:metrics="clr-namespace:Deskair.Domain.Metrics;assembly=Deskair.Domain"
+             xmlns:time="clr-namespace:Deskair.Domain.Time;assembly=Deskair.Domain">
+  <!-- DataContext: HistoryToolbarViewModel. Metric on the left; hours, group by, range and Export on the right. Group by shows only the choices the range allows (none for Day and Week).
+       Export saves every stored reading of the room as CSV (ExportCommand comes from the screen). -->
+  <UserControl.Resources>
+    <Style x:Key="Toolbar.GroupBy" TargetType="{x:Type controls:SegmentedControl}" BasedOn="{StaticResource {x:Type controls:SegmentedControl}}">
+      <Setter Property="Visibility" Value="Collapsed" />
+      <Setter Property="Margin" Value="{StaticResource Space.Inline}" />
+      <Setter Property="SelectedValuePath" Value="Tag" />
+    </Style>
+  </UserControl.Resources>
+
+  <Grid Height="{StaticResource Size.History.Toolbar.Height}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
+
+    <controls:SegmentedControl Grid.Column="0"
+                               VerticalAlignment="Center"
+                               AutomationProperties.Name="{loc:T Toolbar_Metric}"
+                               SelectedValue="{Binding Metric, Mode=TwoWay}"
+                               SelectedValuePath="Tag">
+      <ListBoxItem Content="{loc:T Metric_Co2}" Tag="{x:Static metrics:Metric.Co2}" />
+      <ListBoxItem Content="{loc:T Metric_Temperature}" Tag="{x:Static metrics:Metric.Temperature}" />
+      <ListBoxItem Content="{loc:T Metric_Humidity}" Tag="{x:Static metrics:Metric.Humidity}" />
+      <ListBoxItem Content="{loc:T Metric_Pressure}" Tag="{x:Static metrics:Metric.Pressure}" />
+    </controls:SegmentedControl>
+
+    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+      <controls:SegmentedControl AutomationProperties.Name="{loc:T Toolbar_Hours}"
+                                 SelectedValue="{Binding Hours, Mode=TwoWay}"
+                                 SelectedValuePath="Tag">
+        <ListBoxItem Content="{loc:T Hours_AllDay}" Tag="{x:Static analytics:HoursFilterMode.AllDay}" />
+        <ListBoxItem Content="{loc:T Hours_Night}" Tag="{x:Static analytics:HoursFilterMode.Night}" />
+      </controls:SegmentedControl>
+
+      <!-- Month: by day or by week. -->
+      <controls:SegmentedControl AutomationProperties.Name="{loc:T Toolbar_GroupBy}"
+                                 SelectedValue="{Binding Grouping, Mode=TwoWay}">
+        <controls:SegmentedControl.Style>
+          <Style BasedOn="{StaticResource Toolbar.GroupBy}" TargetType="{x:Type controls:SegmentedControl}">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Range}" Value="{x:Static time:Period.Month}">
+                <Setter Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </controls:SegmentedControl.Style>
+        <ListBoxItem Content="{loc:T Group_ByDay}" Tag="{x:Static time:Period.Day}" />
+        <ListBoxItem Content="{loc:T Group_ByWeek}" Tag="{x:Static time:Period.Week}" />
+      </controls:SegmentedControl>
+
+      <!-- Year: by week or by month. -->
+      <controls:SegmentedControl AutomationProperties.Name="{loc:T Toolbar_GroupBy}"
+                                 SelectedValue="{Binding Grouping, Mode=TwoWay}">
+        <controls:SegmentedControl.Style>
+          <Style BasedOn="{StaticResource Toolbar.GroupBy}" TargetType="{x:Type controls:SegmentedControl}">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Range}" Value="{x:Static time:Period.Year}">
+                <Setter Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </controls:SegmentedControl.Style>
+        <ListBoxItem Content="{loc:T Group_ByWeek}" Tag="{x:Static time:Period.Week}" />
+        <ListBoxItem Content="{loc:T Group_ByMonth}" Tag="{x:Static time:Period.Month}" />
+      </controls:SegmentedControl>
+
+      <controls:SegmentedControl Margin="{StaticResource Space.Inline}"
+                                 AutomationProperties.Name="{loc:T Toolbar_Range}"
+                                 SelectedValue="{Binding Range, Mode=TwoWay}"
+                                 SelectedValuePath="Tag">
+        <ListBoxItem Content="{loc:T Range_Day}" Tag="{x:Static time:Period.Day}" />
+        <ListBoxItem Content="{loc:T Range_Week}" Tag="{x:Static time:Period.Week}" />
+        <ListBoxItem Content="{loc:T Range_Month}" Tag="{x:Static time:Period.Month}" />
+        <ListBoxItem Content="{loc:T Range_Year}" Tag="{x:Static time:Period.Year}" />
+      </controls:SegmentedControl>
+
+      <TextBlock MaxWidth="{StaticResource Size.History.Export.StatusWidth}"
+                 Margin="{StaticResource Space.Inline.Wide}"
+                 VerticalAlignment="Center"
+                 Text="{Binding ExportStatus, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                 TextTrimming="CharacterEllipsis">
+        <TextBlock.Style>
+          <Style BasedOn="{StaticResource Text.Secondary}" TargetType="{x:Type TextBlock}">
+            <Style.Triggers>
+              <Trigger Property="Text" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </TextBlock.Style>
+      </TextBlock>
+
+      <controls:SecondaryButton Margin="{StaticResource Space.Inline}"
+                                Command="{Binding ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                Content="{loc:T Action_Export}" />
+    </StackPanel>
   </Grid>
 </UserControl>

@@ -9,10 +9,11 @@ public sealed class FakeSensorProvider : ISensorProvider
 {
     private readonly FakeSensor sensor;
 
-    public FakeSensorProvider(string id, FakeSensor sensor)
+    public FakeSensorProvider(string id, FakeSensor sensor, params IReadingImporter[] importers)
     {
         Id = id;
         this.sensor = sensor;
+        Importers = importers;
     }
 
     public List<DeviceId> Created { get; } = [];
@@ -23,7 +24,7 @@ public sealed class FakeSensorProvider : ISensorProvider
 
     public IReadOnlyList<string> OnboardingStepKeys { get; } = [];
 
-    public IReadOnlyList<IReadingImporter> Importers { get; } = [];
+    public IReadOnlyList<IReadingImporter> Importers { get; }
 
     public async IAsyncEnumerable<DiscoveredSensor> ScanAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {

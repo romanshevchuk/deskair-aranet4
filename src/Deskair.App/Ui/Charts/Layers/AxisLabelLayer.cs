@@ -11,6 +11,7 @@ namespace Deskair.App.Ui.Charts.Layers;
 public sealed class AxisLabelLayer : IChartLayer
 {
     private static readonly int[] stepMinutes = [5, 10, 15, 30, 60, 120, 180, 240, 360, 720, 1440];
+    private static readonly int[] dayStepCounts = [1, 2, 7, 14, 30, 61, 122];
 
     private const double LabelGap = 8;
     private const double MinimumLabelSpacing = 64;
@@ -29,13 +30,16 @@ public sealed class AxisLabelLayer : IChartLayer
     /// <summary>The label at the right end of the time axis ("Now"). Null shows none.</summary>
     public string? NowLabel { get; set; }
 
+    /// <summary>Label the time axis with dates ("12 Oct") at local midnights, for charts that span days; otherwise with clock times.</summary>
+    public bool DateLabels { get; set; }
+
     public void Draw(DrawingContext context, ChartArea area)
     {
         var culture = Culture ?? CultureInfo.CurrentUICulture;
         var brush = area.Brush("Text.Tertiary.Brush");
 
         DrawYLabels(context, area, brush, culture);
-        DrawTimeLabels(context, area, brush);
+        DrawTimeLabels(context, area, brush, culture);
     }
 
     private void DrawYLabels(DrawingContext context, ChartArea area, Brush brush, CultureInfo culture)
@@ -58,7 +62,7 @@ public sealed class AxisLabelLayer : IChartLayer
         }
     }
 
-    private void DrawTimeLabels(DrawingContext context, ChartArea area, Brush brush)
+    private void DrawTimeLabels(DrawingContext context, ChartArea area, Brush brush, CultureInfo culture)
     {
         var drawn = new List<Rect>();
         var top = area.Plot.Bottom + LabelGap;
@@ -74,7 +78,7 @@ public sealed class AxisLabelLayer : IChartLayer
 
         foreach (var time in TimeTicks(area))
         {
-            var text = area.Text(time.ToString("HH:mm", CultureInfo.InvariantCulture), brush);
+            var text = area.Text(DateLabels ? time.ToString("d MMM", culture) : time.ToString("HH:mm", CultureInfo.InvariantCulture), brush);
             var bounds = new Rect(area.X(time) - (text.Width / 2), top, text.Width, text.Height);
             var padded = new Rect(bounds.X - (LabelGap / 2), bounds.Y, bounds.Width + LabelGap, bounds.Height);
 
@@ -88,8 +92,39 @@ public sealed class AxisLabelLayer : IChartLayer
         }
     }
 
-    /// <summary>Round local times (on the hour, half hour and so on) inside the visible range, with a step that leaves room for the labels.</summary>
+    /// <summary>Round local times (clock times, or local midnights for date labels) inside the visible range, with a step that leaves room for the labels.</summary>
     public IEnumerable<DateTimeOffset> TimeTicks(ChartArea area)
+        => DateLabels ? DayTicks(area) : ClockTicks(area);
+
+    private IEnumerable<DateTimeOffset> DayTicks(ChartArea area)
+    {
+        var start = new DateTimeOffset((long)area.XMin, TimeSpan.Zero);
+        var end = new DateTimeOffset((long)area.XMax, TimeSpan.Zero);
+        var maxLabels = Math.Max(1, (int)(area.Plot.Width / (MinimumLabelSpacing + 12)));
+        var days = Math.Max(1, (end - start).TotalDays);
+        var step = dayStepCounts.FirstOrDefault(count => days / count <= maxLabels);
+        var stepDays = step == 0 ? dayStepCounts[^1] : step;
+        var next = TimeZoneInfo.ConvertTime(start, TimeZone).Date;
+
+        if (next < TimeZoneInfo.ConvertTime(start, TimeZone).DateTime)
+        {
+            next = next.AddDays(1);
+        }
+
+        for (; ; next = next.AddDays(stepDays))
+        {
+            var time = new DateTimeOffset(next, TimeZone.GetUtcOffset(next));
+
+            if (time > end)
+            {
+                yield break;
+            }
+
+            yield return time;
+        }
+    }
+
+    private IEnumerable<DateTimeOffset> ClockTicks(ChartArea area)
     {
         var start = new DateTimeOffset((long)area.XMin, TimeSpan.Zero);
         var end = new DateTimeOffset((long)area.XMax, TimeSpan.Zero);

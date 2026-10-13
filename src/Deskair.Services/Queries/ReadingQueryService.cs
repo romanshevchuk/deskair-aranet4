@@ -4,6 +4,7 @@ using Deskair.Domain.Analytics.TypicalDay;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
+using Deskair.Domain.Zones;
 using Deskair.Services.Devices;
 using Deskair.Services.Storage;
 
@@ -32,6 +33,12 @@ public sealed class ReadingQueryService
     private static readonly TimeSpan shortTypicalDayRange = TimeSpan.FromDays(7);
     private static readonly TimeSpan yearTypicalDayRange = TimeSpan.FromDays(90);
 
+    /// <summary>Whether anything at all is stored for the device (the History screen shows a "collecting data" state until then).</summary>
+    public async Task<bool> HasReadingsAsync(DeviceId device, CancellationToken cancellationToken)
+    {
+        return await readings.GetLastReadingTimeAsync(device, cancellationToken) is not null;
+    }
+
     public async Task<IReadOnlyList<Reading>> GetRecentAsync(
         DeviceId device,
         TimeSpan window,
@@ -57,6 +64,19 @@ public sealed class ReadingQueryService
         var interval = devices.IntervalFor(device, end);
 
         return BucketAggregator.Group(filtered, metric, start, end, grouping, calendar, interval);
+    }
+
+    /// <summary>How the CO₂ readings in the range spread over the zones, after the hours filter. Null when there are none.</summary>
+    public async Task<ZoneShare?> GetZoneShareAsync(
+        DeviceId device,
+        DateTimeOffset start,
+        DateTimeOffset end,
+        HoursFilterMode filter,
+        CancellationToken cancellationToken)
+    {
+        var inRange = await readings.ReadRangeAsync(device, start, end, cancellationToken);
+
+        return ZoneShareCalculator.Calculate(HoursFilterRule.Apply(inRange, filter, calendar));
     }
 
     public async Task<IReadOnlyList<HourOfDayAverage>> GetTypicalDayAsync(

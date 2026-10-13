@@ -19,7 +19,10 @@ public static class TypicalDayCalculator
             .ToList();
     }
 
-    public static int? WorstWindowStartHour(IReadOnlyList<HourOfDayAverage> hours)
+    public static int? WorstWindowStartHour(IReadOnlyList<HourOfDayAverage> hours) => WorstWindow(hours)?.StartHour;
+
+    /// <summary>The three hours in a row with the highest mean (the earliest on a tie), or null when no three hours in a row all have data.</summary>
+    public static HourWindow? WorstWindow(IReadOnlyList<HourOfDayAverage> hours)
     {
         var averages = new double?[24];
 
@@ -28,7 +31,7 @@ public static class TypicalDayCalculator
             averages[hour.Hour] = hour.Average;
         }
 
-        int? worstStart = null;
+        HourWindow? worst = null;
         var worstMean = double.MinValue;
 
         for (var start = 0; start < 24; start++)
@@ -47,10 +50,10 @@ public static class TypicalDayCalculator
             if (mean > worstMean)
             {
                 worstMean = mean;
-                worstStart = start;
+                worst = new HourWindow(start, mean);
             }
         }
 
-        return worstStart;
+        return worst;
     }
 }

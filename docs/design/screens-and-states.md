@@ -58,7 +58,7 @@ Good, Elevated, High: ring in zone colour. Not connected: grey dashed ring with 
 | Notify at Elevated / High | On / On | Toasts |
 | Quiet hours 22:00 to 07:00 | Off | Mutes toasts only |
 | Devices | Rename, Add | Per-device data folder; the selected device is remembered |
-| Data folder | Documents\Deskair | Open folder; change location |
+| Data folder | Documents\Deskair | Open folder; change (used after a restart, files are not copied; Q34) |
 | Import from phone app | n/a | Reads the phone's .xlsx export |
 | Export CSV | n/a | Writes readings for a chosen range |
 | Start with Windows / Keep in tray | On / On | |

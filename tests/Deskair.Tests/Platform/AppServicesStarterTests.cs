@@ -68,12 +68,11 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
             NullLogger<SensorSession>.Instance);
         connection = new ConnectionViewModel(messenger, dispatcher);
         onboarding = new OnboardingViewModel([provider], new DeviceEnrollment(deviceStore, registry, settings, messenger), radio, localizer, clock, new ListLogger<OnboardingViewModel>());
-        var readingsForData = new FakeReadingStore();
         settingsScreen = new SettingsViewModel(
             new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance),
             new AlertsSettingsViewModel(settings, NullLogger<AlertsSettingsViewModel>.Instance),
-            new DevicesSettingsViewModel(registry),
-            new DataSettingsViewModel(new ImportService(readingsForData, TimeZoneInfo.Utc), new ExportService(readingsForData, new CsvExporter(), TimeZoneInfo.Utc), new TempKnownFolders()),
+            new DevicesSettingsViewModel(registry, new DeviceEnrollment(deviceStore, registry, settings, messenger), messenger, NullLogger<DevicesSettingsViewModel>.Instance),
+            Deskair.Tests.ViewModels.DataSettingsViewModelTests.Create(new TempKnownFolders()),
             new StartupSettingsViewModel(new FakeStartupRegistration(), NullLogger<StartupSettingsViewModel>.Instance));
         footer = new FooterViewModel(registry, messenger, dispatcher, clock, localizer);
         room = new RoomChipViewModel(registry, settings, messenger, dispatcher, formatter);

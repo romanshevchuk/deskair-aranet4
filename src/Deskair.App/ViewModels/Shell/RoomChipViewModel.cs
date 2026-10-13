@@ -59,6 +59,7 @@ public sealed partial class RoomChipViewModel : ObservableObject
         messenger.UnregisterAll(this);
         messenger.Register<RoomChipViewModel, ReadingReceived>(this, static (self, message) => self.OnReading(message));
         messenger.Register<RoomChipViewModel, DeviceSelected>(this, static (self, message) => self.OnDeviceSelected(message.Device));
+        messenger.Register<RoomChipViewModel, DeviceRenamed>(this, static (self, message) => self.OnRenamed(message.Device));
         cancellationToken.Register(() => messenger.UnregisterAll(this));
     }
 
@@ -77,6 +78,16 @@ public sealed partial class RoomChipViewModel : ObservableObject
 
         await settings.UpdateAsync(current => current with { SelectedDevice = room.Device }, CancellationToken.None);
         messenger.Send(new DeviceSelected(room.Device));
+    }
+
+    /// <summary>A renamed room shows its new name; the values the list already shows stay.</summary>
+    private void OnRenamed(DeviceId device)
+    {
+        dispatcher.Post(() =>
+        {
+            Rooms = Rooms.Select(room => room.Device == device ? room with { Name = devices.Info(device)?.RoomName ?? room.Name } : room).ToList();
+            SelectedRoom = devices.Selected is { } selected ? Rooms.FirstOrDefault(room => room.Device == selected) : null;
+        });
     }
 
     /// <summary>A room that is new to the list (just paired) is added; a known room keeps the values the list already shows.</summary>

@@ -52,6 +52,12 @@
         </controls:SettingsRow>
       </controls:SettingsCard>
 
+      <controls:SecondaryButton Margin="{StaticResource Space.Onboarding.Message}"
+                                HorizontalAlignment="Right"
+                                Command="{Binding CancelCommand}"
+                                Content="{loc:T Action_Cancel}"
+                                Visibility="{Binding IsOpen, Converter={StaticResource BoolToVisibility}}" />
+
       <TextBlock Margin="{StaticResource Space.Onboarding.Message}"
                  Foreground="{DynamicResource Zone.High.PillText.Brush}"
                  Style="{StaticResource Text.Secondary}"

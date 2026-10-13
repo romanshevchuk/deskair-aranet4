@@ -76,6 +76,7 @@ public sealed partial class FooterViewModel : ObservableObject
         messenger.Register<FooterViewModel, ReadingReceived>(this, static (self, message) => self.OnReading(message));
         messenger.Register<FooterViewModel, SensorStatusUpdated>(this, static (self, message) => self.OnStatus(message));
         messenger.Register<FooterViewModel, DeviceSelected>(this, static (self, _) => self.OnDeviceSelected());
+        messenger.Register<FooterViewModel, DeviceRenamed>(this, static (self, _) => self.OnRenamed());
         messenger.Register<FooterViewModel, SyncStarted>(this, static (self, _) => self.ShowSync(null));
         messenger.Register<FooterViewModel, SyncProgressed>(this, static (self, message) => self.ShowSync(message.Progress));
         messenger.Register<FooterViewModel, SyncCompleted>(this, static (self, _) => self.ShowSync(null, hide: true));
@@ -196,6 +197,11 @@ public sealed partial class FooterViewModel : ObservableObject
             BatteryText = message.Status.BatteryPercent is { } percent ? (percent / 100.0).ToString("P0", localizer.Culture) : null;
             Refresh();
         });
+    }
+
+    private void OnRenamed()
+    {
+        dispatcher.Post(Refresh);
     }
 
     private void OnDeviceSelected()

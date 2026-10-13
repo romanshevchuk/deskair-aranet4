@@ -79,6 +79,51 @@ public class DeviceEnrollmentTests
         Assert.Equal(sensor, registry.Selected);
         Assert.Single(selections);
     }
+    [Fact]
+    public async Task Renaming_saves_the_trimmed_name_keeps_the_rest_and_announces_it()
+    {
+        var history = new IntervalChange(DateTimeOffset.UnixEpoch, TimeSpan.FromMinutes(5));
+        store.Devices.Add(new DeviceInfo(sensor, "Office", "type", [history], DateTimeOffset.UnixEpoch));
+        var renamed = new List<DeviceRenamed>();
+        messenger.Register<DeviceRenamed>(this, (_, message) => renamed.Add(message));
+
+        var changed = await enrollment.RenameAsync(sensor, "  Study ", TestContext.Current.CancellationToken);
+
+        Assert.True(changed);
+        var saved = Assert.Single(store.Snapshot());
+        Assert.Equal(("Study", "type", DateTimeOffset.UnixEpoch), (saved.RoomName, saved.RoomType, saved.LastSyncUtc));
+        Assert.Equal([history], saved.IntervalHistory);
+        Assert.Equal("Study", registry.Info(sensor)?.RoomName);
+        Assert.Equal(sensor, Assert.Single(renamed).Device);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("Office")]
+    [InlineData(" Office ")]
+    public async Task A_blank_or_unchanged_name_changes_nothing(string name)
+    {
+        store.Devices.Add(new DeviceInfo(sensor, "Office", null, [], null));
+        var renamed = new List<DeviceRenamed>();
+        messenger.Register<DeviceRenamed>(this, (_, message) => renamed.Add(message));
+
+        var changed = await enrollment.RenameAsync(sensor, name, TestContext.Current.CancellationToken);
+
+        Assert.False(changed);
+        Assert.Empty(store.Saved);
+        Assert.Empty(renamed);
+    }
+
+    [Fact]
+    public async Task Renaming_an_unknown_device_changes_nothing()
+    {
+        var changed = await enrollment.RenameAsync(sensor, "Office", TestContext.Current.CancellationToken);
+
+        Assert.False(changed);
+        Assert.Empty(store.Snapshot());
+    }
+
 
     [Theory]
     [InlineData("")]

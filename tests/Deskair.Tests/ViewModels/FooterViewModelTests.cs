@@ -67,6 +67,19 @@ public sealed class FooterViewModelTests : IDisposable
     }
 
     [Fact]
+    public async Task A_renamed_room_shows_its_new_name_in_the_footer()
+    {
+        await StartAsync();
+        Assert.StartsWith("Office", viewModel.DetailText, StringComparison.Ordinal);
+        deviceStore.Devices[0] = deviceStore.Devices[0] with { RoomName = "Study" };
+        await registry.LoadAsync(TestContext.Current.CancellationToken);
+
+        messenger.Send(new DeviceRenamed(device));
+
+        Assert.StartsWith("Study", viewModel.DetailText, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task Without_a_sensor_it_says_so_with_a_neutral_dot()
     {
         await StartAsync(ConnectionState.FirstRun, withDevice: false);

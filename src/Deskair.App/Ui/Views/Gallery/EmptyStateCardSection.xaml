@@ -1,0 +1,22 @@
+<UserControl x:Class="Deskair.App.Ui.Views.Gallery.EmptyStateCardSection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <StackPanel>
+    <TextBlock Margin="{StaticResource Space.SectionLabel}"
+               Style="{StaticResource Text.SectionLabel}"
+               Text="{loc:T Gallery_Section_EmptyStateCard}" />
+    <StackPanel Width="560" HorizontalAlignment="Left">
+      <controls:EmptyStateCard Margin="{StaticResource Space.Item}"
+                               Icon="&#xE81C;"
+                               Message="{loc:T History_Empty_Text}"
+                               Title="{loc:T History_Empty_Title}">
+        <controls:SecondaryButton Content="{loc:T History_Empty_Import}" />
+      </controls:EmptyStateCard>
+      <controls:EmptyStateCard Margin="{StaticResource Space.Item}"
+                               Message="{loc:T History_Empty_Text}"
+                               Title="{loc:T History_Empty_Title}" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>

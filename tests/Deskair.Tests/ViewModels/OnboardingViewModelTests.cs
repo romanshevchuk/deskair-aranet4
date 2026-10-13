@@ -439,6 +439,62 @@ public class OnboardingViewModelTests
         Assert.False(viewModel.BluetoothOff);
     }
 
+    [Fact]
+    public async Task Adding_a_sensor_opens_the_search_and_starts_scanning()
+    {
+        var provider = new ControlledProvider("first");
+        var viewModel = Create(provider);
+        Assert.False(viewModel.IsOpen);
+
+        viewModel.OpenToAddSensor();
+
+        Assert.True(viewModel.IsOpen);
+        await Wait.Until(() => provider.Scans == 1 && viewModel.IsScanning);
+    }
+
+    [Fact]
+    public async Task Cancel_closes_the_search_and_stops_scanning()
+    {
+        var provider = new ControlledProvider("first");
+        var viewModel = Create(provider);
+        viewModel.OpenToAddSensor();
+        await Wait.Until(() => provider.Scans == 1);
+
+        viewModel.CancelCommand.Execute(null);
+
+        Assert.False(viewModel.IsOpen);
+        await Wait.Until(() => !viewModel.IsScanning);
+        Assert.False(viewModel.NoSensorFound);
+    }
+
+    [Fact]
+    public async Task After_cancelling_Bluetooth_coming_on_does_not_start_a_scan()
+    {
+        radio.IsOn = false;
+        var provider = new ControlledProvider("first");
+        var viewModel = Create(provider);
+        viewModel.OpenToAddSensor();
+        await Wait.Until(() => viewModel.BluetoothOff && !viewModel.IsScanning);
+        viewModel.CancelCommand.Execute(null);
+
+        radio.IsOn = true;
+        await Task.Delay(50, TestContext.Current.CancellationToken);
+
+        Assert.Equal(0, provider.Scans);
+    }
+
+    [Fact]
+    public async Task Pairing_a_new_sensor_closes_the_search()
+    {
+        var viewModel = Create();
+        viewModel.OpenToAddSensor();
+
+        await viewModel.PairCommand.ExecuteAsync(new NearbySensorItem(new DeviceId("aranet4", "C3DEC8FCC7C6"), "Aranet4 0A0B3", string.Empty));
+
+        Assert.False(viewModel.IsOpen);
+        Assert.Equal(new DeviceId("aranet4", "C3DEC8FCC7C6"), registry.Selected);
+    }
+
     private sealed class ThrowingStore : IDeviceStore
     {
         public Task<IReadOnlyList<DeviceInfo>> ListAsync(CancellationToken cancellationToken)

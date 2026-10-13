@@ -1,9 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.ViewModels.Connection;
+using Deskair.App.ViewModels.History;
 using Deskair.App.ViewModels.Live;
 using Deskair.App.ViewModels.Onboarding;
 using Deskair.App.ViewModels.Settings;
+using Deskair.Services.Messages;
 
 namespace Deskair.App.ViewModels.Shell;
 
@@ -32,9 +35,41 @@ public sealed partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private SettingsViewModel? settings;
 
+    /// <summary>History: the toolbar, the charts and the stats. It loads when the section is opened.</summary>
+    [ObservableProperty]
+    private HistoryViewModel? history;
+
+    public ShellViewModel()
+    {
+    }
+
+    /// <summary>
+    /// Also follows <see cref="AddSensorRequested"/> (goes to Live and opens the sensor search there) and <see cref="ImportRequested"/> (goes to Settings,
+    /// where the import is).
+    /// </summary>
+    public ShellViewModel(IMessenger messenger)
+    {
+        messenger.Register<ShellViewModel, AddSensorRequested>(this, static (self, _) => self.OnAddSensor());
+        messenger.Register<ShellViewModel, ImportRequested>(this, static (self, _) => self.Section = ShellSection.Settings);
+    }
+
     [RelayCommand]
     private void Navigate(ShellSection target)
     {
         Section = target;
+    }
+
+    partial void OnSectionChanged(ShellSection value)
+    {
+        if (value == ShellSection.History)
+        {
+            History?.Refresh();
+        }
+    }
+
+    private void OnAddSensor()
+    {
+        Section = ShellSection.Live;
+        Onboarding?.OpenToAddSensor();
     }
 }

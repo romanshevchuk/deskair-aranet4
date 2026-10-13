@@ -170,4 +170,52 @@ public class ReadingQueryServiceTests
         Assert.Equal(24, hours.Count);
         Assert.All(hours, hour => Assert.Null(hour.Average));
     }
+
+    [Fact]
+    public async Task Zone_share_counts_the_readings_in_the_range_by_zone()
+    {
+        store.Readings.AddRange([
+            Samples.Co2(now.AddHours(-3), 500),
+            Samples.Co2(now.AddHours(-2), 1200),
+            Samples.Co2(now.AddHours(-1), 1500),
+            Samples.Co2(now.AddDays(-9), 500)
+        ]);
+
+        var share = await service.GetZoneShareAsync(device, now.AddDays(-1), now, HoursFilterMode.AllDay, CancellationToken.None);
+
+        Assert.Equal((1.0 / 3, 1.0 / 3, 1.0 / 3), (share!.Good, share.Elevated, share.High));
+    }
+
+    [Fact]
+    public async Task Zone_share_follows_the_hours_filter()
+    {
+        store.Readings.AddRange([
+            Samples.Co2(Samples.Utc(2026, 10, 8, 23), 1500),
+            Samples.Co2(Samples.Utc(2026, 10, 8, 12), 500)
+        ]);
+
+        var share = await service.GetZoneShareAsync(device, now.AddDays(-2), now, HoursFilterMode.Night, CancellationToken.None);
+
+        Assert.Equal(1, share!.High);
+    }
+
+    [Fact]
+    public async Task Zone_share_is_null_without_readings()
+    {
+        Assert.Null(await service.GetZoneShareAsync(device, now.AddDays(-1), now, HoursFilterMode.AllDay, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task A_device_with_no_stored_readings_has_none()
+    {
+        Assert.False(await service.HasReadingsAsync(device, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task A_device_with_a_stored_reading_has_readings()
+    {
+        store.Readings.Add(Samples.Co2(now, 800));
+
+        Assert.True(await service.HasReadingsAsync(device, CancellationToken.None));
+    }
 }

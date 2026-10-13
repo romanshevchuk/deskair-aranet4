@@ -22,8 +22,8 @@ public sealed class SensorSessionTests : IAsyncDisposable
     private readonly FakeSensor sensor = new();
     private readonly TestProvider provider;
     private readonly SensorSession session;
-    private readonly List<object> messages = [];
-    private readonly List<object> syncMessages = [];
+    private readonly ThreadSafeLog<object> messages = new();
+    private readonly ThreadSafeLog<object> syncMessages = new();
 
     public SensorSessionTests()
     {

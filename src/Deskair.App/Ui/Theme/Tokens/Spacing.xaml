@@ -19,6 +19,7 @@
   <sys:Double x:Key="Size.Live.MiniRow.Height">132</sys:Double>
   <sys:Double x:Key="Size.History.Toolbar.Height">40</sys:Double>
   <sys:Double x:Key="Size.History.Stats.Width">360</sys:Double>
+  <sys:Double x:Key="Size.History.Export.StatusWidth">280</sys:Double>
   <sys:Double x:Key="Size.Flyout.Width">360</sys:Double>
   <sys:Double x:Key="Size.Toast.Edge">4</sys:Double>
   <sys:Double x:Key="Size.Toggle.Width">38</sys:Double>
@@ -93,6 +94,16 @@
   <Thickness x:Key="Space.SettingsRow.Label">0,0,16,0</Thickness>
   <Thickness x:Key="Space.SettingsRow.Padding">0,4,0,4</Thickness>
   <sys:Double x:Key="Size.SettingsRow.MinHeight">40</sys:Double>
+  <!-- History stats card (prototype: zone share bar 10 px high, insight box padding 9 12). -->
+  <sys:Double x:Key="Size.ZoneShare.Height">10</sys:Double>
+  <Thickness x:Key="Space.Insight.Padding">12,9,12,9</Thickness>
+  <Thickness x:Key="Space.Stats.Block">0,16,0,0</Thickness>
+  <Thickness x:Key="Space.Stats.Change">0,8,0,0</Thickness>
+  <Thickness x:Key="Space.Stats.Legend">0,0,16,0</Thickness>
+  <Thickness x:Key="Space.Inline.Tight">4,0,0,0</Thickness>
+  <GridLength x:Key="Grid.History.Stats.Width">360</GridLength>
+  <sys:Double x:Key="Size.TypicalDay.Chart.Height">150</sys:Double>
+  <sys:Double x:Key="Size.Chart.Readout.Height">20</sys:Double>
   <Thickness x:Key="Space.Input.Padding">14,6,14,6</Thickness>
   <sys:Double x:Key="Size.Input.MinWidth">200</sys:Double>
 
@@ -103,6 +114,14 @@
   <Thickness x:Key="Space.Step.Text">12,0,0,0</Thickness>
   <Thickness x:Key="Space.Onboarding.Message">4,12,4,0</Thickness>
   <sys:Double x:Key="Size.Step.Badge">26</sys:Double>
+
+  <!-- Empty state card: icon, title (16), message, then the buttons; the text keeps a readable line length. -->
+  <Thickness x:Key="Space.Empty.Padding">32,36,32,36</Thickness>
+  <Thickness x:Key="Space.Empty.Title">0,12,0,0</Thickness>
+  <Thickness x:Key="Space.Empty.Message">0,6,0,0</Thickness>
+  <Thickness x:Key="Space.Empty.Content">0,20,0,0</Thickness>
+  <sys:Double x:Key="Size.Empty.Icon">32</sys:Double>
+  <sys:Double x:Key="Size.Empty.TextWidth">440</sys:Double>
 
   <Duration x:Key="Motion.Toggle">0:0:0.15</Duration>
 </ResourceDictionary>

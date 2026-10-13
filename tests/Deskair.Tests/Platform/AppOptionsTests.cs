@@ -1,5 +1,6 @@
 using Deskair.App.Composition;
 using Deskair.App.Platform;
+using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.Platform;
 
@@ -34,7 +35,7 @@ public class AppOptionsTests
     [Fact]
     public void The_simulated_app_keeps_its_data_in_the_temp_folder_never_in_documents()
     {
-        var folders = new KnownFolders(new AppOptions(false, Simulated: true));
+        var folders = new KnownFolders(new AppOptions(false, Simulated: true), new FakeDataFolderChoice());
         var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         Assert.StartsWith(System.IO.Path.GetTempPath(), folders.DataFolder);
@@ -44,7 +45,7 @@ public class AppOptionsTests
     [Fact]
     public void A_single_sensor_test_run_keeps_its_data_in_the_temp_folder_never_in_documents()
     {
-        var folders = new KnownFolders(new AppOptions(false, Sensor: "C3DEC8FCC7C6"));
+        var folders = new KnownFolders(new AppOptions(false, Sensor: "C3DEC8FCC7C6"), new FakeDataFolderChoice());
         var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         Assert.StartsWith(System.IO.Path.GetTempPath(), folders.DataFolder);
@@ -64,7 +65,7 @@ public class AppOptionsTests
         Assert.True(AppOptions.Parse(["--first-run"]).FirstRun);
         Assert.False(AppOptions.Parse([]).FirstRun);
 
-        var folders = new KnownFolders(new AppOptions(false, FirstRun: true));
+        var folders = new KnownFolders(new AppOptions(false, FirstRun: true), new FakeDataFolderChoice());
         var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         Assert.Equal(KnownFolders.FirstRunFolder, folders.DataFolder);
@@ -97,7 +98,7 @@ public class AppOptionsTests
     [Fact]
     public void The_real_app_keeps_its_data_in_documents()
     {
-        var folders = new KnownFolders(new AppOptions(false));
+        var folders = new KnownFolders(new AppOptions(false), new FakeDataFolderChoice());
 
         var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
@@ -105,9 +106,26 @@ public class AppOptionsTests
     }
 
     [Fact]
+    public void The_real_app_uses_the_folder_the_user_chose()
+    {
+        var folders = new KnownFolders(new AppOptions(false), new FakeDataFolderChoice { Chosen = @"D:\Air data" });
+
+        Assert.Equal(@"D:\Air data", folders.DataFolder);
+    }
+
+    [Fact]
+    public void Developer_runs_ignore_the_chosen_folder()
+    {
+        var choice = new FakeDataFolderChoice { Chosen = @"D:\Air data" };
+
+        Assert.NotEqual(choice.Chosen, new KnownFolders(new AppOptions(false, Simulated: true), choice).DataFolder);
+        Assert.NotEqual(choice.Chosen, new KnownFolders(new AppOptions(false, FirstRun: true), choice).DataFolder);
+    }
+
+    [Fact]
     public void Logs_stay_outside_the_data_folder()
     {
-        var folders = new KnownFolders(new AppOptions(false));
+        var folders = new KnownFolders(new AppOptions(false), new FakeDataFolderChoice());
 
         Assert.DoesNotContain(folders.DataFolder, folders.LogFolder);
     }

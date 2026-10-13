@@ -3,13 +3,6 @@ using System.Windows.Controls;
 
 namespace Deskair.App.Ui.Controls;
 
-// TODO(CTRL-06) [S, haiku]
-// Spec: docs/design/components.md "Empty / onboarding card"; docs/design/screens-and-states.md "Live conditions"
-// Input : Icon, title, message; buttons arrive as content.
-// Output: A centred Card with the icon, title (16 px, 600), message and the content below.
-// Rules : Built on the Card control.
-// Edge  : No icon hides the icon area.
-// Done  : The gallery shows it in all states, light and dark, English and Ukrainian; build and tests pass.
 public class EmptyStateCard : ContentControl
 {
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(

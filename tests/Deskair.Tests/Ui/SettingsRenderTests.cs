@@ -64,6 +64,7 @@ public class SettingsRenderTests
         var deviceStore = new FakeDeviceStore();
         var device = new DeviceId("aranet4", "C3DEC8FCC7C6");
         deviceStore.Devices.Add(new DeviceInfo(device, "Office", null, [], null));
+        deviceStore.Devices.Add(new DeviceInfo(new DeviceId("aranet4", "AABBCCDD7C41"), "Bedroom", null, [], null));
         var registry = new DeviceRegistry(deviceStore);
         registry.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
 
@@ -87,12 +88,11 @@ public class SettingsRenderTests
         var room = new RoomChipViewModel(registry, settings, messenger, dispatcher, formatter);
         room.Load();
 
-        var readings = new FakeReadingStore();
         var screen = new SettingsViewModel(
             new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance),
             new AlertsSettingsViewModel(settings, NullLogger<AlertsSettingsViewModel>.Instance),
-            new DevicesSettingsViewModel(registry),
-            new DataSettingsViewModel(new ImportService(readings, TimeZoneInfo.Utc), new ExportService(readings, new CsvExporter(), TimeZoneInfo.Utc), new TempKnownFolders()),
+            new DevicesSettingsViewModel(registry, new DeviceEnrollment(deviceStore, registry, settings, messenger), messenger, NullLogger<DevicesSettingsViewModel>.Instance),
+            Deskair.Tests.ViewModels.DataSettingsViewModelTests.Create(new TempKnownFolders()),
             new StartupSettingsViewModel(new FakeStartupRegistration { IsEnabled = true }, NullLogger<StartupSettingsViewModel>.Instance));
         screen.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
 

@@ -1,15 +1,91 @@
 <UserControl x:Class="Deskair.App.Ui.Views.History.HistoryView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- TODO(HIST-00b) [S, haiku]
-       Spec: docs/design/screens-and-states.md "Screens" (History)
-       Input : HistoryViewModel (to be created with the view models).
-       Output: Toolbar on top; main chart; typical-day card or sleep card; stats card 360 px wide on the right.
-       Rules : Code-behind empty.
-       Edge  : An empty store shows EmptyHistoryView.
-       Done  : The main window History section shows the layout with sample data. -->
+             xmlns:charts="clr-namespace:Deskair.App.Ui.Charts"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:history="clr-namespace:Deskair.App.Ui.Views.History"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:states="clr-namespace:Deskair.App.Ui.Views.States">
+  <!-- DataContext: HistoryViewModel. The toolbar on top; below it the main chart and the typical day on the left and the stats card (360 px) on the right.
+       While nothing is stored for the room, "collecting your first data" takes the place of all of it. -->
+  <UserControl.Resources>
+    <Style x:Key="History.Content" TargetType="{x:Type Grid}">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding IsEmpty}" Value="True">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="History.Empty" TargetType="{x:Type states:EmptyHistoryView}">
+      <Setter Property="Visibility" Value="Collapsed" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding IsEmpty}" Value="True">
+          <Setter Property="Visibility" Value="Visible" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+  </UserControl.Resources>
+
   <Grid>
-    <TextBlock Style="{StaticResource Text.Title}" Text="{loc:T Nav_History}" />
+    <Grid Style="{StaticResource History.Content}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <history:HistoryToolbar Grid.Row="0"
+                              Margin="0,0,0,12"
+                              DataContext="{Binding Toolbar}"
+                              ExportCommand="{Binding DataContext.Export.ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}"
+                              ExportStatus="{Binding DataContext.Export.StatusText, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" />
+
+      <Grid Grid.Row="1">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="{StaticResource Grid.Card.Gap}" />
+          <ColumnDefinition Width="{StaticResource Grid.History.Stats.Width}" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="{StaticResource Grid.Card.Gap}" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <controls:Card Grid.Row="0" Padding="{StaticResource Space.Chart.Card}">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+
+              <charts:HistoryChart x:Name="Chart"
+                                   Grid.Row="0"
+                                   Bars="{Binding Bars}"
+                                   Gaps="{Binding Gaps}"
+                                   Metric="{Binding Toolbar.Metric}"
+                                   NoDataText="{loc:T Chart_NoData}"
+                                   PartialText="{loc:T Chart_Partial}"
+                                   Points="{Binding Points}"
+                                   Unit="{Binding Stats.UnitText}"
+                                   WeekendSpans="{Binding WeekendSpans}" />
+
+              <TextBlock Grid.Row="1"
+                         Margin="{StaticResource Space.Chart.Caption}"
+                         MinHeight="{StaticResource Size.Chart.Readout.Height}"
+                         Style="{StaticResource Text.Secondary}"
+                         Text="{Binding Hover.Text, ElementName=Chart}" />
+            </Grid>
+          </controls:Card>
+
+          <history:TypicalDayCard Grid.Row="2" DataContext="{Binding TypicalDay}" />
+        </Grid>
+
+        <history:StatsCard Grid.Column="2" VerticalAlignment="Top" DataContext="{Binding Stats}" />
+      </Grid>
+    </Grid>
+
+    <states:EmptyHistoryView Style="{StaticResource History.Empty}" />
   </Grid>
 </UserControl>

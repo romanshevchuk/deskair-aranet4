@@ -26,6 +26,14 @@ public sealed class MetricFormatter
         return ToDisplay(metric, stored).ToString(format, localizer.Culture);
     }
 
+    /// <summary>The size of a difference between two stored values, without a sign, in the selected unit. A temperature difference scales but has no offset (2 °C is 3.6 °F).</summary>
+    public string Difference(Metric metric, double storedDifference)
+    {
+        var format = metric is Metric.Temperature or Metric.Pressure ? "N1" : "N0";
+
+        return Math.Abs(ToDisplay(metric, storedDifference) - ToDisplay(metric, 0)).ToString(format, localizer.Culture);
+    }
+
     public string Unit(Metric metric)
         => metric == Metric.Temperature ? settings.Current.TemperatureUnit.Symbol() : MetricDescriptor.For(metric).Unit;
 }

@@ -1,7 +1,10 @@
 using System.Globalization;
+using System.IO;
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
 using Deskair.App.Platform;
 using Deskair.App.Platform.Bluetooth;
+using Deskair.App.Platform.Files;
 using Deskair.App.Platform.Notifications;
 using Deskair.App.Platform.Startup;
 using Deskair.App.Platform.Theming;
@@ -10,6 +13,8 @@ using Deskair.App.Ui.Theme;
 using Deskair.App.Ui.Views.Gallery;
 using Deskair.App.Ui.Views.Shell;
 using Deskair.App.ViewModels.Connection;
+using Deskair.App.ViewModels.Data;
+using Deskair.App.ViewModels.History;
 using Deskair.App.ViewModels.Live;
 using Deskair.App.ViewModels.Onboarding;
 using Deskair.App.ViewModels.Settings;
@@ -54,6 +59,7 @@ public static class ServiceRegistration
 
     private static IServiceCollection AddWindowsPlatform(this IServiceCollection services, AppOptions options)
     {
+        services.AddSingleton<IDataFolderChoice>(new DataFolderChoice(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Deskair", "data-folder.txt")));
         services.AddSingleton<IKnownFolders, KnownFolders>();
         services.AddSingleton<ILoggerProvider>(provider => new RollingFileLoggerProvider(provider.GetRequiredService<IKnownFolders>().LogFolder, provider.GetRequiredService<TimeProvider>()));
         services.AddSingleton<ISystemTheme, SystemThemeSource>();
@@ -73,6 +79,8 @@ public static class ServiceRegistration
         services.AddSingleton<INotifier, ToastNotifier>();
         services.AddSingleton<IDoNotDisturb, DoNotDisturbMonitor>();
         services.AddSingleton<IStartupRegistration, StartupRegistration>();
+        services.AddSingleton<IFileDialogs, WindowsFileDialogs>();
+        services.AddSingleton<IFolderOpener, ExplorerFolderOpener>();
 
         return services;
     }
@@ -108,17 +116,24 @@ public static class ServiceRegistration
         services.AddSingleton<AppearanceSettingsViewModel>();
         services.AddSingleton<AlertsSettingsViewModel>();
         services.AddSingleton<DevicesSettingsViewModel>();
+        services.AddSingleton<ImportViewModel>();
+        services.AddSingleton<ExportViewModel>();
         services.AddSingleton<DataSettingsViewModel>();
         services.AddSingleton<StartupSettingsViewModel>();
         services.AddSingleton<SettingsViewModel>();
-        services.AddSingleton(provider => new ShellViewModel
+        services.AddSingleton<HistoryToolbarViewModel>();
+        services.AddSingleton<StatsViewModel>();
+        services.AddSingleton<TypicalDayViewModel>();
+        services.AddSingleton<HistoryViewModel>();
+        services.AddSingleton(provider => new ShellViewModel(provider.GetRequiredService<IMessenger>())
         {
             Live = provider.GetRequiredService<LiveViewModel>(),
             Connection = provider.GetRequiredService<ConnectionViewModel>(),
             Footer = provider.GetRequiredService<FooterViewModel>(),
             Room = provider.GetRequiredService<RoomChipViewModel>(),
             Onboarding = provider.GetRequiredService<OnboardingViewModel>(),
-            Settings = provider.GetRequiredService<SettingsViewModel>()
+            Settings = provider.GetRequiredService<SettingsViewModel>(),
+            History = provider.GetRequiredService<HistoryViewModel>()
         });
         services.AddSingleton<SensorSession>();
         services.AddSingleton<ConnectionTracker>();

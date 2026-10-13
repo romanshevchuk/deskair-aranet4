@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.ViewModels.History;
 using Deskair.Domain.Analytics.Aggregation;
 using Deskair.Domain.Metrics;
@@ -7,6 +8,7 @@ using Deskair.Services.Devices;
 using Deskair.Services.Queries;
 using Deskair.Services.Storage;
 using Deskair.Tests.Fakes;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Deskair.Tests.ViewModels;
 
@@ -20,12 +22,15 @@ public class HistoryViewModelTests
     private readonly FakeDeviceStore deviceStore = new();
     private readonly DeviceRegistry registry;
     private readonly HistoryToolbarViewModel toolbar = new();
-    private readonly StatsViewModel stats = new();
+    private readonly StatsViewModel stats;
     private readonly TypicalDayViewModel typicalDay = new();
+    private readonly StrongReferenceMessenger messenger = new();
 
     public HistoryViewModelTests()
     {
         registry = new DeviceRegistry(deviceStore);
+        var localizer = new FakeLocalizer();
+        stats = new StatsViewModel(TestFormatter.Create(localizer), localizer, new LocalCalendar(TimeZoneInfo.Utc));
     }
 
     private HistoryViewModel Create(IReadingStore? readingStore = null)
@@ -34,7 +39,7 @@ public class HistoryViewModelTests
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(readingStore ?? store, registry, clock, calendar);
 
-        return new HistoryViewModel(toolbar, stats, typicalDay, query, registry, calendar, clock);
+        return new HistoryViewModel(toolbar, stats, typicalDay, TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), NullLogger<HistoryViewModel>.Instance);
     }
 
     private async Task SelectDeviceAsync()
@@ -192,6 +197,244 @@ public class HistoryViewModelTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => refresh);
     }
 
+    [Fact]
+    public async Task Bars_for_single_days_get_the_weekend_spans_behind_them()
+    {
+        await SelectDeviceAsync();
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        // 12 Oct 2026 is a Monday, so the week of 6 to 12 Oct has one weekend: Saturday 10 to Monday 12.
+        var weekend = Assert.Single(viewModel.WeekendSpans!);
+        Assert.Equal((Samples.Utc(2026, 10, 10), Samples.Utc(2026, 10, 12)), (weekend.Start, weekend.End));
+    }
+
+    [Fact]
+    public async Task A_month_by_day_has_four_weekends_and_by_week_none()
+    {
+        await SelectDeviceAsync();
+        var viewModel = Create();
+        toolbar.Range = Period.Month;
+        toolbar.Grouping = Period.Day;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(4, viewModel.WeekendSpans!.Count);
+
+        toolbar.Grouping = Period.Week;
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+        Assert.Null(viewModel.WeekendSpans);
+    }
+
+    [Fact]
+    public async Task The_day_line_has_no_weekend_spans()
+    {
+        await SelectDeviceAsync();
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.Null(viewModel.WeekendSpans);
+    }
+
+    [Fact]
+    public async Task A_bar_knows_how_many_hours_were_recorded_of_how_many_expected()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 11), 800, hours: 6);
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        var bar = viewModel.Bars![5];
+        Assert.Equal(6, bar.RecordedHours, 3);
+        Assert.Equal(24, bar.ExpectedHours, 3);
+    }
+
+    [Fact]
+    public async Task Refresh_loads_the_screen_in_the_background()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 11), 1200);
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+
+        viewModel.Refresh();
+
+        await Wait.Until(() => viewModel.Bars is { Count: 7 });
+        Assert.Same(toolbar, viewModel.Toolbar);
+        Assert.Same(stats, viewModel.Stats);
+        Assert.Same(typicalDay, viewModel.TypicalDay);
+    }
+
+    [Fact]
+    public async Task A_changed_toolbar_choice_loads_the_screen_again()
+    {
+        await SelectDeviceAsync();
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+        viewModel.Refresh();
+        await Wait.Until(() => viewModel.Bars is { Count: 7 });
+
+        toolbar.Range = Period.Month;
+        toolbar.Grouping = Period.Week;
+
+        await Wait.Until(() => viewModel.Bars is { Count: 5 });
+    }
+
+    [Fact]
+    public async Task A_finished_sync_loads_the_screen_again()
+    {
+        await SelectDeviceAsync();
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+        viewModel.Refresh();
+        await Wait.Until(() => viewModel.Bars is { Count: 7 });
+        AddDay(Samples.Utc(2026, 10, 11), 1500);
+
+        messenger.Send(new Deskair.Services.Messages.SyncCompleted(device, 100));
+
+        await Wait.Until(() => viewModel.Bars![5].Average == 1500);
+    }
+
+    [Fact]
+    public async Task The_week_is_compared_with_the_week_before()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 3), 1000);
+        AddDay(Samples.Utc(2026, 10, 10), 800);
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal("▼ 200 ppm", stats.ChangeText);
+        Assert.Equal("Stats_Change_Week", stats.ChangeCaption);
+    }
+
+    [Fact]
+    public async Task The_day_is_compared_with_the_24_hours_before()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 10, 12), 1000);
+        AddDay(Samples.Utc(2026, 10, 11, 12), 1400, hours: 24);
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal("▲ 400 ppm", stats.ChangeText);
+    }
+
+    [Fact]
+    public async Task Zone_share_is_loaded_for_CO2_and_left_out_for_other_metrics()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 10), 800);
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+        Assert.True(stats.HasZoneShare);
+        Assert.Equal(1, stats.ZoneGood);
+
+        toolbar.Metric = Metric.Temperature;
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+        Assert.False(stats.HasZoneShare);
+    }
+
+    [Fact]
+    public async Task The_insight_comes_from_the_typical_day()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 10), 800);
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.StartsWith("Insight_AllGood", stats.InsightText);
+    }
+
+    [Fact]
+    public async Task Imported_readings_load_the_screen_again()
+    {
+        await SelectDeviceAsync();
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+        viewModel.Refresh();
+        await Wait.Until(() => viewModel.Bars is { Count: 7 });
+        AddDay(Samples.Utc(2026, 10, 11), 1500);
+
+        messenger.Send(new Deskair.Services.Messages.ReadingsImported(device, 720));
+
+        await Wait.Until(() => viewModel.Bars![5].Average == 1500);
+    }
+
+    [Fact]
+    public async Task Without_a_selected_device_the_screen_is_empty()
+    {
+        var viewModel = Create();
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.True(viewModel.IsEmpty);
+    }
+
+    [Fact]
+    public async Task A_device_without_stored_readings_is_empty()
+    {
+        await SelectDeviceAsync();
+        var viewModel = Create();
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.True(viewModel.IsEmpty);
+    }
+
+    [Fact]
+    public async Task Once_readings_are_stored_the_screen_is_not_empty()
+    {
+        await SelectDeviceAsync();
+        var viewModel = Create();
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+        AddDay(Samples.Utc(2026, 10, 11), 800);
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.False(viewModel.IsEmpty);
+    }
+
+    [Fact]
+    public void Asking_to_import_tells_the_app()
+    {
+        var viewModel = Create();
+        var requests = 0;
+        messenger.Register<Deskair.Services.Messages.ImportRequested>(this, (_, _) => requests++);
+
+        viewModel.ImportCommand.Execute(null);
+
+        Assert.Equal(1, requests);
+    }
+
+    [Fact]
+    public async Task A_failing_load_is_logged_not_thrown()
+    {
+        await SelectDeviceAsync();
+        var logger = new ListLogger<HistoryViewModel>();
+        var calendar = new LocalCalendar(TimeZoneInfo.Utc);
+        var clock = new FakeClock(now);
+        var query = new ReadingQueryService(new ThrowingReadingStore(), registry, clock, calendar);
+        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), logger);
+
+        viewModel.Refresh();
+
+        await Wait.Until(() => logger.Entries.Any(entry => entry.Level == Microsoft.Extensions.Logging.LogLevel.Warning));
+    }
+
     private sealed class GatedReadingStore : IReadingStore
     {
         private readonly IReadingStore inner;
@@ -229,5 +472,17 @@ public class HistoryViewModelTests
             TimeSpan interval,
             CancellationToken cancellationToken)
             => inner.MergeAsync(device, readings, source, interval, cancellationToken);
+    }
+
+    private sealed class ThrowingReadingStore : IReadingStore
+    {
+        public Task<IReadOnlyList<Reading>> ReadRangeAsync(DeviceId device, DateTimeOffset start, DateTimeOffset end, CancellationToken cancellationToken)
+            => throw new InvalidOperationException("disk");
+
+        public Task<DateTimeOffset?> GetLastReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
+            => Task.FromResult<DateTimeOffset?>(null);
+
+        public Task<int> MergeAsync(DeviceId device, IReadOnlyList<Reading> readings, ReadingSource source, TimeSpan interval, CancellationToken cancellationToken)
+            => Task.FromResult(0);
     }
 }

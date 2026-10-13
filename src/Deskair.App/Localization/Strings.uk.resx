@@ -83,6 +83,23 @@
   <data name="Settings_QuietHours_Hint" xml:space="preserve"><value>Без сповіщень уночі</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Startup_Windows" xml:space="preserve"><value>Запускати з Windows</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Startup_WindowsHint" xml:space="preserve"><value>Deskair відкривається, коли ви входите в систему</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Devices_RoomName" xml:space="preserve"><value>Назва кімнати</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Devices_None" xml:space="preserve"><value>Датчиків ще немає</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Devices_Add" xml:space="preserve"><value>Додати датчик</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Devices_AddHint" xml:space="preserve"><value>Знайти ще один датчик поблизу</value><comment>Draft: needs native review.</comment></data>
+  <data name="Action_Add" xml:space="preserve"><value>Додати</value><comment>Draft: needs native review.</comment></data>
+  <data name="Action_Cancel" xml:space="preserve"><value>Скасувати</value><comment>Draft: needs native review.</comment></data>
+  <data name="Unit_Ppm" xml:space="preserve"><value>ppm</value></data>
+  <data name="Chart_Partial" xml:space="preserve"><value>записано лише {recorded} з {expected} год</value><comment>Draft: needs native review.</comment></data>
+  <data name="Toolbar_Metric" xml:space="preserve"><value>Показник</value><comment>Draft: needs native review.</comment></data>
+  <data name="Toolbar_Hours" xml:space="preserve"><value>Години</value><comment>Draft: needs native review.</comment></data>
+  <data name="Toolbar_GroupBy" xml:space="preserve"><value>Групувати</value><comment>Draft: needs native review.</comment></data>
+  <data name="Toolbar_Range" xml:space="preserve"><value>Період</value><comment>Draft: needs native review.</comment></data>
+  <data name="Coverage_Chip" xml:space="preserve"><value>На основі {percent} % очікуваних вимірювань</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_CoverageChip" xml:space="preserve"><value>Позначка покриття</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_ZoneShareBar" xml:space="preserve"><value>Частка часу в зонах</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_InsightBox" xml:space="preserve"><value>Поле підказки</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_Insight" xml:space="preserve"><value>Найгірші години: 14:00–16:00. Відчинене вікно незадовго до цього тримає повітря в зеленій зоні.</value><comment>Draft: needs native review.</comment></data>
   <data name="Toast_Elevated_Title" xml:space="preserve"><value>Рівень CO₂ підвищений · {room}</value><comment>Draft: needs native review.</comment></data>
   <data name="Toast_Snooze" xml:space="preserve"><value>Відкласти на 1 год</value><comment>Draft: needs native review.</comment></data>
   <data name="Toast_Dismiss" xml:space="preserve"><value>Закрити</value><comment>Draft: needs native review.</comment></data>
@@ -160,4 +177,51 @@
   <data name="Gallery_Section_SettingsCard" xml:space="preserve"><value>Картка налаштувань і рядки</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_RowDescription" xml:space="preserve"><value>Короткий опис під назвою</value><comment>Draft: needs native review.</comment></data>
   <data name="Nav_Main" xml:space="preserve"><value>Основна навігація</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Change_Day" xml:space="preserve"><value>порівняно з попередніми 24 годинами</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Change_Week" xml:space="preserve"><value>порівняно з попереднім тижнем</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Change_Month" xml:space="preserve"><value>порівняно з попередніми 30 днями</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Change_Year" xml:space="preserve"><value>порівняно з попередніми 12 місяцями</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Change_None" xml:space="preserve"><value>немає раніших даних для порівняння</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_BestPeriod" xml:space="preserve"><value>Найкращий {period}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_WorstPeriod" xml:space="preserve"><value>Найгірший {period}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_LowestPeriod" xml:space="preserve"><value>Найнижчий {period}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_HighestPeriod" xml:space="preserve"><value>Найвищий {period}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Period_Day" xml:space="preserve"><value>день</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Period_Week" xml:space="preserve"><value>тиждень</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stats_Period_Month" xml:space="preserve"><value>місяць</value><comment>Draft: needs native review.</comment></data>
+  <data name="Insight_WorstHours" xml:space="preserve"><value>Найгірші години: {from}–{to} (середнє {value}). Відчинене вікно незадовго до цього тримає повітря в зеленій зоні.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Insight_AllGood" xml:space="preserve"><value>Зазвичай CO₂ залишається в зеленій зоні, навіть у найгірші години, {from}–{to} (середнє {value}).</value><comment>Draft: needs native review.</comment></data>
+  <data name="Action_Import" xml:space="preserve"><value>Імпортувати</value><comment>Draft: needs native review.</comment></data>
+  <data name="Action_Export" xml:space="preserve"><value>Експортувати</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_Folder" xml:space="preserve"><value>Тека даних</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_OpenFolder" xml:space="preserve"><value>Відкрити теку</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_ChangeFolder" xml:space="preserve"><value>Змінити</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_ChangeTitle" xml:space="preserve"><value>Виберіть теку даних</value><comment>Draft: needs native review.</comment></data>
+  <data name="Data_Folder_Restart" xml:space="preserve"><value>Deskair використовуватиме {folder} після перезапуску. Наявні файли не переносяться: скопіюйте їх туди самостійно, щоб зберегти історію.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Data_Folder_Failed" xml:space="preserve"><value>Не вдалося використати цю теку. Виберіть іншу.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_Import" xml:space="preserve"><value>Імпорт із застосунку на телефоні</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_ImportHint" xml:space="preserve"><value>Заповнює прогалини вимірюваннями з експорту застосунку на телефоні</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_ChooseFile" xml:space="preserve"><value>Вибрати файл</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_Export" xml:space="preserve"><value>Експорт у CSV</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_ExportHint" xml:space="preserve"><value>Усі збережені вимірювання вибраної кімнати</value><comment>Draft: needs native review.</comment></data>
+  <data name="Data_NoSensor" xml:space="preserve"><value>Спочатку додайте датчик.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Dialog_AllFiles" xml:space="preserve"><value>Усі файли</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_DialogTitle" xml:space="preserve"><value>Виберіть експорт із застосунку на телефоні</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Preview_One" xml:space="preserve"><value>{count} вимірювання, {first} – {last} · нових: {new} · уже є: {present}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Preview_Few" xml:space="preserve"><value>{count} вимірювання, {first} – {last} · нових: {new} · уже є: {present}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Preview_Many" xml:space="preserve"><value>{count} вимірювань, {first} – {last} · нових: {new} · уже є: {present}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Done_One" xml:space="preserve"><value>Додано {count} нове вимірювання.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Done_Few" xml:space="preserve"><value>Додано {count} нові вимірювання.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Done_Many" xml:space="preserve"><value>Додано {count} нових вимірювань.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Empty" xml:space="preserve"><value>У цьому файлі немає вимірювань, які може використати Deskair.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Failed" xml:space="preserve"><value>Не вдалося прочитати файл. Це експорт із застосунку на телефоні?</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Unavailable" xml:space="preserve"><value>Для цього датчика імпорт недоступний.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Export_DialogTitle" xml:space="preserve"><value>Експорт вимірювань</value><comment>Draft: needs native review.</comment></data>
+  <data name="Export_FileType" xml:space="preserve"><value>Файл CSV</value><comment>Draft: needs native review.</comment></data>
+  <data name="Export_Done" xml:space="preserve"><value>Збережено {file}.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Export_Failed" xml:space="preserve"><value>Не вдалося зберегти файл.</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Empty_Title" xml:space="preserve"><value>Збираємо перші дані</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Empty_Text" xml:space="preserve"><value>Deskair зберігає кожне вимірювання вашого датчика, тож Історія наповнюватиметься з часом. Щоб побачити минулі дні вже зараз, імпортуйте історію із застосунку на телефоні.</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Empty_Import" xml:space="preserve"><value>Імпорт із застосунку на телефоні</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Section_EmptyStateCard" xml:space="preserve"><value>Картка порожнього стану</value><comment>Draft: needs native review.</comment></data>
 </root>

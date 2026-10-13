@@ -115,3 +115,25 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Onboarding_Room_NameHint | Shown in the title bar and notifications | Показується в заголовку вікна та у сповіщеннях |
 | Onboarding_Room_DefaultName | My room | Моя кімната |
 | Onboarding_PairFailed | Could not add the sensor. Try again. | Не вдалося додати датчик. Спробуйте ще раз. |
+| Settings_Appearance / Settings_Unit | Appearance and units / Temperature unit | Вигляд і одиниці / Одиниця температури |
+| Settings_Alerts_Enabled / Elevated / High | Alerts / Notify at Elevated / Notify at High | Сповіщення / Сповіщати при підвищеному / Сповіщати при високому |
+| Settings_Startup_Windows | Start with Windows | Запускати з Windows |
+| Settings_Devices_RoomName / None / Add | Room name / No sensors yet / Add a sensor | Назва кімнати / Датчиків ще немає / Додати датчик |
+| Action_Add / Action_Cancel | Add / Cancel | Додати / Скасувати |
+| Footer_Syncing | · Syncing history… {percent} | · Синхронізація історії… {percent} |
+| Action_Import / Action_Export | Import / Export | Імпортувати / Експортувати |
+| Settings_Data_Folder / OpenFolder | Data folder / Open folder | Тека даних / Відкрити теку |
+| Settings_Data_Import / ImportHint / ChooseFile | Import from the phone app / Fills gaps with the readings in the phone app’s export / Choose file | Імпорт із застосунку на телефоні / Заповнює прогалини вимірюваннями з експорту застосунку на телефоні / Вибрати файл |
+| Settings_Data_Export / ExportHint | Export to CSV / All stored readings of the selected room | Експорт у CSV / Усі збережені вимірювання вибраної кімнати |
+| Import_Preview (plural) | {count} reading(s), {first} to {last} · {new} new · {present} already present | {count} вимірювання/вимірювань, {first} – {last} · нових: {new} · уже є: {present} |
+| Import_Done (plural) | {count} new reading(s) added. | Додано {count} нове/нові/нових вимірювання/вимірювань. |
+| Import_Empty / Failed / Unavailable / DialogTitle | No usable readings / Could not read this file / Importing is not available for this sensor / Choose the phone app’s export | Немає придатних вимірювань / Не вдалося прочитати файл / Для цього датчика імпорт недоступний / Виберіть експорт із застосунку на телефоні |
+| Export_Done / Failed / DialogTitle / FileType | Saved {file}. / Could not save the file. / Export readings / CSV file | Збережено {file}. / Не вдалося зберегти файл. / Експорт вимірювань / Файл CSV |
+| Data_NoSensor / Dialog_AllFiles | Add a sensor first. / All files | Спочатку додайте датчик. / Усі файли |
+| History_Empty_Title / Text / Import | Collecting your first data / (explanation) / Import from the phone app | Збираємо перші дані / (пояснення) / Імпорт із застосунку на телефоні |
+| Settings_Data_ChangeFolder / ChangeTitle | Change / Choose the data folder | Змінити / Виберіть теку даних |
+| Data_Folder_Restart / Failed | Deskair will use {folder} after you restart it. Your existing files are not moved: copy them there yourself to keep your history. / Could not use this folder. Choose another one. | Deskair використовуватиме {folder} після перезапуску. Наявні файли не переносяться: скопіюйте їх туди самостійно, щоб зберегти історію. / Не вдалося використати цю теку. Виберіть іншу. |
+| Stats_Change_Day / Week / Month / Year / None | vs previous 24 hours / vs previous week / vs previous 30 days / vs previous 12 months / no earlier data to compare | порівняно з попередніми 24 годинами / з попереднім тижнем / з попередніми 30 днями / з попередніми 12 місяцями / немає раніших даних для порівняння |
+| Stats_BestPeriod / WorstPeriod / LowestPeriod / HighestPeriod | Best {period} / Worst {period} / Lowest {period} / Highest {period} | Найкращий / Найгірший / Найнижчий / Найвищий {period} (день, тиждень and місяць are all masculine) |
+| Stats_Period_Day / Week / Month | day / week / month | день / тиждень / місяць |
+| Insight_WorstHours / AllGood | Worst hours: {from}–{to} (avg {value}). Opening a window shortly before keeps you in the good zone. / On a typical day CO₂ stays in the good zone, even at its worst around {from}–{to} (avg {value}). | Найгірші години: {from}–{to} (середнє {value}). Відчинене вікно незадовго до цього тримає повітря в зеленій зоні. / Зазвичай CO₂ залишається в зеленій зоні, навіть у найгірші години, {from}–{to} (середнє {value}). |

@@ -36,6 +36,24 @@ public sealed class RoomChipViewModelTests : IDisposable
     }
 
     [Fact]
+    public async Task A_renamed_room_shows_its_new_name_and_keeps_its_value()
+    {
+        await registry.LoadAsync(TestContext.Current.CancellationToken);
+        viewModel.Load();
+        viewModel.Start(TestContext.Current.CancellationToken);
+        messenger.Send(new ReadingReceived(office, Samples.Co2(now, 800)));
+        var value = viewModel.Rooms[0].ValueText;
+        deviceStore.Devices[0] = deviceStore.Devices[0] with { RoomName = "Study" };
+        await registry.LoadAsync(TestContext.Current.CancellationToken);
+
+        messenger.Send(new DeviceRenamed(office));
+
+        Assert.Equal(["Study", "Bedroom"], viewModel.Rooms.Select(room => room.Name));
+        Assert.Equal(value, viewModel.Rooms[0].ValueText);
+        Assert.Equal("Study", viewModel.SelectedRoom?.Name);
+    }
+
+    [Fact]
     public async Task A_room_that_was_just_paired_is_added_to_the_list_when_it_is_selected()
     {
         deviceStore.Devices.Clear();

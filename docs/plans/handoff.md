@@ -1,20 +1,22 @@
-# Handoff: after the Live vertical slice
+# Handoff: after the first-run, Settings, History and import/export slices
 
 *Last reviewed: 2026-10*
 
-For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory and do not read `../deskair-legacy`.
+For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory (`AranetHomeDesktop`) unless the owner points you to it, and do not read `../deskair-legacy`.
 
 ## Rules you must follow
 
 - Read `AGENTS.md`, this file, `docs/plans/m1-skeleton-brief.md` (sections 4 and 6) and `docs/plans/todo-index.md` first.
-- **Do not commit.** The owner commits by hand. Make no changes under `.claude/`.
-- **Plan first:** for any batch of cards, list the cards and wait for approval before editing.
+- **Do not commit.** The owner commits by hand (about 60 files are changed and uncommitted). Make no changes under `.claude/`.
+- **Plan first:** for any batch of cards, list the cards and wait for approval before editing. The owner often says "go with your recommendations" or "continue"; that counts as approval for what you listed.
 - **Ask before adding a NuGet package or project reference.** Approved so far: ExcelDataReader (added) and `H.NotifyIcon.Wpf` for the tray (approved, not added yet). The toast library waits for spike S5.
-- **No subagents.** The owner decided to work with one agent only.
-- For each card: write or unskip the test, see it fail, implement only what the card says, run the three checks, remove the card comment and the `NotImplementedException`, remove the row in `todo-index.md` and fix its totals line.
+- **No subagents.** The owner works with one agent only.
+- For each card: write or unskip the test, see it fail (or, for a pixel/visual card, break the code once to prove the test can fail), implement only what the card says, run the three checks, remove the card comment and the `NotImplementedException`, remove the row in `todo-index.md` and recompute its totals line (use the awk one-liner in "Checks").
 - If the docs are silent, add a question to `docs/plans/questions.md` and move on. Do not guess.
-- When you find a gap in the prototype (`design/prototype/index.html`) during implementation, fix it in the prototype and in the docs together. The owner asked for this.
+- When you find a gap in the prototype (`design/prototype/index.html`) during implementation, fix it in the prototype and in the docs together (the owner asked for this).
 - Do not mention vendor names outside `Deskair.Sensors` and `App/Composition`. Do not use `DateTime.Now`. UI strings and colours come from resources and tokens.
+- **The owner is not a native Ukrainian speaker.** Every new string gets an English and a Ukrainian value; mark the Ukrainian `<comment>Draft: needs native review.</comment>` and add product strings to `docs/design/localization.md`.
+- The owner wants to be told plainly what is verified and what is not (for example "tested with a fake, not on the real sensor"). Say so.
 
 ## Checks (all must pass before a card is done)
 
@@ -24,7 +26,13 @@ dotnet test tests/Deskair.Tests
 dotnet format Deskair.sln --verify-no-changes
 ```
 
-State now: build 0 warnings and 0 errors; **785 tests, 768 passed, 17 skipped, 0 failed** (stable over repeated runs); format clean. `todo-index.md`: **51 cards** (L 12, M 24, S 15; haiku 25, sonnet 26). Nothing is committed.
+State now: build 0 warnings and 0 errors; **1051 tests, 1022 passed, 29 skipped, 0 failed** (17+2 of the skipped are image-render tests that only run with `DESKAIR_RENDER=1`, the rest are card placeholders); format clean. `todo-index.md`: **14 cards**. Nothing is committed.
+
+Recompute the totals line of `todo-index.md` with:
+
+```
+awk -F'|' '/^\| [A-Z]+-[0-9]/ {gsub(/ /,"",$4); gsub(/ /,"",$5); s[$4]++; m[$5]++; t++} END {printf "Totals: %d cards. Sizes: L: %d, M: %d, S: %d. Suggested models: haiku: %d, sonnet: %d.\n", t, s["L"], s["M"], s["S"], m["haiku"], m["sonnet"]}' docs/plans/todo-index.md
+```
 
 ## How to see what you built (important)
 
@@ -32,62 +40,79 @@ You cannot see the UI, so use these:
 
 | What | How |
 |---|---|
-| Gallery of every control, light and dark, English and Ukrainian, as PNG | `$env:DESKAIR_RENDER=1; dotnet test tests/Deskair.Tests --filter "FullyQualifiedName~GalleryRenderTests"` writes `artifacts/visual/gallery-*.png` |
-| The whole Live screen with real view models and simulated data (normal, stale, low battery, dark, Ukrainian, Fahrenheit) | same switch, `--filter "FullyQualifiedName~MainWindowRenderTests"` writes `artifacts/visual/live-*.png` |
-| The prototype as PNG | `msedge --headless=new --window-size=1280,6000 --screenshot=<png> file:///C:/Personal/Dev/Projects/Deskair/design/prototype/index.html`, then crop slices with System.Drawing in PowerShell |
-| The real running app | `dotnet run --project src/Deskair.App -- --simulated` (own temp data folder, no sensor). To capture only its window use the Windows `PrintWindow` call, not a screen capture |
+| Gallery of every control, light and dark, English and Ukrainian, as PNG | `$env:DESKAIR_RENDER=1; dotnet test tests/Deskair.Tests --filter "FullyQualifiedName~GalleryRenderTests"` writes `artifacts/visual/gallery-*.png`. The gallery is long (about 6000 px high); crop the part you need with System.Drawing in PowerShell |
+| Whole screens with real view models | same switch with `--filter "FullyQualifiedName~MainWindowRenderTests"` (Live), `OnboardingRenderTests` (first run and add a sensor), `SettingsRenderTests`, `HistoryRenderTests`. They write `live-*.png`, `firstrun-*.png`, `settings-*.png`, `history-*.png` |
+| The prototype as PNG | `msedge --headless=new --window-size=1280,6000 --screenshot=<png> file:///C:/Personal/Dev/Projects/Deskair/design/prototype/index.html`, then crop |
+| The real running app | see "Running the real app" below, and capture its window with the Windows `PrintWindow` call (`PrintWindow(hwnd, dc, 2)` into a `Bitmap`). The first capture of a process works; a later capture of the same process has sometimes returned only the title bar |
 
-Open the PNGs with the Read tool. `artifacts/` is git-ignored. The render tests only run when `DESKAIR_RENDER=1`.
+Open the PNGs with the Read tool. `artifacts/` is git-ignored. The render tests run only when `DESKAIR_RENDER=1`. In renders, toggle knobs always sit on the "off" side (the animation does not run offscreen); that is not a bug.
 
-## Done in this session (all green, nothing committed)
+## Running the real app (dev switches, all in `AppOptions`)
 
-- **Decisions:** D-0015 (no recovery-time estimate; advice text follows the CO₂ trend; mini cards show the plain trend, and a temperature or humidity label only when outside the ideal range; pressure never has a comfort label). Q4 (selected device remembered), Q6 (temperature unit °C/°F, stored data stays °C), Q24 to Q26, Q28, Q29 recorded in `questions.md` "Decided".
-- **Settings and devices:** `AppSettings.TemperatureUnit` and `SelectedDevice` (persisted), `MetricFormatter` (culture and unit for every metric value), `DeviceRegistry.LoadAsync(preferred)`, `Known`, `Info`.
-- **View models (all with tests):** Hero (with stats, zone/value/unit texts), Gauge, MetricTabs (+`SelectMetricCommand`), MiniCards, ChartCard (display-unit conversion, window, end time, ideal range, summary, 24 h ribbon data), Live (public children; reloads on `DeviceSelected` and `SyncCompleted`), Flyout (shares `AirSummaryBuilder` with the hero), Connection (flags, retry, dismiss low battery), Footer, RoomChip, Settings (appearance, alerts, devices, startup, data folder), Onboarding scan, History (toolbar, stats, typical day, `HistoryViewModel`).
-- **Domain:** `LiveStatsCalculator` (good share, peak, time in zone), `RibbonCalculator` (144 slots), `TemperatureUnit`.
-- **Services:** `ConnectionTracker` (publishes `ConnectionStateChanged`; follows readings, status, device change and the radio; `StartAsync` also starts its own 15 s check for silence, never on the UI thread, and logs failures), `SensorSession` (connect, sync, live feed; retries every 30 s; **runs on the thread pool on purpose**, see gotchas), messages `DeviceSelected`, `SensorStatusUpdated`, `SyncCompleted`, `RetryRequested`.
-- **Controls (11 of the catalogue) plus LogoRing:** Gauge, AdviceCard, StatTriple, KeyValueCell, MetricCard, Banner, RoomChip, RoomMenu, BatteryIcon, PrimaryButton, SecondaryButton, LogoRing.
-- **Charts:** `ChartArea` (scales, brush lookup), `ChartBase` (render, hover, hit test), `ChartHitTest`, `ChartTicks`; layers Band, Grid, DashedZoneLines, AxisLabel, ZoneLine, Line, IdealBand, Crosshair, NoData, Ribbon; charts `LiveChart`, `Sparkline`, `ZoneRibbon`.
-- **Views:** LiveView, HeroCard, ChartCard, MetricTabs, MiniCardsRow, HeaderBar (logo, navigation, room chip and menu), FooterBar.
-- **Wiring:** `--simulated` mode (`AppOptions`, `KnownFolders` uses `%TEMP%\Deskair-simulated`), `AppServicesStarter` (testable startup logic: seeds two simulated rooms on first simulated run), `StartupSequence` (settings, language and theme, window, then services), `App` (startup error box, clean stop on exit), DI registrations, `ServiceRegistrationTests` (resolves the whole graph). `BluetoothRadioMonitor` implemented with the Windows radio API (BLE-03a, status `doing`); `SimulatedRadio` for `--simulated`.
-- **Phone export:** a real export is in `tests/Deskair.Tests/TestData/Aranet4_0A0B3_Export_Example.xlsx` and has a golden test (720 rows).
-- **Bugs fixed that you should not reintroduce:** see "Gotchas".
+| Command (from the repo root) | What it does |
+|---|---|
+| `dotnet run --project src/Deskair.App -- --simulated` | simulated sensor, own temp data folder `%TEMP%\Deskair-simulated`, two seeded rooms |
+| `... -- --sensor C3DEC8FCC7C6` | real Bluetooth, that one sensor, own temp data folder `%TEMP%\Deskair-sensor-test` (persists between runs; delete the folder to test a fresh install) |
+| `... -- --first-run` | real Bluetooth, empty temp data folder `%TEMP%\Deskair-first-run`, wiped at every start; shows the welcome screen |
+| `... -- --gallery` | the control gallery |
+| `... -- --spike-s1 [--compare file.xlsx]` | the throwaway S1 spike; writes `artifacts/spike-s1/` |
 
-## Next work (the owner expects this order; plan it and wait for approval)
+The owner's sensor is an Aranet4 `0A0B3`, address `C3DEC8FCC7C6`, Bluetooth is on, and the sensor is within reach of this PC, so **you can run the real app yourself** (start it with `Start-Process`, wait, capture the window, `Stop-Process`). A full first sync of a week takes about 25 s. Real-app logs: `%LOCALAPPDATA%\Deskair\logs\deskair-YYYYMMDD.log` (read-only for you: removal of that folder is blocked). The log shows connect, sync result, each live reading, sensor discovery and warnings; **read it before guessing** why something does not work.
 
-1. **Write the spike programs.** The owner runs the spikes on their own machine and pastes the output back. You write each spike as a tiny runnable program (a console project or a `--spike-sN` switch is fine; ask before adding a project) with a clear "paste this output here" step and a note file in `docs/plans/` for the answer. Order: **S1 first** (Aranet4 history over BLE; unblocks about 12 cards: BLE-01a, BLE-02a/b/c, ARANET-01a to 04a). Then S2 (flyout placement), S3 (title bar and snap layouts), S4 (crisp tray icons), S5 (toasts). Spike text is in `docs/plans/spikes.md`.
-2. **History and Settings views** (the view models exist): HIST-00b, 01c, 05d, 06c; SET-01i to n; SLEEP-01a; STATE-01b/c; FIRST-01b; controls CTRL-06, 10, 11, 12, 14, 15; charts CHART-14 to 17, 21, 22. Add each control to the gallery and check the PNGs against the prototype, as for the Live controls.
-3. **SET-01g2** (import and export commands in Settings): add a small `IFileDialogs` service (`PickFileToOpenAsync`, `PickFileToSaveAsync`) in `Services/Platform`, implemented once in App with the built-in WPF dialogs. The owner has seen the idea but **has not yet said the shape is fine**; confirm before building. Export CSV uses the device selected in the header and the full range.
-4. **Windows glue** after the spikes: tray (approved package `H.NotifyIcon.Wpf`), flyout positioning, toasts, startup registration (SET-03a/b), power events (SYNC-03a), single instance (WIN-02a), logging (LOG-01a), title bar and backdrop (WIN-01a, Q14).
-5. **Smaller improvements the owner mentioned** (decide later, with them): hero card width and wrapping. The stat captions ("Good in last 24 h", "In the Elevated zone") wrap and clip when the window is narrow; the owner suggested a fixed or minimum hero width and wrapping the other elements. Also the full-screen offline view (STATE-01b) and a "can't read history" state (Q27).
+## Done (all green, nothing committed)
+
+Earlier sessions: domain, storage, services, Live screen, view models, charts (Live), controls (see the previous handoff in git history if the owner committed it).
+
+This session:
+
+- **S1 (history over BLE) is closed.** Note and results: `docs/plans/spike-s1-ble-history.md` (packet layout, 5040 readings every 120 s, values match the phone export row by row, phone app connected is fine). A real capture is `tests/Deskair.Tests/TestData/aranet4-history-capture.txt` (154 packets).
+- **Aranet4 driver** in `Deskair.Sensors/Aranet4`: `Aranet4Protocol` (UUIDs, offsets), `Aranet4Parser` (current readings, one history page, history join with the "a reading arrived mid-download" correction), `Aranet4Sensor` (connect, current, history with progress; **all four metrics are downloaded before any reading is returned**, a failed or stalled download throws and returns nothing), `Aranet4Provider` (scan filter by name or manufacturer id; an address first seen without a name is reported again when its name arrives). `IBleConnection` gained `WriteAsync` (D-0016).
+- **Windows Bluetooth** in `App/Platform/Bluetooth`: `WindowsBleScanner`, `WindowsBleConnection`, `BleAddress` (12 upper-case hex digits). Verified on the real sensor: scan, connect, read, write (the history download), discovery in 2 to 8 s. **Not verified:** `SubscribeAsync` (the Aranet4 does not use notifications).
+- **Logging:** `RollingFileLoggerProvider` (one file per day, newest 7, never throws). Information lines: app start, sensor found, connected, sync result, each live reading, scan restarts.
+- **First run:** `DeviceEnrollment` (Services: enroll, rename), `OnboardingViewModel` (checklist, nearby sensors with signal wording via `SignalClassifier`, room name default "My room", Pair, Retry, no-sensor and Bluetooth-off hints, **scan restarts every 8 s while nothing is found and when the radio turns on** because the radio monitor reports "off" for the first moments after start), `OnboardingView`, `WelcomeCard`. The shell shows it instead of Live while there is no sensor, and also on top of Live when the user presses Add in Settings (`OnboardingViewModel.IsOpen`, Cancel button). The simulated provider is registered only for `--simulated` and the gallery.
+- **Live reading first:** after connecting, `SensorSession` shows the current reading at once (`LiveFeed.PollOnceAsync`, announced but **not stored**, because the history sync asks for everything after the newest stored reading), then syncs history, then polls at the interval. The footer shows "Syncing history… N%" (`SyncStarted`/`SyncProgressed`/`SyncCompleted` messages, `ISensor.ReadHistoryAsync(since, progress, ct)` default interface method, `HistoryProgress`).
+- **Settings screen:** Appearance (language, theme, temperature unit), Alerts (switches; quiet-hours times not editable yet), Devices (rename, add), Start-up (start with Windows, real per-user Run key in `StartupRegistration`). View models save a change at once (`loading` guard in `Load()`); `SettingsApplier` applies language and theme on `SettingsChanged`; Live and History reload on `SettingsChanged`. New controls: `SettingsCard`, `SettingsRow`, `TextInput` (Enter moves focus on).
+- **History screen:** `HistoryToolbar`, `HistoryChart` (bars with `RangeBarLayer`, `AverageLineLayer`, `WeekendShadingLayer`, `GapHatchLayer`; hourly line for Day), `TypicalDayChart` (`HourBarLayer`, `HourAxisLayer`), `TypicalDayCard`, partial `StatsCard`, `HistoryView`. New controls: `CoverageChip`, `ZoneShareBar`, `InsightBox`. `HistoryViewModel` loads when the section opens and when the toolbar, a sync, the room or a setting changes; values are converted to the display unit there.
+- **Import and export (SET-01g2, SET-01m, CTRL-06, STATE-01c, History Export):** `IFileDialogs` (open and save, returns null on cancel; `FileTypeFilter` gives the description and extensions, no WPF filter string) and `IFolderOpener` in `Services/Platform`, implemented by `WindowsFileDialogs` and `ExplorerFolderOpener` in `App/Platform/Files`. `ReadingImporters` (Services) finds the importer of the selected device. `IDataFolderChoice` (Services) is the folder picked in Settings: `DataFolderChoice` keeps it in `%LOCALAPPDATA%Deskairdata-folder.txt` and `KnownFolders` uses it from the next start (Q34); `IFileDialogs.PickFolderAsync` picks it. `ImportViewModel` (choose file, preview, confirm or cancel, result line) and `ExportViewModel` (all stored readings of the selected device to CSV) live in `ViewModels/Data` and are shared: `DataSettingsViewModel` holds both plus Open folder, `HistoryViewModel.Export` feeds the toolbar Export button (`ExportCommand` and `ExportStatus` dependency properties). New messages: `ReadingsImported` (History reloads) and `ImportRequested` (shell goes to Settings). `HistoryViewModel.IsEmpty` (via `ReadingQueryService.HasReadingsAsync`) swaps the charts for `EmptyHistoryView`. New control `EmptyStateCard` with a gallery section. Decisions in Q34 and Q35. **Verified:** view models with fakes (real files in a temp folder), renders of Settings, History (data and empty) and the gallery. **Not verified:** the real Windows open and save dialogs and Open folder (you cannot click), and an import of a real phone export through the UI (the importer itself is covered by its own golden tests).
+- **Stats card (HIST-06c):** `StatsInput` carries everything the card needs; `StatsViewModel.Update(StatsInput)` sets the change against the period before (`MetricFormatter.Difference` keeps a temperature difference free of the °F offset), best and worst period (`BucketStatistics.Lowest/Highest`, complete buckets only), time in each zone (`ZoneShareCalculator`, `ReadingQueryService.GetZoneShareAsync`, CO₂ only) and the insight (`TypicalDayCalculator.WorstWindow`). `HistoryViewModel` loads the period before and the zone share. Rules and what is not built: Q36 (no "comfort range" for temperature and humidity, no insights for other metrics or the night view). **Verified:** view models and domain code with tests; renders of Week, Month, Year (English and Ukrainian). **Not verified:** the real app with real data.
+- **Docs and tokens:** D-0016 in `docs/decisions.md`; Q32 and Q33 in `docs/plans/questions.md`; new strings in `docs/design/localization.md`; new tokens in `Spacing.xaml`/`Typography.xaml`; the prototype's first-run screen lost its room-type row and its settings rows got 4 px padding.
+
+## Next work (plan it and wait for approval)
+
+Remaining cards are in `todo-index.md` (14). Suggested order:
+
+1. **STATE-01b** (full-screen offline view, Q31): today Live keeps the last values and only the footer says "Not connected".
+2. **Spikes S2 to S5** (flyout placement, title bar, crisp tray icons, toasts): write each as a runnable program for the owner to run, as was done for S1 (`--spike-sN` switch in `Deskair.App/Composition/Spikes`, a note in `docs/plans/`, output saved under `artifacts/`). Text is in `docs/plans/spikes.md`. Ask before adding a project.
+3. **Windows glue** after the spikes: tray (`H.NotifyIcon.Wpf`, TRAY-01a/b), flyout (TRAY-02a/b), toasts (ALERT-02a), Do Not Disturb (ALERT-03a, then the "Alerts paused by Windows" line and quiet-hours time editing in Settings), power events (SYNC-03a), single instance (WIN-02a), title bar and backdrop (WIN-01a, Q14).
+4. **Possible robustness fix, not requested:** `LiveFeed` only logs a failed live read and keeps polling a dead connection; it never reconnects. If the owner sees "Not connected" again, read the log first. If reads fail, make a transport failure (`IOException`) escape `LiveFeed.RunAsync` so `SensorSession` reconnects (it retries every 30 s); keep invalid-data errors (`FormatException`) as log-and-continue. Ask the owner first: it changes shared service behaviour and `LiveFeedTests`.
 
 ## Open questions for the owner (`docs/plans/questions.md` "Open")
 
-Q7 (read the date order from the export header; flag the repeated autumn hour), Q13 (Do Not Disturb unreadable: alerts treated as allowed, owner agreed), Q14 (title bar, needs S3), Q17 (placeholder strings and Ukrainian review; owner will do it later), Q27 (history cannot be read), Q30 (footer signal limits are an assumption: good at -60 dBm or stronger, fair to -75, weak below), Q31 (offline view not built).
+Q7 (read the date order from the export header; flag the repeated autumn hour), Q13 (Do Not Disturb unreadable: treat alerts as allowed, owner agreed), Q14 (title bar, needs S3), Q17 (placeholder strings and Ukrainian review), Q27 (history cannot be read), Q30 (footer signal limits are an assumption), Q31 (offline view not built), Q32 (a connected Aranet4 reports no signal strength, so the footer shows none: ask whether to pass on the advertisement signal), Q33 (older firmware uses another service id; not supported).
 
 ## Blocked or waiting on the owner
 
-- Spikes S1 to S5 (the owner runs them; Bluetooth is enabled on their machine).
+- Running spikes S2 to S5 (they run them on their machine and paste or save the output).
 - The toast library choice (after S5).
-- BLE-03a needs a manual check: toggle Bluetooth in Windows settings and confirm `IsOn` follows (only the real, non-simulated app uses it).
+- Manual checks: the file dialogs and Open folder in the real app (press Choose file, Export, Open folder; import the phone export of the owner's sensor), BLE-03a (turn Bluetooth off and on in Windows and confirm the app follows; the log shows the radio state at start), BLE-02c (needs a sensor that uses notifications), pressing Pair and Add in the real UI (you cannot click; these are covered by tests and renders only).
 
 ## Gotchas found in this and earlier sessions
 
-- **A style kept under a key inside a control dictionary cannot be found at run time** (`DynamicResource` or `StaticResource` from the control's template). The segmented control used to fall back to WPF's default list item because of this. Embed such styles inside the control's own style (see `SegmentedControl.xaml`) and use `DynamicResource` for tokens and text styles. A `Style` set on an element still gets the control's default template underneath.
-- **Services must not resume on the UI thread.** Loops started from the UI thread capture its synchronization context; at exit the UI thread waits for them and the process hangs. `SensorSession` starts its loop with `Task.Run` (regression test `The_session_never_depends_on_the_thread_that_started_it`). Do the same for any new background loop.
-- **Exit:** `SensorSession` implements both `IDisposable` and `IAsyncDisposable` because the host disposes synchronously.
-- **Detached content loses its inherited `DataContext`.** The render harness sets `content.DataContext` before it removes the content from the window.
-- **The gallery's own switches reset the theme and language while it loads**, so the render test re-applies them afterwards.
-- **WPF's `TextBlock` line height** is about 1.33 times the font size; the hero, mini and history values set `LineHeight` equal to the font size (`BlockLineHeight`) like the prototype.
-- **Neighbouring chart blocks leave faint seams** unless their edges are snapped to device pixels (see `RibbonLayer`).
-- **Do not use `async void`** for fire-and-forget; start a `Task` and log failures (see `LiveViewModel`).
-- **Shell heredocs:** long multi-file heredocs fail to parse in this environment. Create files with the editor tools, and keep shell edits short. PowerShell 5 `Set-Content -Encoding utf8` writes a BOM; `dotnet format` then fails with CHARSET.
-- **Analyzers that fail the build:** CA1001, CA1816 (seal test classes that are `IDisposable`), CA1834, CA1822, CA1859, CA1873 (guard logging with `IsEnabled`), xUnit1051 (pass `TestContext.Current.CancellationToken`), IDE1006 (private static fields in camelCase), and sorted usings.
-- **Tests with timing:** use `FakeClock` (timers fire only on `Advance`), `Wait.Until` for real-time waits, `FakeDeviceStore.Snapshot()` when a session may be saving from another thread, `FakeUiDispatcher` (runs posted work inline). A test that can hang should have `[Fact(Timeout = …)]`.
-- **Build locks:** if a build fails with "file locked by .NET Host", run `dotnet build-server shutdown` and rebuild. Kill a stuck `Deskair.Tests.exe` with `taskkill`.
-- **Never run `rm -rf` with a glob after a `cd`;** the safety check blocks it. Unzip into a fresh folder in the scratchpad instead.
-- **Strings:** every English key needs a Ukrainian key (a test checks it); product strings also go in `docs/design/localization.md`. Numbers use the selected culture. Gallery-only strings are the `Gallery_*` keys.
-- **Tokens:** edit the theme XAML directly and keep light and dark keys identical (a test checks it). Sizes and margins are tokens in `Spacing.xaml` and `Radii.xaml`; use a `GridLength` token for row and column sizes.
+- **Services must not resume on the UI thread.** Background loops start with `Task.Run` (see `SensorSession`). `SensorSession` implements `IDisposable` and `IAsyncDisposable`.
+- **A style kept under a key inside a control dictionary cannot be found at run time** from a template (`StaticResource`/`DynamicResource`). Embed styles in the control's own style. In `Generic.xaml` templates, `BasedOn="{StaticResource Text.Secondary}"` also fails (BaseStyles are not visible there); use a plain style with setters, or `DynamicResource` tokens. A `Style` set on an element still gets the control's default template underneath, and `Style=` plus a nested `.Style` on the same element is an error.
+- **Detached content loses its inherited `DataContext`.** The render harnesses set `content.DataContext` before removing the content from the window.
+- **Chart drawing:** a `Border` does not clip children to its rounded corners (clip by hand, see `ZoneShareBar`); neighbouring chart blocks leave seams unless snapped to device pixels. WPF's `TextBlock` line height is about 1.33 times the font size.
+- **The radio monitor is asynchronous:** `IBluetoothRadio.IsOn` is false for a moment after start. Anything that checks it once at start-up must also react to `StateChanged`.
+- **The sensor only sends an index, not timestamps.** Times are reconstructed from the age of the newest reading and snapped with `SlotMerger.Snap`. The phone export's own timestamps drift by up to a minute; compare by row, not by nearest time.
+- **Timing tests with `FakeClock`:** timers fire only on `Advance`. Before advancing, wait until the loop has created its timer: `await Wait.Until(() => clock.PendingTimers >= 1)` (three flaky tests were fixed this way). Lists that a background thread fills while a test reads them must be `ThreadSafeLog<T>`. `ListProgress<T>` records progress synchronously.
+- **`StrongReferenceMessenger` allows one handler per message type per recipient**; registering twice throws in the constructor. Messages are sent from whatever thread the sender runs on; view models post to the UI through `IUiDispatcher`.
+- **Do not use `async void`**; start a `Task` and log failures. Do not leave a bare `cat` or other stdin-reading command in a shell call (it hangs).
+- **Shell heredocs:** long or multi-file heredocs fail to parse in this environment. Create files with the editor tools; keep shell edits short. When you splice text into a file with `sed`/`perl`, check that it applied (a silent no-match happened several times; CRLF files need `\r?\n`). PowerShell 5 `Set-Content -Encoding utf8` writes a BOM and `dotnet format` then fails with CHARSET.
+- **Analyzers that fail the build:** CA1001, CA1816, CA1826, CA1834, CA1822, CA1859, CA1873 (guard logging with `IsEnabled`), xUnit1031 (no `.GetAwaiter().GetResult()` in tests), xUnit1051/xUnit1069 (use `TestContext.Current.CancellationToken`), IDE1006 (private static fields in camelCase, constants in PascalCase), sorted usings. Run `dotnet format Deskair.sln` (without `--verify-no-changes`) to fix whitespace and usings, then build.
+- **Build locks:** if a build fails with "file locked by .NET Host", run `dotnet build-server shutdown` and rebuild. A stuck app can be stopped with `Stop-Process`.
+- **Never run `rm -rf` with a glob after a `cd`;** the safety check blocks it. Deleting `%TEMP%\Deskair-*` folders is fine.
+- **Strings:** every English key needs a Ukrainian key (a test checks it); numbers use the selected culture; unit symbols and "CO₂", "Aranet4", "Deskair" are not translated. **Tokens:** edit the theme XAML directly and keep light and dark keys identical (a test checks it); `Metric.Co2.*` tokens already existed.
+- **One unreproduced failure** once appeared in `AppServicesStarterTests` cleanup (`session.DisposeAsync`); it never recurred in many later runs. If it comes back, capture the exception text.
 
 ## Where to look
 
@@ -95,8 +120,10 @@ Q7 (read the date order from the export header; flag the repeated autumn hour), 
 |---|---|
 | What a card must do | the card above the stub; its `Spec:` line names the doc |
 | Behaviour, thresholds, merge, trend | `docs/product/behaviour-rules.md`, `docs/engineering/data-model.md` |
+| BLE protocol as seen on the sensor | `docs/plans/spike-s1-ble-history.md`, `Aranet4Protocol.cs`, `tests/Deskair.Tests/TestData/aranet4-history-capture.txt` |
 | Colours and sizes | `docs/design/design-tokens.md`, then `design/prototype/index.html` |
-| Adding a control, string, setting | `docs/guides/` |
-| Why something was decided | `docs/decisions.md` (latest: D-0015) |
+| Adding a control, string, setting, sensor | `docs/guides/` and the skills in `.claude/skills/` |
+| Why something was decided | `docs/decisions.md` (latest: D-0016) |
 | Dependency rules | `docs/engineering/architecture.md` section 3, `tests/Deskair.Tests/Architecture` |
-| Startup and wiring | `src/Deskair.App/Composition/` (`AppServicesStarter`, `StartupSequence`, `ServiceRegistration`) |
+| Startup and wiring | `src/Deskair.App/Composition/` (`AppServicesStarter`, `StartupSequence`, `ServiceRegistration`, `SettingsApplier`, `AppOptions`) |
+| Test helpers | `tests/Deskair.Tests/Fakes/` (`FakeClock`, `FakeAranet4Connection`, `FakeBleScanner`, `Aranet4TestData`, `ThreadSafeLog`, `ListProgress`, `Wait`) |
