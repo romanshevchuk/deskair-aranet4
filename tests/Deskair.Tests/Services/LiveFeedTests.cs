@@ -153,12 +153,39 @@ public sealed class LiveFeedTests : IDisposable
             ? Samples.Co2(Samples.Utc(2026, 10, 9, 12), 800)
             : throw new IOException("Connection lost.");
         var running = Start();
+        await Wait.Until(() => received.Count == 1);
         await Wait.Until(() => clock.PendingTimers >= 1);
 
         clock.Advance(interval);
 
         await Assert.ThrowsAsync<IOException>(() => running);
         Assert.Equal(800, received.Single().Reading.Co2Ppm);
+    }
+
+    [Fact]
+    public async Task Run_gives_up_on_a_read_that_never_answers_so_the_session_can_reconnect()
+    {
+        sensor.HangCurrentReads = true;
+        var running = Start();
+        await Wait.Until(() => clock.PendingTimers >= 1);
+
+        clock.Advance(LiveFeed.ReadTimeout);
+
+        await Assert.ThrowsAsync<TimeoutException>(() => running);
+        Assert.Empty(received);
+    }
+
+    [Fact]
+    public async Task Poll_once_stops_waiting_for_a_read_that_never_answers_and_does_not_throw()
+    {
+        sensor.HangCurrentReads = true;
+        var polling = feed.PollOnceAsync(sensor, device, interval, stop.Token);
+        await Wait.Until(() => clock.PendingTimers >= 1);
+
+        clock.Advance(LiveFeed.ReadTimeout);
+        await polling;
+
+        Assert.Single(logger.Entries);
     }
 
     [Fact]

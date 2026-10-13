@@ -29,6 +29,9 @@ public sealed class FakeSensor : ISensor
     public Func<int, Reading> OnReadCurrent { get; set; }
         = call => Samples.Co2(Samples.Utc(2026, 10, 9, 12).AddMinutes(2 * call), 800 + call);
 
+    /// <summary>When true, a current reading never answers until it is cancelled (a sensor out of range that Windows still counts as connected).</summary>
+    public bool HangCurrentReads { get; set; }
+
     public int ReadCurrentCalls { get; private set; }
 
     public int MaxConcurrentReads { get; private set; }
@@ -45,6 +48,11 @@ public sealed class FakeSensor : ISensor
         try
         {
             await Task.Yield();
+
+            if (HangCurrentReads)
+            {
+                await Task.Delay(Timeout.Infinite, cancellationToken);
+            }
 
             return OnReadCurrent(call);
         }

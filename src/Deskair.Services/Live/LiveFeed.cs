@@ -10,6 +10,9 @@ namespace Deskair.Services.Live;
 /// <summary>Polls current readings at the sensor's interval, stores them and raises ReadingReceived.</summary>
 public sealed class LiveFeed
 {
+    /// <summary>How long one current reading may take. A sensor that left range can stay "connected" for Windows and never answer; after this the read counts as a lost connection.</summary>
+    public static readonly TimeSpan ReadTimeout = TimeSpan.FromSeconds(30);
+
     private readonly IReadingStore readings;
     private readonly IMessenger messenger;
     private readonly TimeProvider timeProvider;
@@ -38,6 +41,7 @@ public sealed class LiveFeed
     /// <summary>
     /// Polls at the sensor's interval until cancelled. A failed read is logged and the next interval tries again, except when the connection itself failed (<see cref="IOException"/>,
     /// <see cref="TimeoutException"/>): that is logged and thrown, so <see cref="SensorSession"/> opens a new connection instead of polling a dead one.
+    /// A read that takes longer than <see cref="ReadTimeout"/> counts as a lost connection too.
     /// With <paramref name="pollFirst"/> false the first poll waits one interval, for a caller that has just read.
     /// </summary>
     public async Task RunAsync(
@@ -68,11 +72,26 @@ public sealed class LiveFeed
         }
     }
 
+    private async Task<Reading> ReadWithTimeoutAsync(ISensor sensor, CancellationToken cancellationToken)
+    {
+        using var timeout = new CancellationTokenSource(ReadTimeout, timeProvider);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
+
+        try
+        {
+            return await sensor.ReadCurrentAsync(linked.Token);
+        }
+        catch (OperationCanceledException) when (timeout.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
+        {
+            throw new TimeoutException($"The sensor did not answer within {ReadTimeout.TotalSeconds:0} s.");
+        }
+    }
+
     private async Task PollAsync(ISensor sensor, DeviceId device, TimeSpan interval, bool store, bool rethrowConnectionFailure, CancellationToken cancellationToken)
     {
         try
         {
-            var reading = await sensor.ReadCurrentAsync(cancellationToken);
+            var reading = await ReadWithTimeoutAsync(sensor, cancellationToken);
 
             if (store)
             {
