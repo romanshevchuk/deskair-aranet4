@@ -77,6 +77,7 @@ Segoe UI Variable Text, falling back to Segoe UI. Minimum size 12 px. Tabular fi
 | Hero and zone card border | 1 px. The prototype says 1.5 px, which a browser draws as one device pixel at 100 % scale; WPF would round 1.5 up to 2 px, so the tokens say 1 px |
 | Radius: advice panel, banner, insight | 12 px and 10 px |
 | Radius: segmented track / segment | 10 px / 8 px |
+| Radius: pill, toggle track, focus ring | Half the control height, so both ends are half circles (prototype: border-radius 999). WPF clamps a large radius on each axis separately, which gives elliptical ends, so `PillRadiusConverter` binds the radius to the height |
 | Radius: window | 10 px (Windows 11); 1 px border at 30 % grey |
 | Hero padding | 22 / 24 / 20 px |
 | Settings card / row | card padding 12 / 22 / 2 px; row at least 40 px tall with 4 px above and below, 16 px between label and control, a 1 px divider above every row but the first |

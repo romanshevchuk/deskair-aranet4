@@ -12,8 +12,7 @@
   <CornerRadius x:Key="Radius.Window">10</CornerRadius>
   <CornerRadius x:Key="Radius.Flyout">12</CornerRadius>
   <CornerRadius x:Key="Radius.Toast">8</CornerRadius>
-  <!-- Pill: fully rounded (prototype border-radius 999). Banner 10 and buttons 6 come from the prototype. -->
-  <CornerRadius x:Key="Radius.Pill">999</CornerRadius>
+  <!-- Pills (the Pill control, the toggle track, the focus ring) have half their height as radius through PillRadiusConverter: the prototype's border-radius 999 turns into elliptical ends in WPF. Banner 10 and buttons 6 come from the prototype. -->
   <CornerRadius x:Key="Radius.Chip">10</CornerRadius>
   <CornerRadius x:Key="Radius.Battery">3</CornerRadius>
   <CornerRadius x:Key="Radius.Gauge.Start">4,0,0,4</CornerRadius>

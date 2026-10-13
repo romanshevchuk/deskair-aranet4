@@ -1,9 +1,11 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
+                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls"
+                    xmlns:markup="clr-namespace:Deskair.App.Ui.Markup">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/Deskair.App;component/Ui/Theme/Tokens/Spacing.xaml" />
   </ResourceDictionary.MergedDictionaries>
+<markup:PillRadiusConverter x:Key="Toggle.Radius" />
 
   <Style TargetType="{x:Type local:ToggleSwitch}">
     <Setter Property="Foreground" Value="{DynamicResource Text.Primary.Brush}" />
@@ -18,7 +20,7 @@
                     Width="{DynamicResource Size.Toggle.Width}"
                     Height="{DynamicResource Size.Toggle.Height}"
                     Background="{DynamicResource Toggle.Off.Brush}"
-                    CornerRadius="{DynamicResource Radius.Pill}">
+                    CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource Self}, Converter={StaticResource Toggle.Radius}}">
               <Ellipse x:Name="Knob"
                        Width="{DynamicResource Size.Toggle.Knob}"
                        Height="{DynamicResource Size.Toggle.Knob}"

@@ -1,5 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:markup="clr-namespace:Deskair.App.Ui.Markup">
+  <markup:PillRadiusConverter x:Key="Focus.Pill.Radius" />
   <!-- Shared keyboard focus ring (accessibility: every control has a visible focus ring). -->
   <Style x:Key="Focus.Ring.Pill">
     <Setter Property="Control.Template">
@@ -8,7 +10,7 @@
           <Border Margin="-3"
                   BorderBrush="{DynamicResource Focus.Ring.Brush}"
                   BorderThickness="2"
-                  CornerRadius="{DynamicResource Radius.Pill}"
+                  CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource Self}, Converter={StaticResource Focus.Pill.Radius}}"
                   IsHitTestVisible="False" />
         </ControlTemplate>
       </Setter.Value>
