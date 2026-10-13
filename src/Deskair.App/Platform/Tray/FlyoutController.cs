@@ -29,6 +29,7 @@ public sealed class FlyoutController
     private readonly ILogger<FlyoutController> logger;
     private readonly ToggleGuard guard;
     private FlyoutWindow? window;
+    private ScreenPoint? anchor;
 
     public FlyoutController(
         FlyoutViewModel viewModel,
@@ -63,7 +64,7 @@ public sealed class FlyoutController
                 return;
             }
 
-            var anchor = ScreenPoint.AtCursor();
+            anchor = ScreenPoint.AtCursor();
 
             await RefreshAsync();
 
@@ -85,6 +86,16 @@ public sealed class FlyoutController
     {
         var created = new FlyoutWindow(new FlyoutView { DataContext = viewModel });
         created.Dismissed += (_, _) => guard.NotifyHidden();
+
+        // The first time, the content has no real size until the window is on screen, so the position worked out before showing is too low.
+        // Place it again as soon as the window knows its size; moving without resizing does not raise this event again.
+        created.SizeChanged += (_, _) =>
+        {
+            if (created.IsVisible)
+            {
+                Place(created, anchor);
+            }
+        };
 
         return created;
     }
