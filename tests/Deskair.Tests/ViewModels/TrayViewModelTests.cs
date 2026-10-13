@@ -22,6 +22,7 @@ public class TrayViewModelTests
     private readonly DeviceRegistry registry;
     private readonly FakeSettingsStore settingsStore = new();
     private readonly SettingsService settings;
+    private readonly FakeDoNotDisturb doNotDisturb = new();
 
     public TrayViewModelTests()
     {
@@ -39,7 +40,7 @@ public class TrayViewModelTests
         await registry.LoadAsync(TestContext.Current.CancellationToken);
         localizer ??= new FakeLocalizer();
 
-        return new TrayViewModel(registry, localizer, TestFormatter.Create(localizer), messenger, new FakeUiDispatcher(), settings);
+        return new TrayViewModel(registry, localizer, TestFormatter.Create(localizer), messenger, new FakeUiDispatcher(), settings, doNotDisturb);
     }
 
     private void Reading(double ppm, DeviceId? from = null)
@@ -212,5 +213,50 @@ public class TrayViewModelTests
         await settings.UpdateAsync(current => current with { ShowValueOnTrayIcon = false }, TestContext.Current.CancellationToken);
 
         Assert.False(viewModel.ShowValue);
+    }
+
+    [Fact]
+    public async Task While_windows_holds_alerts_the_tooltip_says_so()
+    {
+        var viewModel = await CreateAsync();
+        Reading(1068);
+
+        messenger.Send(new DoNotDisturbChanged(true));
+
+        Assert.Equal("Office · 1,068 ppm · Zone_Elevated · Tray_AlertsPausedByWindows", viewModel.Tooltip);
+    }
+
+    [Fact]
+    public async Task The_tooltip_is_back_to_normal_when_do_not_disturb_ends()
+    {
+        var viewModel = await CreateAsync();
+        Reading(1068);
+        messenger.Send(new DoNotDisturbChanged(true));
+
+        messenger.Send(new DoNotDisturbChanged(false));
+
+        Assert.Equal("Office · 1,068 ppm · Zone_Elevated", viewModel.Tooltip);
+    }
+
+    [Fact]
+    public async Task Do_not_disturb_already_on_at_start_is_shown()
+    {
+        doNotDisturb.IsActive = true;
+
+        var viewModel = await CreateAsync();
+
+        Assert.Equal("Office · Tray_AlertsPausedByWindows", viewModel.Tooltip);
+    }
+
+    [Fact]
+    public async Task With_alerts_switched_off_nothing_is_paused_so_nothing_is_said()
+    {
+        doNotDisturb.IsActive = true;
+        settingsStore.Stored = AppSettings.Default with { AlertsEnabled = false };
+        await settings.LoadAsync(TestContext.Current.CancellationToken);
+
+        var viewModel = await CreateAsync();
+
+        Assert.Equal("Office", viewModel.Tooltip);
     }
 }

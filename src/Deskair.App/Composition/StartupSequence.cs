@@ -72,6 +72,7 @@ public sealed class StartupSequence : IDisposable
 
         ShowWindowOnSecondLaunch(window);
         services.GetRequiredService<PowerEvents>().Start();
+        services.GetRequiredService<DoNotDisturbMonitor>().Start();
 
         running = new CancellationTokenSource();
         services.GetRequiredService<AlertFeed>().Start(running.Token);

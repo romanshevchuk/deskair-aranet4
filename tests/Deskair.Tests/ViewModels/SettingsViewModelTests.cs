@@ -26,10 +26,10 @@ public sealed class SettingsViewModelTests : IDisposable
 
     public SettingsViewModelTests()
     {
-        settings = new SettingsService(settingsStore, new StrongReferenceMessenger());
-        appearance = new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance);
-        alerts = new AlertsSettingsViewModel(settings, NullLogger<AlertsSettingsViewModel>.Instance);
         var messenger = new StrongReferenceMessenger();
+        settings = new SettingsService(settingsStore, messenger);
+        appearance = new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance);
+        alerts = new AlertsSettingsViewModel(settings, new FakeDoNotDisturb(), messenger, new FakeUiDispatcher(), NullLogger<AlertsSettingsViewModel>.Instance);
         var registry = new DeviceRegistry(deviceStore);
         devices = new DevicesSettingsViewModel(registry, new DeviceEnrollment(deviceStore, registry, settings, messenger), messenger, NullLogger<DevicesSettingsViewModel>.Instance);
         data = DataSettingsViewModelTests.Create(folders);

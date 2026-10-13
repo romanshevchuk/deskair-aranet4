@@ -86,7 +86,9 @@ public static class ServiceRegistration
         services.AddSingleton<ToastActivationServer>();
         services.AddSingleton<ToastActionHandler>();
         services.AddSingleton<INotifier, ToastNotifier>();
-        services.AddSingleton<IDoNotDisturb, DoNotDisturbMonitor>();
+        services.AddSingleton<IDoNotDisturbReader, WindowsDoNotDisturbReader>();
+        services.AddSingleton<DoNotDisturbMonitor>();
+        services.AddSingleton<IDoNotDisturb>(provider => provider.GetRequiredService<DoNotDisturbMonitor>());
         services.AddSingleton<IStartupRegistration, StartupRegistration>();
         services.AddSingleton<IFileDialogs, WindowsFileDialogs>();
         services.AddSingleton<IFolderOpener, ExplorerFolderOpener>();

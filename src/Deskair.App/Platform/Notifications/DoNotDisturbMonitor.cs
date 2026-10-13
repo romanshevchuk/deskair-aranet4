@@ -1,16 +1,80 @@
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Services.Alerts;
+using Deskair.Services.Messages;
 
 namespace Deskair.App.Platform.Notifications;
 
-public sealed class DoNotDisturbMonitor : IDoNotDisturb
+/// <summary>
+/// Whether Windows Do Not Disturb is on. <see cref="IsActive"/> asks Windows each time, so an alert never decides on an old answer; a periodic look announces changes as
+/// <see cref="DoNotDisturbChanged"/> for the tray and Settings ("Alerts paused by Windows"). Windows holds native toasts itself while it is on; this only lets the app say so.
+/// A state that cannot be read counts as not active (questions.md Q13).
+/// </summary>
+public sealed class DoNotDisturbMonitor : IDoNotDisturb, IDisposable
 {
-    // TODO(ALERT-03a) [M, sonnet]
-    // Spec: docs/product/behaviour-rules.md "Alerts"; docs/decisions.md D-0006.
-    // Input : none.
-    // Output: IsActive is true while Windows Do Not Disturb (focus assist) suppresses toasts.
-    // Rules : read the Windows state; the tray tooltip and Settings use it to show "Alerts paused by Windows".
-    // Edge  : if the state cannot be read, return false (see questions.md Q13).
-    // Done  : manual check by turning Do Not Disturb on and off.
-    // Until the state can be read, alerts count as allowed (Q13). Windows itself holds native toasts while Do Not Disturb is on, so nothing is overridden.
-    public bool IsActive => false;
+    /// <summary>How often the state is looked at to find changes.</summary>
+    public static readonly TimeSpan PollEvery = TimeSpan.FromSeconds(3);
+
+    private readonly IDoNotDisturbReader reader;
+    private readonly IMessenger messenger;
+    private readonly TimeProvider timeProvider;
+    private readonly Lock gate = new();
+    private ITimer? timer;
+    private bool last;
+
+    public DoNotDisturbMonitor(IDoNotDisturbReader reader, IMessenger messenger, TimeProvider timeProvider)
+    {
+        this.reader = reader;
+        this.messenger = messenger;
+        this.timeProvider = timeProvider;
+    }
+
+    public bool IsActive => reader.Read() ?? false;
+
+    /// <summary>Starts looking for changes.</summary>
+    public void Start()
+    {
+        lock (gate)
+        {
+            if (timer is not null)
+            {
+                return;
+            }
+
+            last = IsActive;
+            timer = timeProvider.CreateTimer(_ => Look(), null, PollEvery, PollEvery);
+        }
+    }
+
+    public void Dispose()
+    {
+        lock (gate)
+        {
+            timer?.Dispose();
+            timer = null;
+        }
+    }
+
+    private void Look()
+    {
+        bool now;
+
+        lock (gate)
+        {
+            if (timer is null)
+            {
+                return;
+            }
+
+            now = IsActive;
+
+            if (now == last)
+            {
+                return;
+            }
+
+            last = now;
+        }
+
+        messenger.Send(new DoNotDisturbChanged(now));
+    }
 }

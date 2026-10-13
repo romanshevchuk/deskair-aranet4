@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Zones;
+using Deskair.Services.Alerts;
 using Deskair.Services.Connection;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
@@ -22,6 +23,8 @@ public sealed partial class TrayViewModel : ObservableObject
     private readonly ILocalizer localizer;
     private readonly MetricFormatter formatter;
     private readonly IUiDispatcher dispatcher;
+    private readonly SettingsService settings;
+    private bool doNotDisturb;
     private ConnectionState connection = ConnectionState.Normal;
 
     /// <summary>The zone of the last reading, or null (grey icon) when there is none or the sensor is not connected.</summary>
@@ -46,12 +49,15 @@ public sealed partial class TrayViewModel : ObservableObject
         MetricFormatter formatter,
         IMessenger messenger,
         IUiDispatcher dispatcher,
-        SettingsService settings)
+        SettingsService settings,
+        IDoNotDisturb doNotDisturb)
     {
         this.devices = devices;
         this.localizer = localizer;
         this.formatter = formatter;
         this.dispatcher = dispatcher;
+        this.settings = settings;
+        this.doNotDisturb = doNotDisturb.IsActive;
         ShowValue = settings.Current.ShowValueOnTrayIcon;
 
         messenger.Register<TrayViewModel, ReadingReceived>(this, static (self, message) => self.OnReading(message));
@@ -59,7 +65,8 @@ public sealed partial class TrayViewModel : ObservableObject
         messenger.Register<TrayViewModel, DeviceSelected>(this, static (self, _) => self.OnDeviceSelected());
         messenger.Register<TrayViewModel, DeviceRenamed>(this, static (self, _) => self.dispatcher.Post(self.UpdateTooltip));
         messenger.Register<TrayViewModel, LanguageChanged>(this, static (self, _) => self.dispatcher.Post(self.UpdateTooltip));
-        messenger.Register<TrayViewModel, SettingsChanged>(this, static (self, message) => self.dispatcher.Post(() => self.ShowValue = message.Settings.ShowValueOnTrayIcon));
+        messenger.Register<TrayViewModel, SettingsChanged>(this, static (self, message) => self.dispatcher.Post(() => self.OnSettings(message.Settings)));
+        messenger.Register<TrayViewModel, DoNotDisturbChanged>(this, static (self, message) => self.dispatcher.Post(() => self.OnDoNotDisturb(message.IsActive)));
 
         UpdateTooltip();
     }
@@ -108,12 +115,25 @@ public sealed partial class TrayViewModel : ObservableObject
         });
     }
 
-    private void UpdateTooltip()
+    private void OnSettings(AppSettings current)
     {
-        Tooltip = BuildTooltip();
+        ShowValue = current.ShowValueOnTrayIcon;
+        UpdateTooltip();
     }
 
-    private string BuildTooltip()
+    private void OnDoNotDisturb(bool active)
+    {
+        doNotDisturb = active;
+        UpdateTooltip();
+    }
+
+    private void UpdateTooltip()
+    {
+        var status = BuildStatus();
+        Tooltip = doNotDisturb && settings.Current.AlertsEnabled ? $"{status} · {localizer.Get("Tray_AlertsPausedByWindows")}" : status;
+    }
+
+    private string BuildStatus()
     {
         var appName = localizer.Get("Tray_AppName");
 

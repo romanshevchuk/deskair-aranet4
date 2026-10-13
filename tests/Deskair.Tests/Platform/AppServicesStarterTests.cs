@@ -70,7 +70,7 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
         onboarding = new OnboardingViewModel([provider], new DeviceEnrollment(deviceStore, registry, settings, messenger), radio, localizer, clock, new ListLogger<OnboardingViewModel>());
         settingsScreen = new SettingsViewModel(
             new AppearanceSettingsViewModel(settings, NullLogger<AppearanceSettingsViewModel>.Instance),
-            new AlertsSettingsViewModel(settings, NullLogger<AlertsSettingsViewModel>.Instance),
+            new AlertsSettingsViewModel(settings, new FakeDoNotDisturb(), messenger, dispatcher, NullLogger<AlertsSettingsViewModel>.Instance),
             new DevicesSettingsViewModel(registry, new DeviceEnrollment(deviceStore, registry, settings, messenger), messenger, NullLogger<DevicesSettingsViewModel>.Instance),
             Deskair.Tests.ViewModels.DataSettingsViewModelTests.Create(new TempKnownFolders()),
             new StartupSettingsViewModel(new FakeStartupRegistration(), NullLogger<StartupSettingsViewModel>.Instance));

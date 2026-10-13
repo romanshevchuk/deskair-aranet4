@@ -3,12 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- DataContext: AlertsSettingsViewModel. The switches save at once. The quiet hours times and the "paused by Windows" line come with their own cards. -->
+  <!-- DataContext: AlertsSettingsViewModel. The switches save at once. The quiet hours times show while quiet hours are on, and a time is saved as soon as it reads as HH:mm.
+       The "paused by Windows" row shows only while Windows Do Not Disturb holds the alerts. -->
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+  </UserControl.Resources>
   <controls:SettingsCard Header="{loc:T Settings_Alerts}">
     <StackPanel>
       <controls:SettingsRow Header="{loc:T Settings_Alerts_Enabled}" Description="{loc:T Settings_Alerts_EnabledHint}">
         <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_Enabled}" IsChecked="{Binding AlertsEnabled, Mode=TwoWay}" />
       </controls:SettingsRow>
+      <controls:SettingsRow Header="{loc:T Settings_Alerts_PausedByWindows}"
+                            Description="{loc:T Settings_Alerts_PausedByWindowsHint}"
+                            Visibility="{Binding IsPausedByWindows, Converter={StaticResource BoolToVisibility}}" />
       <controls:SettingsRow Header="{loc:T Settings_Alerts_Elevated}">
         <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_Elevated}" IsChecked="{Binding NotifyAtElevated, Mode=TwoWay}" />
       </controls:SettingsRow>
@@ -18,6 +25,24 @@
       <controls:SettingsRow Header="{loc:T Settings_QuietHours}" Description="{loc:T Settings_QuietHours_Hint}">
         <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_QuietHours}" IsChecked="{Binding QuietHoursEnabled, Mode=TwoWay}" />
       </controls:SettingsRow>
+      <StackPanel Visibility="{Binding QuietHoursEnabled, Converter={StaticResource BoolToVisibility}}">
+        <controls:SettingsRow Header="{loc:T Settings_QuietHours_From}">
+          <controls:TextInput Width="72"
+                              AutomationProperties.Name="{loc:T Settings_QuietHours_From}"
+                              Text="{Binding QuietHoursStartText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </controls:SettingsRow>
+        <TextBlock Style="{StaticResource Text.Caption}"
+                   Text="{loc:T Settings_QuietHours_Invalid}"
+                   Visibility="{Binding QuietHoursStartInvalid, Converter={StaticResource BoolToVisibility}}" />
+        <controls:SettingsRow Header="{loc:T Settings_QuietHours_To}">
+          <controls:TextInput Width="72"
+                              AutomationProperties.Name="{loc:T Settings_QuietHours_To}"
+                              Text="{Binding QuietHoursEndText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </controls:SettingsRow>
+        <TextBlock Style="{StaticResource Text.Caption}"
+                   Text="{loc:T Settings_QuietHours_Invalid}"
+                   Visibility="{Binding QuietHoursEndInvalid, Converter={StaticResource BoolToVisibility}}" />
+      </StackPanel>
     </StackPanel>
   </controls:SettingsCard>
 </UserControl>
