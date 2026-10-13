@@ -11,5 +11,6 @@ public sealed class DoNotDisturbMonitor : IDoNotDisturb
     // Rules : read the Windows state; the tray tooltip and Settings use it to show "Alerts paused by Windows".
     // Edge  : if the state cannot be read, return false (see questions.md Q13).
     // Done  : manual check by turning Do Not Disturb on and off.
-    public bool IsActive => throw new NotImplementedException("TODO(ALERT-03a)");
+    // Until the state can be read, alerts count as allowed (Q13). Windows itself holds native toasts while Do Not Disturb is on, so nothing is overridden.
+    public bool IsActive => false;
 }

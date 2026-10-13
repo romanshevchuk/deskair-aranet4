@@ -21,7 +21,7 @@
 | Room menu | Rooms with value and zone | Popup on the chip |
 | Footer | Status dot, room, sensor ID, signal, battery icon and percent | Grid |
 | Logo ring | The logo and tray ring in the zone colour (grey without a zone) | Viewbox with two ellipses |
-| Toast | Snooze and Dismiss actions | Windows notification toolkit |
+| Toast | Snooze and Dismiss actions | Windows toast (`Windows.UI.Notifications`, no package) |
 | Tray icon | Ring in zone colour, or rounded square with value | Rendered bitmaps at 16, 20, 24, 32 px |
 | Flyout | Mini Live view | Borderless window placed from the tray icon rectangle |
 

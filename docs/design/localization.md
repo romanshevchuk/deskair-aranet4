@@ -143,3 +143,5 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Tray_AppName / Tray_Quit | Deskair / Quit | Deskair / Вийти |
 | Flyout_Updated / Flyout_UpdatedMinutes | updated {sec} s ago / updated {min} min ago | оновлено {sec} с тому / оновлено {min} хв тому |
 | Duration_Hours | {h} h | {h} год |
+| Toast_High_Title | Ventilate now · {room} | Провітріть зараз · {room} |
+| Toast_Elevated_Body / Toast_High_Body | {value}. Open a window for about 10 minutes. / {value}. Open windows fully. | {value}. Відчиніть вікно приблизно на 10 хвилин. / {value}. Відчиніть вікна повністю. |

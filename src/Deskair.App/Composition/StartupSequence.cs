@@ -1,13 +1,18 @@
+using System.IO;
+using System.Security;
 using System.Windows;
 using Deskair.App.Localization;
+using Deskair.App.Platform.Notifications;
 using Deskair.App.Platform.Power;
 using Deskair.App.Platform.Tray;
 using Deskair.App.Ui.Theme;
 using Deskair.App.Ui.Views.Gallery;
 using Deskair.App.Ui.Views.Shell;
+using Deskair.Services.Alerts;
 using Deskair.Services.Live;
 using Deskair.Services.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Deskair.App.Composition;
 
@@ -52,13 +57,22 @@ public sealed class StartupSequence : IDisposable
             return;
         }
 
+        StartToasts();
+
         var window = services.GetRequiredService<MainWindow>();
-        window.Show();
-        StartTray(window);
+        var trayStarted = StartTray(window);
+
+        // Windows starts the app in the background when a toast button is pressed while it is not running; without a tray icon there would be no way to reach it.
+        if (!options.StartedByToast || !trayStarted)
+        {
+            window.Show();
+        }
+
         ShowWindowOnSecondLaunch(window);
         services.GetRequiredService<PowerEvents>().Start();
 
         running = new CancellationTokenSource();
+        services.GetRequiredService<AlertFeed>().Start(running.Token);
         await services.GetRequiredService<AppServicesStarter>().StartAsync(running.Token);
     }
 
@@ -66,14 +80,46 @@ public sealed class StartupSequence : IDisposable
     /// Puts the icon in the notification area. Only when that worked does closing the main window hide it instead of closing it, so a failing tray
     /// never leaves the user with a running app and no way to reach it.
     /// </summary>
-    private void StartTray(MainWindow window)
+    private bool StartTray(MainWindow window)
     {
         var controller = services.GetRequiredService<MainWindowController>();
         controller.Attach(window);
 
-        if (services.GetRequiredService<TrayIconHost>().Start())
+        if (!services.GetRequiredService<TrayIconHost>().Start())
         {
-            controller.KeepInTray();
+            return false;
+        }
+
+        controller.KeepInTray();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the app ready for toasts: the identity Windows needs, and the listener for button presses. This runs before the window so a press that started the app
+    /// finds the listener at once. A failure is logged; toasts then may not show, and the app works without them.
+    /// </summary>
+    private void StartToasts()
+    {
+        var logger = services.GetRequiredService<ILogger<StartupSequence>>();
+
+        try
+        {
+            ToastIdentity.Register(Environment.ProcessPath ?? string.Empty);
+        }
+        catch (Exception exception) when (exception is UnauthorizedAccessException or IOException or SecurityException)
+        {
+            if (logger.IsEnabled(LogLevel.Warning))
+            {
+                logger.LogWarning(exception, "Registering the toast identity failed.");
+            }
+        }
+
+        var server = services.GetRequiredService<ToastActivationServer>();
+
+        if (server.Start())
+        {
+            server.Attach(services.GetRequiredService<ToastActionHandler>().Handle);
         }
     }
 

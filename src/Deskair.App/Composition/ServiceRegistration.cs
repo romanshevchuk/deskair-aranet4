@@ -81,6 +81,10 @@ public static class ServiceRegistration
 
         services.AddSingleton<IBleScanner, WindowsBleScanner>();
         services.AddTransient<IBleConnection, WindowsBleConnection>();
+        services.AddSingleton<ToastTextBuilder>();
+        services.AddSingleton<ToastLogos>();
+        services.AddSingleton<ToastActivationServer>();
+        services.AddSingleton<ToastActionHandler>();
         services.AddSingleton<INotifier, ToastNotifier>();
         services.AddSingleton<IDoNotDisturb, DoNotDisturbMonitor>();
         services.AddSingleton<IStartupRegistration, StartupRegistration>();

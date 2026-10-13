@@ -28,6 +28,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<LiveFeed>();
         services.AddSingleton<ConnectionMonitor>();
         services.AddSingleton<AlertEngine>();
+        services.AddSingleton<AlertFeed>();
         services.AddSingleton<ReadingQueryService>();
         services.AddSingleton<ReadingImporters>();
         services.AddSingleton<ImportService>();

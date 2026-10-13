@@ -57,6 +57,6 @@ From the repository root. Press the buttons on the real toast.
 
 ## Exit criteria (from spikes.md)
 
-- [ ] Actions work unpackaged (steps 1 and 2 above, on the owner's machine).
+- [x] Actions work unpackaged, program running (owner, 2026-10-13: `ACTIVATED ... action=snooze`). Program not running: the click path was verified by calling the class as Windows does (agent); a real click is still to be confirmed.
 - [ ] Actions work packaged (needs a package project; later).
 - [ ] One code path: the same activator and arguments in both; only the registration differs.

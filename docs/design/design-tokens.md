@@ -79,7 +79,7 @@ Segoe UI Variable Text, falling back to Segoe UI. Minimum size 12 px. Tabular fi
 | Live grid | 3 equal columns; rows 1 fr and 132 px |
 | History | toolbar 40 px; stats card 360 px wide |
 | Flyout | 360 px wide, radius 12 px, shadow 0 12 36 at 35 % black |
-| Toast | radius 8 px, 4 px left edge in zone colour |
+| Toast | drawn by Windows (card, fonts, corners); Deskair supplies the zone-coloured ring (96 px image, the same ring as the tray icon) and the texts; no left edge, no custom colours |
 
 ## Icons
 
