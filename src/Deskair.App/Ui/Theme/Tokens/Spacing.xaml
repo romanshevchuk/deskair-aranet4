@@ -80,7 +80,7 @@
   <Thickness x:Key="Space.Hero.Gauge">0,16,0,0</Thickness>
   <Thickness x:Key="Space.Hero.Advice">0,18,0,0</Thickness>
   <Thickness x:Key="Space.Hero.Stats">0,16,0,0</Thickness>
-  <Thickness x:Key="Space.Hero.Unit">8,0,0,6</Thickness>
+  <Thickness x:Key="Space.Hero.Unit">8,0,0,10</Thickness>
   <Thickness x:Key="Space.Mini.Gap">8,0,8,0</Thickness>
   <Thickness x:Key="Space.Mini.Row">-8,0,-8,0</Thickness>
   <Thickness x:Key="Space.Chart.Card">24,20,24,16</Thickness>
