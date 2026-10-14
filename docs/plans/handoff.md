@@ -1,16 +1,16 @@
-# Handoff: after the first-run, Settings, History and import/export slices
+# Handoff (updated 2026-10-14)
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-14*
 
 For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory (`AranetHomeDesktop`) unless the owner points you to it, and do not read `../deskair-legacy`.
 
 ## Rules you must follow
 
 - Read `AGENTS.md`, this file, `docs/plans/m1-skeleton-brief.md` (sections 4 and 6) and `docs/plans/todo-index.md` first.
-- **Do not commit.** The owner commits by hand (about 60 files are changed and uncommitted). Make no changes under `.claude/`.
+- **Commits:** the owner now asks for commits and pushes to `main` in small steps. Commit under the owner's git identity and add NO `Co-Authored-By` or Claude footer (the owner objected to it). Make no changes under `.claude/`.
 - **Plan first:** for any batch of cards, list the cards and wait for approval before editing. The owner often says "go with your recommendations" or "continue"; that counts as approval for what you listed.
 - **Ask before adding a NuGet package or project reference.** Approved so far: ExcelDataReader (added) and `H.NotifyIcon.Wpf` for the tray (approved, not added yet). The toast library waits for spike S5.
-- **No subagents.** The owner works with one agent only.
+- **Subagents:** only when the owner asks for them (an independent code review through the `code-review` skill found real bugs on 2026-10-13).
 - For each card: write or unskip the test, see it fail (or, for a pixel/visual card, break the code once to prove the test can fail), implement only what the card says, run the three checks, remove the card comment and the `NotImplementedException`, remove the row in `todo-index.md` and recompute its totals line (use the awk one-liner in "Checks").
 - If the docs are silent, add a question to `docs/plans/questions.md` and move on. Do not guess.
 - When you find a gap in the prototype (`design/prototype/index.html`) during implementation, fix it in the prototype and in the docs together (the owner asked for this).
@@ -26,7 +26,7 @@ dotnet test tests/Deskair.Tests
 dotnet format Deskair.sln --verify-no-changes
 ```
 
-State now: build 0 warnings and 0 errors; **1223 tests, 1186 passed, 37 skipped, 0 failed** (17+5 of the skipped are image-render tests that only run with `DESKAIR_RENDER=1`, the rest are card placeholders); format clean. `todo-index.md`: **5 cards**. Nothing is committed.
+State now (2026-10-14): build 0 warnings and 0 errors; **1436 tests, 0 failed** (40 skipped: the opt-in image-render tests, `DESKAIR_RENDER=1`); format clean. Every card in `todo-index.md` is done. Remaining work is the owner's own checks and the UI/UX polish below.
 
 Recompute the totals line of `todo-index.md` with:
 
@@ -94,6 +94,16 @@ This session:
 - **Review fixes (code-review pass, 2026-10-13):** (1) `SensorSession.StartAsync/StopAsync` are serialized, so Retry, resume and choosing a room at the same time cannot leave an orphan loop; (2) `LiveFeed` no longer treats a storage `IOException` as a lost connection (only a failed or timed-out read reconnects); (3) the Night filter now expects readings only for the night hours (`NightWindow.TimeWithin`, `BucketAggregator.Group(..., onlyDuring)`), so a complete night is no longer "37 % present" and the stats coverage chip is right; (4) `AppearanceSettingsViewModel` follows `SettingsChanged`, so a tray-menu change is not overwritten by a later theme or language change; (5) an empty night window shows the typical day, not a blank sleep card; (6) the startup toggle reads the registry before it sets its guard flag; (7) the offline view ignores a late last reading when the room changed or a live reading arrived; (8) `ConnectTimeout` is 2 minutes because pairing (PIN) happens inside the connect. **Known, not fixed:** `HistoryViewModel` re-reads the stored readings several times per refresh and refreshes even when History is hidden (a Year range is the heavy case); its refresh runs on the thread that sent the message and its `CancellationTokenSource` field is not guarded; `DevicesSettingsViewModel` keeps its `listening` flag after the token is cancelled (only matters at shutdown) and a room switch rebuilds the rows while a name is being edited.
 - **Prototype alignment (Q47):** card chrome unified (border, shadow layer, hero 1 px) and the History page brought close to `design/prototype/index.html` (toolbar, chart header and legend, soft bars, average line and row, weekday labels, typical day, stats card). New: `ChartHeaderViewModel`, `BarLabelLayer`, `OverallAverageLayer`, `BarGeometry`, `InlineMarkup` (bold lead in localized sentences), zone-coloured `InsightBox`, amber `CoverageChip`. To compare with the prototype run `design/prototype-shot.ps1` (see its header): it writes a 1200 × 728 screenshot of the prototype window in a given state to `artifacts/proto/` (git-ignored). **Not built** and other differences: see Q47.
 - **Docs and tokens:** D-0016 in `docs/decisions.md`; Q32 and Q33 in `docs/plans/questions.md`; new strings in `docs/design/localization.md`; new tokens in `Spacing.xaml`/`Typography.xaml`; the prototype's first-run screen lost its room-type row and its settings rows got 4 px padding.
+
+## Where things stand and what to do next (2026-10-14)
+
+**Done this week:** Do Not Disturb detection and the "paused by Windows" notes (Q43), reconnect and "Try again" feedback (Q44, Q45), sleep card and configurable night hours (Q46), review fixes (see "Review fixes" below), the spikes removed, and two passes aligning the look with `design/prototype/index.html` (Q47).
+
+**Open, in the owner's hands (nobody else can do them):** quiet-hours times by hand; a real alert toast press; "Try again" and the 30 s read timeout with the sensor out of range; the Sleep card and History Night view on real data; Windows 10 (nothing was ever tried there).
+
+**Known, not fixed:** `HistoryViewModel` re-reads stored readings several times per refresh and refreshes while hidden (Year range is heavy); its refresh runs on the sender's thread and its `CancellationTokenSource` field is unguarded; `DevicesSettingsViewModel` keeps its `listening` flag after cancel; the Settings scrollbar is the light WPF default in the dark theme; highest/lowest reading time in the stats card needs timestamps in `Bucket`; "· N partial" in the coverage box; Settings page not compared against the prototype's Settings view; Live dark theme not looked at after the last styling pass.
+
+**Next: a UI/UX improvement pass.** Brief for it: `docs/plans/ui-review-brief.md`. How to look at the app and the prototype: "How to see what you built" above, `design/prototype-shot.ps1`, and `DESKAIR_RENDER=1 dotnet test tests/Deskair.Tests -c Release --filter "FullyQualifiedName~RenderTests"` (images in `artifacts/visual/`).
 
 ## Next work (plan it and wait for approval)
 
