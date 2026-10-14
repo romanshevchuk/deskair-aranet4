@@ -35,7 +35,7 @@ public sealed class HeroStatsBuilder
     {
         var share = LiveStatsCalculator.GoodShare(readings) ?? 0;
 
-        return new StatItem(share.ToString("P0", localizer.Culture), localizer.Get("Stat_GoodShare"));
+        return new StatItem(NumberFormat.Percent(share, localizer.Culture), localizer.Get("Stat_GoodShare"));
     }
 
     private StatItem Peak(IReadOnlyList<Reading> readings)

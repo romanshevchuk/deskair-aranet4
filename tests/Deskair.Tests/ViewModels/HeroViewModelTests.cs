@@ -91,7 +91,7 @@ public class HeroViewModelTests
     {
         var viewModel = Update(1300, 1050);
 
-        Assert.Equal("1,050", viewModel.ValueText);
+        Assert.Equal("1050", viewModel.ValueText);
         Assert.Equal("ppm", viewModel.UnitText);
         Assert.Equal("Zone_Elevated", viewModel.ZoneText);
     }

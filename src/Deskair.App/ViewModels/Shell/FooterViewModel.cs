@@ -194,7 +194,7 @@ public sealed partial class FooterViewModel : ObservableObject
         {
             signalDbm = message.Status.SignalDbm;
             BatteryPercent = message.Status.BatteryPercent;
-            BatteryText = message.Status.BatteryPercent is { } percent ? (percent / 100.0).ToString("P0", localizer.Culture) : null;
+            BatteryText = message.Status.BatteryPercent is { } percent ? NumberFormat.Percent(percent / 100.0, localizer.Culture) : null;
             Refresh();
         });
     }
@@ -221,7 +221,7 @@ public sealed partial class FooterViewModel : ObservableObject
     {
         var share = progress.Total <= 0 ? 0 : Math.Min(1.0, (double)progress.Done / progress.Total);
 
-        return share.ToString("P0", localizer.Culture);
+        return NumberFormat.Percent(share, localizer.Culture);
     }
 
     private void ShowSync(HistoryProgress? progress, bool hide = false)

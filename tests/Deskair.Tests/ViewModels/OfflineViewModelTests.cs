@@ -87,8 +87,8 @@ public class OfflineViewModelTests
 
         messenger.Send(new ReadingReceived(device, Samples.Co2(now.AddMinutes(-20), 1068)));
 
-        Assert.Equal("Offline_LastReading(value=1,068 ppm, time=11:40)", viewModel.LastReadingText);
-        Assert.Equal("Offline_Text Offline_LastReading(value=1,068 ppm, time=11:40) Offline_HistoryHint", viewModel.Message);
+        Assert.Equal("Offline_LastReading(value=1068 ppm, time=11:40)", viewModel.LastReadingText);
+        Assert.Equal("Offline_Text Offline_LastReading(value=1068 ppm, time=11:40) Offline_HistoryHint", viewModel.Message);
     }
 
     [Fact]

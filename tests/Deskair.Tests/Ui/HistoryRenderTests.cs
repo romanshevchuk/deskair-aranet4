@@ -130,6 +130,8 @@ public class HistoryRenderTests
             clock,
             messenger,
             formatter,
+            new PeriodLabeler(localizer, calendar),
+            new HourGridBuilder(localizer, formatter),
             NullLogger<HistoryViewModel>.Instance);
         await history.RefreshAsync(CancellationToken.None);
 

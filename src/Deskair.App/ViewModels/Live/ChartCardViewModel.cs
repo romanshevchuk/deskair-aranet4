@@ -4,6 +4,7 @@ using Deskair.App.ViewModels.ChartModels;
 using Deskair.Domain.Analytics.Ribbon;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
+using Deskair.Domain.Zones;
 using Deskair.Services.Devices;
 using Deskair.Services.Queries;
 
@@ -32,6 +33,17 @@ public sealed partial class ChartCardViewModel : ObservableObject
 
     [ObservableProperty]
     private string? idealLabel;
+
+    /// <summary>The chart title: the name of the metric it shows ("CO₂", "Temperature"), now that there are no metric tabs (POL-06).</summary>
+    [ObservableProperty]
+    private string? title;
+
+    /// <summary>The labels on the CO₂ threshold lines ("Elevated from 1000", "High from 1400"); null for the other metrics.</summary>
+    [ObservableProperty]
+    private string? elevatedLineLabel;
+
+    [ObservableProperty]
+    private string? highLineLabel;
 
     /// <summary>"Last hour · Low … · Avg … · High … ppm". Null without readings.</summary>
     [ObservableProperty]
@@ -66,6 +78,7 @@ public sealed partial class ChartCardViewModel : ObservableObject
         var length = WindowOf(range);
         var descriptor = MetricDescriptor.For(metric);
 
+        Title = localizer.Get(descriptor.NameKey);
         Unit = formatter.Unit(metric);
         Window = length;
         EndTime = timeProvider.GetUtcNow();
@@ -73,6 +86,12 @@ public sealed partial class ChartCardViewModel : ObservableObject
         IdealMax = descriptor.IdealMax is { } max ? formatter.ToDisplay(metric, max) : null;
         IdealLabel = IdealMin is { } low && IdealMax is { } high
             ? localizer.Format("Chart_Ideal", ("min", Math.Round(low)), ("max", Math.Round(high)))
+            : null;
+        ElevatedLineLabel = metric == Metric.Co2
+            ? localizer.Format("Chart_Threshold_Elevated", ("ppm", formatter.Value(metric, ZoneThresholds.Default.ElevatedFromPpm)))
+            : null;
+        HighLineLabel = metric == Metric.Co2
+            ? localizer.Format("Chart_Threshold_High", ("ppm", formatter.Value(metric, ZoneThresholds.Default.HighAbovePpm)))
             : null;
 
         if (devices.Selected is not { } device)

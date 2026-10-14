@@ -1,14 +1,17 @@
 using System.Globalization;
 using System.Windows;
+using Deskair.App.Localization;
 using Deskair.App.Ui.Charts.Layers;
 using Deskair.App.ViewModels.ChartModels;
 using Deskair.Domain.Metrics;
+using Deskair.Domain.Zones;
 
 namespace Deskair.App.Ui.Charts;
 
 /// <summary>
-/// The Live chart. CO₂ gets zone bands, dashed zone lines and a zone-coloured line; the other metrics get a plot fill, the ideal range and a
-/// plain metric line. Values in <see cref="Points"/> are already in the unit shown (the view model converts °C to °F).
+/// The Live chart. CO₂ gets an axis fitted to the readings, the zone limits as labelled lines when they are in range, a soft fill in the current zone's
+/// colour and a smoothed zone-coloured line (POL-04); the other metrics get a plot fill, the ideal range and a smoothed metric line.
+/// Values in <see cref="Points"/> are already in the unit shown (the view model converts °C to °F).
 /// </summary>
 public sealed class LiveChart : ChartBase
 {
@@ -16,6 +19,32 @@ public sealed class LiveChart : ChartBase
     private const double Co2Maximum = 2000;
     private const double ElevatedFrom = 1000;
     private const double HighAbove = 1400;
+
+    public static readonly DependencyProperty ElevatedLineLabelProperty = DependencyProperty.Register(
+        nameof(ElevatedLineLabel),
+        typeof(string),
+        typeof(LiveChart),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    public static readonly DependencyProperty HighLineLabelProperty = DependencyProperty.Register(
+        nameof(HighLineLabel),
+        typeof(string),
+        typeof(LiveChart),
+        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    /// <summary>The label on the Elevated limit ("Elevated from 1000"). Already localized.</summary>
+    public string? ElevatedLineLabel
+    {
+        get => (string?)GetValue(ElevatedLineLabelProperty);
+        set => SetValue(ElevatedLineLabelProperty, value);
+    }
+
+    /// <summary>The label on the High limit ("High from 1400"). Already localized.</summary>
+    public string? HighLineLabel
+    {
+        get => (string?)GetValue(HighLineLabelProperty);
+        set => SetValue(HighLineLabelProperty, value);
+    }
 
     public static readonly DependencyProperty PointsProperty = DependencyProperty.Register(
         nameof(Points),
@@ -145,7 +174,7 @@ public sealed class LiveChart : ChartBase
 
     private bool HasData => Points?.Any(point => point.Value is not null) == true;
 
-    private string ValueFormat => Metric is Metric.Temperature or Metric.Pressure ? "N1" : "N0";
+    private string ValueFormat => NumberFormat.FormatFor(Metric);
 
     protected override ChartRanges GetDataRanges()
     {
@@ -166,13 +195,16 @@ public sealed class LiveChart : ChartBase
 
         if (Metric == Metric.Co2)
         {
-            var ticks = new[] { Co2Minimum, ElevatedFrom, HighAbove, ValueRange().High };
+            var (low, high) = ValueRange();
+            var ticks = ChartTicks.Steps(low, high, Co2Step());
 
             axis.YTicks = ticks;
-            layers.Add(new BandLayer());
-            layers.Add(new GridLayer { YTicks = ticks });
-            layers.Add(new DashedZoneLinesLayer());
-            layers.Add(new ZoneLineLayer { Points = Points });
+
+            // A limit draws its own dashed line, so the grid leaves that value out.
+            layers.Add(new GridLayer { YTicks = ticks.Where(tick => tick is not ElevatedFrom and not HighAbove).ToList() });
+            layers.Add(new AreaLayer { Points = Points, BrushKey = CurrentZoneLineBrush(), Smooth = true });
+            layers.Add(new ThresholdLayer { ElevatedFrom = ElevatedFrom, HighAbove = HighAbove, ElevatedLabel = ElevatedLineLabel, HighLabel = HighLineLabel });
+            layers.Add(new ZoneLineLayer { Points = Points, ElevatedFrom = ElevatedFrom, HighAbove = HighAbove, Smooth = true });
         }
         else
         {
@@ -190,7 +222,7 @@ public sealed class LiveChart : ChartBase
                 IdealBrushKey = $"Metric.{name}.Ideal.Brush"
             });
             layers.Add(new GridLayer { YTicks = ticks });
-            layers.Add(new LineLayer { Points = Points, BrushKey = $"Metric.{name}.Brush", ShowEndMarker = true });
+            layers.Add(new LineLayer { Points = Points, BrushKey = $"Metric.{name}.Brush", ShowEndMarker = true, Smooth = true });
         }
 
         if (!HasData)
@@ -227,9 +259,14 @@ public sealed class LiveChart : ChartBase
 
         if (Metric == Metric.Co2)
         {
-            var top = values.Count > 0 ? Math.Ceiling(values.Max() / 100) * 100 : Co2Maximum;
+            if (values.Count == 0)
+            {
+                return (Co2Minimum, Co2Maximum);
+            }
 
-            return (Co2Minimum, Math.Max(Co2Maximum, top));
+            var (min, max, _) = ChartTicks.FitCo2(values.Min(), values.Max());
+
+            return (min, max);
         }
 
         var low = values.Count > 0 ? values.Min() : (IdealMin ?? 0);
@@ -241,6 +278,24 @@ public sealed class LiveChart : ChartBase
         var padding = Math.Max((high - low) * 0.1, MinimumPadding());
 
         return (low - padding, high + padding);
+    }
+
+    private double Co2Step()
+    {
+        var values = Points?.Where(point => point.Value is not null).Select(point => point.Value!.Value).ToList() ?? [];
+
+        // Without readings the axis is the full 400 to 2000 scale, labelled every 400.
+        return values.Count == 0 ? 400 : ChartTicks.FitCo2(values.Min(), values.Max()).Step;
+    }
+
+    /// <summary>The line brush of the zone of the latest reading, for the fill under the line.</summary>
+    private string CurrentZoneLineBrush()
+    {
+        var zone = Points is { } points && ChartLines.LastValue(points) is { Value: { } value }
+            ? ZoneClassifier.Classify(value, new ZoneThresholds(ElevatedFrom, HighAbove))
+            : Zone.Good;
+
+        return $"Zone.{zone}.Line.Brush";
     }
 
     private double MinimumPadding() => Metric switch

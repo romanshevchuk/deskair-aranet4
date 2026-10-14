@@ -87,7 +87,7 @@ public class CoverageChip : Control
     {
         var localizer = followed ?? FindLocalizer();
         var text = Fraction is { } fraction && localizer is not null
-            ? localizer.Format("Coverage_Chip", ("percent", (int)Math.Round(Math.Clamp(fraction, 0, 1) * 100)))
+            ? localizer.Format("Coverage_Chip", ("percent", NumberFormat.Percent(fraction, localizer.Culture)))
             : null;
 
         SetValue(textPropertyKey, text);

@@ -7,7 +7,7 @@ public class ToastXmlBuilderTests
 {
     private static readonly Uri logo = new("file:///C:/Users/Test/AppData/Local/Deskair/toast/ring-high.png");
 
-    private static XElement Build(string title = "CO₂ is elevated · Office", string body = "1,068 ppm. Open a window.", string tag = "A1")
+    private static XElement Build(string title = "CO₂ is elevated · Office", string body = "1068 ppm. Open a window.", string tag = "A1")
         => XElement.Parse(ToastXmlBuilder.Build(new ToastText(title, body, "Snooze 1 h", "Dismiss"), logo, tag));
 
     [Fact]
@@ -15,7 +15,7 @@ public class ToastXmlBuilderTests
     {
         var texts = Build().Descendants("text").Select(text => text.Value).ToList();
 
-        Assert.Equal(["CO₂ is elevated · Office", "1,068 ppm. Open a window."], texts);
+        Assert.Equal(["CO₂ is elevated · Office", "1068 ppm. Open a window."], texts);
     }
 
     [Fact]

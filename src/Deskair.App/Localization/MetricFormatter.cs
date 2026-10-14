@@ -20,19 +20,15 @@ public sealed class MetricFormatter
         => metric == Metric.Temperature ? settings.Current.TemperatureUnit.FromCelsius(stored) : stored;
 
     public string Value(Metric metric, double stored)
-    {
-        var format = metric is Metric.Temperature or Metric.Pressure ? "N1" : "N0";
-
-        return ToDisplay(metric, stored).ToString(format, localizer.Culture);
-    }
+        => NumberFormat.Value(metric, ToDisplay(metric, stored), localizer.Culture);
 
     /// <summary>The size of a difference between two stored values, without a sign, in the selected unit. A temperature difference scales but has no offset (2 °C is 3.6 °F).</summary>
     public string Difference(Metric metric, double storedDifference)
-    {
-        var format = metric is Metric.Temperature or Metric.Pressure ? "N1" : "N0";
+        => NumberFormat.Value(metric, Math.Abs(ToDisplay(metric, storedDifference) - ToDisplay(metric, 0)), localizer.Culture);
 
-        return Math.Abs(ToDisplay(metric, storedDifference) - ToDisplay(metric, 0)).ToString(format, localizer.Culture);
-    }
+    /// <summary>A share from 0 to 1 as a whole percent in the selected language ("59%", "59 %").</summary>
+    public string Percent(double fraction)
+        => NumberFormat.Percent(fraction, localizer.Culture);
 
     public string Unit(Metric metric)
         => metric == Metric.Temperature ? settings.Current.TemperatureUnit.Symbol() : MetricDescriptor.For(metric).Unit;

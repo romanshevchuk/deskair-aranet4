@@ -204,7 +204,7 @@ public sealed partial class OfflineViewModel : RetryingViewModel
 
         if (batteryPercent is { } percent)
         {
-            list.Add(localizer.Format("Offline_Step_Battery", ("percent", (percent / 100.0).ToString("P0", localizer.Culture))));
+            list.Add(localizer.Format("Offline_Step_Battery", ("percent", NumberFormat.Percent(percent / 100.0, localizer.Culture))));
         }
 
         Steps = list;

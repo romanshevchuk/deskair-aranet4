@@ -25,7 +25,7 @@ public class ToastTextBuilderTests
         var text = builder.Build(new AlertNotification(device, "Office", Zone.Elevated, 1068, now));
 
         Assert.Equal("Toast_Elevated_Title(room=Office)", text.Title);
-        Assert.Equal("Toast_Elevated_Body(value=1,068 ppm)", text.Body);
+        Assert.Equal("Toast_Elevated_Body(value=1068 ppm)", text.Body);
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class ToastTextBuilderTests
         var text = builder.Build(new AlertNotification(device, "Bedroom", Zone.High, 1732, now));
 
         Assert.Equal("Toast_High_Title(room=Bedroom)", text.Title);
-        Assert.Equal("Toast_High_Body(value=1,732 ppm)", text.Body);
+        Assert.Equal("Toast_High_Body(value=1732 ppm)", text.Body);
     }
 
     [Fact]

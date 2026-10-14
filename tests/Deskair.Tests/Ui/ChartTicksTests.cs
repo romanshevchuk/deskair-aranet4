@@ -85,4 +85,26 @@ public class ChartTicksTests
 
         Assert.True(narrow < wide);
     }
+
+    [Theory]
+    // The last hour in the screenshots: 998 to 1151 spans 153, so steps of 100 from 900 to 1200 (behaviour-rules.md "Live values").
+    [InlineData(998, 1151, 900, 1200, 100)]
+    // A wide range (over 300) steps by 200.
+    [InlineData(712, 1080, 600, 1200, 200)]
+    [InlineData(1369, 1620, 1300, 1700, 100)]
+    // A flat line is still at least 200 tall.
+    [InlineData(1040, 1050, 1000, 1200, 100)]
+    // Never below zero.
+    [InlineData(10, 40, 0, 200, 100)]
+    public void The_co2_axis_is_fitted_to_the_readings(double low, double high, double min, double max, double step)
+    {
+        Assert.Equal((min, max, step), ChartTicks.FitCo2(low, high));
+    }
+
+    [Fact]
+    public void Steps_lists_every_multiple_from_the_minimum_to_the_maximum()
+    {
+        Assert.Equal([900.0, 1000, 1100, 1200], ChartTicks.Steps(900, 1200, 100));
+        Assert.Empty(ChartTicks.Steps(900, 1200, 0));
+    }
 }

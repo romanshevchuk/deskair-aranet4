@@ -52,10 +52,10 @@ public class SleepViewModelTests
         Assert.Equal("Sleep_Title(from=22:00, to=07:00)", viewModel.Title);
         Assert.Equal("Sleep_Verdict_Good", viewModel.VerdictText);
         Assert.Equal(Zone.Good, viewModel.VerdictZone);
-        Assert.Equal("Sleep_TimeAbove(limit=1,000, unit=ppm)", viewModel.FirstLabel);
+        Assert.Equal("Sleep_TimeAbove(limit=1000, unit=ppm)", viewModel.FirstLabel);
         Assert.Equal("Sleep_HoursOf(hours=0, total=9)", viewModel.FirstValue);
         Assert.Equal("Sleep_Peak(time=01:30)", viewModel.PeakLabel);
-        Assert.Equal("1,500 ppm", viewModel.PeakValue);
+        Assert.Equal("1500 ppm", viewModel.PeakValue);
         Assert.Equal("Sleep_Deep", viewModel.DeepLabel);
         Assert.Equal("700 ppm", viewModel.DeepValue);
         Assert.Equal("Sleep_Tip_Fresh", viewModel.Tip);

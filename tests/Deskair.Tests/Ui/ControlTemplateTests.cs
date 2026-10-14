@@ -23,15 +23,31 @@ public class ControlTemplateTests
 
     [Theory]
     [MemberData(nameof(ZoneCards))]
-    public void Card_takes_the_zone_tint_and_border(Zone zone, string name)
+    public void A_zone_card_is_a_neutral_surface_with_the_zone_glow(Zone zone, string name)
     {
         UiHost.Run(() =>
         {
             var card = UiHost.Prepare(new Card { Zone = zone });
+            var glow = (Border)card.Template.FindName("Glow", card);
 
-            Assert.Equal(Token($"Zone.{name}.CardBg.Brush"), BrushColor(card.Background));
-            Assert.Equal(Token($"Zone.{name}.CardBorder.Brush"), BrushColor(card.BorderBrush));
+            // D-0017: no zone fill or zone border; the zone shows as a glow between the surface and the content.
+            Assert.Equal(Token("Surface.Brush"), BrushColor(card.Background));
+            Assert.Equal(Token("Card.Border.Brush"), BrushColor(card.BorderBrush));
             Assert.Equal(new Thickness(1), card.BorderThickness);
+            Assert.Equal(Visibility.Visible, glow.Visibility);
+            Assert.Same(Application.Current.FindResource($"Zone.{name}.Glow.Brush"), glow.Background);
+        });
+    }
+
+    [Fact]
+    public void A_card_without_a_zone_has_no_glow()
+    {
+        UiHost.Run(() =>
+        {
+            var card = UiHost.Prepare(new Card());
+            var glow = (Border)card.Template.FindName("Glow", card);
+
+            Assert.Equal(Visibility.Collapsed, glow.Visibility);
         });
     }
 
@@ -81,16 +97,18 @@ public class ControlTemplateTests
     }
 
     [Theory]
-    [MemberData(nameof(ZoneCards))]
-    public void A_zone_card_casts_a_shadow_tinted_with_its_zone(Zone zone, string name)
+    [InlineData(Zone.Good)]
+    [InlineData(Zone.Elevated)]
+    [InlineData(Zone.High)]
+    public void A_zone_card_casts_the_same_neutral_shadow_as_any_card(Zone zone)
     {
         UiHost.Run(ThemeChoice.Light, () =>
         {
             var card = UiHost.Prepare(new Card { Zone = zone });
 
-            var shadow = (DropShadowEffect)Descendants(card).OfType<Border>().First(border => border.Effect is DropShadowEffect).Effect;
+            var shadow = Descendants(card).OfType<Border>().First(border => border.Effect is DropShadowEffect).Effect;
 
-            Assert.Equal(Token($"Zone.{name}.CardBorder.Brush"), shadow.Color);
+            Assert.Same(Application.Current.FindResource("Shadow.Card"), shadow);
         });
     }
     [Fact]
@@ -157,7 +175,10 @@ public class ControlTemplateTests
 
             toggle.IsChecked = true;
 
-            Assert.Equal(Token("Toggle.On.Brush"), BrushColor(track.Background));
+            // D-0017: on is the ink accent, never green (green means Good air), with the knob in the colour that sits on the accent.
+            var knob = (System.Windows.Shapes.Ellipse)toggle.Template.FindName("Knob", toggle);
+            Assert.Equal(Token("Accent.Brush"), BrushColor(track.Background));
+            Assert.Equal(Token("Accent.On.Brush"), BrushColor(knob.Fill));
         });
     }
 

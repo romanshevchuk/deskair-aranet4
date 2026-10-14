@@ -51,9 +51,10 @@
   <data name="History_Legend_Line" xml:space="preserve"><value>Лінія = виміри</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Legend_NoData" xml:space="preserve"><value>Немає даних</value><comment>Draft: needs native review.</comment></data>
   <data name="History_TypicalDay_Subtitle" xml:space="preserve"><value>середнє за годину, {period}</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_TypicalDay_Last7" xml:space="preserve"><value>останні 7 днів</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_TypicalDay_Last30" xml:space="preserve"><value>останні 30 днів</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_TypicalDay_Last90" xml:space="preserve"><value>останні 90 днів</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_TypicalDay_Before7" xml:space="preserve"><value>7 днів перед цим</value><comment>Draft: needs native review. Day: the 7 days before the shown day.</comment></data>
+  <data name="History_TypicalDay_These7" xml:space="preserve"><value>ці 7 днів</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_TypicalDay_These30" xml:space="preserve"><value>ці 30 днів</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_TypicalDay_These12Months" xml:space="preserve"><value>ці 12 місяців</value><comment>Draft: needs native review.</comment></data>
   <data name="History_TypicalDay_Worst" xml:space="preserve"><value>найгірше {from}–{to} год</value><comment>Draft: needs native review.</comment></data>
   <data name="Group_ByDay" xml:space="preserve"><value>За днями</value><comment>Draft: needs native review.</comment></data>
   <data name="Group_ByWeek" xml:space="preserve"><value>За тижнями</value><comment>Draft: needs native review.</comment></data>
@@ -134,7 +135,7 @@
   <data name="Toolbar_Hours" xml:space="preserve"><value>Години</value><comment>Draft: needs native review.</comment></data>
   <data name="Toolbar_GroupBy" xml:space="preserve"><value>Групувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Toolbar_Range" xml:space="preserve"><value>Період</value><comment>Draft: needs native review.</comment></data>
-  <data name="Coverage_Chip" xml:space="preserve"><value>На основі {percent} % очікуваних вимірювань</value><comment>Draft: needs native review.</comment></data>
+  <data name="Coverage_Chip" xml:space="preserve"><value>На основі {percent} очікуваних вимірювань</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_CoverageChip" xml:space="preserve"><value>Позначка покриття</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_ZoneShareBar" xml:space="preserve"><value>Частка часу в зонах</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_InsightBox" xml:space="preserve"><value>Поле підказки</value><comment>Draft: needs native review.</comment></data>
@@ -164,9 +165,9 @@
   <data name="Gallery_Section_BatteryIcon" xml:space="preserve"><value>Індикатор батареї</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_Button" xml:space="preserve"><value>Кнопки</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_BannerStale" xml:space="preserve"><value>Останнє значення 12 хв тому</value><comment>Draft: needs native review.</comment></data>
-  <data name="Gallery_Sample_BannerLow" xml:space="preserve"><value>Низький заряд датчика (8 %)</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_BannerLow" xml:space="preserve"><value>Низький заряд датчика (8 %)</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_Peak" xml:space="preserve"><value>Пік о 15:12</value><comment>Draft: needs native review.</comment></data>
-  <data name="Gallery_Sample_InZone" xml:space="preserve"><value>У зоні «Добре»</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_InZone" xml:space="preserve"><value>У цій зоні</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_Primary" xml:space="preserve"><value>Відкрити Deskair</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_Secondary" xml:space="preserve"><value>Відкласти на 1 год</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_Chart" xml:space="preserve"><value>Графік наживо</value><comment>Draft: needs native review.</comment></data>
@@ -178,12 +179,15 @@
   <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ідеально 20–24</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_IdealHumidity" xml:space="preserve"><value>ідеально 30–50</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_PeakNow" xml:space="preserve"><value>Пік зараз</value><comment>Draft: needs native review.</comment></data>
-  <data name="Stat_InZone_Good" xml:space="preserve"><value>У зоні «Добре»</value><comment>Draft: needs native review.</comment></data>
-  <data name="Stat_InZone_Elevated" xml:space="preserve"><value>У зоні «Підвищений»</value><comment>Draft: needs native review.</comment></data>
-  <data name="Stat_InZone_High" xml:space="preserve"><value>У зоні «Високий»</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stat_InZone_Good" xml:space="preserve"><value>У цій зоні</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stat_InZone_Elevated" xml:space="preserve"><value>У цій зоні</value><comment>Draft: needs native review.</comment></data>
+  <data name="Stat_InZone_High" xml:space="preserve"><value>У цій зоні</value><comment>Draft: needs native review.</comment></data>
   <data name="Duration_Minutes" xml:space="preserve"><value>{min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Duration_HoursMinutes" xml:space="preserve"><value>{h} год {min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Ideal" xml:space="preserve"><value>ідеально {min}–{max}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Підвищений від {ppm}</value><comment>Draft: needs native review. Label on the dashed line where the Elevated zone starts.</comment></data>
+  <data name="Chart_Threshold_High" xml:space="preserve"><value>Високий від {ppm}</value><comment>Draft: needs native review. Label on the dashed line where the High zone starts.</comment></data>
+  <data name="Live_Card_AccessibleName" xml:space="preserve"><value>{metric}, {value} {unit}, {status}</value><comment>Read by Narrator for the hero and the mini cards.</comment></data>
   <data name="Chart_Summary_OneHour" xml:space="preserve"><value>Остання година · Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Summary_SixHours" xml:space="preserve"><value>Останні 6 годин · Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Summary_TwentyFourHours" xml:space="preserve"><value>Останні 24 години · Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
@@ -289,4 +293,24 @@
   <data name="History_Empty_Text" xml:space="preserve"><value>Deskair зберігає кожне вимірювання вашого датчика, тож Історія наповнюватиметься з часом. Щоб побачити минулі дні вже зараз, імпортуйте історію із застосунку на телефоні.</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Empty_Import" xml:space="preserve"><value>Імпорт із застосунку на телефоні</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_EmptyStateCard" xml:space="preserve"><value>Картка порожнього стану</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Period_Last24Hours" xml:space="preserve"><value>Останні 24 години</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Period_Span" xml:space="preserve"><value>{from} – {to}</value></data>
+  <data name="History_Period_Previous" xml:space="preserve"><value>Попередній період</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Period_Next" xml:space="preserve"><value>Наступний період</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Period_Empty_Title" xml:space="preserve"><value>Немає вимірювань за {period}</value><comment>Draft: needs native review. {period} is a date or a date range.</comment></data>
+  <data name="History_Period_Empty_Text" xml:space="preserve"><value>Deskair має вимірювання з {date}.</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Period_Latest" xml:space="preserve"><value>До останнього</value><comment>Draft: needs native review. Button: go back to the latest period.</comment></data>
+  <data name="History_Chart_ByHour" xml:space="preserve"><value>за годинами</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Grid_Name" xml:space="preserve"><value>{metric} за годинами, {period}</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Grid_Cell" xml:space="preserve"><value>{day}, {from}–{to}</value></data>
+  <data name="History_Grid_Value" xml:space="preserve"><value>{where} · {value} {unit}</value></data>
+  <data name="History_Grid_Value_None" xml:space="preserve"><value>{where} · Немає даних</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Grid_Typical" xml:space="preserve"><value>Типово</value><comment>Draft: needs native review. Row label: the average of each hour over the period.</comment></data>
+  <data name="History_Grid_TypicalCell" xml:space="preserve"><value>Типово, {from}–{to}</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Grid_Worst" xml:space="preserve"><value>Найгірше {from}–{to}</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Grid_Night" xml:space="preserve"><value>Ніч · {from}–{to}</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Grid_TagBest" xml:space="preserve"><value>найкращий</value><comment>Draft: needs native review. Agrees with "день".</comment></data>
+  <data name="History_Grid_TagWorst" xml:space="preserve"><value>найгірший</value><comment>Draft: needs native review. Agrees with "день".</comment></data>
+  <data name="History_Grid_NoReadings" xml:space="preserve"><value>Немає вимірювань · {from} – {to}</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Grid_UnitHour" xml:space="preserve"><value>Кожен квадрат — одна година</value><comment>Draft: needs native review.</comment></data>
 </root>

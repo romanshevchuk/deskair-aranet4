@@ -145,7 +145,7 @@ public class ChartCardViewModelTests
 
         await viewModel.RefreshAsync(Metric.Co2, LiveRange.SixHours, TestContext.Current.CancellationToken);
 
-        Assert.Equal("Chart_Summary_SixHours(low=1,000, avg=1,200, high=1,500, unit=ppm)", viewModel.SummaryText);
+        Assert.Equal("Chart_Summary_SixHours(low=1000, avg=1200, high=1500, unit=ppm)", viewModel.SummaryText);
     }
 
     [Fact]

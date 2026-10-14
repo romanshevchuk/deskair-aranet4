@@ -38,6 +38,16 @@ public sealed partial class ChartHeaderViewModel : ObservableObject
         this.localizer = localizer;
     }
 
+    /// <summary>The History grid (D-0018): "CO₂ · by hour"; the grid draws its own legend, so the header shows none.</summary>
+    public void UpdateForGrid(Metric metric)
+    {
+        Title = localizer.Get($"Metric_{metric}");
+        Subtitle = localizer.Get("History_Chart_ByHour");
+        ShowZoneLegend = false;
+        LegendText = string.Empty;
+        ShowNoDataLegend = false;
+    }
+
     public void Update(Metric metric, Period range, Period grouping, HoursFilterMode hours, bool hasGaps)
     {
         var hourly = range == Period.Day;
@@ -57,9 +67,10 @@ public sealed partial class ChartHeaderViewModel : ObservableObject
         ShowNoDataLegend = hasGaps;
         TypicalDaySubtitle = localizer.Format("History_TypicalDay_Subtitle", ("period", localizer.Get(range switch
         {
-            Period.Month => "History_TypicalDay_Last30",
-            Period.Year => "History_TypicalDay_Last90",
-            _ => "History_TypicalDay_Last7"
+            Period.Day => "History_TypicalDay_Before7",
+            Period.Week => "History_TypicalDay_These7",
+            Period.Month => "History_TypicalDay_These30",
+            _ => "History_TypicalDay_These12Months"
         })));
     }
 }

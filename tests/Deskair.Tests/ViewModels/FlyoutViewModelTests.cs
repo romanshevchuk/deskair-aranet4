@@ -120,7 +120,7 @@ public sealed class FlyoutViewModelTests : IDisposable
         Assert.Equal("Trend_Falling", viewModel.TrendText);
         Assert.StartsWith("Trend_Detail(ppm=250", viewModel.TrendDetail);
         Assert.Equal("Zone_Elevated", viewModel.ZoneText);
-        Assert.Equal(("1,050", "ppm"), (viewModel.ValueText, viewModel.UnitText));
+        Assert.Equal(("1050", "ppm"), (viewModel.ValueText, viewModel.UnitText));
     }
 
     [Fact]

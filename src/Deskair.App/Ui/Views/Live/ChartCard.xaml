@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:charts="clr-namespace:Deskair.App.Ui.Charts"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
-             xmlns:live="clr-namespace:Deskair.App.Ui.Views.Live"
+             xmlns:vm="clr-namespace:Deskair.App.ViewModels.Live"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
              xmlns:markup="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- DataContext: LiveViewModel (the tabs and the chart card). The 24 h ribbon shows for CO2 on 1h and 6h only. -->
+  <!-- DataContext: LiveViewModel (the metric and range choice, and the chart card). The title names the metric, which the hero and the mini cards choose
+       (POL-06); the range stays here. The 24 h ribbon shows for CO2 on 1h and 6h only. -->
   <controls:Card Padding="{StaticResource Space.Chart.Card}">
     <Grid>
       <Grid.RowDefinitions>
@@ -16,7 +17,24 @@
         <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
 
-      <live:MetricTabs Grid.Row="0" DataContext="{Binding Tabs}" />
+      <Grid Grid.Row="0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock VerticalAlignment="Center"
+                   FontFamily="{DynamicResource Font.Family.Display}"
+                   Style="{StaticResource Text.Title}"
+                   Text="{Binding ChartCard.Title}" />
+        <controls:SegmentedControl Grid.Column="1"
+                                   AutomationProperties.Name="{loc:T Range_Day}"
+                                   SelectedValuePath="Tag"
+                                   SelectedValue="{Binding Tabs.SelectedRange, Mode=TwoWay}">
+          <ListBoxItem Content="{loc:T Range_1h}" Tag="{x:Static vm:LiveRange.OneHour}" />
+          <ListBoxItem Content="{loc:T Range_6h}" Tag="{x:Static vm:LiveRange.SixHours}" />
+          <ListBoxItem Content="{loc:T Range_24h}" Tag="{x:Static vm:LiveRange.TwentyFourHours}" />
+        </controls:SegmentedControl>
+      </Grid>
 
       <TextBlock Grid.Row="1"
                  Margin="{StaticResource Space.Chart.Caption}"
@@ -32,6 +50,8 @@
                         IdealMin="{Binding ChartCard.IdealMin}"
                         IdealMax="{Binding ChartCard.IdealMax}"
                         IdealLabel="{Binding ChartCard.IdealLabel}"
+                        ElevatedLineLabel="{Binding ChartCard.ElevatedLineLabel}"
+                        HighLineLabel="{Binding ChartCard.HighLineLabel}"
                         Window="{Binding ChartCard.Window}"
                         EndTime="{Binding ChartCard.EndTime}"
                         NowLabel="{loc:T Chart_Now}"

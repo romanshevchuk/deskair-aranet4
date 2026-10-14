@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using Deskair.App.Localization;
 
 namespace Deskair.App.Ui.Charts.Layers;
 
@@ -19,7 +20,7 @@ public sealed class OverallAverageLayer : IChartLayer
     /// <summary>The word before the number ("avg"), already localized.</summary>
     public string? Label { get; set; }
 
-    public string Format { get; set; } = "N0";
+    public string Format { get; set; } = NumberFormat.WholeFormat;
 
     public CultureInfo? Culture { get; set; }
 

@@ -48,7 +48,7 @@ public class HeroStatsBuilderTests
 
         var peak = Create().Build(readings, now)[1];
 
-        Assert.Equal("1,800 ppm", peak.Value);
+        Assert.Equal("1800 ppm", peak.Value);
         Assert.Equal("Stat_Peak(time=10:30)", peak.Label);
     }
 

@@ -54,7 +54,7 @@ src/Deskair.Domain/
   Zones/     Zone.cs  ZoneThresholds.cs  ZoneClassifier.cs
   Metrics/   Metric.cs  MetricDescriptor.cs
   Time/      Period.cs  LocalCalendar.cs  TimeSlot.cs
-  Analytics/ Aggregation/  Coverage/  Trend/  TypicalDay/  HoursFilter/
+  Analytics/ Aggregation/  Coverage/  Trend/  TypicalDay/  HoursFilter/  HourGrid/
 
 src/Deskair.Services/
   Sensors/        ISensorProvider.cs  ISensor.cs  IBleConnection.cs  IBleScanner.cs  IReadingImporter.cs
@@ -177,11 +177,11 @@ Events between services and view models use `CommunityToolkit.Mvvm` `IMessenger`
 
 **Theme:** `Tokens/` (Colors, Zones and Metrics each as a Light and a Dark dictionary; Typography, Spacing, Radii), base `Styles/`, `ThemeService`. Token names follow `docs/design/design-tokens.md`. Controls use `DynamicResource` only.
 
-**Controls:** one folder per control (`SegmentedControl/` with `.cs` and `.xaml`), a template in its own XAML file, no business logic. Catalogue: `Card`, `Pill`, `StatusDot`, `SegmentedControl`, `ToggleSwitch`, `Gauge`, `AdviceCard`, `StatTriple`, `MetricCard`, `Banner`, `EmptyStateCard`, `RoomChip`, `RoomMenu`, `BatteryIcon`, `CoverageChip`, `ZoneShareBar`, `InsightBox`, `KeyValueCell`, `SettingsCard`, `SettingsRow`, `HeaderBar`, `FooterBar`, `PrimaryButton`, `SecondaryButton`.
+**Controls:** one folder per control (`SegmentedControl/` with `.cs` and `.xaml`), a template in its own XAML file, no business logic. Catalogue: `Card`, `Pill`, `StatusDot`, `SegmentedControl`, `ToggleSwitch`, `Gauge`, `AdviceCard`, `StatTriple`, `SelectableCard`, `MetricCard`, `Banner`, `EmptyStateCard`, `RoomChip`, `RoomMenu`, `BatteryIcon`, `CoverageChip`, `ZoneShareBar`, `InsightBox`, `KeyValueCell`, `SettingsCard`, `SettingsRow`, `HeaderBar`, `FooterBar`, `PrimaryButton`, `SecondaryButton`.
 
-**Charts:** a chart is `ChartBase` (scales, hover, hit testing) plus ordered layers, each one class drawing into a `DrawingContext`: `BandLayer`, `GridLayer`, `AxisLabelLayer`, `ZoneLineLayer`, `RangeBarLayer`, `AverageLineLayer`, `WeekendShadingLayer`, `GapHatchLayer`, `CrosshairLayer`, `DashedZoneLinesLayer`. Charts: `LiveChart`, `HistoryChart`, `TypicalDayChart`, `ZoneRibbon`, `Sparkline`.
+**Charts:** a chart is `ChartBase` (scales, hover, hit testing) plus ordered layers, each one class drawing into a `DrawingContext`: `BandLayer`, `GridLayer`, `AxisLabelLayer`, `ZoneLineLayer`, `RangeBarLayer`, `AverageLineLayer`, `WeekendShadingLayer`, `GapHatchLayer`, `CrosshairLayer`, `ThresholdLayer`, `AreaLayer`, `HourGridLayer`, `HourGridLegendLayer`. Charts: `LiveChart`, `HistoryChart`, `HourGridChart` (with `HourGridLayout` for geometry and hit testing), `TypicalDayChart`, `ZoneRibbon`, `Sparkline`. Time: `HistoryPeriod` (Domain) is the History period behind ‹ ›.
 
-**Views:** screens built from controls: `Shell/` (MainWindow, header, footer, tabs), `Live/` (LiveView, HeroCard, MetricTabs, ChartCard, MiniCardsRow), `History/` (HistoryView, HistoryToolbar, StatsCard, TypicalDayCard, SleepCard), `Settings/` (one view per section), `Onboarding/`, `States/` (offline, empty history), `Flyout/`, `Tray/`. Code-behind is empty except for view-only behaviour.
+**Views:** screens built from controls: `Shell/` (MainWindow, header, footer, tabs), `Live/` (LiveView, HeroCard, ChartCard, MiniCardsRow), `History/` (HistoryView, HistoryToolbar, StatsCard, TypicalDayCard, SleepCard), `Settings/` (one view per section), `Onboarding/`, `States/` (offline, empty history), `Flyout/`, `Tray/`. Code-behind is empty except for view-only behaviour.
 
 **Control gallery:** starting with `--gallery` opens a window listing every control and chart in all states, with switches for light and dark and for both languages, using the simulated sensor. It is available in every build (no conditional code; see D-0012). Use it to build and review UI in isolation.
 

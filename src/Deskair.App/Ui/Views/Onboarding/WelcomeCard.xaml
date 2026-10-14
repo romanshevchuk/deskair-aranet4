@@ -42,7 +42,7 @@
                                VerticalAlignment="Center"
                                FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
                                FontSize="{DynamicResource Font.Size.Caption}"
-                               Foreground="{DynamicResource Toggle.Knob.Brush}"
+                               Foreground="{DynamicResource Accent.On.Brush}"
                                Text="&#xE73E;"
                                Visibility="Collapsed" />
                   </Grid>
@@ -55,7 +55,7 @@
               </Border>
               <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding IsDone}" Value="True">
-                  <Setter TargetName="Disc" Property="Fill" Value="{DynamicResource Toggle.On.Brush}" />
+                  <Setter TargetName="Disc" Property="Fill" Value="{DynamicResource Accent.Brush}" />
                   <Setter TargetName="Number" Property="Visibility" Value="Collapsed" />
                   <Setter TargetName="Tick" Property="Visibility" Value="Visible" />
                 </DataTrigger>

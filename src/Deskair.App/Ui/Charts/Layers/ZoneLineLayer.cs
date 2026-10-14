@@ -20,6 +20,9 @@ public sealed class ZoneLineLayer : IChartLayer
 
     public double HighAbove { get; set; } = 1400.0;
 
+    /// <summary>Draws the line as a monotone curve through the readings (the Live chart); off keeps straight segments.</summary>
+    public bool Smooth { get; set; }
+
     public void Draw(DrawingContext context, ChartArea area)
     {
         if (Points is not { Count: > 0 } points)
@@ -30,7 +33,7 @@ public sealed class ZoneLineLayer : IChartLayer
         var pen = ChartLines.RoundPen(GradientBrush(area), Thickness);
 
         context.PushClip(new RectangleGeometry(new Rect(area.Plot.Left - Thickness, area.Plot.Top - Thickness, area.Plot.Width + (2 * Thickness), area.Plot.Height + (2 * Thickness))));
-        context.DrawGeometry(null, pen, ChartLines.Build(points, area));
+        context.DrawGeometry(null, pen, ChartLines.Build(points, area, Smooth));
         context.Pop();
 
         DrawMarker(context, area, points);

@@ -80,6 +80,9 @@ public abstract class ChartBase : FrameworkElement
         }
     }
 
+    /// <summary>Sets what the chart points at from elsewhere than the mouse (keyboard focus in the History grid).</summary>
+    protected void SetHover(ChartHover? hover) => SetValue(hoverKey, hover);
+
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);

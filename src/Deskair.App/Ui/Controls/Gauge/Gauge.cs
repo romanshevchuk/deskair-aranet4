@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using Deskair.App.Localization;
 
 namespace Deskair.App.Ui.Controls;
 
@@ -159,7 +160,7 @@ public class Gauge : Control
     {
         if (block is not null)
         {
-            block.Text = number.ToString("N0", CultureInfo.CurrentUICulture);
+            block.Text = number.ToString(NumberFormat.WholeFormat, CultureInfo.CurrentUICulture);
         }
     }
 

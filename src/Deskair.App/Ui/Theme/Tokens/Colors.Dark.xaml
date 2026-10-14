@@ -23,14 +23,15 @@
   <SolidColorBrush x:Key="Text.Tertiary.Brush" Color="{StaticResource Text.Tertiary.Color}" />
   <Color x:Key="Text.Strong2.Color">#CBD3DA</Color>
   <SolidColorBrush x:Key="Text.Strong2.Brush" Color="{StaticResource Text.Strong2.Color}" />
-  <Color x:Key="Advice.IconBadge.Color">#12161A</Color>
-  <SolidColorBrush x:Key="Advice.IconBadge.Brush" Color="{StaticResource Advice.IconBadge.Color}" />
   <Color x:Key="Insight.Bg.Color">#222930</Color>
   <SolidColorBrush x:Key="Insight.Bg.Brush" Color="{StaticResource Insight.Bg.Color}" />
   <Color x:Key="Toggle.Off.Color">#3E4852</Color>
   <SolidColorBrush x:Key="Toggle.Off.Brush" Color="{StaticResource Toggle.Off.Color}" />
-  <Color x:Key="Toggle.On.Color">#1E8A5C</Color>
-  <SolidColorBrush x:Key="Toggle.On.Brush" Color="{StaticResource Toggle.On.Color}" />
+  <!-- Accent: ink, the app's one accent (D-0017): nav underline, toggles on, primary button, selected states. Accent.On is the text and the knob on it. -->
+  <Color x:Key="Accent.Color">#EEF2F5</Color>
+  <SolidColorBrush x:Key="Accent.Brush" Color="{StaticResource Accent.Color}" />
+  <Color x:Key="Accent.On.Color">#12161A</Color>
+  <SolidColorBrush x:Key="Accent.On.Brush" Color="{StaticResource Accent.On.Color}" />
   <Color x:Key="Toggle.Knob.Color">#FFFFFF</Color>
   <SolidColorBrush x:Key="Toggle.Knob.Brush" Color="{StaticResource Toggle.Knob.Color}" />
   <Color x:Key="Focus.Ring.Color">#6E9BE0</Color>

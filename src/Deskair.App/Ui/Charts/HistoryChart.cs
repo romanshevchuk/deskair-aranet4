@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Windows;
+using Deskair.App.Localization;
 using Deskair.App.Ui.Charts.Layers;
 using Deskair.App.ViewModels.ChartModels;
 using Deskair.Domain.Analytics.Aggregation;
@@ -167,7 +168,7 @@ public sealed class HistoryChart : ChartBase
         ? Bars!.Any(bar => bar.State != BucketState.NoData && bar.Maximum is not null)
         : Points?.Any(point => point.Value is not null) == true;
 
-    private string ValueFormat => Metric is Metric.Temperature or Metric.Pressure ? "N1" : "N0";
+    private string ValueFormat => NumberFormat.FormatFor(Metric);
 
     /// <summary>
     /// True when every bar stands for one day and there are few enough to name them (a week): the labels are weekdays with "Today", and a row of averages sits under them.

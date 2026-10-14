@@ -112,7 +112,7 @@ public class StatsViewModelDetailTests
         Assert.Equal("500 ppm", viewModel.BestText);
         Assert.Equal("2 Oct", viewModel.BestWhen);
         Assert.Equal("Stats_WorstPeriod(period=Stats_Period_Day)", viewModel.WorstLabel);
-        Assert.Equal("1,200 ppm", viewModel.WorstText);
+        Assert.Equal("1200 ppm", viewModel.WorstText);
         Assert.Equal("3 Oct", viewModel.WorstWhen);
     }
 
@@ -200,7 +200,7 @@ public class StatsViewModelDetailTests
 
         viewModel.Update(Week([Day(0, 800)]) with { TypicalDay = hours });
 
-        Assert.Equal("Insight_WorstHours(from=14:00, to=17:00, value=1,350 ppm)", viewModel.InsightText);
+        Assert.Equal("Insight_WorstHours(from=14:00, to=17:00, value=1350 ppm)", viewModel.InsightText);
     }
 
     [Fact]
@@ -274,8 +274,8 @@ public class StatsViewModelDetailTests
 
         viewModel.Update(Week([Day(0, 1013)]));
 
-        Assert.Equal("1,013", viewModel.AverageNumber);
-        Assert.Equal("1,013 ppm", viewModel.AverageText);
+        Assert.Equal("1013", viewModel.AverageNumber);
+        Assert.Equal("1013 ppm", viewModel.AverageText);
         Assert.Equal("ppm", viewModel.UnitText);
     }
 

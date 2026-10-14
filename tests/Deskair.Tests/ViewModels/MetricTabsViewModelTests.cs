@@ -68,4 +68,19 @@ public class MetricTabsViewModelTests
         Assert.Equal(Metric.Pressure, viewModel.SelectedMetric);
         Assert.Equal(LiveRange.SixHours, viewModel.SelectedRange);
     }
+
+    [Fact]
+    public void The_hero_chooses_co2_and_is_the_chosen_card_only_while_co2_is_shown()
+    {
+        var viewModel = new MetricTabsViewModel();
+        var raised = new List<string?>();
+        viewModel.PropertyChanged += (_, args) => raised.Add(args.PropertyName);
+
+        viewModel.SelectMetricCommand.Execute(Metric.Humidity);
+        Assert.False(viewModel.IsCo2Selected);
+
+        viewModel.SelectMetricCommand.Execute(Metric.Co2);
+        Assert.True(viewModel.IsCo2Selected);
+        Assert.Contains(nameof(MetricTabsViewModel.IsCo2Selected), raised);
+    }
 }

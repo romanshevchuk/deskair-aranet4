@@ -21,12 +21,55 @@
         <DataTrigger Binding="{Binding DataContext.ShowSleep, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="True">
           <Setter Property="Visibility" Value="Collapsed" />
         </DataTrigger>
+        <!-- The grid has the typical day as its last row. -->
+        <DataTrigger Binding="{Binding DataContext.ShowGrid, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="True">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="History.Bars" TargetType="{x:Type charts:HistoryChart}">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding ShowGrid}" Value="True">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="History.Grid" TargetType="{x:Type charts:HourGridChart}">
+      <Setter Property="Visibility" Value="Collapsed" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding ShowGrid}" Value="True">
+          <Setter Property="Visibility" Value="Visible" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="History.Readout" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Secondary}">
+      <Setter Property="Text" Value="{Binding Hover.Text, ElementName=Chart}" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding ShowGrid}" Value="True">
+          <Setter Property="Text" Value="{Binding Hover.Text, ElementName=HourGrid}" />
+        </DataTrigger>
       </Style.Triggers>
     </Style>
     <Style x:Key="History.Sleep" TargetType="{x:Type history:SleepCard}">
       <Setter Property="Visibility" Value="Collapsed" />
       <Style.Triggers>
         <DataTrigger Binding="{Binding DataContext.ShowSleep, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="True">
+          <Setter Property="Visibility" Value="Visible" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <!-- A period before the first reading (D-0019): the cards give way to "No readings for …" with "Go to the latest". -->
+    <Style x:Key="History.Cards" TargetType="{x:Type Grid}">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding IsPeriodEmpty}" Value="True">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="History.PeriodEmpty" TargetType="{x:Type controls:EmptyStateCard}">
+      <Setter Property="Visibility" Value="Collapsed" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding IsPeriodEmpty}" Value="True">
           <Setter Property="Visibility" Value="Visible" />
         </DataTrigger>
       </Style.Triggers>
@@ -41,6 +84,11 @@
     </Style>
   </UserControl.Resources>
 
+  <UserControl.InputBindings>
+    <KeyBinding Command="{Binding Toolbar.PreviousPeriodCommand}" Gesture="Alt+Left" />
+    <KeyBinding Command="{Binding Toolbar.NextPeriodCommand}" Gesture="Alt+Right" />
+  </UserControl.InputBindings>
+
   <Grid>
     <Grid Style="{StaticResource History.Content}">
       <Grid.RowDefinitions>
@@ -54,7 +102,16 @@
                               ExportCommand="{Binding DataContext.Export.ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}"
                               ExportStatus="{Binding DataContext.Export.StatusText, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" />
 
-      <Grid Grid.Row="1">
+      <controls:EmptyStateCard Grid.Row="1"
+                               VerticalAlignment="Top"
+                               Icon="&#xE787;"
+                               Message="{Binding PeriodEmptyText}"
+                               Style="{StaticResource History.PeriodEmpty}"
+                               Title="{Binding PeriodEmptyTitle}">
+        <controls:SecondaryButton Command="{Binding Toolbar.LatestCommand}" Content="{loc:T History_Period_Latest}" />
+      </controls:EmptyStateCard>
+
+      <Grid Grid.Row="1" Style="{StaticResource History.Cards}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="{StaticResource Grid.Card.Gap}" />
@@ -88,15 +145,24 @@
                                    NoDataText="{loc:T Chart_NoData}"
                                    PartialText="{loc:T Chart_Partial}"
                                    Points="{Binding Points}"
+                                   Style="{StaticResource History.Bars}"
                                    TodayLabel="{loc:T Chart_Today}"
                                    Unit="{Binding Stats.UnitText}"
                                    WeekendSpans="{Binding WeekendSpans}" />
 
+              <!-- D-0018: CO₂ on Week and Month is the days × hours grid; it takes the bars' place. -->
+              <charts:HourGridChart x:Name="HourGrid"
+                                    Grid.Row="1"
+                                    AutomationProperties.Name="{Binding GridName}"
+                                    Model="{Binding Grid}"
+                                    Style="{StaticResource History.Grid}" />
+
+              <!-- What the mouse or the keyboard points at; announced as it changes. -->
               <TextBlock Grid.Row="2"
                          Margin="{StaticResource Space.Chart.Caption}"
                          MinHeight="{StaticResource Size.Chart.Readout.Height}"
-                         Style="{StaticResource Text.Secondary}"
-                         Text="{Binding Hover.Text, ElementName=Chart}" />
+                         AutomationProperties.LiveSetting="Polite"
+                         Style="{StaticResource History.Readout}" />
             </Grid>
           </controls:Card>
 

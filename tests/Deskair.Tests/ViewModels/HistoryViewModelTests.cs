@@ -44,7 +44,7 @@ public class HistoryViewModelTests
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(readingStore ?? store, registry, clock, calendar);
 
-        return new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), NullLogger<HistoryViewModel>.Instance);
+        return new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), NullLogger<HistoryViewModel>.Instance);
     }
 
     private async Task SelectDeviceAsync()
@@ -480,7 +480,7 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(store, registry, clock, calendar, settings);
-        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), NullLogger<HistoryViewModel>.Instance);
+        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), NullLogger<HistoryViewModel>.Instance);
         toolbar.Range = Period.Day;
         toolbar.Hours = HoursFilterMode.Night;
 
@@ -530,11 +530,85 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(new ThrowingReadingStore(), registry, clock, calendar);
-        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), logger);
+        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), logger);
 
         viewModel.Refresh();
 
         await Wait.Until(() => logger.Entries.Any(entry => entry.Level == Microsoft.Extensions.Logging.LogLevel.Warning));
+    }
+
+    [Fact]
+    public async Task Going_back_a_day_shows_the_calendar_day_before_with_its_title()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 10), 800);
+        AddDay(Samples.Utc(2026, 10, 11), 1200);
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.Equal("History_Period_Last24Hours", toolbar.PeriodLabel);
+        Assert.True(toolbar.PreviousPeriodCommand.CanExecute(null));
+        Assert.False(toolbar.NextPeriodCommand.CanExecute(null));
+
+        toolbar.PreviousPeriodCommand.Execute(null);
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        // D-0019: before the last 24 hours come calendar days; 11 October 2026 is a Sunday.
+        Assert.Equal("Sun 11 Oct", toolbar.PeriodLabel);
+        Assert.NotEmpty(viewModel.Points!);
+        Assert.All(viewModel.Points!, point => Assert.Equal(1200, point.Value));
+        Assert.True(toolbar.NextPeriodCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task Back_stops_one_period_before_the_first_reading_which_shows_the_empty_state()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 10), 800);
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        // The week of 6 to 12 October holds the first reading, so ‹ reaches one week further: 29 September to 5 October.
+        Assert.Equal(1, toolbar.MaxOffset);
+        Assert.False(viewModel.IsPeriodEmpty);
+
+        toolbar.PreviousPeriodCommand.Execute(null);
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.True(viewModel.IsPeriodEmpty);
+        Assert.Equal("History_Period_Span(from=29 Sep, to=5 Oct 2026)", toolbar.PeriodLabel);
+        Assert.Equal("History_Period_Empty_Title(period=History_Period_Span(from=29 Sep, to=5 Oct 2026))", viewModel.PeriodEmptyTitle);
+        Assert.Equal("History_Period_Empty_Text(date=10 Oct 2026)", viewModel.PeriodEmptyText);
+        Assert.False(toolbar.PreviousPeriodCommand.CanExecute(null));
+
+        toolbar.LatestCommand.Execute(null);
+
+        Assert.Equal(0, toolbar.Offset);
+    }
+
+    [Fact]
+    public void Changing_the_range_returns_to_the_latest_period()
+    {
+        toolbar.Range = Period.Week;
+        toolbar.Offset = 3;
+
+        toolbar.Range = Period.Month;
+
+        Assert.Equal(0, toolbar.Offset);
+    }
+
+    [Theory]
+    [InlineData(nameof(HistoryToolbarViewModel.Offset), true)]
+    [InlineData(nameof(HistoryToolbarViewModel.Range), true)]
+    [InlineData(nameof(HistoryToolbarViewModel.PeriodLabel), false)]
+    [InlineData(nameof(HistoryToolbarViewModel.MaxOffset), false)]
+    public void Only_a_choice_reloads_the_screen_not_the_title_or_the_limit_it_sets(string property, bool reloads)
+    {
+        Assert.Equal(reloads, HistoryToolbarViewModel.IsChoice(property));
     }
 
     private sealed class GatedReadingStore : IReadingStore
@@ -564,6 +638,9 @@ public class HistoryViewModelTests
             return await inner.ReadRangeAsync(device, start, end, cancellationToken);
         }
 
+        public Task<DateTimeOffset?> GetFirstReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
+            => inner.GetFirstReadingTimeAsync(device, cancellationToken);
+
         public Task<DateTimeOffset?> GetLastReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
             => inner.GetLastReadingTimeAsync(device, cancellationToken);
 
@@ -580,6 +657,9 @@ public class HistoryViewModelTests
     {
         public Task<IReadOnlyList<Reading>> ReadRangeAsync(DeviceId device, DateTimeOffset start, DateTimeOffset end, CancellationToken cancellationToken)
             => throw new InvalidOperationException("disk");
+
+        public Task<DateTimeOffset?> GetFirstReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
+            => Task.FromResult<DateTimeOffset?>(null);
 
         public Task<DateTimeOffset?> GetLastReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
             => Task.FromResult<DateTimeOffset?>(null);

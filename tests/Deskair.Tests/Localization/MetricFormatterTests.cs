@@ -20,7 +20,7 @@ public class MetricFormatterTests
     }
 
     [Theory]
-    [InlineData(Metric.Co2, 1068.4, "1,068")]
+    [InlineData(Metric.Co2, 1068.4, "1068")]
     [InlineData(Metric.Temperature, 22.34, "22.3")]
     [InlineData(Metric.Humidity, 44.4, "44")]
     [InlineData(Metric.Pressure, 975.26, "975.3")]
@@ -37,7 +37,27 @@ public class MetricFormatterTests
         var formatter = await CreateAsync("uk-UA", TemperatureUnit.Celsius);
 
         Assert.Equal("22,3", formatter.Value(Metric.Temperature, 22.34));
-        Assert.Equal("1 068", formatter.Value(Metric.Co2, 1068.4));
+        Assert.Equal("1068", formatter.Value(Metric.Co2, 1068.4));
+    }
+
+    [Fact]
+    public async Task Pressure_has_no_group_separator()
+    {
+        var english = await CreateAsync("en-US", TemperatureUnit.Celsius);
+        var ukrainian = await CreateAsync("uk-UA", TemperatureUnit.Celsius);
+
+        Assert.Equal("1013.2", english.Value(Metric.Pressure, 1013.24));
+        Assert.Equal("1013,2", ukrainian.Value(Metric.Pressure, 1013.24));
+    }
+
+    [Fact]
+    public async Task Percent_follows_the_language()
+    {
+        var english = await CreateAsync("en-US", TemperatureUnit.Celsius);
+        var ukrainian = await CreateAsync("uk-UA", TemperatureUnit.Celsius);
+
+        Assert.Equal("59%", english.Percent(0.59));
+        Assert.Equal("59 %", ukrainian.Percent(0.59));
     }
 
     [Fact]

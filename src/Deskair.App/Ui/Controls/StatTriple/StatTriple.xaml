@@ -2,46 +2,28 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Deskair.App.Ui.Controls"
                     xmlns:live="clr-namespace:Deskair.App.ViewModels.Live">
+  <!-- Three stats in equal columns with a neutral divider between them (POL-01; the hero is white, so the zone-tinted rule on top is gone). -->
   <Style TargetType="{x:Type local:StatTriple}">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Focusable" Value="False" />
     <Setter Property="ItemsPanel">
       <Setter.Value>
         <ItemsPanelTemplate>
-          <UniformGrid Rows="1" />
+          <local:StatTriplePanel DividerBrush="{DynamicResource Divider.Brush}" Gap="{DynamicResource Size.Stats.DividerGap}" />
         </ItemsPanelTemplate>
       </Setter.Value>
     </Setter>
     <Setter Property="ItemTemplate">
       <Setter.Value>
         <DataTemplate DataType="{x:Type live:StatItem}">
-          <local:KeyValueCell Margin="{DynamicResource Space.Stat.Padding}"
-                              Label="{Binding Label}"
-                              Value="{Binding Value}"
-                              ValueFirst="True" />
+          <local:KeyValueCell Label="{Binding Label}" Value="{Binding Value}" ValueFirst="True" />
         </DataTemplate>
       </Setter.Value>
     </Setter>
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:StatTriple}">
-          <Border x:Name="Frame"
-                  BorderBrush="{DynamicResource Divider.Brush}"
-                  BorderThickness="0,1,0,0"
-                  Padding="{DynamicResource Space.Stats.Padding}">
-            <ItemsPresenter />
-          </Border>
-          <ControlTemplate.Triggers>
-            <Trigger Property="Zone" Value="Good">
-              <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Zone.Good.Divider.Brush}" />
-            </Trigger>
-            <Trigger Property="Zone" Value="Elevated">
-              <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Zone.Elevated.Divider.Brush}" />
-            </Trigger>
-            <Trigger Property="Zone" Value="High">
-              <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Zone.High.Divider.Brush}" />
-            </Trigger>
-          </ControlTemplate.Triggers>
+          <ItemsPresenter />
         </ControlTemplate>
       </Setter.Value>
     </Setter>

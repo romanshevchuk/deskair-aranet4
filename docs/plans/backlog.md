@@ -51,5 +51,30 @@ Status: `todo`, `doing`, `done`. Update this file in the same change as the work
 | REPORT-01 | Shareable report | later |
 | ROOMS-01 | All-rooms view | later |
 | THRESH-01 | Editable CO₂ thresholds | later |
-| POLISH-01 | Premium polish pass (`design/polish-ideas.md`) | later |
+| POLISH-01 | Premium polish pass: now the Polish section below (`plans/polish-implementation.md`) | doing |
 | WORK-01 | Work-hours filter (dropped from v1) | later |
+
+## Polish
+
+Plan, specs and model per item: [`polish-implementation.md`](polish-implementation.md). What and why: [`ui-polish-plan.md`](ui-polish-plan.md). Visual target: `design/polish/deskair-polish-concept.html`.
+
+| ID | Item | Status |
+|---|---|---|
+| POL-00 | Design docs updated to the new direction; decisions recorded | done |
+| POL-01 | Surfaces and accent (zone glow, no zone borders, ink accent, gauge knob, flyout corners) | done |
+| POL-02 | Numbers and units (ppm without separator, proportional hero figures, percent and time formats) | done |
+| POL-03 | Shell chrome (text nav, plain room chip, footer) | todo |
+| POL-04 | Live chart (fitted axis, threshold line, area fill, smoothing) | done |
+| POL-05 | Sparklines (minimum range, area fill) | todo |
+| POL-06 | Metric selection by hero and mini cards; tabs removed | done |
+| POL-07 | Flyout rework | todo |
+| POL-08 | Spike: acrylic flyout (optional) | todo |
+| POL-09 | History period model and ‹ › navigator | done |
+| POL-10 | History toolbar: metric and range only | todo |
+| POL-11 | HourGridChart for Week and Month | done |
+| POL-12 | Year as a months × days grid | todo |
+| POL-13 | Day chart with typical line and aired markers | todo |
+| POL-14 | History summary card (stats and sleep merged) | todo |
+| POL-15 | Settings layout | todo |
+| POL-16 | Motion | todo |
+| POL-17 | Final review against the concept | todo |

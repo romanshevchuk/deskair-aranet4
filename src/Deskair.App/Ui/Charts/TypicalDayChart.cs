@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Windows;
+using Deskair.App.Localization;
 using Deskair.App.Ui.Charts.Layers;
 using Deskair.App.ViewModels.ChartModels;
 using Deskair.Domain.Zones;
@@ -118,7 +119,7 @@ public sealed class TypicalDayChart : ChartBase
             return new ChartHover(time, null, area.X(hourOfDay + 0.5), null, $"{label} · {NoDataText}");
         }
 
-        return new ChartHover(time, average, area.X(hourOfDay + 0.5), area.Y(average), $"{label} · {average.ToString("N0", CultureInfo.CurrentUICulture)} {Unit}");
+        return new ChartHover(time, average, area.X(hourOfDay + 0.5), area.Y(average), $"{label} · {average.ToString(NumberFormat.WholeFormat, CultureInfo.CurrentUICulture)} {Unit}");
     }
 
     private double Top()

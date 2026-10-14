@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using Deskair.App.Localization;
 
 namespace Deskair.App.Ui.Charts.Layers;
 
@@ -22,8 +23,8 @@ public sealed class AxisLabelLayer : IChartLayer
 
     public IReadOnlyList<double>? YTicks { get; set; }
 
-    /// <summary>The number format of the y labels: "N0" for whole numbers, "N1" for one decimal.</summary>
-    public string YFormat { get; set; } = "N0";
+    /// <summary>The number format of the y labels: "0" for whole numbers, "0.0" for one decimal, never a group separator.</summary>
+    public string YFormat { get; set; } = NumberFormat.WholeFormat;
 
     public TimeZoneInfo TimeZone { get; set; } = TimeZoneInfo.Local;
 

@@ -1,6 +1,6 @@
 # Localization
 
-*Last reviewed: 2026-10-13*
+*Last reviewed: 2026-10-14*
 
 ## Languages
 
@@ -18,7 +18,7 @@ On first launch the app follows the Windows display language: Ukrainian if it is
    - few: n mod 10 in 2..4 and n mod 100 not in 12..14 (2 дні, 23 дні)
    - many: everything else (5 днів, 11 днів)
    Use a small plural helper and store each form as its own resource key.
-4. **Numbers and dates** in the UI follow the selected language: English `1,068 ppm`, `22.3 °C`, `Oct 9`; Ukrainian `1 068 ppm` (non-breaking space), `22,3 °C`, `9 жовт.` Time is 24 h in both.
+4. **Numbers and dates** in the UI follow the selected language for the decimal mark and dates, but metric values never have a group separator (D-0020): English `1068 ppm`, `22.3 °C`, `1013.2 hPa`, `59%`, `Oct 9`; Ukrainian `1068 ppm`, `22,3 °C`, `1013,2 hPa`, `59 %` (narrow no-break space), `9 жовт.` Time is 24 h in both. Full table: `docs/product/behaviour-rules.md` "Number and time format".
 5. **Files never localize.** CSV, JSON, import and export always use the invariant culture (period decimal, ISO 8601 dates).
 6. **Do not translate:** "CO₂", unit symbols (ppm, hPa, °C, %), "Aranet4", "Deskair".
 7. **Text length:** Ukrainian is often 15 to 30 % longer. No fixed-width buttons or segments. The History toolbar and the Live chart header must still fit. Test every screen in Ukrainian.
@@ -59,9 +59,11 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Stat_GoodShare | Good in last 24 h | Добре за останні 24 год |
 | Stat_Peak | Peak at {time} | Пік о {time} |
 | Stat_PeakNow | Peak right now | Пік зараз |
-| Stat_InZone_Good | In the Good zone | У зоні «Добре» |
-| Stat_InZone_Elevated | In the Elevated zone | У зоні «Підвищений» |
-| Stat_InZone_High | In the High zone | У зоні «Високий» |
+| Stat_InZone_Good | Good so far | У цій зоні |
+| Stat_InZone_Elevated | Elevated so far | У цій зоні |
+| Stat_InZone_High | High so far | У цій зоні |
+
+Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `Stat_InZone_*` keys because a natural "so far" form with the zone name is too long; the zone is already shown by the hero colour and pill.
 | Duration_Minutes | {min} min | {min} хв |
 | Duration_HoursMinutes | {h} h {min} min | {h} год {min} хв |
 | Chart_Now | Now | Зараз |

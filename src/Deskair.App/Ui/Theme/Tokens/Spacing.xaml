@@ -22,6 +22,9 @@
   <Thickness x:Key="Space.Hero.Padding">24,22,24,20</Thickness>
   <sys:Double x:Key="Size.Live.MiniRow.Height">132</sys:Double>
   <sys:Double x:Key="Size.History.Toolbar.Height">40</sys:Double>
+  <!-- History period navigator: ‹ title ›, the title at least 176 px so the arrows do not jump between periods. -->
+  <sys:Double x:Key="Size.History.Navigator.Title">176</sys:Double>
+  <Thickness x:Key="Space.History.Navigator">0,0,16,0</Thickness>
   <sys:Double x:Key="Size.History.Stats.Width">360</sys:Double>
   <sys:Double x:Key="Size.History.Export.StatusWidth">280</sys:Double>
   <sys:Double x:Key="Size.Flyout.Width">360</sys:Double>
@@ -33,6 +36,8 @@
   <Thickness x:Key="Space.Flyout.Footer">0,12,0,0</Thickness>
   <sys:Double x:Key="Size.Flyout.Ribbon.Height">22</sys:Double>
   <sys:Double x:Key="Size.Toast.Edge">4</sys:Double>
+  <!-- Icon button (History ‹ ›, export, flyout Settings). -->
+  <sys:Double x:Key="Size.IconButton">32</sys:Double>
   <sys:Double x:Key="Size.Toggle.Width">38</sys:Double>
   <sys:Double x:Key="Size.Toggle.Height">22</sys:Double>
   <!-- Not in the token table: taken from design/prototype/index.html. -->
@@ -47,7 +52,7 @@
 
   <!-- Gauge (CTRL-01): sizes taken from design/prototype/index.html. -->
   <sys:Double x:Key="Size.Gauge.Bar">8</sys:Double>
-  <sys:Double x:Key="Size.Gauge.Marker">16</sys:Double>
+  <sys:Double x:Key="Size.Gauge.Marker">20</sys:Double>
   <sys:Double x:Key="Size.Gauge.Ticks">16</sys:Double>
   <sys:Double x:Key="Size.Gauge.MarkerBorder">3</sys:Double>
   <Thickness x:Key="Space.Gauge.SegmentGap">1,0,1,0</Thickness>
@@ -60,8 +65,8 @@
   <sys:Double x:Key="Size.Advice.IconStroke">1.6</sys:Double>
   <Thickness x:Key="Space.Advice.Padding">14,12,16,12</Thickness>
   <Thickness x:Key="Space.Advice.Badge">0,0,12,0</Thickness>
-  <Thickness x:Key="Space.Stats.Padding">0,12,0,0</Thickness>
-  <Thickness x:Key="Space.Stat.Padding">0,0,8,0</Thickness>
+  <!-- Hero stats: a divider between columns, the next value 16 px after it (StatTriplePanel). -->
+  <sys:Double x:Key="Size.Stats.DividerGap">16</sys:Double>
   <Thickness x:Key="Space.Banner.Padding">14,7,14,7</Thickness>
   <Thickness x:Key="Space.Button.Padding">14,8,14,8</Thickness>
   <Thickness x:Key="Space.Button.Small.Padding">10,4,10,4</Thickness>

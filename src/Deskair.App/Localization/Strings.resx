@@ -50,9 +50,10 @@
   <data name="History_Legend_Line" xml:space="preserve"><value>Line = readings</value></data>
   <data name="History_Legend_NoData" xml:space="preserve"><value>No data</value></data>
   <data name="History_TypicalDay_Subtitle" xml:space="preserve"><value>average by hour, {period}</value></data>
-  <data name="History_TypicalDay_Last7" xml:space="preserve"><value>last 7 days</value></data>
-  <data name="History_TypicalDay_Last30" xml:space="preserve"><value>last 30 days</value></data>
-  <data name="History_TypicalDay_Last90" xml:space="preserve"><value>last 90 days</value></data>
+  <data name="History_TypicalDay_Before7" xml:space="preserve"><value>the 7 days before</value><comment>Day: the typical day is the 7 days before the shown day.</comment></data>
+  <data name="History_TypicalDay_These7" xml:space="preserve"><value>these 7 days</value></data>
+  <data name="History_TypicalDay_These30" xml:space="preserve"><value>these 30 days</value></data>
+  <data name="History_TypicalDay_These12Months" xml:space="preserve"><value>these 12 months</value></data>
   <data name="History_TypicalDay_Worst" xml:space="preserve"><value>worst {from}–{to}h</value></data>
   <data name="Group_ByDay" xml:space="preserve"><value>By day</value></data>
   <data name="Group_ByWeek" xml:space="preserve"><value>By week</value></data>
@@ -133,7 +134,7 @@
   <data name="Toolbar_Hours" xml:space="preserve"><value>Hours</value></data>
   <data name="Toolbar_GroupBy" xml:space="preserve"><value>Group by</value></data>
   <data name="Toolbar_Range" xml:space="preserve"><value>Range</value></data>
-  <data name="Coverage_Chip" xml:space="preserve"><value>Based on {percent} % of expected readings</value></data>
+  <data name="Coverage_Chip" xml:space="preserve"><value>Based on {percent} of expected readings</value></data>
   <data name="Gallery_Section_CoverageChip" xml:space="preserve"><value>Coverage chip</value></data>
   <data name="Gallery_Section_ZoneShareBar" xml:space="preserve"><value>Zone share bar</value></data>
   <data name="Gallery_Section_InsightBox" xml:space="preserve"><value>Insight box</value></data>
@@ -163,9 +164,9 @@
   <data name="Gallery_Section_BatteryIcon" xml:space="preserve"><value>Battery icon</value></data>
   <data name="Gallery_Section_Button" xml:space="preserve"><value>Buttons</value></data>
   <data name="Gallery_Sample_BannerStale" xml:space="preserve"><value>Last reading 12 min ago</value></data>
-  <data name="Gallery_Sample_BannerLow" xml:space="preserve"><value>Sensor battery is low (8 %)</value></data>
+  <data name="Gallery_Sample_BannerLow" xml:space="preserve"><value>Sensor battery is low (8%)</value></data>
   <data name="Gallery_Sample_Peak" xml:space="preserve"><value>Peak at 15:12</value></data>
-  <data name="Gallery_Sample_InZone" xml:space="preserve"><value>In the Good zone</value></data>
+  <data name="Gallery_Sample_InZone" xml:space="preserve"><value>Good so far</value></data>
   <data name="Gallery_Sample_Primary" xml:space="preserve"><value>Open Deskair</value></data>
   <data name="Gallery_Sample_Secondary" xml:space="preserve"><value>Snooze 1 h</value></data>
   <data name="Gallery_Section_Chart" xml:space="preserve"><value>Live chart</value></data>
@@ -177,12 +178,15 @@
   <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ideal 20–24</value></data>
   <data name="Gallery_Sample_IdealHumidity" xml:space="preserve"><value>ideal 30–50</value></data>
   <data name="Stat_PeakNow" xml:space="preserve"><value>Peak right now</value></data>
-  <data name="Stat_InZone_Good" xml:space="preserve"><value>In the Good zone</value></data>
-  <data name="Stat_InZone_Elevated" xml:space="preserve"><value>In the Elevated zone</value></data>
-  <data name="Stat_InZone_High" xml:space="preserve"><value>In the High zone</value></data>
+  <data name="Stat_InZone_Good" xml:space="preserve"><value>Good so far</value></data>
+  <data name="Stat_InZone_Elevated" xml:space="preserve"><value>Elevated so far</value></data>
+  <data name="Stat_InZone_High" xml:space="preserve"><value>High so far</value></data>
   <data name="Duration_Minutes" xml:space="preserve"><value>{min} min</value></data>
   <data name="Duration_HoursMinutes" xml:space="preserve"><value>{h} h {min} min</value></data>
   <data name="Chart_Ideal" xml:space="preserve"><value>ideal {min}–{max}</value></data>
+  <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Elevated from {ppm}</value></data>
+  <data name="Chart_Threshold_High" xml:space="preserve"><value>High from {ppm}</value></data>
+  <data name="Live_Card_AccessibleName" xml:space="preserve"><value>{metric}, {value} {unit}, {status}</value><comment>Read by Narrator for the hero and the mini cards, which choose the metric of the Live chart.</comment></data>
   <data name="Chart_Summary_OneHour" xml:space="preserve"><value>Last hour · Low **{low}** · Avg **{avg}** · High **{high}** {unit}</value></data>
   <data name="Chart_Summary_SixHours" xml:space="preserve"><value>Last 6 hours · Low **{low}** · Avg **{avg}** · High **{high}** {unit}</value></data>
   <data name="Chart_Summary_TwentyFourHours" xml:space="preserve"><value>Last 24 hours · Low **{low}** · Avg **{avg}** · High **{high}** {unit}</value></data>
@@ -286,4 +290,24 @@
   <data name="History_Empty_Text" xml:space="preserve"><value>Deskair keeps every reading from your sensor, so History fills up as time goes by. To see the past days now, import the history from the phone app.</value></data>
   <data name="History_Empty_Import" xml:space="preserve"><value>Import from the phone app</value></data>
   <data name="Gallery_Section_EmptyStateCard" xml:space="preserve"><value>Empty state card</value></data>
+  <data name="History_Period_Last24Hours" xml:space="preserve"><value>Last 24 hours</value><comment>History period title for the latest Day.</comment></data>
+  <data name="History_Period_Span" xml:space="preserve"><value>{from} – {to}</value><comment>History period title: first and last date or month, for example "8 – 14 Oct 2026".</comment></data>
+  <data name="History_Period_Previous" xml:space="preserve"><value>Previous period</value></data>
+  <data name="History_Period_Next" xml:space="preserve"><value>Next period</value></data>
+  <data name="History_Period_Empty_Title" xml:space="preserve"><value>No readings for {period}</value></data>
+  <data name="History_Period_Empty_Text" xml:space="preserve"><value>Deskair has readings from {date}.</value></data>
+  <data name="History_Period_Latest" xml:space="preserve"><value>Go to the latest</value></data>
+  <data name="History_Chart_ByHour" xml:space="preserve"><value>by hour</value><comment>Subtitle of the History grid (Week, Month).</comment></data>
+  <data name="History_Grid_Name" xml:space="preserve"><value>{metric} by hour, {period}</value><comment>What Narrator reads for the History grid.</comment></data>
+  <data name="History_Grid_Cell" xml:space="preserve"><value>{day}, {from}–{to}</value></data>
+  <data name="History_Grid_Value" xml:space="preserve"><value>{where} · {value} {unit}</value></data>
+  <data name="History_Grid_Value_None" xml:space="preserve"><value>{where} · No data</value></data>
+  <data name="History_Grid_Typical" xml:space="preserve"><value>Typical</value></data>
+  <data name="History_Grid_TypicalCell" xml:space="preserve"><value>Typical, {from}–{to}</value></data>
+  <data name="History_Grid_Worst" xml:space="preserve"><value>Worst {from}–{to}</value></data>
+  <data name="History_Grid_Night" xml:space="preserve"><value>Night · {from}–{to}</value></data>
+  <data name="History_Grid_TagBest" xml:space="preserve"><value>best</value><comment>Tag next to the day with the lowest average.</comment></data>
+  <data name="History_Grid_TagWorst" xml:space="preserve"><value>worst</value><comment>Tag next to the day with the highest average.</comment></data>
+  <data name="History_Grid_NoReadings" xml:space="preserve"><value>No readings · {from} – {to}</value></data>
+  <data name="History_Grid_UnitHour" xml:space="preserve"><value>Each square is one hour</value></data>
 </root>

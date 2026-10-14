@@ -59,6 +59,14 @@ public sealed class ReadingIndex
         }
     }
 
+    public DateTimeOffset? First()
+    {
+        lock (gate)
+        {
+            return items.Count == 0 ? null : items[0].Timestamp;
+        }
+    }
+
     public DateTimeOffset? Last()
     {
         lock (gate)

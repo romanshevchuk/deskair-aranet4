@@ -36,6 +36,30 @@ public static class ChartTicks
         return ticks;
     }
 
+    /// <summary>
+    /// The CO₂ axis of the Live chart, fitted to the values shown (behaviour-rules.md "Live values"): padded by 30 ppm and rounded out to steps of
+    /// 100 ppm (200 ppm when the values span more than 300), at least 200 ppm tall and never below zero.
+    /// </summary>
+    public static (double Min, double Max, double Step) FitCo2(double low, double high)
+    {
+        const double padding = 30;
+        const double minimumSpan = 200;
+
+        var step = high - low > 300 ? 200.0 : 100.0;
+        var min = Math.Max(0, Math.Floor((low - padding) / step) * step);
+        var max = Math.Ceiling((high + padding) / step) * step;
+
+        while (max - min < minimumSpan)
+        {
+            max += step;
+        }
+
+        return (min, max, step);
+    }
+
+    /// <summary>Every multiple of <paramref name="step"/> from <paramref name="min"/> to <paramref name="max"/>, both included.</summary>
+    public static IReadOnlyList<double> Steps(double min, double max, double step) => step > 0 ? Multiples(min, max, step) : [];
+
     /// <summary>Round values (multiples of 0.1, 0.2, 0.5, 1, 2, 5, 10 and so on) inside the range, at most <paramref name="maxCount"/> of them.</summary>
     public static IReadOnlyList<double> Nice(double min, double max, int maxCount)
     {

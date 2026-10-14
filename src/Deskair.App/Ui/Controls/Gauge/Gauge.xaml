@@ -38,7 +38,8 @@
                          Height="{DynamicResource Size.Gauge.Marker}"
                          Fill="{DynamicResource Surface.Brush}"
                          Stroke="{DynamicResource Text.Primary.Brush}"
-                         StrokeThickness="{DynamicResource Size.Gauge.MarkerBorder}" />
+                         StrokeThickness="{DynamicResource Size.Gauge.MarkerBorder}"
+                         Effect="{DynamicResource Shadow.Gauge.Marker}" />
               </Canvas>
             </Grid>
 

@@ -111,8 +111,8 @@ public class LocalizerTests
         var englishText = Create(english).Format("Trend_Detail", ("ppm", 1068), ("min", 30));
         var ukrainianText = Create(ukrainian).Format("Trend_Detail", ("ppm", 1068), ("min", 30));
 
-        Assert.Equal("1,068 ppm over 30 min", englishText);
-        Assert.Equal("1" + ukrainian.NumberFormat.NumberGroupSeparator + "068 ppm за 30 хв", ukrainianText);
+        Assert.Equal("1068 ppm over 30 min", englishText);
+        Assert.Equal("1068 ppm за 30 хв", ukrainianText);
     }
 
     [Theory]

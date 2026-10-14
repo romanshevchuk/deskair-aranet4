@@ -49,6 +49,10 @@ public sealed partial class HeroViewModel : ObservableObject
     [ObservableProperty]
     private IReadOnlyList<StatItem> stats = [];
 
+    /// <summary>What Narrator reads for the hero, which chooses CO₂ for the chart ("CO₂, 1151 ppm, Elevated"). Just "CO₂" without a reading.</summary>
+    [ObservableProperty]
+    private string? accessibleName;
+
     public HeroViewModel(ILocalizer localizer, HeroStatsBuilder statsBuilder, MetricFormatter formatter)
     {
         summaries = new AirSummaryBuilder(localizer);
@@ -56,6 +60,7 @@ public sealed partial class HeroViewModel : ObservableObject
         this.localizer = localizer;
         this.formatter = formatter;
         UnitText = formatter.Unit(Domain.Metrics.Metric.Co2);
+        AccessibleName = localizer.Get("Metric_Co2");
     }
 
     public void Update(Reading? reading, IReadOnlyList<Reading> recent, DateTimeOffset now)
@@ -78,6 +83,12 @@ public sealed partial class HeroViewModel : ObservableObject
         AdviceTitle = summary.AdviceTitle;
         AdviceText = summary.AdviceText;
         Stats = statsBuilder.Build(recent, now);
+        AccessibleName = localizer.Format(
+            "Live_Card_AccessibleName",
+            ("metric", localizer.Get("Metric_Co2")),
+            ("value", ValueText),
+            ("unit", UnitText),
+            ("status", ZoneText));
     }
 
     private void Clear()
@@ -92,5 +103,6 @@ public sealed partial class HeroViewModel : ObservableObject
         AdviceTitle = null;
         AdviceText = null;
         Stats = [];
+        AccessibleName = localizer.Get("Metric_Co2");
     }
 }

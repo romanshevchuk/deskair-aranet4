@@ -10,6 +10,9 @@ public static class GallerySamples
 
     public static DateTimeOffset End => end;
 
+    /// <summary>A week of the History grid: busy afternoons, an evening without data, today up to 20:00 (fixed texts: the gallery shows the control, not the copy).</summary>
+    public static HourGridModel Grid { get; } = BuildGrid();
+
     private static readonly double[] co2 =
     [
         1660, 1640, 1670, 1680, 1590, 1540, 1535, 1475, 1410, 1330, 1395, 1350, 1310, 1285, 1275, 1240, 1195, 1150, 1115, 1068
@@ -69,5 +72,44 @@ public static class GallerySamples
         }
 
         return segments;
+    }
+
+    private static HourGridModel BuildGrid()
+    {
+        string[] days = ["Tue 6", "Wed 7", "Thu 8", "Fri 9", "Sat 10", "Sun 11", "Today"];
+
+        static double Value(int day, int hour)
+            => 650 + (day * 30) + (hour is >= 9 and <= 18 ? 450 + (60 * Math.Sin(hour + day)) : 120 * Math.Cos(hour)) + (hour is >= 15 and <= 17 ? 420 : 0);
+
+        var rows = new List<HourGridRow>();
+        for (var day = 0; day < days.Length; day++)
+        {
+            var cells = Enumerable.Range(0, 24)
+                .Select(hour => day == 6 && hour > 20 ? null : day == 1 && hour >= 19 ? new HourGridCell(null, $"{days[day]}, {hour:00}:00 · No data") : new HourGridCell(Value(day, hour), $"{days[day]}, {hour:00}:00 · {Value(day, hour):0} ppm"))
+                .ToList();
+            var tag = day == 0 ? HourGridTag.Best : day == 5 ? HourGridTag.Worst : HourGridTag.None;
+            rows.Add(new HourGridRow(days[day], cells, $"{950 + (day * 30)}", new ZoneShare(0.5 - (day * 0.04), 0.35, 0.15 + (day * 0.04)), tag, LabelAlways: day == 6, Emphasis: day == 6));
+        }
+
+        var typical = new HourGridRow("Typical", Enumerable.Range(0, 24).Select(hour => (HourGridCell?)new HourGridCell(Value(3, hour), $"Typical, {hour:00}:00")).ToList(), LabelAlways: true, Emphasis: true);
+
+        return new HourGridModel(
+            rows,
+            [.. Enumerable.Range(0, 8).Select(index => (index * 3, $"{index * 3:00}:00"))],
+            [(800, "800"), (1000, "1000"), (1200, "1200"), (1400, "1400"), (2000, "2000")])
+        {
+            Typical = typical,
+            WorstStart = 15,
+            WorstText = "Worst 15:00–18:00",
+            Night = (22, 7),
+            NightText = "Night · 22:00–07:00",
+            BestText = "best",
+            WorstTagText = "worst",
+            GoodText = "Good",
+            ElevatedText = "Elevated",
+            HighText = "High",
+            NoDataText = "No data",
+            UnitText = "Each square is one hour"
+        };
     }
 }

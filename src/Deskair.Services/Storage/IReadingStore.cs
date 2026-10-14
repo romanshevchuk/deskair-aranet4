@@ -10,6 +10,9 @@ public interface IReadingStore
         DateTimeOffset end,
         CancellationToken cancellationToken);
 
+    /// <summary>The time of the oldest stored reading, or null when nothing is stored (History stops ‹ there, D-0019).</summary>
+    Task<DateTimeOffset?> GetFirstReadingTimeAsync(DeviceId device, CancellationToken cancellationToken);
+
     Task<DateTimeOffset?> GetLastReadingTimeAsync(DeviceId device, CancellationToken cancellationToken);
 
     /// <summary>Merges readings by interval slot and returns how many slots were newly filled.</summary>

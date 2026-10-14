@@ -6,16 +6,8 @@
              xmlns:analytics="clr-namespace:Deskair.Domain.Analytics.HoursFilter;assembly=Deskair.Domain"
              xmlns:metrics="clr-namespace:Deskair.Domain.Metrics;assembly=Deskair.Domain"
              xmlns:time="clr-namespace:Deskair.Domain.Time;assembly=Deskair.Domain">
-  <!-- DataContext: HistoryToolbarViewModel. Metric on the left; hours, group by, range and Export on the right. Group by shows only the choices the range allows (none for Day and Week).
+  <!-- DataContext: HistoryToolbarViewModel. Metric on the left; the period (‹ title ›), hours, range and Export on the right. There is no Group by (D-0019): Month shows days and Year weeks.
        Export saves every stored reading of the room as CSV (ExportCommand comes from the screen). -->
-  <UserControl.Resources>
-    <Style x:Key="Toolbar.GroupBy" TargetType="{x:Type controls:SegmentedControl}" BasedOn="{StaticResource {x:Type controls:SegmentedControl}}">
-      <Setter Property="Visibility" Value="Collapsed" />
-      <Setter Property="Margin" Value="{StaticResource Space.Inline}" />
-      <Setter Property="SelectedValuePath" Value="Tag" />
-    </Style>
-  </UserControl.Resources>
-
   <Grid Height="{StaticResource Size.History.Toolbar.Height}">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto" />
@@ -55,6 +47,27 @@
     </controls:SegmentedControl>
 
     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+      <!-- The period (D-0019): ‹ title ›. The title is announced when it changes; Alt+← and Alt+→ do the same as the arrows (HistoryView). -->
+      <StackPanel Margin="{StaticResource Space.History.Navigator}" Orientation="Horizontal">
+        <controls:IconButton AutomationProperties.Name="{loc:T History_Period_Previous}"
+                             Command="{Binding PreviousPeriodCommand}"
+                             Glyph="&#xE76B;"
+                             ToolTip="{loc:T History_Period_Previous}" />
+        <TextBlock MinWidth="{StaticResource Size.History.Navigator.Title}"
+                   VerticalAlignment="Center"
+                   AutomationProperties.LiveSetting="Polite"
+                   FontFamily="{DynamicResource Font.Family.Display}"
+                   FontSize="{DynamicResource Font.Size.HeroTitle}"
+                   FontWeight="{DynamicResource Font.Weight.SemiBold}"
+                   Foreground="{DynamicResource Text.Primary.Brush}"
+                   Text="{Binding PeriodLabel}"
+                   TextAlignment="Center" />
+        <controls:IconButton AutomationProperties.Name="{loc:T History_Period_Next}"
+                             Command="{Binding NextPeriodCommand}"
+                             Glyph="&#xE76C;"
+                             ToolTip="{loc:T History_Period_Next}" />
+      </StackPanel>
+
       <controls:SegmentedControl AutomationProperties.Name="{loc:T Toolbar_Hours}"
                                  SelectedValue="{Binding Hours, Mode=TwoWay}"
                                  SelectedValuePath="Tag">
@@ -65,38 +78,6 @@
             <TextBlock Text="{loc:T Hours_Night}" />
           </StackPanel>
         </ListBoxItem>
-      </controls:SegmentedControl>
-
-      <!-- Month: by day or by week. -->
-      <controls:SegmentedControl AutomationProperties.Name="{loc:T Toolbar_GroupBy}"
-                                 SelectedValue="{Binding Grouping, Mode=TwoWay}">
-        <controls:SegmentedControl.Style>
-          <Style BasedOn="{StaticResource Toolbar.GroupBy}" TargetType="{x:Type controls:SegmentedControl}">
-            <Style.Triggers>
-              <DataTrigger Binding="{Binding Range}" Value="{x:Static time:Period.Month}">
-                <Setter Property="Visibility" Value="Visible" />
-              </DataTrigger>
-            </Style.Triggers>
-          </Style>
-        </controls:SegmentedControl.Style>
-        <ListBoxItem Content="{loc:T Group_ByDay}" Tag="{x:Static time:Period.Day}" />
-        <ListBoxItem Content="{loc:T Group_ByWeek}" Tag="{x:Static time:Period.Week}" />
-      </controls:SegmentedControl>
-
-      <!-- Year: by week or by month. -->
-      <controls:SegmentedControl AutomationProperties.Name="{loc:T Toolbar_GroupBy}"
-                                 SelectedValue="{Binding Grouping, Mode=TwoWay}">
-        <controls:SegmentedControl.Style>
-          <Style BasedOn="{StaticResource Toolbar.GroupBy}" TargetType="{x:Type controls:SegmentedControl}">
-            <Style.Triggers>
-              <DataTrigger Binding="{Binding Range}" Value="{x:Static time:Period.Year}">
-                <Setter Property="Visibility" Value="Visible" />
-              </DataTrigger>
-            </Style.Triggers>
-          </Style>
-        </controls:SegmentedControl.Style>
-        <ListBoxItem Content="{loc:T Group_ByWeek}" Tag="{x:Static time:Period.Week}" />
-        <ListBoxItem Content="{loc:T Group_ByMonth}" Tag="{x:Static time:Period.Month}" />
       </controls:SegmentedControl>
 
       <controls:SegmentedControl Margin="{StaticResource Space.Inline}"

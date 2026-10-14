@@ -28,6 +28,9 @@ public sealed class FakeReadingStore : IReadingStore
             Readings.Where(reading => reading.Timestamp >= start && reading.Timestamp <= end).ToList());
     }
 
+    public Task<DateTimeOffset?> GetFirstReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
+        => Task.FromResult<DateTimeOffset?>(Readings.Count == 0 ? null : Readings.Min(reading => reading.Timestamp));
+
     public Task<DateTimeOffset?> GetLastReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
         => Task.FromResult<DateTimeOffset?>(Readings.Count == 0 ? null : Readings.Max(reading => reading.Timestamp));
 

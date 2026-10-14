@@ -12,6 +12,8 @@
       <controls:PrimaryButton Margin="{StaticResource Space.Item}" IsEnabled="False" Content="{loc:T Gallery_Sample_Disabled}" />
       <controls:SecondaryButton Margin="{StaticResource Space.Item}" Content="{loc:T Gallery_Sample_Secondary}" />
       <controls:SecondaryButton Margin="{StaticResource Space.Item}" IsEnabled="False" Content="{loc:T Gallery_Sample_Disabled}" />
+      <controls:IconButton Margin="{StaticResource Space.Item}" Glyph="&#xE76B;" AutomationProperties.Name="{loc:T History_Period_Previous}" ToolTip="{loc:T History_Period_Previous}" />
+      <controls:IconButton Margin="{StaticResource Space.Item}" Glyph="&#xE76C;" IsEnabled="False" AutomationProperties.Name="{loc:T History_Period_Next}" />
     </WrapPanel>
   </StackPanel>
 </UserControl>

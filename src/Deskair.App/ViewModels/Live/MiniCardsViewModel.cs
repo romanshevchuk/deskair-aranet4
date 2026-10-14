@@ -21,28 +21,36 @@ public sealed partial class MiniCardsViewModel : ObservableObject
         this.formatter = formatter;
     }
 
+    /// <summary>
+    /// Always temperature, humidity and pressure, in that order: CO₂ is the hero. The cards never move; the one the chart shows is marked
+    /// selected (screens-and-states.md "Live").
+    /// </summary>
     public void Update(IReadOnlyList<Reading> recent, Metric selected, DateTimeOffset now)
     {
         Items = MetricDescriptor.All
-            .Where(descriptor => descriptor.Metric != selected)
-            .Select(descriptor => ToItem(descriptor, recent, now))
+            .Where(descriptor => descriptor.Metric != Metric.Co2)
+            .Select(descriptor => ToItem(descriptor, recent, now) with { IsSelected = descriptor.Metric == selected })
             .ToList();
     }
 
     private MiniCardItem ToItem(MetricDescriptor descriptor, IReadOnlyList<Reading> recent, DateTimeOffset now)
     {
         var title = localizer.Get(descriptor.NameKey);
+        var unit = formatter.Unit(descriptor.Metric);
 
         if (recent.Count == 0)
         {
-            return new MiniCardItem(descriptor.Metric, title, null, null, [], formatter.Unit(descriptor.Metric));
+            return new MiniCardItem(descriptor.Metric, title, null, null, [], unit, AccessibleName: title);
         }
 
         var metric = descriptor.Metric;
         var latest = recent.MaxBy(reading => reading.Timestamp).ValueOf(metric);
         var sparkline = recent.Select(reading => new ChartPoint(reading.Timestamp, reading.ValueOf(metric))).ToList();
+        var value = formatter.Value(metric, latest);
+        var subtitle = Subtitle(descriptor, latest, recent, now);
+        var name = localizer.Format("Live_Card_AccessibleName", ("metric", title), ("value", value), ("unit", unit), ("status", subtitle));
 
-        return new MiniCardItem(metric, title, formatter.Value(metric, latest), Subtitle(descriptor, latest, recent, now), sparkline, formatter.Unit(metric));
+        return new MiniCardItem(metric, title, value, subtitle, sparkline, unit, AccessibleName: name);
     }
 
     private string Subtitle(MetricDescriptor descriptor, double latest, IReadOnlyList<Reading> recent, DateTimeOffset now)

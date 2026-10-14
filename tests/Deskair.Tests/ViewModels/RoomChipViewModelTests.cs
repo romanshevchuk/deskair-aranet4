@@ -116,7 +116,7 @@ public sealed class RoomChipViewModelTests : IDisposable
 
         messenger.Send(new ReadingReceived(office, Samples.Co2(now, 1068)));
 
-        Assert.Equal("1,068 ppm", viewModel.Rooms[0].ValueText);
+        Assert.Equal("1068 ppm", viewModel.Rooms[0].ValueText);
         Assert.Equal(Zone.Elevated, viewModel.Rooms[0].Zone);
         Assert.Null(viewModel.Rooms[1].ValueText);
         Assert.Equal(Zone.Elevated, viewModel.SelectedRoom?.Zone);

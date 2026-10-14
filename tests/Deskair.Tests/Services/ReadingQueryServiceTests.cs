@@ -113,22 +113,42 @@ public class ReadingQueryServiceTests
         Assert.Empty(recent);
     }
 
-    [Theory]
-    [InlineData(Period.Day)]
-    [InlineData(Period.Week)]
-    public async Task TypicalDay_for_Day_and_Week_uses_the_last_7_days(Period period)
+    [Fact]
+    public async Task TypicalDay_for_Day_uses_the_7_days_before_the_shown_day()
     {
+        // behaviour-rules.md "Aggregation" rule 7: a day is compared with the week before it, so the shown day itself is left out.
+        var dayStart = now.AddDays(-1);
         store.Readings.AddRange(
         [
-            Samples.Co2(now.AddDays(-6).AddHours(-2), 800),
-            Samples.Co2(now.AddDays(-8).AddHours(-2), 2000)
+            Samples.Co2(dayStart.AddDays(-6).AddHours(-2), 800),
+            Samples.Co2(dayStart.AddHours(2), 2000),
+            Samples.Co2(dayStart.AddDays(-8), 2000)
         ]);
 
-        var hours = await service.GetTypicalDayAsync(device, period, now.AddDays(-30), now, CancellationToken.None);
+        var hours = await service.GetTypicalDayAsync(device, Period.Day, dayStart, now, CancellationToken.None);
 
         Assert.Equal(800, hours[10].Average);
         Assert.Equal(1, hours.Sum(hour => hour.ReadingCount));
-        Assert.Equal((device, now.AddDays(-7), now), store.Requested);
+        Assert.Equal((device, dayStart.AddDays(-7), dayStart), store.Requested);
+    }
+
+    [Theory]
+    [InlineData(Period.Week)]
+    [InlineData(Period.Year)]
+    public async Task TypicalDay_for_Week_and_Year_uses_the_shown_period(Period period)
+    {
+        var rangeStart = now.AddDays(period == Period.Week ? -7 : -365);
+        store.Readings.AddRange(
+        [
+            Samples.Co2(now.AddDays(-5).AddHours(-2), 900),
+            Samples.Co2(rangeStart.AddDays(-1), 2000)
+        ]);
+
+        var hours = await service.GetTypicalDayAsync(device, period, rangeStart, now, CancellationToken.None);
+
+        Assert.Equal(900, hours[10].Average);
+        Assert.Equal(1, hours.Sum(hour => hour.ReadingCount));
+        Assert.Equal((device, rangeStart, now), store.Requested);
     }
 
     [Fact]
@@ -146,22 +166,6 @@ public class ReadingQueryServiceTests
 
         Assert.Equal(600, hours[6].Average);
         Assert.Equal((device, rangeStart, rangeEnd), store.Requested);
-    }
-
-    [Fact]
-    public async Task TypicalDay_for_Year_uses_the_last_90_days()
-    {
-        store.Readings.AddRange(
-        [
-            Samples.Co2(now.AddDays(-60).AddHours(-2), 900),
-            Samples.Co2(now.AddDays(-100).AddHours(-2), 2000)
-        ]);
-
-        var hours = await service.GetTypicalDayAsync(device, Period.Year, now.AddDays(-365), now, CancellationToken.None);
-
-        Assert.Equal(900, hours[10].Average);
-        Assert.Equal(1, hours.Sum(hour => hour.ReadingCount));
-        Assert.Equal((device, now.AddDays(-90), now), store.Requested);
     }
 
     [Fact]

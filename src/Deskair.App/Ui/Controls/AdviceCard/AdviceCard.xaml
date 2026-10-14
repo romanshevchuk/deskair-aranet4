@@ -19,14 +19,13 @@
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
 
-              <!-- Icon badge: the zone is also conveyed by the icon, not by colour alone. -->
+              <!-- Zone icon, without a disc behind it (design-tokens.md "Icons"): the zone is also conveyed by the icon, not by colour alone. In a zone the panel is a fill with no visible border (D-0017); the 1 px border stays transparent so the size does not change. -->
               <Grid x:Name="Badge"
                     Visibility="Collapsed"
                     Width="{DynamicResource Size.Advice.Badge}"
                     Height="{DynamicResource Size.Advice.Badge}"
                     Margin="{DynamicResource Space.Advice.Badge}"
                     VerticalAlignment="Center">
-                <Ellipse Fill="{DynamicResource Advice.IconBadge.Brush}" />
                 <Viewbox Width="{DynamicResource Size.Advice.Icon}" Height="{DynamicResource Size.Advice.Icon}">
                   <Canvas Width="18" Height="18">
                     <Canvas x:Name="GoodIcon" Visibility="Collapsed">
@@ -56,19 +55,19 @@
           <ControlTemplate.Triggers>
             <Trigger Property="Zone" Value="Good">
               <Setter TargetName="Panel" Property="Background" Value="{DynamicResource Zone.Good.AdviceBg.Brush}" />
-              <Setter TargetName="Panel" Property="BorderBrush" Value="{DynamicResource Zone.Good.AdviceBorder.Brush}" />
+              <Setter TargetName="Panel" Property="BorderBrush" Value="Transparent" />
               <Setter TargetName="Badge" Property="Visibility" Value="Visible" />
               <Setter TargetName="GoodIcon" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="Zone" Value="Elevated">
               <Setter TargetName="Panel" Property="Background" Value="{DynamicResource Zone.Elevated.AdviceBg.Brush}" />
-              <Setter TargetName="Panel" Property="BorderBrush" Value="{DynamicResource Zone.Elevated.AdviceBorder.Brush}" />
+              <Setter TargetName="Panel" Property="BorderBrush" Value="Transparent" />
               <Setter TargetName="Badge" Property="Visibility" Value="Visible" />
               <Setter TargetName="ElevatedIcon" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="Zone" Value="High">
               <Setter TargetName="Panel" Property="Background" Value="{DynamicResource Zone.High.AdviceBg.Brush}" />
-              <Setter TargetName="Panel" Property="BorderBrush" Value="{DynamicResource Zone.High.AdviceBorder.Brush}" />
+              <Setter TargetName="Panel" Property="BorderBrush" Value="Transparent" />
               <Setter TargetName="Badge" Property="Visibility" Value="Visible" />
               <Setter TargetName="HighIcon" Property="Visibility" Value="Visible" />
             </Trigger>

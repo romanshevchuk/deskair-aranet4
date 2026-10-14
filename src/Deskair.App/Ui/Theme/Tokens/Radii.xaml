@@ -10,7 +10,7 @@
   <CornerRadius x:Key="Radius.SegmentTrack">10</CornerRadius>
   <CornerRadius x:Key="Radius.Segment">8</CornerRadius>
   <CornerRadius x:Key="Radius.Window">10</CornerRadius>
-  <CornerRadius x:Key="Radius.Flyout">12</CornerRadius>
+  <CornerRadius x:Key="Radius.Flyout">8</CornerRadius>
   <CornerRadius x:Key="Radius.Toast">8</CornerRadius>
   <!-- Pills (the Pill control, the toggle track, the focus ring) have half their height as radius through PillRadiusConverter: the prototype's border-radius 999 turns into elliptical ends in WPF. Banner 10 and buttons 6 come from the prototype. -->
   <CornerRadius x:Key="Radius.Chip">10</CornerRadius>
@@ -18,5 +18,8 @@
   <CornerRadius x:Key="Radius.Gauge.Start">4,0,0,4</CornerRadius>
   <CornerRadius x:Key="Radius.Gauge.End">0,4,4,0</CornerRadius>
 
-  <DropShadowEffect x:Key="Shadow.Flyout" Color="#000000" Opacity="0.35" BlurRadius="36" ShadowDepth="12" Direction="270" />
+  <!-- Flyout and room menu: 8 px corners and a lighter shadow, as the Windows flyouts next to them (design-tokens.md "Flyout"). -->
+  <DropShadowEffect x:Key="Shadow.Flyout" Color="#000000" Opacity="0.28" BlurRadius="32" ShadowDepth="10" Direction="270" />
+  <!-- Gauge marker: a white knob with a soft shadow (0 2 6 at 18 %). -->
+  <DropShadowEffect x:Key="Shadow.Gauge.Marker" Color="#000000" Opacity="0.18" BlurRadius="6" ShadowDepth="2" Direction="270" />
 </ResourceDictionary>

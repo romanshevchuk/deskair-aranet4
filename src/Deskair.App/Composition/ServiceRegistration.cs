@@ -150,6 +150,8 @@ public static class ServiceRegistration
         services.AddSingleton<TypicalDayViewModel>();
         services.AddSingleton<SleepViewModel>();
         services.AddSingleton<ChartHeaderViewModel>();
+        services.AddSingleton<PeriodLabeler>();
+        services.AddSingleton<HourGridBuilder>();
         services.AddSingleton<HistoryViewModel>();
         services.AddSingleton(provider => new ShellViewModel(provider.GetRequiredService<IMessenger>())
         {

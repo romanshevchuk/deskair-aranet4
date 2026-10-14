@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using Deskair.App.Localization;
 
 namespace Deskair.App.Ui.Charts.Layers;
 
@@ -22,7 +23,7 @@ public sealed class HourAxisLayer : IChartLayer
 
         foreach (var tick in (YTicks ?? []).Where(tick => tick >= area.YMin && tick <= area.YMax))
         {
-            var text = area.Text(tick.ToString("N0", culture), brush);
+            var text = area.Text(tick.ToString(NumberFormat.WholeFormat, culture), brush);
             context.DrawText(text, new Point(area.Plot.Left - LabelGap - text.Width, area.Y(tick) - (text.Height / 2)));
         }
 

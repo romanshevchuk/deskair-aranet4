@@ -143,7 +143,7 @@ The .NET 10 SDK no longer runs VSTest-based test projects through `dotnet test` 
 
 ## D-0015 No recovery-time estimate; qualitative advice and mini-card subtitles
 
-**Status:** accepted · Oct 2026
+**Status:** accepted · Oct 2026; humidity labels amended by D-0021
 
 The prototype said "Should drop below 1,000 ppm in about 9 min". The fall rate depends on room size, doors and windows, people and outdoor air, and sensor readings come every 1 or 2 minutes, so any estimate would sound more certain than it is.
 
@@ -160,3 +160,53 @@ Spike S1 showed that the Aranet4 history is requested by writing a command to on
 **Decision:** add `WriteAsync(service, characteristic, value, ct)` to `IBleConnection` (card BLE-02d). The Aranet4 driver downloads CO₂, temperature, humidity and pressure completely and only then returns readings, oldest first. A download that fails, stalls (20 s without progress) or is cancelled throws and returns nothing, so the sync service reports it as incomplete and the saved cursor does not move.
 
 **Consequences:** no streaming of partial history; the four metrics are joined by their position, and a reading taken by the sensor during the download is detected from the age counter and corrected for (`Aranet4Parser.ParseHistory`).
+
+## D-0017 Ink is the app's accent; zones are the only colour
+
+**Status:** accepted · Oct 2026 (POL-00)
+
+The UI review (`docs/plans/ui-polish-plan.md`) found that one zone appeared up to ten times at once (hero fill, border and shadow, pill, advice fill and border, gauge, chart bands, line, ribbon), toggles were green (the Good colour), the primary button black and the logo amber (the Elevated colour): the app had no colour of its own and the zone colours stopped carrying meaning.
+
+**Decision:** the accent is ink (`accent`: text.primary in each theme) for the nav underline, toggles, the primary button and selected states; the focus ring stays blue. The hero card is white with a zone glow in one corner; zone fill, zone border and zone-tinted shadow go; the advice panel keeps its fill and loses its border. The flyout gets the same glow and no inner card.
+
+**Consequences:** token changes in both themes (design-tokens.md); green means Good air only; the "use the Windows accent colour" idea (polish-ideas 13) is dropped for now. Supersedes the Q47 notes on the zone-tinted hero shadow and the zone card border.
+
+## D-0018 History draws a grid of hours instead of range bars and a typical-day card
+
+**Status:** accepted · Oct 2026 (POL-00)
+
+Range bars (minimum to maximum per day) are set by one spike, so the largest shape shows the least useful number, and they cannot show when in the day the air was bad. The typical day was a second card with its own axis over the same data. Missing days filled two thirds of the Month chart with hatching.
+
+**Decision:** Week and Month show a days × hours grid in a six-step CO₂ heat scale; Year shows months × days. The typical day is the grid's last row with the worst three hours outlined; Day draws it as a grey line under the readings. Two or more missing days collapse into one row. The two lightest heat steps are below the 3:1 chart contrast on purpose; the values stay available as text (row averages, tooltips, focus and Narrator labels).
+
+**Consequences:** a new `HourGridChart` (POL-11, POL-12); `TypicalDayChart`, the range-bar and weekend-shading layers and gap hatching leave History; new `heat.*` tokens; the "best day / worst day" numbers move from the stats card to tags on the rows. Supersedes the Q47 notes on History bars, the typical-day card and the coverage box.
+
+## D-0019 History has a period navigator; the Night filter and Group by go
+
+**Status:** accepted · Oct 2026 (POL-00)
+
+Every range ended now, so an earlier day or week could not be opened. The toolbar had four control groups; the Night filter and Group by changed the chart in ways that were hard to predict, and the grid shows days and night hours by its shape.
+
+**Decision:** ‹ › step back by the range's length (Day: the last 24 hours, then calendar days; Week 7 days; Month 30 days; Year 12 calendar months, one year back at most); the title names the period. The toolbar keeps metric, period, range and an export icon. The night hours from Settings → Sleep show as a band and in the summary's Nights section; the sleep card becomes the summary's "Last night" section in Day view, with the same verdict rules.
+
+**Consequences:** a period model and navigator (POL-09); HIST-02 (Hours filter) and HIST-03 (Group by) are removed from the UI (POL-10), `NightWindow` stays; screens-and-states.md and behaviour-rules.md updated; a drill-down later becomes a change of range and offset.
+
+## D-0020 Metric values have no group separator; display values use proportional figures
+
+**Status:** accepted · Oct 2026 (POL-00)
+
+"1,151" at hero size read as a break inside the number, and the comma took more room than a digit; the Aranet app shows "1151". Tabular figures gave each "1" a full digit width at 104 px, leaving gaps in "1151".
+
+**Decision:** ppm and other metric values are written without a group separator in both languages, everywhere in the UI ("1151 ppm", "1013.2 hPa"); the decimal mark follows the language. Percent is "59%" in English and "59 %" in Ukrainian (narrow no-break space). Standalone display and stat values use proportional figures; numbers in columns and axis labels use tabular figures.
+
+**Consequences:** one formatter for ppm and one for percent (POL-02) replaces `N0` and `N1` in view models and chart layers; localization.md rule 4 and behaviour-rules.md "Number and time format" updated; CSV files are unchanged.
+
+## D-0021 Humidity labels: "a bit" before "too"
+
+**Status:** accepted · Oct 2026 (POL-00); amends D-0015
+
+At 51 % the mini card said "Too humid", which read as an alarm over one point.
+
+**Decision:** the ideal range stays 30 to 50 %. 25 to 29 % shows "A bit dry", 51 to 55 % "A bit humid"; below 25 % "Too dry", above 55 % "Too humid"; each with the ideal range. Temperature labels are unchanged.
+
+**Consequences:** two new strings per language (`Mini_Humidity_*`); behaviour-rules.md "Live values" updated.

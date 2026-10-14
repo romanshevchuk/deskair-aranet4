@@ -58,10 +58,10 @@ public class TokenDictionaryTests
     }
 
     [Fact]
-    public void Every_zone_has_the_nine_zone_tokens_plus_segment_line_and_band()
+    public void Every_zone_has_its_zone_tokens_plus_segment_line_band_and_glows()
     {
         var keys = UiHost.Run(() => Keys(Load("Zones", "Light")));
-        var parts = new[] { "CardBg", "CardBorder", "PillBg", "PillText", "Dot", "AdviceBg", "AdviceBorder", "Divider", "AdviceIcon", "Segment", "Line" };
+        var parts = new[] { "PillBg", "PillText", "Dot", "AdviceBg", "AdviceBorder", "AdviceIcon", "Segment", "Line", "Glow", "Glow.Flyout" };
 
         foreach (var zone in new[] { "Good", "Elevated", "High" })
         {
@@ -72,6 +72,21 @@ public class TokenDictionaryTests
 
             Assert.Contains($"Chart.Band.{zone}.Brush", keys);
         }
+
+        Assert.Contains("Glow.Offline.Brush", keys);
+        Assert.Contains("Glow.Offline.Flyout.Brush", keys);
+    }
+
+    [Fact]
+    public void Zone_fills_borders_dividers_and_tinted_shadows_are_gone()
+    {
+        // D-0017: a zone shows as a glow, a pill, the gauge and the advice fill; never as a card fill, card border, divider or shadow tint.
+        var keys = UiHost.Run(() => Keys(Load("Zones", "Light")).Concat(Keys(Load("Zones", "Dark"))).ToList());
+
+        Assert.DoesNotContain(keys, key => key.Contains(".CardBg.", StringComparison.Ordinal)
+            || key.Contains(".CardBorder.", StringComparison.Ordinal)
+            || key.EndsWith(".Divider.Brush", StringComparison.Ordinal)
+            || key.StartsWith("Shadow.Card.", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -93,7 +108,11 @@ public class TokenDictionaryTests
     [InlineData("Light", "Colors", "Text.Primary", "#182026")]
     [InlineData("Dark", "Colors", "Surface", "#1B2026")]
     [InlineData("Light", "Zones", "Zone.High.PillText", "#8E241A")]
-    [InlineData("Dark", "Zones", "Zone.Elevated.CardBorder", "#8A6A1F")]
+    [InlineData("Dark", "Zones", "Zone.Elevated.Glow", "#1CF0B74A")]
+    [InlineData("Light", "Zones", "Zone.Good.Glow", "#2B3FA77E")]
+    [InlineData("Light", "Colors", "Accent", "#182026")]
+    [InlineData("Dark", "Colors", "Accent", "#EEF2F5")]
+    [InlineData("Dark", "Colors", "Accent.On", "#12161A")]
     [InlineData("Light", "Zones", "Trend.Falling", "#1B7A53")]
     [InlineData("Dark", "Zones", "Trend.Rising", "#FF8A7E")]
     [InlineData("Light", "Metrics", "Metric.Humidity", "#2563C9")]
@@ -120,6 +139,8 @@ public class TokenDictionaryTests
             Assert.Equal(new CornerRadius(16), resources["Radius.Card"]);
             Assert.Equal(new CornerRadius(10), resources["Radius.SegmentTrack"]);
             Assert.Equal(new CornerRadius(8), resources["Radius.Segment"]);
+            Assert.Equal(new CornerRadius(8), resources["Radius.Flyout"]);
+            Assert.Equal(20.0, resources["Size.Gauge.Marker"]);
         });
     }
 

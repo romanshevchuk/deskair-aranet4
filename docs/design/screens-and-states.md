@@ -1,19 +1,30 @@
 # Screens and states
 
-*Last reviewed: 2026-10-13*
+*Last reviewed: 2026-10-14*
+
+Visual target: `design/polish/deskair-polish-concept.html` (POL-00). Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 
 ## Screens
 
 | Screen | Layout |
 |---|---|
-| Live | Hero (CO₂) left; chart card right with metric tabs, 1h / 6h / 24h, and the 24 h ribbon; three mini cards below |
-| History | Toolbar (metric, Hours filter, group by, range, export); main chart; typical-day chart or sleep card; stats card |
-| Settings | Two columns: Appearance and units, Alerts; Devices, Data and storage, Start-up |
-| Flyout | 360 px: room, value, zone, advice, 24 h ribbon drawn at native size (22 px tall, 12 px hour labels, legend with hours per zone, never a scaled-down copy of the Live ribbon), other readings, Snooze ▾ (1 h, until tomorrow, Resume), Open Deskair, Settings |
+| Live | Hero (CO₂) left; chart card right with its title and summary ("CO₂ · last hour", Low / Avg / High), 1h / 6h / 24h, and the 24 h ribbon; three mini cards below (Temperature, Humidity, Pressure, always in that order). The hero and the mini cards choose the chart's metric; there are no metric tabs |
+| History | Toolbar (metric, ‹ period ›, range, export icon); main view (Day: line chart; Week and Month: days × hours grid; Year: months × days grid); summary card on the right at full height |
+| Settings | One centred column, at most 720 px: Appearance and units, Alerts, Devices, Data and storage, Sleep, Start-up; section titles above the cards |
+| Flyout | 360 px, one surface (no card inside it): see "Flyout" |
 | Tray menu | Open, status line, Snooze 1 h, Snooze until tomorrow (and Resume alerts while snoozed), Show CO₂ on tray icon, Settings, Quit |
 | Toasts | Elevated, High (v1); Fresh again, Last night (later) |
 
 Left-click on the tray icon opens the flyout. Right-click opens the menu. Double-click may open the window. The flyout has a filled "Open Deskair" button, closes on click-away or Esc, and closing the main window keeps the tray running. Windows 11 hides new tray icons in the overflow, so first run shows a tip to drag the icon out.
+
+## Live
+
+| Part | Behaviour |
+|---|---|
+| Hero | White card with a zone glow in its top-left corner; "CO₂" and the zone pill (its dot pulses in High while animations are on); the value with "ppm"; the trend; the gauge; the advice (fill, no border); three stats with dividers ("Good in last 24 h", "Peak at 14:16", "Elevated so far") |
+| Metric choice | The hero chooses CO₂; a mini card chooses its metric. The chosen card has an `accent` ring; the hero shows no ring (CO₂ is the default). Cards never move. Keyboard: the hero and the three mini cards are focusable in reading order (Tab moves between them, Space or Enter chooses); Narrator reads each as a selectable item, "CO₂, 1151 ppm, Elevated, selected". An arrow-key group across the four is not built (follow-up) |
+| Chart | Axis fitted to the data (behaviour-rules.md "Live values"); thresholds as labelled lines only when in range; area fill in the current zone; monotone smoothing; crosshair and readout as today |
+| Ribbon | CO₂ on 1h and 6h only. Hour labels at 00:00, 06:00, 12:00 and 18:00 at their true positions, leaving out any within 2 hours of either end |
 
 ## Live conditions
 
@@ -25,28 +36,68 @@ Left-click on the tray icon opens the flyout. Right-click opens the menu. Double
 | Not connected | Full-screen state with last reading and recovery steps; grey ring; grey tray icon; History stays available |
 | First run | Onboarding (steps, nearby sensors, room name; import from the phone app comes with the import in Settings → Data); History shows "Collecting your first data" |
 
-Each condition combines with the three zones and both themes. Live has metric (4) and range (3) selection. The ribbon shows for CO₂ on 1h and 6h only.
+Each condition combines with the three zones and both themes.
 
-## History controls
+## Flyout
+
+| State | Content, top to bottom |
+|---|---|
+| Connected | Room with zone dot, "updated 2 min ago". "CO₂" with the zone pill. The value (56 px) with "ppm" and the trend. The advice title as one line with the zone's advice icon. The 24 h ribbon (8 px) with labels at 00:00, 06:00, 12:00 and 18:00 at their true positions (none within 2 hours of either end) and "Now" at the right end, and the time in each zone below it. Temperature, humidity and pressure in three columns (value 16 px 600, unit grey, label below). Footer band: Snooze ▾ (1 h, until tomorrow, Resume; "Snoozed until 14:30" while snoozed) and a Settings icon button on the left, a compact filled "Open Deskair" on the right |
+| Not connected | Room with grey dot, "last seen 25 min ago". "Can't reach your Aranet4" and the reason (out of range or asleep, or Bluetooth off). The last reading faded, with its time ("1160 ppm at 12:35"). One recovery step ("Press the button on the Aranet4 to wake it", or "Turn on Bluetooth"). No ribbon or readings. The same footer band |
+
+The zone glow (grey when not connected) covers the top of the flyout. Clicking the value opens the app, as "Open Deskair" does.
+
+## History controls (D-0019)
 
 | Control | Options |
 |---|---|
 | Metric | CO₂, Temperature, Humidity, Pressure |
-| Range | Day (last 24 h), Week (7 days), Month (30 days), Year (365 days) |
-| Hours | All day, Night (the night hours from Settings → Sleep, 22:00 to 07:00 by default). Day + Night shows last night with the sleep card |
-| Group by | Month: by day or by week. Year: by week or by month |
+| Period | ‹ and › around a title naming the period ("Last 24 hours", "Tue 13 Oct", "8 – 14 Oct 2026"). Periods and limits: behaviour-rules.md "History periods" |
+| Range | Day, Week, Month (30 days), Year (12 months). Changing it returns to the latest period |
+| Export | Icon button with the tooltip "Export CSV" |
 
-Chart type: hourly line for Day, floating bars otherwise.
+There is no Hours filter and no Group by. The night hours show as a band and in the summary (behaviour-rules.md "Aggregation" rule 8).
 
-| Bucket state | Rule | Rendering |
+## History views
+
+| Range | Main view |
+|---|---|
+| Day | Line of the readings, coloured by zone, with a light area fill; the typical day of the 7 days before as a grey line; the night hours as a band labelled "Night"; threshold lines at 1000 and 1400 with coloured axis labels; "air improved" markers; crosshair with the time, the value and the typical value. Legend: CO₂, Typical (previous 7 days), Night |
+| Week, Month | Days × hours grid: one row per day (oldest at the top, "Today" last), one square per hour in the heat scale. Above: "Night · 22:00–07:00" bracket and hour labels every 3 hours. Each row ends with its average, a zone bar and a "best" / "worst" tag. Last row: "Typical", with the worst three hours outlined and named ("Worst 17:00–20:00"). Legend at the bottom: the six steps with Good / Elevated / High and their limits, "No data", "Each square is one hour" |
+
+**Built so far (POL-11):** the grid is drawn for CO₂ with All day. Other metrics keep the floating bars until their single-hue scales are designed, and the Night filter keeps the bars until it goes (POL-10).
+| Year | Months × days grid: one row per month ("Nov 2025" … "Oct 2026"), one square per day (daily average); day numbers 1, 5, 10 … 31 above. Rows end as in Week. No typical row. Legend as Week, "Each square is one day" |
+
+| Grid state | Rule | Rendering |
 |---|---|---|
-| Complete | 80 % or more of expected readings | Normal bar |
-| Partial | Under 80 % | Lighter, dashed outline, hover says "only N of M h recorded" |
-| No data | None | Hatched band, merged across neighbours, label with length when wide enough; hover says "device not synced" |
+| Value | Readings in the hour (or 6+ hours in the day) | Square in the heat step |
+| No data | No readings in the hour (or under 6 hours in the day) | Empty square with a 1 px outline |
+| Missing days | 2 or more consecutive days without readings | One 28 px row, "No readings · 15 Sep – 5 Oct" |
+| Future | After now | Not drawn |
+| Rows under 14 px | Many rows (Month) | Labels on Mondays and Today only; averages hidden, zone bar and tags kept |
+
+Hover or keyboard focus on a square shows "Tue 13 Oct, 16:00–17:00 · 1234 ppm" ("No data" when empty).
+
+## History summary card
+
+| Section | Content |
+|---|---|
+| Average | "Average · 8 – 14 Oct 2026", the value (48 px) with "ppm" and its zone pill; the change as text ("▼ 31 ppm lower than the week before", or "No earlier data to compare"); coverage as one line when shown |
+| Time in each zone | The zone bar and the three shares |
+| Nights | Week, Month, Year: average of the nights, best and worst night with dates. Day: "Last night" with the verdict pill and the numbers from behaviour-rules.md "Sleep" |
+| Extremes | Highest and lowest reading with day and time |
+| Tip | The worst-hours tip (behaviour-rules.md "Aggregation" rule 9), in the advice colours of its zone |
+
+## History empty states
+
+| State | Main view | Summary |
+|---|---|---|
+| Before the first reading | "No readings for 24 – 30 Sep", "Deskair has readings from 6 Oct 2026.", "Go to the latest" | The period title and "Nothing was recorded in this period." |
+| First run | "Collecting your first data" | Hidden |
 
 ## Tray icon states
 
-Good, Elevated, High: ring in zone colour. Not connected: grey dashed ring with a slash. Quiet hours: zone ring with a moon badge. Value on icon (setting): rounded square with text such as 0.6k, 1.1k, 1.7k; dark text on amber. Tooltip: "Office · 1,068 ppm · Elevated".
+Good, Elevated, High: ring in zone colour. Not connected: grey dashed ring with a slash. Quiet hours: zone ring with a moon badge. Value on icon (setting): rounded square with text such as 0.6k, 1.1k, 1.7k; dark text on amber. Tooltip: "Office · 1068 ppm · Elevated".
 
 ## Settings
 
@@ -57,8 +108,8 @@ Good, Elevated, High: ring in zone colour. Not connected: grey dashed ring with 
 | Temperature unit | °C | Live, History, flyout, toasts (stored data and exports stay in °C) |
 | Notify at Elevated / High | On / On | Toasts |
 | Quiet hours 22:00 to 07:00 | Off | Mutes toasts only |
-| Night starts / ends (Sleep) | 22:00 / 07:00 | The Night filter in History and the sleep card; typed as HH:mm, saved when valid; the start must differ from the end |
-| Devices | Rename, Add | Per-device data folder; the selected device is remembered |
+| Night starts / ends (Sleep) | 22:00 / 07:00 | The night band and the Nights and Last night sections in History; typed as HH:mm, saved when valid; the start must differ from the end |
+| Devices | Rename, Add (secondary button) | Per-device data folder; the selected device is remembered |
 | Data folder | Documents\Deskair | Open folder; change (used after a restart, files are not copied; Q34) |
 | Import from phone app | n/a | Reads the phone's .xlsx export |
 | Export CSV | n/a | Writes readings for a chosen range |

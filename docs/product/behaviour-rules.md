@@ -1,6 +1,6 @@
 # Behaviour rules
 
-*Last reviewed: 2026-10-13*
+*Last reviewed: 2026-10-14*
 
 ## CO₂ zones
 
@@ -12,6 +12,21 @@
 
 Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 30 to 50 %. Pressure has none.
 
+## Number and time format (D-0020)
+
+Docs may write "1,000"; the app follows this table.
+
+| What | Rule | English | Ukrainian |
+|---|---|---|---|
+| ppm | Whole number, no group separator, everywhere in the UI (values, axes, labels, toasts, tray tooltip) | 1151 ppm | 1151 ppm |
+| Percent | Whole number | 59% | 59 % (narrow no-break space, U+202F) |
+| Temperature, humidity, pressure | One decimal for °C and hPa, none for %; decimal mark of the language; no group separator either (pressure is often above 1000) | 21.1 °C, 1013.2 hPa | 21,1 °C, 1013,2 hPa |
+| Time | 24-hour, two-digit hour | 16:00 | 16:00 |
+| Time range | En dash, no spaces | 16:00–19:00 | 16:00–19:00 |
+| Axis hour labels | Full time | 18:00 | 18:00 |
+
+CSV exports are unchanged. Display values use proportional figures (design-tokens.md "Typography").
+
 ## Sync and data
 
 1. Sync on launch and on every reconnect. Read the sensor's stored history (up to about 7 days) and merge it by timestamp.
@@ -19,15 +34,29 @@ Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 3
 3. Missing readings stay missing. Never interpolate in History.
 4. After a sync, Live shows the last 24 h.
 
+## History periods (D-0019)
+
+| Range | Period | ‹ steps to | Title |
+|---|---|---|---|
+| Day | The last 24 hours, ending now | Yesterday as a calendar day (00:00 to 24:00 local), then the day before | "Last 24 hours", then "Tue 13 Oct" |
+| Week | 7 local days ending today | The 7 days before | "8 – 14 Oct 2026" ("29 Sep – 5 Oct 2026" across months) |
+| Month | 30 local days ending today | The 30 days before | "15 Sep – 14 Oct 2026" |
+| Year | 12 calendar months ending with the current month | Not available in v1 (one year back at most) | "Nov 2025 – Oct 2026" |
+
+- › is off at the latest period. ‹ goes back until the period before the one holding the first reading; that period shows the empty state ("No readings for …", "Go to the latest").
+- Changing the range returns to the latest period. Alt+← and Alt+→ do the same as ‹ and ›.
+
 ## Aggregation
 
 1. Averages use only existing readings.
-2. Calendar days and months use the user's local time. Weeks end today: a week is 7 local days counted back from the end of the range. The current month is marked "so far". The first and last bucket are clipped to the range, and their expected readings are counted only inside it, so today or the current month is not "partial" just because it is not over. A year is a range, not a grouping: it is grouped by week or by month.
-3. Comparison with the previous period uses the same length and filter. If there is no earlier data, say so.
-4. A bucket with under 80 % of its expected readings is "partial" (dashed, lighter). A bucket with none is "no data" (hatched).
-5. The coverage chip shows "Based on N % of expected readings" and is hidden at 98 % or more with no empty buckets.
-6. Typical day: the average per hour of day over the last 7 days (Day, Week), the selected range (Month), or the last 90 days (Year). The worst three-hour window is outlined.
-7. Night filter: the night hours from Settings → Sleep, 22:00 to 07:00 by default (any start and end; the night may cross midnight; the start must differ from the end). A night belongs to the evening it starts on. There is no Work filter in v1.
+2. Calendar days and months use the user's local time. Today and the current month are counted only up to now, so they are not "partial" just because they are not over.
+3. Comparison with the previous period uses the same length: for the last 24 hours, the 24 hours before; otherwise the period ‹ would show (`HistoryPeriod.Before`). If the previous period has under 50 % of its expected readings, say "No earlier data to compare".
+4. **Grid squares:** an hour square (Week, Month) shows the mean of the readings in that hour, or "no data" if there are none. A day square (Year) shows the day's mean if at least 6 of its hours have readings, else "no data". Hours after now are not drawn. Two or more consecutive days without readings collapse into one row, "No readings · 15 Sep – 5 Oct"; a single empty day stays as empty squares. Nothing is interpolated.
+5. **Row end:** each row shows its average, its time in each zone, and a tag on the best (lowest average) and worst (highest average) row, among rows with readings in at least 12 hours (days) or 10 days (months), and only when at least 3 rows qualify.
+6. **Coverage** is shown as one line under the average, "Based on N % of expected readings", and hidden at 98 % or more with no empty days.
+7. **Typical day:** the mean per hour of day over the shown period; for Day, over the 7 days before the shown day; for Year, over the whole year. Week and Month show it as the grid's last row, with the worst three-hour window outlined. Day shows it as a grey line.
+8. **Nights:** the night hours from Settings → Sleep (22:00 to 07:00 by default; any start and end; the night may cross midnight; the start must differ from the end). A night belongs to the evening it starts on and is labelled "12–13 Oct". A night counts if at least 6 of its hours have readings. History shows the night hours as a band (grid header, Day chart) and in the summary: the average of the nights, the best and the worst night (Week, Month, Year), or last night (Day; see "Sleep"). There is no Night filter (D-0019) and no Work filter in v1.
+9. **Worst-hours tip:** names the worst three-hour window of the typical day and its average. If at least 2 of its 3 hours are night hours, it says "…, while you sleep" and suggests leaving a window slightly open at night; otherwise it suggests opening a window shortly before.
 
 ## Semantics
 
@@ -39,8 +68,9 @@ Thresholds are fixed in v1. Comfort ranges: temperature 20 to 24 °C, humidity 3
 ## Live values
 
 - **Trend:** compare the average of the last 6 minutes with the average of the 6 minute window that ends 30 minutes before now. If either window has no readings, the trend is "Steady". A change under 30 ppm is "Steady"; otherwise "Rising" or "Falling" with the ppm change over 30 min. Temperature, humidity and pressure are "Steady" unless they change by 0.5 °C, 3 % or 1 hPa over the last hour, measured from the oldest to the newest reading in that hour. If those readings cover less than 30 minutes (for example just after start-up), the trend is "Steady". Tune with real data.
-- "Good in last 24 h": share of time under 1,000 ppm. "Peak": the maximum in 24 h. "In the X zone": time since the zone last changed.
-- **Advice and mini cards:** no time estimates (D-0015). The hero advice text follows the zone and the CO₂ trend. A mini card shows the metric's trend; temperature and humidity replace it with a "too cool / warm / dry / humid" label and the ideal range only when the value is outside it. Pressure never shows a comfort label.
+- "Good in last 24 h": share of time under 1,000 ppm. "Peak": the maximum in 24 h. "Elevated so far" (and Good, High): time since the zone last changed.
+- **Advice and mini cards:** no time estimates (D-0015). The hero advice text follows the zone and the CO₂ trend. A mini card shows the metric's trend. Temperature replaces it with "Too cool" or "Too warm" and the ideal range when the value is outside 20 to 24 °C. Humidity replaces it with "A bit dry" (25 to 29 %), "A bit humid" (51 to 55 %), "Too dry" (below 25 %) or "Too humid" (above 55 %), with the ideal range. Pressure never shows a comfort label.
+- **Live chart axis:** fitted to the shown readings, padded by 30 ppm and rounded out to steps of 100 ppm (200 ppm when the span is over 300), at least 200 ppm tall. Other metrics keep their current axes.
 
 ## Connection states
 
@@ -63,16 +93,21 @@ When several apply, the first of this list wins: First run, Not connected, Stale
 - Respect quiet hours, Snooze, and Windows Do Not Disturb. Never override Do Not Disturb. Show "Alerts paused by Windows" in the tray tooltip and in Settings.
 - The tray icon colour always updates, even when toasts are off.
 
-## Sleep (the sleep card)
+## Sleep (last night)
 
-1. **Where:** History with the Day range and the Night hours filter shows the sleep card in place of the typical day. The chart above it stays as it is (the last 24 hours).
-2. **Which night:** the most recent night that has ended, in the night hours from Settings → Sleep (22:00 to 07:00 by default). The night in progress is not "last night": at 23:00 the card still shows the night that ended that morning. Times are local, and a night with a clock change is an hour longer or shorter.
+1. **Where:** History with the Day range shows "Last night" as a section of the summary card (it replaces the sleep card, D-0019). The chart above shows the day as usual.
+2. **Which night:** for the last 24 hours, the most recent night that has ended, in the night hours from Settings → Sleep (22:00 to 07:00 by default). The night in progress is not "last night": at 23:00 the section still shows the night that ended that morning. For a calendar day, the night that ended on that day's morning. Times are local, and a night with a clock change is an hour longer or shorter.
 3. **Verdict (CO₂ only):** Good = average under 1,000 ppm and at most 1 hour at or above 1,000 ppm; Poor = average above 1,400 ppm or 5 hours or more at or above 1,000 ppm; otherwise Fair. A reading counts for one sensor interval.
 4. **Numbers:** time at or above 1,000 ppm (out of the hours recorded), the peak with its time, and the average between 02:00 and 05:00 local (deep sleep; shown as "–" when the night has none). Other metrics have no verdict and show the lowest value first.
 5. **Missing data:** under 80 % of the night recorded shows "Only N of M hours were recorded". A night without readings says so. Nothing is interpolated.
-6. **Not built yet:** the morning toast (SLEEP-01), one average per night for Week, Month and Year (the Night filter already averages the night hours per day).
+6. **Not built yet:** the morning toast (SLEEP-01).
+
+## Air improved (markers)
+
+- **Detection:** CO₂ at or above 1,000 and a drop of 150 ppm within 10 minutes starts an "air improved" event. It ends when below 1,000, when it flattens (under 10 ppm per 5 min), or after 45 minutes. Call it "air improved", not "window opened".
+- **Markers (POL-13):** the History Day chart marks the start of each event with a small ring labelled "air improved"; markers are at least 60 minutes apart (a later start inside that hour is not marked). Hover gives the time and the drop ("Air improved at 14:16 · −934 ppm in 12 min").
+- **Later (AIR-01):** feedback toasts, markers on the Live ribbon and a typical time to clear per room.
 
 ## Later features (documented only)
 
-- **Airing detection:** CO₂ at or above 1,000 and a drop of 150 ppm within 10 minutes. Ends when below 1,000, when it flattens (under 10 ppm per 5 min), or after 45 minutes. Call it "air improved", not "window opened".
-- **Drill-down:** month bar to Month, week bar to Week, day bar to Day; needs a date cursor and a breadcrumb.
+- **Drill-down:** a row or square in the History grid opens that day or week; the period navigator (D-0019) makes it a change of range and offset.

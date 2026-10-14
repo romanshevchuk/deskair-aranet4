@@ -4,14 +4,17 @@
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
              xmlns:trend="clr-namespace:Deskair.Domain.Analytics.Trend;assembly=Deskair.Domain">
-  <!-- DataContext: HeroViewModel. Zone tint, pill, value, trend, gauge, advice and the three stats. -->
+  <!-- DataContext: HeroViewModel. Zone glow, pill, value, trend, gauge, advice and the three stats. The four groups (title to trend, gauge, advice, stats)
+       share the spare height through the star rows between them, so the card has no single gap above the stats (design-tokens.md "Hero padding"). -->
   <controls:Card Zone="{Binding Zone}" Padding="{StaticResource Space.Hero.Padding}">
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
         <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
         <RowDefinition Height="Auto" />
@@ -73,20 +76,19 @@
                    Text="{Binding TrendDetail}" />
       </StackPanel>
 
-      <controls:Gauge Grid.Row="3"
+      <controls:Gauge Grid.Row="4"
                       Margin="{StaticResource Space.Hero.Gauge}"
                       Value="{Binding Co2Ppm}"
                       AutomationProperties.Name="{loc:T Metric_Co2}" />
 
-      <controls:AdviceCard Grid.Row="4"
+      <controls:AdviceCard Grid.Row="6"
                            Margin="{StaticResource Space.Hero.Advice}"
                            Zone="{Binding Zone}"
                            Title="{Binding AdviceTitle}"
                            Text="{Binding AdviceText}" />
 
-      <controls:StatTriple Grid.Row="6"
+      <controls:StatTriple Grid.Row="8"
                            Margin="{StaticResource Space.Hero.Stats}"
-                           Zone="{Binding Zone}"
                            ItemsSource="{Binding Stats}" />
     </Grid>
   </controls:Card>

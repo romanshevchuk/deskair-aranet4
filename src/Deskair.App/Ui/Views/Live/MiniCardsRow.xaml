@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:charts="clr-namespace:Deskair.App.Ui.Charts"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls">
-  <!-- DataContext: LiveViewModel. The three metrics that are not on the chart; clicking one shows it on the chart. -->
+  <!-- DataContext: LiveViewModel. Temperature, humidity and pressure, always in that order (CO₂ is the hero); clicking one shows it on the chart and gives it the accent ring. -->
   <ItemsControl Margin="{StaticResource Space.Mini.Row}"
                 ItemsSource="{Binding MiniCards.Items}"
                 Focusable="False">
@@ -21,7 +21,9 @@
                              Unit="{Binding UnitText}"
                              Subtitle="{Binding SubtitleText}"
                              Command="{Binding DataContext.Tabs.SelectMetricCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                             CommandParameter="{Binding Metric}">
+                             CommandParameter="{Binding Metric}"
+                             IsSelected="{Binding IsSelected}"
+                             AutomationProperties.Name="{Binding AccessibleName}">
           <charts:Sparkline Width="{StaticResource Size.Mini.Sparkline.Width}"
                             Height="{StaticResource Size.Mini.Sparkline.Height}"
                             Metric="{Binding Metric}"

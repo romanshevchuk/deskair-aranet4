@@ -271,9 +271,9 @@ public sealed partial class StatsViewModel : ObservableObject
         ZoneGood = share.Good;
         ZoneElevated = share.Elevated;
         ZoneHigh = share.High;
-        ZoneGoodText = share.Good.ToString("P0", localizer.Culture);
-        ZoneElevatedText = share.Elevated.ToString("P0", localizer.Culture);
-        ZoneHighText = share.High.ToString("P0", localizer.Culture);
+        ZoneGoodText = NumberFormat.Percent(share.Good, localizer.Culture);
+        ZoneElevatedText = NumberFormat.Percent(share.Elevated, localizer.Culture);
+        ZoneHighText = NumberFormat.Percent(share.High, localizer.Culture);
         HasZoneShare = true;
     }
 

@@ -38,7 +38,7 @@
   <Border Width="{StaticResource Size.Flyout.Width}"
           Margin="{StaticResource Space.Menu.Shadow}"
           Background="{DynamicResource Window.Bg.Brush}"
-          BorderBrush="{DynamicResource Border.Brush}"
+          BorderBrush="{DynamicResource Card.Border.Brush}"
           BorderThickness="1"
           CornerRadius="{DynamicResource Radius.Flyout}"
           Effect="{StaticResource Shadow.Flyout}"
@@ -81,6 +81,7 @@
                          LineHeight="{DynamicResource Font.Size.Flyout.Value}"
                          LineStackingStrategy="BlockLineHeight"
                          Style="{StaticResource Text.Number}"
+                         Typography.NumeralAlignment="Proportional"
                          FontWeight="{DynamicResource Font.Weight.Light}"
                          Text="{Binding ValueText}" />
               <TextBlock Margin="{StaticResource Space.Inline}"

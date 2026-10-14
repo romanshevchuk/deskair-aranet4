@@ -90,36 +90,104 @@ public class ChartLayerTests
         });
     }
 
+    /// <summary>Undoes the premultiplied alpha of a rendered pixel, so a half-transparent line can be compared with its token colour.</summary>
+    private static Color Unpremultiplied(Color pixel)
+        => pixel.A == 0 ? pixel : Color.FromRgb((byte)(pixel.R * 255 / pixel.A), (byte)(pixel.G * 255 / pixel.A), (byte)(pixel.B * 255 / pixel.A));
+
     [Fact]
-    public void Dashed_lines_skip_a_limit_outside_the_range()
+    public void A_threshold_outside_the_range_draws_neither_line_nor_label()
     {
         UiHost.Run(() =>
         {
+            // 400 to 1200: 1000 is inside (y 50), 1400 is not.
             var area = LayerRenderer.Area(yMin: 400, yMax: 1200);
-            var bitmap = LayerRenderer.Render(new DashedZoneLinesLayer(), area);
+            var layer = new ThresholdLayer { ElevatedLabel = "Elevated from 1000", HighLabel = "High from 1400" };
+            var bitmap = LayerRenderer.Render(layer, area);
 
-            Assert.True(LayerRenderer.AnyDrawn(bitmap, new Int32Rect(45, PixelY(area, 1000) - 1, 200, 2)));
-            Assert.False(LayerRenderer.AnyDrawn(bitmap, new Int32Rect(45, 0, 200, PixelY(area, 1000) - 3)));
+            Assert.True(LayerRenderer.AnyDrawn(bitmap, new Int32Rect(45, PixelY(area, 1000) - 1, 100, 2)));
+            Assert.False(LayerRenderer.AnyDrawn(bitmap, new Int32Rect(40, 0, 250, PixelY(area, 1000) - 25)));
         });
     }
 
+    [Fact]
+    public void A_threshold_line_takes_its_zone_colour_and_its_label_sits_above_it_on_the_right()
+    {
+        UiHost.Run(ThemeChoice.Light, () =>
+        {
+            var area = LayerRenderer.Area();
+            var bitmap = LayerRenderer.Render(new ThresholdLayer { ElevatedLabel = "Elevated from 1000", HighLabel = "High from 1400" }, area);
+
+            foreach (var (limit, zone) in new[] { (1000.0, "Elevated"), (1400.0, "High") })
+            {
+                var y = PixelY(area, limit);
+                var pixel = Enumerable.Range(45, 100).Select(x => LayerRenderer.Pixel(bitmap, x, y)).First(candidate => candidate.A > 100);
+
+                // The line is the zone dot colour at 60 % (D-0017: the zone shows where it means something), not a neutral grey.
+                Assert.True(Near(LayerRenderer.Token($"Zone.{zone}.Dot.Brush"), Unpremultiplied(pixel), 12));
+                Assert.InRange(pixel.A, 130, 175);
+
+                // The label: right-aligned to the plot, just above the line, nothing below it on the left.
+                Assert.True(LayerRenderer.AnyDrawn(bitmap, new Int32Rect(230, y - 18, 58, 14)));
+                Assert.False(LayerRenderer.AnyDrawn(bitmap, new Int32Rect(45, y - 18, 60, 14)));
+            }
+        });
+    }
 
     [Fact]
-    public void Both_dashed_limits_are_the_same_neutral_grey()
+    public void A_threshold_on_the_edge_of_the_axis_is_still_drawn_with_its_label_inside_the_plot()
     {
         UiHost.Run(() =>
         {
-            var area = LayerRenderer.Area();
-            var bitmap = LayerRenderer.Render(new DashedZoneLinesLayer(), area);
-            var expected = LayerRenderer.Token("Card.Border.Hover.Brush");
+            // 1000 to 1300, as the Live chart fits a last hour of 1076 to 1171: 1000 is the bottom edge (y 170), 1300 would be the top.
+            var bottom = LayerRenderer.Render(new ThresholdLayer { ElevatedLabel = "Elevated from 1000" }, LayerRenderer.Area(yMin: 1000, yMax: 1300));
+            var top = LayerRenderer.Render(new ThresholdLayer { HighAbove = 1300, HighLabel = "High from 1300" }, LayerRenderer.Area(yMin: 1000, yMax: 1300));
 
-            foreach (var limit in new[] { 1000.0, 1400.0 })
+            Assert.True(LayerRenderer.AnyDrawn(bottom, new Int32Rect(45, 169, 100, 2)));
+            Assert.True(LayerRenderer.AnyDrawn(bottom, new Int32Rect(230, 152, 58, 14)));
+
+            // On the top edge (y 10) the label goes under the line, so it stays inside the plot.
+            Assert.False(LayerRenderer.AnyDrawn(top, new Int32Rect(40, 0, 250, 9)));
+            Assert.True(LayerRenderer.AnyDrawn(top, new Int32Rect(230, 14, 58, 14)));
+        });
+    }
+
+    [Fact]
+    public void The_area_fill_fades_from_the_line_to_the_bottom_and_skips_gaps()
+    {
+        UiHost.Run(ThemeChoice.Light, () =>
+        {
+            var area = TimeArea();
+            var points = new[] { At(0, 1200), At(30, 1200), At(40, null), At(70, 1200), At(100, 1200) };
+            var bitmap = LayerRenderer.Render(new AreaLayer { Points = points, BrushKey = "Zone.Elevated.Line.Brush" }, area);
+
+            var underLine = LayerRenderer.Pixel(bitmap, PixelX(area, 15), PixelY(area, 1200) + 3);
+            var nearBottom = LayerRenderer.Pixel(bitmap, PixelX(area, 15), (int)area.Plot.Bottom - 3);
+
+            Assert.InRange(underLine.A, 45, 60);
+            Assert.True(nearBottom.A < underLine.A / 4);
+            Assert.True(Near(LayerRenderer.Token("Zone.Elevated.Line.Brush"), Unpremultiplied(underLine), 16));
+            Assert.False(LayerRenderer.AnyDrawn(bitmap, new Int32Rect(PixelX(area, 33), 20, PixelX(area, 67) - PixelX(area, 33), 140)));
+            Assert.False(LayerRenderer.AnyDrawn(bitmap, new Int32Rect(PixelX(area, 15), 10, 5, PixelY(area, 1200) - 14)));
+        });
+    }
+
+    [Fact]
+    public void A_smoothed_line_passes_through_every_reading_and_does_not_overshoot_a_peak()
+    {
+        UiHost.Run(() =>
+        {
+            var area = TimeArea();
+            var points = new[] { At(0, 800), At(20, 1000), At(40, 1600), At(60, 1000), At(80, 800), At(100, 900) };
+            var bitmap = LayerRenderer.Render(new ZoneLineLayer { Points = points, Smooth = true }, area);
+
+            foreach (var point in points.Take(5))
             {
-                var y = PixelY(area, limit);
-                var pixel = Enumerable.Range(45, 200).Select(x => LayerRenderer.Pixel(bitmap, x, y)).First(candidate => candidate.A > 200);
-
-                Assert.Equal(expected, Color.FromRgb(pixel.R, pixel.G, pixel.B));
+                var minute = (int)(point.Time - start).TotalMinutes;
+                Assert.True(LayerRenderer.AnyDrawn(bitmap, new Int32Rect(PixelX(area, minute) - 1, PixelY(area, point.Value!.Value) - 2, 3, 5)));
             }
+
+            // Monotone: nothing above the 1600 peak (y 70) beyond the line's own thickness.
+            Assert.False(LayerRenderer.AnyDrawn(bitmap, new Int32Rect(40, 10, 250, PixelY(area, 1600) - 13)));
         });
     }
     [Fact]

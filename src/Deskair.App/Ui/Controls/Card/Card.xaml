@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
   <!-- The prototype's .card: a 1 px border, 16 px radius and a soft shadow. The shadow is drawn by a separate border behind the content, so a chart or a value that changes inside the card
-       does not make Windows blur the whole card again. A zone card (the hero) has the same border width and a shadow tinted with its zone. -->
+       does not make Windows blur the whole card again. Every card, a zone card included, has the same neutral surface, border and shadow (D-0017); a zone card adds the zone glow
+       from its top-left corner on a layer between the surface and the content. -->
   <Style TargetType="{x:Type local:Card}">
     <Setter Property="Background" Value="{DynamicResource Surface.Brush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource Card.Border.Brush}" />
@@ -17,8 +18,12 @@
                     CornerRadius="{DynamicResource Radius.Card}"
                     Effect="{DynamicResource Shadow.Card}"
                     IsHitTestVisible="False" />
-            <Border Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
+            <Border Background="{TemplateBinding Background}" CornerRadius="{DynamicResource Radius.Card}" />
+            <Border x:Name="Glow"
+                    CornerRadius="{DynamicResource Radius.Card}"
+                    IsHitTestVisible="False"
+                    Visibility="Collapsed" />
+            <Border BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="{DynamicResource Radius.Card}"
                     Padding="{TemplateBinding Padding}">
@@ -27,31 +32,20 @@
           </Grid>
           <ControlTemplate.Triggers>
             <Trigger Property="Zone" Value="Good">
-              <Setter TargetName="Shadow" Property="Effect" Value="{DynamicResource Shadow.Card.Good}" />
+              <Setter TargetName="Glow" Property="Background" Value="{DynamicResource Zone.Good.Glow.Brush}" />
+              <Setter TargetName="Glow" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="Zone" Value="Elevated">
-              <Setter TargetName="Shadow" Property="Effect" Value="{DynamicResource Shadow.Card.Elevated}" />
+              <Setter TargetName="Glow" Property="Background" Value="{DynamicResource Zone.Elevated.Glow.Brush}" />
+              <Setter TargetName="Glow" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="Zone" Value="High">
-              <Setter TargetName="Shadow" Property="Effect" Value="{DynamicResource Shadow.Card.High}" />
+              <Setter TargetName="Glow" Property="Background" Value="{DynamicResource Zone.High.Glow.Brush}" />
+              <Setter TargetName="Glow" Property="Visibility" Value="Visible" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
-    <Style.Triggers>
-      <Trigger Property="Zone" Value="Good">
-        <Setter Property="Background" Value="{DynamicResource Zone.Good.CardBg.Brush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Zone.Good.CardBorder.Brush}" />
-      </Trigger>
-      <Trigger Property="Zone" Value="Elevated">
-        <Setter Property="Background" Value="{DynamicResource Zone.Elevated.CardBg.Brush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Zone.Elevated.CardBorder.Brush}" />
-      </Trigger>
-      <Trigger Property="Zone" Value="High">
-        <Setter Property="Background" Value="{DynamicResource Zone.High.CardBg.Brush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Zone.High.CardBorder.Brush}" />
-      </Trigger>
-    </Style.Triggers>
   </Style>
 </ResourceDictionary>

@@ -3,8 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:live="clr-namespace:Deskair.App.Ui.Views.Live"
-             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- DataContext: ShellViewModel. Hero left, chart right, three mini cards below: 3 equal columns, rows 1 fr and 132 px, gap 16. -->
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:metrics="clr-namespace:Deskair.Domain.Metrics;assembly=Deskair.Domain">
+  <!-- DataContext: ShellViewModel. Hero left, chart right, three mini cards below: 3 equal columns, rows 1 fr and 132 px, gap 16.
+       The hero and the mini cards choose the chart's metric (POL-06): the hero is a selectable card that chooses CO₂. -->
+
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -57,17 +60,24 @@
         <RowDefinition Height="{StaticResource Grid.Live.MiniRow}" />
       </Grid.RowDefinitions>
 
-      <live:HeroCard Grid.Column="0" Grid.Row="0" DataContext="{Binding Live.Hero}">
-        <live:HeroCard.Style>
-          <Style TargetType="{x:Type live:HeroCard}">
-            <Style.Triggers>
-              <DataTrigger Binding="{Binding DataContext.Connection.ShowStaleBanner, RelativeSource={RelativeSource AncestorType={x:Type live:LiveView}}}" Value="True">
-                <Setter Property="Opacity" Value="0.55" />
-              </DataTrigger>
-            </Style.Triggers>
-          </Style>
-        </live:HeroCard.Style>
-      </live:HeroCard>
+      <controls:SelectableCard Grid.Column="0"
+                               Grid.Row="0"
+                               Command="{Binding Live.Tabs.SelectMetricCommand}"
+                               CommandParameter="{x:Static metrics:Metric.Co2}"
+                               IsSelected="{Binding Live.Tabs.IsCo2Selected}"
+                               AutomationProperties.Name="{Binding Live.Hero.AccessibleName}">
+        <live:HeroCard DataContext="{Binding Live.Hero}">
+          <live:HeroCard.Style>
+            <Style TargetType="{x:Type live:HeroCard}">
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.Connection.ShowStaleBanner, RelativeSource={RelativeSource AncestorType={x:Type live:LiveView}}}" Value="True">
+                  <Setter Property="Opacity" Value="0.55" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </live:HeroCard.Style>
+        </live:HeroCard>
+      </controls:SelectableCard>
       <live:ChartCard Grid.Column="2" Grid.ColumnSpan="3" Grid.Row="0" DataContext="{Binding Live}" />
       <live:MiniCardsRow Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="2" DataContext="{Binding Live}" />
     </Grid>

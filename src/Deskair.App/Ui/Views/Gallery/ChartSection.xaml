@@ -44,6 +44,9 @@
                           Points="{x:Static gallery:GallerySamples.NoPoints}"
                           NowLabel="{loc:T Chart_Now}" NoDataText="{loc:T Chart_NoData}" />
       </controls:Card>
+      <controls:Card Width="760" Height="470" Margin="{StaticResource Space.Item}" Padding="{StaticResource Space.Card.Padding}">
+        <charts:HourGridChart Model="{x:Static gallery:GallerySamples.Grid}" />
+      </controls:Card>
     </WrapPanel>
 
     <TextBlock Margin="{StaticResource Space.SectionLabel}"

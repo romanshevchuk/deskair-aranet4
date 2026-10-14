@@ -1,10 +1,10 @@
 using System.Windows;
-using System.Windows.Controls;
 using Deskair.Domain.Metrics;
 
 namespace Deskair.App.Ui.Controls;
 
-public class MetricCard : Button
+/// <summary>A Live mini card: name, value, subtitle and a sparkline. Choosing it shows its metric on the Live chart; the chosen card has an accent ring.</summary>
+public class MetricCard : SelectableCard
 {
     public static readonly DependencyProperty MetricProperty = DependencyProperty.Register(
         nameof(Metric),
@@ -35,12 +35,6 @@ public class MetricCard : Button
         typeof(string),
         typeof(MetricCard),
         new PropertyMetadata(null));
-
-    public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register(
-        nameof(IsSelected),
-        typeof(bool),
-        typeof(MetricCard),
-        new PropertyMetadata(default(bool)));
 
     static MetricCard()
     {
@@ -75,11 +69,5 @@ public class MetricCard : Button
     {
         get => (string?)GetValue(SubtitleProperty);
         set => SetValue(SubtitleProperty, value);
-    }
-
-    public bool IsSelected
-    {
-        get => (bool)GetValue(IsSelectedProperty);
-        set => SetValue(IsSelectedProperty, value);
     }
 }

@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Windows.Media;
+using Deskair.App.Localization;
 using Deskair.App.ViewModels.ChartModels;
 using Deskair.Domain.Analytics.Aggregation;
 
@@ -27,7 +28,7 @@ public sealed class BarLabelLayer : IChartLayer
     /// <summary>The word at the start of the average row ("avg"). Null draws no row.</summary>
     public string? RowLabel { get; set; }
 
-    public string Format { get; set; } = "N0";
+    public string Format { get; set; } = NumberFormat.WholeFormat;
 
     public void Draw(DrawingContext context, ChartArea area)
     {

@@ -50,6 +50,22 @@ public sealed class MonthlyCsvStore : IReadingStore, IDisposable
         }
     }
 
+    public async Task<DateTimeOffset?> GetFirstReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
+    {
+        await gate.WaitAsync(cancellationToken);
+
+        try
+        {
+            var index = await LoadAsync(device, cancellationToken);
+
+            return index.First();
+        }
+        finally
+        {
+            gate.Release();
+        }
+    }
+
     public async Task<DateTimeOffset?> GetLastReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
     {
         await gate.WaitAsync(cancellationToken);

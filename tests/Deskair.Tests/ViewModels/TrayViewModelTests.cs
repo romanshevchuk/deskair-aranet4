@@ -65,7 +65,7 @@ public class TrayViewModelTests
 
         Assert.Equal(Zone.Elevated, viewModel.Zone);
         Assert.Equal(1068, viewModel.Co2);
-        Assert.Equal("Office · 1,068 ppm · Zone_Elevated", viewModel.Tooltip);
+        Assert.Equal("Office · 1068 ppm · Zone_Elevated", viewModel.Tooltip);
         Assert.Equal(viewModel.Tooltip, viewModel.StatusText);
     }
 
@@ -138,7 +138,7 @@ public class TrayViewModelTests
         messenger.Send(new ConnectionStateChanged(state));
 
         Assert.Equal(Zone.Elevated, viewModel.Zone);
-        Assert.Equal("Office · 1,068 ppm · Zone_Elevated", viewModel.Tooltip);
+        Assert.Equal("Office · 1068 ppm · Zone_Elevated", viewModel.Tooltip);
     }
 
     [Fact]
@@ -175,7 +175,7 @@ public class TrayViewModelTests
 
         messenger.Send(new DeviceRenamed(device));
 
-        Assert.Equal("Study · 1,068 ppm · Zone_Elevated", viewModel.Tooltip);
+        Assert.Equal("Study · 1068 ppm · Zone_Elevated", viewModel.Tooltip);
     }
 
     [Fact]
@@ -223,7 +223,7 @@ public class TrayViewModelTests
 
         messenger.Send(new DoNotDisturbChanged(true));
 
-        Assert.Equal("Office · 1,068 ppm · Zone_Elevated · Tray_AlertsPausedByWindows", viewModel.Tooltip);
+        Assert.Equal("Office · 1068 ppm · Zone_Elevated · Tray_AlertsPausedByWindows", viewModel.Tooltip);
     }
 
     [Fact]
@@ -235,7 +235,7 @@ public class TrayViewModelTests
 
         messenger.Send(new DoNotDisturbChanged(false));
 
-        Assert.Equal("Office · 1,068 ppm · Zone_Elevated", viewModel.Tooltip);
+        Assert.Equal("Office · 1068 ppm · Zone_Elevated", viewModel.Tooltip);
     }
 
     [Fact]

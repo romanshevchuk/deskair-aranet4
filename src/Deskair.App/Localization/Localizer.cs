@@ -71,12 +71,12 @@ public sealed class Localizer : ILocalizer, INotifyPropertyChanged
 
     private string FormatValue(object? value)
     {
-        // Whole numbers get thousands separators (1,068 and 1 068); decimals keep at most two places.
+        // No group separator (D-0020: 1068, not 1,068); decimals keep at most two places.
         return value switch
         {
             null => string.Empty,
-            int or long or short or byte => ((IFormattable)value).ToString("N0", culture),
-            double or float or decimal => ((IFormattable)value).ToString("#,##0.##", culture),
+            int or long or short or byte => ((IFormattable)value).ToString("0", culture),
+            double or float or decimal => ((IFormattable)value).ToString("0.##", culture),
             IFormattable formattable => formattable.ToString(null, culture),
             _ => value.ToString() ?? string.Empty
         };

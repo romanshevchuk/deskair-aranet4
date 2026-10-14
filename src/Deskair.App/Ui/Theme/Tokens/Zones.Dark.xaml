@@ -1,10 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <!-- Zone tokens, Dark (docs/design/design-tokens.md) -->
-  <Color x:Key="Zone.Good.CardBg.Color">#16261E</Color>
-  <SolidColorBrush x:Key="Zone.Good.CardBg.Brush" Color="{StaticResource Zone.Good.CardBg.Color}" />
-  <Color x:Key="Zone.Good.CardBorder.Color">#2F7A58</Color>
-  <SolidColorBrush x:Key="Zone.Good.CardBorder.Brush" Color="{StaticResource Zone.Good.CardBorder.Color}" />
   <Color x:Key="Zone.Good.PillBg.Color">#1F4A38</Color>
   <SolidColorBrush x:Key="Zone.Good.PillBg.Brush" Color="{StaticResource Zone.Good.PillBg.Color}" />
   <Color x:Key="Zone.Good.PillText.Color">#9FE0BF</Color>
@@ -15,8 +11,6 @@
   <SolidColorBrush x:Key="Zone.Good.AdviceBg.Brush" Color="{StaticResource Zone.Good.AdviceBg.Color}" />
   <Color x:Key="Zone.Good.AdviceBorder.Color">#2C5A44</Color>
   <SolidColorBrush x:Key="Zone.Good.AdviceBorder.Brush" Color="{StaticResource Zone.Good.AdviceBorder.Color}" />
-  <Color x:Key="Zone.Good.Divider.Color">#2A4A3A</Color>
-  <SolidColorBrush x:Key="Zone.Good.Divider.Brush" Color="{StaticResource Zone.Good.Divider.Color}" />
   <Color x:Key="Zone.Good.AdviceIcon.Color">#9FE0BF</Color>
   <SolidColorBrush x:Key="Zone.Good.AdviceIcon.Brush" Color="{StaticResource Zone.Good.AdviceIcon.Color}" />
   <Color x:Key="Zone.Good.Segment.Color">#3FA77E</Color>
@@ -25,10 +19,6 @@
   <SolidColorBrush x:Key="Zone.Good.Line.Brush" Color="{StaticResource Zone.Good.Line.Color}" />
   <Color x:Key="Chart.Band.Good.Color">#1A3FA77E</Color>
   <SolidColorBrush x:Key="Chart.Band.Good.Brush" Color="{StaticResource Chart.Band.Good.Color}" />
-  <Color x:Key="Zone.Elevated.CardBg.Color">#2A2315</Color>
-  <SolidColorBrush x:Key="Zone.Elevated.CardBg.Brush" Color="{StaticResource Zone.Elevated.CardBg.Color}" />
-  <Color x:Key="Zone.Elevated.CardBorder.Color">#8A6A1F</Color>
-  <SolidColorBrush x:Key="Zone.Elevated.CardBorder.Brush" Color="{StaticResource Zone.Elevated.CardBorder.Color}" />
   <Color x:Key="Zone.Elevated.PillBg.Color">#4A3A12</Color>
   <SolidColorBrush x:Key="Zone.Elevated.PillBg.Brush" Color="{StaticResource Zone.Elevated.PillBg.Color}" />
   <Color x:Key="Zone.Elevated.PillText.Color">#F2CE7A</Color>
@@ -39,8 +29,6 @@
   <SolidColorBrush x:Key="Zone.Elevated.AdviceBg.Brush" Color="{StaticResource Zone.Elevated.AdviceBg.Color}" />
   <Color x:Key="Zone.Elevated.AdviceBorder.Color">#6A5219</Color>
   <SolidColorBrush x:Key="Zone.Elevated.AdviceBorder.Brush" Color="{StaticResource Zone.Elevated.AdviceBorder.Color}" />
-  <Color x:Key="Zone.Elevated.Divider.Color">#4A3E24</Color>
-  <SolidColorBrush x:Key="Zone.Elevated.Divider.Brush" Color="{StaticResource Zone.Elevated.Divider.Color}" />
   <Color x:Key="Zone.Elevated.AdviceIcon.Color">#F2CE7A</Color>
   <SolidColorBrush x:Key="Zone.Elevated.AdviceIcon.Brush" Color="{StaticResource Zone.Elevated.AdviceIcon.Color}" />
   <Color x:Key="Zone.Elevated.Segment.Color">#E6B04B</Color>
@@ -49,10 +37,6 @@
   <SolidColorBrush x:Key="Zone.Elevated.Line.Brush" Color="{StaticResource Zone.Elevated.Line.Color}" />
   <Color x:Key="Chart.Band.Elevated.Color">#24E6B04B</Color>
   <SolidColorBrush x:Key="Chart.Band.Elevated.Brush" Color="{StaticResource Chart.Band.Elevated.Color}" />
-  <Color x:Key="Zone.High.CardBg.Color">#2B1A18</Color>
-  <SolidColorBrush x:Key="Zone.High.CardBg.Brush" Color="{StaticResource Zone.High.CardBg.Color}" />
-  <Color x:Key="Zone.High.CardBorder.Color">#8E3A33</Color>
-  <SolidColorBrush x:Key="Zone.High.CardBorder.Brush" Color="{StaticResource Zone.High.CardBorder.Color}" />
   <Color x:Key="Zone.High.PillBg.Color">#4F2420</Color>
   <SolidColorBrush x:Key="Zone.High.PillBg.Brush" Color="{StaticResource Zone.High.PillBg.Color}" />
   <Color x:Key="Zone.High.PillText.Color">#F5A9A0</Color>
@@ -70,8 +54,6 @@
   <SolidColorBrush x:Key="Zone.High.AdviceBg.Brush" Color="{StaticResource Zone.High.AdviceBg.Color}" />
   <Color x:Key="Zone.High.AdviceBorder.Color">#6B3029</Color>
   <SolidColorBrush x:Key="Zone.High.AdviceBorder.Brush" Color="{StaticResource Zone.High.AdviceBorder.Color}" />
-  <Color x:Key="Zone.High.Divider.Color">#4E2C28</Color>
-  <SolidColorBrush x:Key="Zone.High.Divider.Brush" Color="{StaticResource Zone.High.Divider.Color}" />
   <Color x:Key="Zone.High.AdviceIcon.Color">#F5A9A0</Color>
   <SolidColorBrush x:Key="Zone.High.AdviceIcon.Brush" Color="{StaticResource Zone.High.AdviceIcon.Color}" />
   <Color x:Key="Zone.High.Segment.Color">#C7453A</Color>
@@ -84,8 +66,57 @@
   <SolidColorBrush x:Key="Trend.Falling.Brush" Color="{StaticResource Trend.Falling.Color}" />
   <Color x:Key="Trend.Rising.Color">#FF8A7E</Color>
   <SolidColorBrush x:Key="Trend.Rising.Brush" Color="{StaticResource Trend.Rising.Color}" />
-  <!-- In the dark theme the zone shadow is a plain deep shadow: a tinted glow would look like a halo. -->
-  <DropShadowEffect x:Key="Shadow.Card.Good" Color="#000000" Opacity="0.40" BlurRadius="18" ShadowDepth="4" Direction="270" />
-  <DropShadowEffect x:Key="Shadow.Card.Elevated" Color="#000000" Opacity="0.40" BlurRadius="18" ShadowDepth="4" Direction="270" />
-  <DropShadowEffect x:Key="Shadow.Card.High" Color="#000000" Opacity="0.40" BlurRadius="18" ShadowDepth="4" Direction="270" />
+  <!-- Zone glow (D-0017), dark: lower alpha than light, because a bright wash on a dark surface reads as a halo (design-tokens.md "Zone colours"). -->
+  <Color x:Key="Zone.Good.Glow.Color">#1C4CC08C</Color>
+  <RadialGradientBrush x:Key="Zone.Good.Glow.Brush" Center="0,0" GradientOrigin="0,0" RadiusX="1.3" RadiusY="0.75">
+    <GradientStop Offset="0" Color="{StaticResource Zone.Good.Glow.Color}" />
+    <GradientStop Offset="0.6" Color="#004CC08C" />
+  </RadialGradientBrush>
+  <RadialGradientBrush x:Key="Zone.Good.Glow.Flyout.Brush" Center="0,0" GradientOrigin="0,0" RadiusX="1.2" RadiusY="0.55">
+    <GradientStop Offset="0" Color="#2E4CC08C" />
+    <GradientStop Offset="0.7" Color="#004CC08C" />
+  </RadialGradientBrush>
+  <Color x:Key="Zone.Elevated.Glow.Color">#1CF0B74A</Color>
+  <RadialGradientBrush x:Key="Zone.Elevated.Glow.Brush" Center="0,0" GradientOrigin="0,0" RadiusX="1.3" RadiusY="0.75">
+    <GradientStop Offset="0" Color="{StaticResource Zone.Elevated.Glow.Color}" />
+    <GradientStop Offset="0.6" Color="#00F0B74A" />
+  </RadialGradientBrush>
+  <RadialGradientBrush x:Key="Zone.Elevated.Glow.Flyout.Brush" Center="0,0" GradientOrigin="0,0" RadiusX="1.2" RadiusY="0.55">
+    <GradientStop Offset="0" Color="#2EF0B74A" />
+    <GradientStop Offset="0.7" Color="#00F0B74A" />
+  </RadialGradientBrush>
+  <Color x:Key="Zone.High.Glow.Color">#21F07A6E</Color>
+  <RadialGradientBrush x:Key="Zone.High.Glow.Brush" Center="0,0" GradientOrigin="0,0" RadiusX="1.3" RadiusY="0.75">
+    <GradientStop Offset="0" Color="{StaticResource Zone.High.Glow.Color}" />
+    <GradientStop Offset="0.6" Color="#00F07A6E" />
+  </RadialGradientBrush>
+  <RadialGradientBrush x:Key="Zone.High.Glow.Flyout.Brush" Center="0,0" GradientOrigin="0,0" RadiusX="1.2" RadiusY="0.55">
+    <GradientStop Offset="0" Color="#36F07A6E" />
+    <GradientStop Offset="0.7" Color="#00F07A6E" />
+  </RadialGradientBrush>
+  <!-- Not connected: a grey glow in the same places. -->
+  <Color x:Key="Glow.Offline.Color">#0F96A0AA</Color>
+  <RadialGradientBrush x:Key="Glow.Offline.Brush" Center="0,0" GradientOrigin="0,0" RadiusX="1.3" RadiusY="0.75">
+    <GradientStop Offset="0" Color="{StaticResource Glow.Offline.Color}" />
+    <GradientStop Offset="0.6" Color="#0096A0AA" />
+  </RadialGradientBrush>
+  <RadialGradientBrush x:Key="Glow.Offline.Flyout.Brush" Center="0,0" GradientOrigin="0,0" RadiusX="1.2" RadiusY="0.55">
+    <GradientStop Offset="0" Color="{StaticResource Glow.Offline.Color}" />
+    <GradientStop Offset="0.7" Color="#0096A0AA" />
+  </RadialGradientBrush>
+  <!-- History grid heat scale (D-0018, design-tokens.md "Heat scale"): CO₂ in six steps, two per zone, darker as the level rises; Heat.None.Line outlines an hour without data. -->
+  <Color x:Key="Heat.G1.Color">#1D3B30</Color>
+  <SolidColorBrush x:Key="Heat.G1.Brush" Color="{StaticResource Heat.G1.Color}" />
+  <Color x:Key="Heat.G2.Color">#2B6650</Color>
+  <SolidColorBrush x:Key="Heat.G2.Brush" Color="{StaticResource Heat.G2.Color}" />
+  <Color x:Key="Heat.E1.Color">#77612C</Color>
+  <SolidColorBrush x:Key="Heat.E1.Brush" Color="{StaticResource Heat.E1.Color}" />
+  <Color x:Key="Heat.E2.Color">#B88A35</Color>
+  <SolidColorBrush x:Key="Heat.E2.Brush" Color="{StaticResource Heat.E2.Color}" />
+  <Color x:Key="Heat.H1.Color">#D06A5C</Color>
+  <SolidColorBrush x:Key="Heat.H1.Brush" Color="{StaticResource Heat.H1.Color}" />
+  <Color x:Key="Heat.H2.Color">#F08A7C</Color>
+  <SolidColorBrush x:Key="Heat.H2.Brush" Color="{StaticResource Heat.H2.Color}" />
+  <Color x:Key="Heat.None.Line.Color">#29FFFFFF</Color>
+  <SolidColorBrush x:Key="Heat.None.Line.Brush" Color="{StaticResource Heat.None.Line.Color}" />
 </ResourceDictionary>

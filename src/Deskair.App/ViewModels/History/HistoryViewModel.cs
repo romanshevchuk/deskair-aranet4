@@ -30,6 +30,8 @@ public sealed partial class HistoryViewModel : ObservableObject
     private readonly IMessenger messenger;
     private readonly ILogger<HistoryViewModel> logger;
     private readonly MetricFormatter formatter;
+    private readonly PeriodLabeler labeler;
+    private readonly HourGridBuilder gridBuilder;
     private CancellationTokenSource? current;
     private bool following;
 
@@ -54,6 +56,29 @@ public sealed partial class HistoryViewModel : ObservableObject
     [ObservableProperty]
     private bool showSleep;
 
+    /// <summary>The days × hours grid in place of the bars (D-0018): CO₂ on Week and Month over all hours. Null otherwise.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowGrid))]
+    private HourGridModel? grid;
+
+    /// <summary>What Narrator reads for the grid ("CO₂ by hour, 8 – 14 Oct 2026").</summary>
+    [ObservableProperty]
+    private string? gridName;
+
+    public bool ShowGrid => Grid is not null;
+
+    /// <summary>The room has readings, but none in the chosen period (before the first reading): the screen shows "No readings for …" and "Go to the latest".</summary>
+    [ObservableProperty]
+    private bool isPeriodEmpty;
+
+    /// <summary>"No readings for 24 – 30 Sep 2026". Null while the period has readings.</summary>
+    [ObservableProperty]
+    private string? periodEmptyTitle;
+
+    /// <summary>"Deskair has readings from 6 Oct 2026."</summary>
+    [ObservableProperty]
+    private string? periodEmptyText;
+
     /// <summary>The average of the whole period in the unit shown, for the dashed line across the main chart. Null when there is none.</summary>
     [ObservableProperty]
     private double? averageLine;
@@ -71,6 +96,8 @@ public sealed partial class HistoryViewModel : ObservableObject
         TimeProvider timeProvider,
         IMessenger messenger,
         MetricFormatter formatter,
+        PeriodLabeler labeler,
+        HourGridBuilder gridBuilder,
         ILogger<HistoryViewModel> logger)
     {
         this.toolbar = toolbar;
@@ -86,6 +113,8 @@ public sealed partial class HistoryViewModel : ObservableObject
         this.messenger = messenger;
         this.logger = logger;
         this.formatter = formatter;
+        this.labeler = labeler;
+        this.gridBuilder = gridBuilder;
     }
 
     public HistoryToolbarViewModel Toolbar => toolbar;
@@ -127,7 +156,13 @@ public sealed partial class HistoryViewModel : ObservableObject
         }
 
         following = true;
-        toolbar.PropertyChanged += (_, _) => Refresh();
+        toolbar.PropertyChanged += (_, args) =>
+        {
+            if (HistoryToolbarViewModel.IsChoice(args.PropertyName))
+            {
+                Refresh();
+            }
+        };
         messenger.Register<HistoryViewModel, SyncCompleted>(this, static (self, _) => self.Refresh());
         messenger.Register<HistoryViewModel, ReadingsImported>(this, static (self, _) => self.Refresh());
         messenger.Register<HistoryViewModel, DeviceSelected>(this, static (self, _) => self.Refresh());
@@ -181,29 +216,51 @@ public sealed partial class HistoryViewModel : ObservableObject
         }
 
         var range = toolbar.Range;
-        var end = timeProvider.GetUtcNow();
-        var start = StartOf(range, end);
+        var now = timeProvider.GetUtcNow();
+        var first = await query.GetFirstReadingTimeAsync(device, token);
+        var maxOffset = HistoryPeriod.MaxOffset(range, now, first, calendar);
+
+        // A room with less history than before (another room, an import undone) cannot stay further back than it now allows.
+        if (toolbar.Offset > maxOffset)
+        {
+            toolbar.MaxOffset = maxOffset;
+            toolbar.Offset = maxOffset;
+            return;
+        }
+
+        var period = HistoryPeriod.For(range, toolbar.Offset, now, calendar);
+        var before = period.Before(now, calendar);
+        var (start, end) = (period.Start, period.End);
         var metric = toolbar.Metric;
         var grouping = range == Period.Week ? Period.Day : toolbar.Grouping;
         var interval = devices.IntervalFor(device, end);
-
-        var hasReadings = await query.HasReadingsAsync(device, token);
 
         var buckets = await Task.Run(
             () => query.GetBucketsAsync(device, metric, start, end, grouping, toolbar.Hours, token),
             token);
         var hours = await Task.Run(() => query.GetTypicalDayAsync(device, range, start, end, token), token);
         var previous = await Task.Run(
-            () => query.GetBucketsAsync(device, metric, StartOfPeriodBefore(range, start), start, grouping, toolbar.Hours, token),
+            () => query.GetBucketsAsync(device, metric, before.Start, before.End, grouping, toolbar.Hours, token),
             token);
         var zoneShare = metric == Metric.Co2 ? await query.GetZoneShareAsync(device, start, end, toolbar.Hours, token) : null;
-        var recent = range == Period.Day ? await query.GetRecentAsync(device, end - start, token) : null;
+        var recent = range == Period.Day ? await query.GetRangeAsync(device, start, end, token) : null;
         var wantSleep = range == Period.Day && toolbar.Hours == HoursFilterMode.Night;
-        var lastNight = wantSleep ? await query.GetLastNightAsync(device, metric, token) : null;
+
+        // The latest Day's night is last night; a calendar day's is the night that ended that morning (behaviour-rules.md "Sleep" rule 2).
+        var lastNight = wantSleep ? await query.GetLastNightAsync(device, metric, period.IsRolling ? now : end, token) : null;
+
+        // D-0018: CO₂ on Week and Month is a grid of days and hours. With the Night filter it stays bars until the filter goes (POL-10).
+        var wantGrid = metric == Metric.Co2 && (range is Period.Week or Period.Month) && toolbar.Hours == HoursFilterMode.AllDay;
+        var gridDays = wantGrid ? await query.GetHourGridAsync(device, metric, start, end, token) : null;
 
         token.ThrowIfCancellationRequested();
 
-        IsEmpty = !hasReadings;
+        IsEmpty = first is null;
+        toolbar.MaxOffset = maxOffset;
+        toolbar.PeriodLabel = labeler.Label(period);
+        IsPeriodEmpty = first is not null && (recent is null ? buckets.All(bucket => bucket.ReadingCount == 0) : recent.Count == 0);
+        PeriodEmptyTitle = IsPeriodEmpty ? labeler.EmptyTitle(toolbar.PeriodLabel) : null;
+        PeriodEmptyText = IsPeriodEmpty && first is { } since ? labeler.EmptyText(since) : null;
         stats.Update(new StatsInput(buckets)
         {
             Metric = metric,
@@ -227,9 +284,19 @@ public sealed partial class HistoryViewModel : ObservableObject
             Points = null;
             Gaps = EmptyRuns(buckets);
             chartHeader.Update(metric, range, grouping, toolbar.Hours, Gaps.Count > 0);
+            Grid = gridDays is null ? null : gridBuilder.Build(gridDays, hours, metric, range, query.Night, calendar.LocalDateOf(now));
+            GridName = Grid is null ? null : labeler.GridName(metric, toolbar.PeriodLabel);
+
+            if (Grid is not null)
+            {
+                chartHeader.UpdateForGrid(metric);
+            }
+
             return;
         }
 
+        Grid = null;
+        GridName = null;
         WeekendSpans = null;
         Bars = null;
         Points = recent.Select(reading => new ChartPoint(reading.Timestamp, formatter.ToDisplay(metric, reading.ValueOf(metric)))).ToList();
@@ -237,30 +304,16 @@ public sealed partial class HistoryViewModel : ObservableObject
         chartHeader.Update(metric, range, grouping, toolbar.Hours, Gaps.Count > 0);
     }
 
-    /// <summary>Where the period before the one starting at <paramref name="start"/> began: as long as the range (24 hours for Day, else whole local days).</summary>
-    private DateTimeOffset StartOfPeriodBefore(Period range, DateTimeOffset start)
-        => range == Period.Day ? start - TimeSpan.FromHours(24) : StartOf(range, start.AddTicks(-1));
-
-    private DateTimeOffset StartOf(Period range, DateTimeOffset end)
-    {
-        if (range == Period.Day)
-        {
-            return end - TimeSpan.FromHours(24);
-        }
-
-        var days = range switch
-        {
-            Period.Week => 7,
-            Period.Month => 30,
-            _ => 365
-        };
-
-        return calendar.StartOfLocalDay(calendar.LocalDateOf(end).AddDays(1 - days));
-    }
-
     private void Clear()
     {
         IsEmpty = true;
+        Grid = null;
+        GridName = null;
+        IsPeriodEmpty = false;
+        PeriodEmptyTitle = null;
+        PeriodEmptyText = null;
+        toolbar.MaxOffset = 0;
+        toolbar.PeriodLabel = labeler.Label(HistoryPeriod.For(toolbar.Range, 0, timeProvider.GetUtcNow(), calendar));
         WeekendSpans = null;
         Bars = [];
         Points = [];

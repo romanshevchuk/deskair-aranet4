@@ -146,7 +146,9 @@ public class LiveViewModelTests
         tabs.Select(Metric.Temperature, LiveRange.OneHour);
 
         await Wait.Until(() => chartCard.Points!.Any(point => point.Value == 22.5));
-        Assert.DoesNotContain(miniCards.Items, item => item.Metric == Metric.Temperature);
+
+        // POL-06: the temperature card stays where it is and is marked as the chosen one.
+        Assert.True(miniCards.Items.Single(item => item.Metric == Metric.Temperature).IsSelected);
     }
 
     [Fact]
@@ -257,6 +259,9 @@ public class LiveViewModelTests
 
         public Task<IReadOnlyList<Reading>> ReadRangeAsync(DeviceId device, DateTimeOffset start, DateTimeOffset end, CancellationToken cancellationToken)
             => Fail ? throw new IOException("disk") : inner.ReadRangeAsync(device, start, end, cancellationToken);
+
+        public Task<DateTimeOffset?> GetFirstReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
+            => inner.GetFirstReadingTimeAsync(device, cancellationToken);
 
         public Task<DateTimeOffset?> GetLastReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
             => inner.GetLastReadingTimeAsync(device, cancellationToken);

@@ -25,14 +25,38 @@ public class MiniCardsViewModelTests
     }
 
     [Theory]
-    [InlineData(Metric.Co2, new[] { Metric.Temperature, Metric.Humidity, Metric.Pressure })]
-    [InlineData(Metric.Temperature, new[] { Metric.Co2, Metric.Humidity, Metric.Pressure })]
-    [InlineData(Metric.Pressure, new[] { Metric.Co2, Metric.Temperature, Metric.Humidity })]
-    public void Items_are_the_three_metrics_that_are_not_selected(Metric selected, Metric[] expected)
+    [InlineData(Metric.Co2)]
+    [InlineData(Metric.Temperature)]
+    [InlineData(Metric.Pressure)]
+    public void Items_are_always_temperature_humidity_and_pressure_in_that_order(Metric selected)
+    {
+        // POL-06: CO₂ is the hero; the cards never move when the chart's metric changes.
+        viewModel.Update(Hour(22, 40, 1000), selected, now);
+
+        Assert.Equal([Metric.Temperature, Metric.Humidity, Metric.Pressure], viewModel.Items.Select(item => item.Metric));
+    }
+
+    [Theory]
+    [InlineData(Metric.Co2, new bool[] { false, false, false })]
+    [InlineData(Metric.Humidity, new bool[] { false, true, false })]
+    [InlineData(Metric.Pressure, new bool[] { false, false, true })]
+    public void The_card_of_the_chart_metric_is_selected(Metric selected, bool[] expected)
     {
         viewModel.Update(Hour(22, 40, 1000), selected, now);
 
-        Assert.Equal(expected, viewModel.Items.Select(item => item.Metric));
+        Assert.Equal(expected, viewModel.Items.Select(item => item.IsSelected));
+    }
+
+    [Fact]
+    public void Each_card_has_a_name_for_narrator_with_metric_value_unit_and_status()
+    {
+        viewModel.Update(Hour(22, 40, 1000), Metric.Co2, now);
+
+        var temperature = viewModel.Items[0];
+
+        Assert.Contains(temperature.Title, temperature.AccessibleName, StringComparison.Ordinal);
+        Assert.Contains(temperature.ValueText!, temperature.AccessibleName, StringComparison.Ordinal);
+        Assert.Contains(temperature.SubtitleText!, temperature.AccessibleName, StringComparison.Ordinal);
     }
 
     [Fact]
