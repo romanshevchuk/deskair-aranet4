@@ -1,14 +1,14 @@
 # Polish ideas (to make the UI feel more premium)
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-14*
 
 Ranked by impact for effort. IDs are in `plans/backlog.md` (POLISH-01).
 
 ## Highest value, low effort
 1. **Real icons.** Replace emoji and symbol characters (⤓ ☾ ⚙ 📈) with Segoe Fluent Icons or custom vectors.
-2. **Segoe UI Variable Display for the big numbers** (optical size), with a smaller, lighter unit next to the value.
+2. **Segoe UI Variable Display for the big numbers** (optical size), with a smaller, lighter unit next to the value. *(done, Q47)*
 3. **Sliding selection pill** in segmented controls: the highlight glides to the chosen segment (150 ms).
-4. **Soft depth:** two-layer soft shadows, hairline borders with alpha, and a faint inner highlight on dark cards. Hero card gets a very gentle gradient of its tint, not a flat fill.
+4. **Soft depth:** two-layer soft shadows, hairline borders with alpha, and a faint inner highlight on dark cards. Hero card gets a very gentle gradient of its tint, not a flat fill. *(card shadows and borders done, Q47)*
 5. **Pixel snapping:** `UseLayoutRounding`, `SnapsToDevicePixels`, half-pixel aligned 1 px gridlines so lines are crisp at 125 to 200 % DPI.
 
 ## Motion (respect the Windows "reduce animations" setting)

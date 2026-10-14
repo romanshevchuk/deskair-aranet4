@@ -8,7 +8,7 @@
 - The Aranet4 stores up to about 7 days. The user should open the app at least weekly.
 - Sync fills missing slots only (see merge rule in `data-model.md`). Timestamps are computed from the sync time and each reading's age, so allow a few seconds of error and snap to the interval grid.
 - After sync, Live must have the last 24 h.
-- Run a sync spike first (`docs/plans/spikes.md`, S1) and compare the result with a phone export.
+- The protocol and the comparison with a phone export are in `docs/plans/spike-s1-ble-history.md`.
 
 ## Import from the phone app (.xlsx)
 

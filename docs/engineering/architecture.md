@@ -231,14 +231,9 @@ Each class implements an interface from `Services`. Store (packaged) and non-Sto
 | `Platform/` | Pure helpers in `App/Platform` (flyout positioning, log file writer) |
 | `Architecture/` | The dependency rules in section 3 |
 
-## 13. First skeleton (milestone M1)
+## 13. Build order
 
-1. Solution, repo files, `Domain` with the first tests.
-2. `Services` interfaces and `Storage` (monthly CSV and merge).
-3. `Sensors/Simulated`.
-4. `App` shell: theme tokens, localization, first two controls, the gallery.
-5. Dependency-rules test.
-6. `Sensors/Aranet4` and `App/Platform` as the spikes (`docs/plans/spikes.md`) produce results.
+The solution was built in this order, and a new area depends on the ones before it: `Domain`, then `Services` and `Storage`, `Sensors/Simulated`, the `App` shell with theme tokens and localization, the dependency-rules test, then `Sensors/Aranet4` and `App/Platform` (found out through the spikes, `docs/plans/spikes.md`).
 
 ## 14. Glossary
 

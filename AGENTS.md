@@ -51,9 +51,9 @@ WPF cannot be built or run on Linux or macOS. If a command here is wrong, fix it
 | Solution structure and rules | `docs/engineering/architecture.md` |
 | WPF choices and risks | `docs/engineering/wpf-mapping.md` |
 | How to do common tasks | `docs/guides/` |
-| What to build and when | `docs/plans/roadmap.md`, `docs/plans/backlog.md`, `docs/plans/m1-skeleton-brief.md` |
+| What to build and when | `docs/plans/roadmap.md`, `docs/plans/backlog.md`, `docs/plans/handoff.md` |
 | Why something was decided | `docs/decisions.md` |
-| What is undecided | `docs/plans/open-questions.md` |
+| What is undecided | `docs/plans/questions.md` |
 
 The visual reference is `design/prototype/index.html`. Its data is simulated; known shortcuts are in `docs/design/README.md`. Where the prototype and the docs disagree, the docs win. `docs/engineering/csharp-instructions.md` holds C# conventions (owner-maintained; if empty, use standard .NET conventions).
 
@@ -77,7 +77,7 @@ The visual reference is `design/prototype/index.html`. Its data is simulated; kn
 - Do not invent behaviour. If the docs are silent, add a question to `docs/plans/questions.md` and continue.
 - Do not create summary, notes or changelog markdown files unless asked.
 - Do not add comments or docstrings to code you did not change.
-- Do not leave long methods filled with comments; use TODO cards (format in `docs/plans/m1-skeleton-brief.md`).
+- Do not leave long methods filled with comments; split the work into small methods, or stub one with `throw new NotImplementedException("TODO(ID)")` and a short comment naming its spec.
 - Do not edit `design/prototype/` unless the task is a design update.
 - Do not read or copy the legacy prototype (`../deskair-legacy`) unless the task says so. When told to, adapt its ideas to our interfaces and tests; never copy it wholesale.
 

@@ -4,7 +4,7 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <!-- Every Ukrainian string is a draft and needs native review (docs/plans/open-questions.md, question 6). -->
+  <!-- Every Ukrainian string is a draft and needs native review (docs/plans/questions.md, Q17). -->
   <data name="Nav_Live" xml:space="preserve"><value>Наживо</value><comment>Draft: needs native review.</comment></data>
   <data name="Nav_History" xml:space="preserve"><value>Історія</value><comment>Draft: needs native review.</comment></data>
   <data name="Nav_Settings" xml:space="preserve"><value>Налаштування</value><comment>Draft: needs native review.</comment></data>
