@@ -40,11 +40,14 @@ public sealed class PeriodLabeler(ILocalizer localizer, LocalCalendar calendar)
 
     /// <summary>What Narrator reads for the History grid: "CO₂ by hour, 8 – 14 Oct 2026", or "CO₂ by day, Nov 2025 – Oct 2026" for Year.</summary>
     public string GridName(Metric metric, string period, bool byDay = false)
-        => localizer.Format(byDay ? "History_Grid_NameDay" : "History_Grid_Name", ("metric", localizer.Get($"Metric_{metric}")), ("period", period));
+        => localizer.Format(byDay ? "History_Grid_NameDay" : "History_Grid_Name", ("metric", SpokenMetric(metric)), ("period", period));
 
     /// <summary>What Narrator reads for a History line chart: "Pressure, last 24 hours".</summary>
+    /// <summary>The name of a metric as Narrator should say it: "carbon dioxide" for CO₂ (the subscript is read as "CO two" or worse), otherwise the usual name.</summary>
+    private string SpokenMetric(Metric metric) => localizer.Get(metric == Metric.Co2 ? "Metric_Co2_Spoken" : $"Metric_{metric}");
+
     public string ChartName(Metric metric, string period)
-        => localizer.Format("History_Chart_Name", ("metric", localizer.Get($"Metric_{metric}")), ("period", period));
+        => localizer.Format("History_Chart_Name", ("metric", SpokenMetric(metric)), ("period", period));
 
     private string Span(string from, string to) => localizer.Format("History_Period_Span", ("from", from), ("to", to));
 

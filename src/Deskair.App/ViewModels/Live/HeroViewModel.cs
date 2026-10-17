@@ -60,7 +60,7 @@ public sealed partial class HeroViewModel : ObservableObject
         this.localizer = localizer;
         this.formatter = formatter;
         UnitText = formatter.Unit(Domain.Metrics.Metric.Co2);
-        AccessibleName = localizer.Get("Metric_Co2");
+        AccessibleName = localizer.Get("Metric_Co2_Spoken");
     }
 
     public void Update(Reading? reading, IReadOnlyList<Reading> recent, DateTimeOffset now)
@@ -85,7 +85,7 @@ public sealed partial class HeroViewModel : ObservableObject
         Stats = statsBuilder.Build(recent, now);
         AccessibleName = localizer.Format(
             "Live_Card_AccessibleName",
-            ("metric", localizer.Get("Metric_Co2")),
+            ("metric", localizer.Get("Metric_Co2_Spoken")),
             ("value", ValueText),
             ("unit", UnitText),
             ("status", ZoneText));
@@ -103,6 +103,6 @@ public sealed partial class HeroViewModel : ObservableObject
         AdviceTitle = null;
         AdviceText = null;
         Stats = [];
-        AccessibleName = localizer.Get("Metric_Co2");
+        AccessibleName = localizer.Get("Metric_Co2_Spoken");
     }
 }

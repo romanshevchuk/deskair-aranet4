@@ -36,6 +36,10 @@
   <data name="Mini_Humidity_High" xml:space="preserve"><value>Занадто волого · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_GoodShare" xml:space="preserve"><value>Добре за останні 24&#160;год</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_Peak" xml:space="preserve"><value>Пік о {time}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Metric_Co2_Spoken" xml:space="preserve"><value>вуглекислий газ</value><comment>Draft: needs native review.</comment></data>
+  <data name="Range_1h_Spoken" xml:space="preserve"><value>1 година</value><comment>Draft: needs native review.</comment></data>
+  <data name="Range_6h_Spoken" xml:space="preserve"><value>6 годин</value><comment>Draft: needs native review.</comment></data>
+  <data name="Range_24h_Spoken" xml:space="preserve"><value>24 години</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_Day" xml:space="preserve"><value>День</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_Week" xml:space="preserve"><value>Тиждень</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_Month" xml:space="preserve"><value>Місяць</value><comment>Draft: needs native review.</comment></data>

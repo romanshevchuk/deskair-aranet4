@@ -115,6 +115,8 @@ public class MainWindowRenderTests
     [InlineData(ThemeChoice.Dark, -450)]
     [InlineData(ThemeChoice.Light, 600)]
     [InlineData(ThemeChoice.Dark, 600)]
+    [InlineData(ThemeChoice.Light, -100)]
+    [InlineData(ThemeChoice.Dark, -100)]
     public void Render_the_live_screen_in_the_good_and_high_zones(ThemeChoice theme, double co2Shift)
     {
         RenderOutput.Require();
@@ -134,7 +136,7 @@ public class MainWindowRenderTests
             return ControlRenderer.ToPng(content, 1200, 700);
         });
 
-        RenderOutput.Save($"live-{theme.ToString().ToLowerInvariant()}-en-{(co2Shift < 0 ? "good" : "high")}.png", png);
+        RenderOutput.Save($"live-{theme.ToString().ToLowerInvariant()}-en-{(co2Shift == -450 ? "good" : co2Shift == 600 ? "high" : "crossing")}.png", png);
     }
 
     internal static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit, bool bluetoothOff = false, double co2Shift = 0)

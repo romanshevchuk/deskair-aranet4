@@ -32,9 +32,9 @@
                                    AutomationProperties.Name="{loc:T Chart_Range_Name}"
                                    SelectedValuePath="Tag"
                                    SelectedValue="{Binding Tabs.SelectedRange, Mode=TwoWay}">
-          <ListBoxItem Content="{loc:T Range_1h}" Tag="{x:Static vm:LiveRange.OneHour}" />
-          <ListBoxItem Content="{loc:T Range_6h}" Tag="{x:Static vm:LiveRange.SixHours}" />
-          <ListBoxItem Content="{loc:T Range_24h}" Tag="{x:Static vm:LiveRange.TwentyFourHours}" />
+          <ListBoxItem AutomationProperties.Name="{loc:T Range_1h_Spoken}" Content="{loc:T Range_1h}" Tag="{x:Static vm:LiveRange.OneHour}" />
+          <ListBoxItem AutomationProperties.Name="{loc:T Range_6h_Spoken}" Content="{loc:T Range_6h}" Tag="{x:Static vm:LiveRange.SixHours}" />
+          <ListBoxItem AutomationProperties.Name="{loc:T Range_24h_Spoken}" Content="{loc:T Range_24h}" Tag="{x:Static vm:LiveRange.TwentyFourHours}" />
         </controls:SegmentedControl>
       </Grid>
 

@@ -177,4 +177,31 @@ internal static class ChartLines
 
         return tangents;
     }
+
+    /// <summary>
+    /// The colour of a COâ‚‚ value at each height of the plot: green below <paramref name="elevatedFrom"/>, amber up to <paramref name="highAbove"/>, red above (the Zone.*.Line colours),
+    /// with hard stops at the limits. The line and the fill under it both use it, so they always agree.
+    /// </summary>
+    public static LinearGradientBrush ZoneGradient(ChartArea area, double elevatedFrom, double highAbove)
+    {
+        var elevated = Offset(area, elevatedFrom);
+        var high = Offset(area, highAbove);
+        var good = ((SolidColorBrush)area.Brush("Zone.Good.Line.Brush")).Color;
+        var amber = ((SolidColorBrush)area.Brush("Zone.Elevated.Line.Brush")).Color;
+        var red = ((SolidColorBrush)area.Brush("Zone.High.Line.Brush")).Color;
+
+        // The gradient runs from the bottom of the plot (offset 0) to the top (offset 1), in absolute pixels.
+        var brush = new LinearGradientBrush
+        {
+            MappingMode = BrushMappingMode.Absolute,
+            StartPoint = new Point(0, area.Plot.Bottom),
+            EndPoint = new Point(0, area.Plot.Top),
+            GradientStops = [new GradientStop(good, 0), new GradientStop(good, elevated), new GradientStop(amber, elevated), new GradientStop(amber, high), new GradientStop(red, high), new GradientStop(red, 1)]
+        };
+        brush.Freeze();
+
+        return brush;
+    }
+
+    private static double Offset(ChartArea area, double value) => Math.Clamp((value - area.YMin) / (area.YMax - area.YMin), 0, 1);
 }

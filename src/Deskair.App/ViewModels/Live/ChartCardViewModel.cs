@@ -162,9 +162,11 @@ public sealed partial class ChartCardViewModel : ObservableObject
         => Describe($"Chart_Summary_{range}", recent, metric);
 
     /// <summary>The same figures as the summary line, in a sentence for a screen reader ("CO₂, last hour: low 1076, average 1105, high 1171 ppm").</summary>
+    private string SpokenTitle(Metric metric) => metric == Metric.Co2 ? localizer.Get("Metric_Co2_Spoken") : Title ?? string.Empty;
+
     private string AccessibleNameOf(IReadOnlyList<Reading> recent, Metric metric)
-        => Describe("Chart_Live_AccessibleName", recent, metric, ("metric", Title ?? string.Empty), ("span", Subtitle ?? string.Empty))
-           ?? localizer.Format("Chart_Live_AccessibleName_Empty", ("metric", Title ?? string.Empty), ("span", Subtitle ?? string.Empty));
+        => Describe("Chart_Live_AccessibleName", recent, metric, ("metric", SpokenTitle(metric)), ("span", Subtitle ?? string.Empty))
+           ?? localizer.Format("Chart_Live_AccessibleName_Empty", ("metric", SpokenTitle(metric)), ("span", Subtitle ?? string.Empty));
 
     private string? Describe(string key, IReadOnlyList<Reading> recent, Metric metric, params (string Name, object Value)[] extra)
     {

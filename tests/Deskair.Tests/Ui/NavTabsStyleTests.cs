@@ -23,6 +23,8 @@ public class NavTabsStyleTests
         return control;
     }
 
+    private static FrameworkElement Text(ListBoxItem item) => (FrameworkElement)System.Windows.Media.VisualTreeHelper.GetChild(System.Windows.Media.VisualTreeHelper.GetChild(item, 0), 0);
+
     private static Border Underline(NavTabs control) => (Border)control.Template.FindName("PART_Indicator", control);
 
     [Fact]
@@ -60,16 +62,22 @@ public class NavTabsStyleTests
     }
 
     [Fact]
-    public void Tabs_are_26_pixels_apart()
+    public void Tabs_touch_so_the_whole_row_is_clickable_and_their_texts_are_26_pixels_apart()
     {
         UiHost.Run(() =>
         {
             var control = Create(0);
             var first = (ListBoxItem)control.Items[0];
             var second = (ListBoxItem)control.Items[1];
-            var gap = second.TranslatePoint(new Point(0, 0), control).X - first.TranslatePoint(new Point(first.ActualWidth, 0), control).X;
+            var itemGap = second.TranslatePoint(new Point(0, 0), control).X - first.TranslatePoint(new Point(first.ActualWidth, 0), control).X;
+            var firstText = Text(first);
+            var secondText = Text(second);
+            var textGap = secondText.TranslatePoint(new Point(0, 0), control).X - firstText.TranslatePoint(new Point(firstText.ActualWidth, 0), control).X;
 
-            Assert.Equal(26, gap, 0.5);
+            // The spacing is padding inside each tab, so the click target is the text and its gaps, with no dead strip between tabs.
+            Assert.Equal(0, itemGap, 0.5);
+            Assert.Equal(26, textGap, 0.5);
+            Assert.True(first.ActualWidth > firstText.ActualWidth + 25);
         });
     }
 }

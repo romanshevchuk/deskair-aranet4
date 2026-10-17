@@ -18,14 +18,14 @@
         <Style TargetType="{x:Type ListBoxItem}">
           <Setter Property="Foreground" Value="{DynamicResource Text.Secondary.Brush}" />
           <Setter Property="FontSize" Value="{DynamicResource Font.Size.Body}" />
-          <Setter Property="Margin" Value="{DynamicResource Space.NavTab.Margin}" />
+          <Setter Property="Padding" Value="{DynamicResource Space.NavTab.Margin}" />
           <Setter Property="Cursor" Value="Hand" />
           <Setter Property="FocusVisualStyle" Value="{DynamicResource Focus.Ring.Segment}" />
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="{x:Type ListBoxItem}">
                 <Grid Background="Transparent">
-                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                  <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Grid>
                 <ControlTemplate.Triggers>
                   <Trigger Property="IsMouseOver" Value="True">

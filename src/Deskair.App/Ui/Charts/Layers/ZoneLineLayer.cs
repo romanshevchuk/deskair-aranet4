@@ -30,7 +30,7 @@ public sealed class ZoneLineLayer : IChartLayer
             return;
         }
 
-        var pen = ChartLines.RoundPen(GradientBrush(area), Thickness);
+        var pen = ChartLines.RoundPen(ChartLines.ZoneGradient(area, ElevatedFrom, HighAbove), Thickness);
 
         context.PushClip(new RectangleGeometry(new Rect(area.Plot.Left - Thickness, area.Plot.Top - Thickness, area.Plot.Width + (2 * Thickness), area.Plot.Height + (2 * Thickness))));
         context.DrawGeometry(null, pen, ChartLines.Build(points, area, Smooth));
@@ -38,35 +38,6 @@ public sealed class ZoneLineLayer : IChartLayer
 
         DrawMarker(context, area, points);
     }
-
-    private LinearGradientBrush GradientBrush(ChartArea area)
-    {
-        var elevated = Offset(area, ElevatedFrom);
-        var high = Offset(area, HighAbove);
-        var good = ((SolidColorBrush)area.Brush("Zone.Good.Line.Brush")).Color;
-        var amber = ((SolidColorBrush)area.Brush("Zone.Elevated.Line.Brush")).Color;
-        var red = ((SolidColorBrush)area.Brush("Zone.High.Line.Brush")).Color;
-
-        // The gradient runs from the bottom of the plot (offset 0) to the top (offset 1), in absolute pixels.
-        return new LinearGradientBrush
-        {
-            MappingMode = BrushMappingMode.Absolute,
-            StartPoint = new Point(0, area.Plot.Bottom),
-            EndPoint = new Point(0, area.Plot.Top),
-            GradientStops =
-            [
-                new GradientStop(good, 0),
-                new GradientStop(good, elevated),
-                new GradientStop(amber, elevated),
-                new GradientStop(amber, high),
-                new GradientStop(red, high),
-                new GradientStop(red, 1)
-            ]
-        };
-    }
-
-    private static double Offset(ChartArea area, double value)
-        => Math.Clamp((value - area.YMin) / (area.YMax - area.YMin), 0, 1);
 
     private void DrawMarker(DrawingContext context, ChartArea area, IReadOnlyList<ChartPoint> points)
     {

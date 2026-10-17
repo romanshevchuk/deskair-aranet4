@@ -23,7 +23,7 @@ Left-click on the tray icon opens the flyout. Right-click opens the menu. Double
 |---|---|
 | Hero | White card with a zone glow in its top-left corner; "CO₂" and the zone pill (its dot pulses in High while animations are on); the value with "ppm"; the trend; the gauge; the advice (fill, no border); three stats with dividers ("Good in last 24 h", "Peak at 14:16", "Elevated so far") |
 | Metric choice | The hero chooses CO₂; a mini card chooses its metric. The chosen card has an `accent` ring; the hero shows no ring (CO₂ is the default). Cards never move. Keyboard: the hero and the three mini cards are focusable in reading order (Tab moves between them, Space or Enter chooses); Narrator reads each as a selectable item, "CO₂, 1151 ppm, Elevated, selected". An arrow-key group across the four is not built (follow-up) |
-| Chart | Axis fitted to the data (behaviour-rules.md "Live values"); thresholds as labelled lines only when in range; area fill in the current zone; monotone smoothing; crosshair and readout as today |
+| Chart | Axis fitted to the data (behaviour-rules.md "Live values"); thresholds as labelled lines only when in range; area fill in the same zone colours as the line; monotone smoothing; crosshair and readout as today |
 | Ribbon | CO₂ on 1h and 6h only. Hour labels at 00:00, 06:00, 12:00 and 18:00 at their true positions, leaving out any within 2 hours of either end |
 
 ## Live conditions

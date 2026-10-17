@@ -202,7 +202,7 @@ public sealed class LiveChart : ChartBase
 
             // A limit draws its own dashed line, so the grid leaves that value out.
             layers.Add(new GridLayer { YTicks = ticks.Where(tick => tick is not ElevatedFrom and not HighAbove).ToList() });
-            layers.Add(new AreaLayer { Points = Points, BrushKey = CurrentZoneLineBrush(), Smooth = true });
+            layers.Add(new AreaLayer { Points = Points, ZoneColoured = true, ElevatedFrom = ElevatedFrom, HighAbove = HighAbove, Smooth = true });
             layers.Add(new ThresholdLayer { ElevatedFrom = ElevatedFrom, HighAbove = HighAbove, ElevatedLabel = ElevatedLineLabel, HighLabel = HighLineLabel });
             layers.Add(new ZoneLineLayer { Points = Points, ElevatedFrom = ElevatedFrom, HighAbove = HighAbove, Smooth = true });
         }
@@ -286,16 +286,6 @@ public sealed class LiveChart : ChartBase
 
         // Without readings the axis is the full 400 to 2000 scale, labelled every 400.
         return values.Count == 0 ? 400 : ChartTicks.FitCo2(values.Min(), values.Max()).Step;
-    }
-
-    /// <summary>The line brush of the zone of the latest reading, for the fill under the line.</summary>
-    private string CurrentZoneLineBrush()
-    {
-        var zone = Points is { } points && ChartLines.LastValue(points) is { Value: { } value }
-            ? ZoneClassifier.Classify(value, new ZoneThresholds(ElevatedFrom, HighAbove))
-            : Zone.Good;
-
-        return $"Zone.{zone}.Line.Brush";
     }
 
     private double MinimumPadding() => Metric switch
