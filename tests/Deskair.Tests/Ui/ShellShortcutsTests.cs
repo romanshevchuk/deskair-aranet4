@@ -26,14 +26,4 @@ public class ShellShortcutsTests
     {
         Assert.Null(ShellShortcuts.SectionFor(key, modifiers));
     }
-
-    [Theory]
-    [InlineData(Key.F6, ModifierKeys.None, true)]
-    [InlineData(Key.F6, ModifierKeys.Shift, true)]
-    [InlineData(Key.F6, ModifierKeys.Control, false)]
-    [InlineData(Key.F5, ModifierKeys.None, false)]
-    public void F6_and_Shift_F6_switch_between_the_header_and_the_page(Key key, ModifierKeys modifiers, bool expected)
-    {
-        Assert.Equal(expected, ShellShortcuts.IsRegionSwitch(key, modifiers));
-    }
 }

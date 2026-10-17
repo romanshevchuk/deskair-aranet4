@@ -21,11 +21,5 @@ public partial class MainWindow : Window
             shell.NavigateCommand.Execute(section);
             e.Handled = true;
         }
-        else if (ShellShortcuts.IsRegionSwitch(e.Key, Keyboard.Modifiers))
-        {
-            // From the header to the page, from anywhere else back to the header.
-            (Header.IsKeyboardFocusWithin ? Page : Header).MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
-            e.Handled = true;
-        }
     }
 }
