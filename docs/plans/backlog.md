@@ -82,7 +82,7 @@ Plan, specs and model per item: [`polish-implementation.md`](polish-implementati
 | POL-19 | Review fix: Not connected turns the header logo ring and the room chip dot grey | done |
 | POL-20 | Review fix: charts expose a Narrator peer (`ChartAutomationPeer`); names on the Live chart, both ribbons and the History line charts; the 1h / 6h / 24h selector has its own name; the hero zone text is a polite live region. Sparklines stay hidden (the card has the name) | done |
 | POL-21 | Review: High Contrast support (system colours; heat steps as stepped opacities; accessibility.md) | todo |
-| POL-22 | Review: `heat.comfort` (and `heat.none.line`) too close to the surface in both themes, about 1.2:1; needs a colour decision, then tokens and the contrast exception in design-tokens.md | todo |
+| POL-22 | Review decision: `heat.comfort` is a slightly stronger grey (light #D5DBE0, dark #3A444E, about 1.4:1 and 1.8:1) and joins the contrast exception in design-tokens.md | done |
 | POL-23 | Review fix: Year summary header names both years ("1 Nov 2025 – 12 Oct 2026") | done |
 | POL-24 | Review fix: Live ribbon labels as "00:00 / 06:00 / 12:00 / 18:00"; Live chart title "CO₂ · last hour" | done |
 | POL-25 | Review: render coverage added (Live Good and High in both themes, dark Not connected, Stale and Low battery, flyout Bluetooth-off, Good, High and dark offline, Temperature and Humidity with values across every comfort step, full-height Settings); tests run one at a time; stale renders deleted; the flyout fixture says "updated 2 min ago" when connected. Found by it: the Settings sleep hint still named the Night filter (fixed) | done |

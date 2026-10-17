@@ -122,7 +122,7 @@
   <SolidColorBrush x:Key="Heat.Cool2.Brush" Color="{StaticResource Heat.Cool2.Color}" />
   <Color x:Key="Heat.Cool1.Color">#B5CDEE</Color>
   <SolidColorBrush x:Key="Heat.Cool1.Brush" Color="{StaticResource Heat.Cool1.Color}" />
-  <Color x:Key="Heat.Comfort.Color">#E6EAED</Color>
+  <Color x:Key="Heat.Comfort.Color">#D5DBE0</Color>
   <SolidColorBrush x:Key="Heat.Comfort.Brush" Color="{StaticResource Heat.Comfort.Color}" />
   <Color x:Key="Heat.Warm1.Color">#F4C29A</Color>
   <SolidColorBrush x:Key="Heat.Warm1.Brush" Color="{StaticResource Heat.Warm1.Color}" />
