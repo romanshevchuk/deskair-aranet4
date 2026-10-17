@@ -6,7 +6,6 @@
   <!-- DataContext: HistoryViewModel. One card, top to bottom (screens-and-states.md "History summary card"): the average with its change and the coverage as a line of text, the time in each zone,
        last night (Day only), the highest and lowest reading with their day and time, and the tip in the colours of the zone of the average. A part without numbers is hidden. -->
   <UserControl.Resources>
-    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     <Style x:Key="Summary.Coverage" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Secondary}">
       <Setter Property="Margin" Value="{StaticResource Space.Stats.Change}" />
       <Style.Triggers>

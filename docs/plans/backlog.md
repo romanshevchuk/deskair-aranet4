@@ -41,11 +41,6 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 | ID | Item | Who | Status |
 |---|---|---|---|
 | REL-02 | Known gaps still open (the rest of the old list was checked 2026-10-17: the grey header ring and the dark Settings scrollbar were already fixed; History now refreshes on the UI thread; the main window has a minimum size, 1100 × 700; Devices follows new rooms again after leaving and re-entering Settings): (1) a room switch rebuilds the Devices rows while a name is being edited and drops the typed text (small); (2) `WindowsBleConnection` opens a new `GattDeviceService` for each characteristic lookup in an already-opened service (freed on dispose) and attaches its disconnect handler after the pairing checks (needs a real sensor to test) | both | todo |
-| POL-35 | Critical pass over `ReadingQueryService` and `Domain/Analytics`: overlapping queries, several scans per History refresh (a Year range is heavy) | agent | todo |
-| POL-36 | Tests: merge the four near-identical render-test `BuildShell` helpers; look for other duplicates | agent | todo |
-| POL-38 | Small: `StatTriplePanel` may be heavier than needed; `HighContrastPalette` maps tokens by name pattern (a new token is silently uncovered); check the Gallery cannot be opened in a release build (`StartupSequence`) | agent | todo |
-| REL-03 | Stats card: time of the highest and lowest reading needs timestamps in `Bucket`; "· N partial" missing in the coverage box | agent | todo |
-| REL-04 | Cleanup: remove the redundant `BoolToVisibility` copies in Flyout, History and Onboarding views (now in `App.xaml`); remove or verify `IBleConnection.SubscribeAsync` (unused by the Aranet4) | agent | todo |
 
 ## R4. Release
 
@@ -59,6 +54,7 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 | ID | Item | Status |
 |---|---|---|
 | POL-08 | Spike: acrylic flyout (optional) | later |
+| POL-36 | Tests: merge the four near-identical render-test `BuildShell` helpers; look for other duplicates (tidiness only) | later |
 | AIR-01 | Airing feedback | later |
 | SLEEP-01 | Morning toast (the sleep verdict card is done) | later |
 | HIST-07 | Click a bar to drill in | later |

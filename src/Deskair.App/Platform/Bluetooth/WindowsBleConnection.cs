@@ -1,6 +1,4 @@
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Threading.Channels;
 using Deskair.Services.Sensors;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
@@ -11,13 +9,12 @@ namespace Deskair.App.Platform.Bluetooth;
 
 /// <summary>
 /// One GATT session with one device through the Windows Bluetooth LE APIs. Not thread-safe: use it from one flow at a time, as a sensor does.
-/// A dropped connection fails the running read, write or subscription with an <see cref="IOException"/>. Needs a manual check with a real sensor.
+/// A dropped connection fails the running read or write with an <see cref="IOException"/>. Needs a manual check with a real sensor.
 /// </summary>
 public sealed class WindowsBleConnection : IBleConnection
 {
     private readonly Dictionary<(Guid Service, Guid Characteristic), GattCharacteristic> characteristics = [];
     private readonly List<GattDeviceService> services = [];
-    private readonly List<Channel<byte[]>> subscriptions = [];
     private BluetoothLEDevice? device;
 
     /// <summary>Opens the device, pairs it when Windows allows pairing and it is not paired yet, and checks that its GATT services can be reached.</summary>
@@ -65,7 +62,6 @@ public sealed class WindowsBleConnection : IBleConnection
             throw;
         }
 
-        opened.ConnectionStatusChanged += OnConnectionStatusChanged;
         device = opened;
     }
 
@@ -88,54 +84,8 @@ public sealed class WindowsBleConnection : IBleConnection
         EnsureSuccess(status, $"Writing {characteristic} failed");
     }
 
-    public async IAsyncEnumerable<byte[]> SubscribeAsync(Guid service, Guid characteristic, [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        var target = await GetCharacteristicAsync(service, characteristic, cancellationToken);
-        var channel = Channel.CreateUnbounded<byte[]>();
-        Windows.Foundation.TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs> handler =
-            (_, args) => channel.Writer.TryWrite(ToBytes(args.CharacteristicValue));
-
-        lock (subscriptions)
-        {
-            subscriptions.Add(channel);
-        }
-
-        target.ValueChanged += handler;
-
-        try
-        {
-            var status = await target.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify)
-                .AsTask(cancellationToken);
-            EnsureSuccess(status, $"Subscribing to {characteristic} failed");
-
-            await foreach (var value in channel.Reader.ReadAllAsync(cancellationToken))
-            {
-                yield return value;
-            }
-        }
-        finally
-        {
-            target.ValueChanged -= handler;
-
-            lock (subscriptions)
-            {
-                subscriptions.Remove(channel);
-            }
-
-            channel.Writer.TryComplete();
-            await DisableNotificationsAsync(target);
-        }
-    }
-
     public ValueTask DisposeAsync()
     {
-        FailSubscriptions(new ObjectDisposedException(nameof(WindowsBleConnection)));
-
-        if (device is not null)
-        {
-            device.ConnectionStatusChanged -= OnConnectionStatusChanged;
-        }
-
         characteristics.Clear();
 
         foreach (var service in services)
@@ -148,19 +98,6 @@ public sealed class WindowsBleConnection : IBleConnection
         device = null;
 
         return ValueTask.CompletedTask;
-    }
-
-    private static async Task DisableNotificationsAsync(GattCharacteristic target)
-    {
-        try
-        {
-            // Best effort: if the sensor already disconnected this must not hide the real error.
-            await target.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.None);
-        }
-        catch (Exception exception) when (exception is not OperationCanceledException)
-        {
-            // Nothing to do: the connection is gone or about to be disposed.
-        }
     }
 
     private static void EnsureSuccess(GattCommunicationStatus status, string message)
@@ -221,28 +158,5 @@ public sealed class WindowsBleConnection : IBleConnection
         characteristics[(service, characteristic)] = target;
 
         return target;
-    }
-
-    private void OnConnectionStatusChanged(BluetoothLEDevice sender, object args)
-    {
-        if (sender.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
-        {
-            FailSubscriptions(new IOException("The Bluetooth device disconnected."));
-        }
-    }
-
-    private void FailSubscriptions(Exception reason)
-    {
-        Channel<byte[]>[] active;
-
-        lock (subscriptions)
-        {
-            active = [.. subscriptions];
-        }
-
-        foreach (var channel in active)
-        {
-            channel.Writer.TryComplete(reason);
-        }
     }
 }

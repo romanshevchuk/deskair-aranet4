@@ -111,5 +111,28 @@ public class HighContrastPaletteTests
         });
     }
 
+
+    [Fact]
+    public void A_colour_token_the_palette_leaves_alone_is_a_decision_not_an_oversight()
+    {
+        // Add a new token to the palette (HighContrastPalette.Map) or, if it must keep its colour, to this list with the reason.
+        // Tray.: the tray icon is drawn by Windows. Caption.CloseHover: not used by any view; Windows draws the caption buttons (UseAeroCaptionButtons).
+        string[] keptOnPurpose = ["Tray.", "Caption.CloseHover."];
+
+        var untouched = UiHost.Run(() =>
+        {
+            var overlay = Overlay();
+
+            return new[] { Tokens("Colors"), Tokens("Zones"), Tokens("Metrics") }
+                .SelectMany(source => source.Keys.OfType<string>())
+                .Where(key => key.EndsWith(".Color", StringComparison.Ordinal) && !overlay.Contains(key))
+                .Where(key => !keptOnPurpose.Any(prefix => key.StartsWith(prefix, StringComparison.Ordinal)))
+                .Order()
+                .ToList();
+        });
+
+        Assert.Empty(untouched);
+    }
+
     private static Color Opaque(Color color) => Color.FromRgb(color.R, color.G, color.B);
 }

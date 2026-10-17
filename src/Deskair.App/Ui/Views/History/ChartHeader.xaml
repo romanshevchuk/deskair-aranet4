@@ -4,7 +4,6 @@
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
   <!-- DataContext: ChartHeaderViewModel. The metric and what one bar stands for on the left; on the right the zone colours (CO₂) or how to read the chart, and the hatched "No data" swatch. -->
   <UserControl.Resources>
-    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     <Style x:Key="Legend.Item" TargetType="{x:Type StackPanel}">
       <Setter Property="Orientation" Value="Horizontal" />
       <Setter Property="Margin" Value="12,0,0,0" />

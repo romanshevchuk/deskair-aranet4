@@ -5,9 +5,6 @@
              xmlns:local="clr-namespace:Deskair.App.Ui.Views.Onboarding"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
   <!-- DataContext: OnboardingViewModel. First run: the welcome card with the steps on the left; the sensors found nearby and the room name on the right. -->
-  <UserControl.Resources>
-    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
-  </UserControl.Resources>
 
   <Grid>
     <Grid.ColumnDefinitions>

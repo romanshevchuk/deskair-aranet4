@@ -103,9 +103,6 @@ public sealed class FakeAranet4Connection : IBleConnection
         return Task.CompletedTask;
     }
 
-    public IAsyncEnumerable<byte[]> SubscribeAsync(Guid service, Guid characteristic, CancellationToken cancellationToken)
-        => throw new NotSupportedException();
-
     public ValueTask DisposeAsync()
     {
         Disposed = true;

@@ -10,7 +10,6 @@
        the 24 h ribbon (8 px high, labels at round hours and "Now", time in each zone), the other readings, and a footer band with the buttons. Not connected shows the last reading faded
        and one step to try. The window that hosts it and its position are separate. -->
   <UserControl.Resources>
-    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     <controls:TrendArrowConverter x:Key="TrendArrow" />
 
     <Style x:Key="Flyout.WhenConnected" TargetType="{x:Type FrameworkElement}">

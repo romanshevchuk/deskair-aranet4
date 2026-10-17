@@ -125,7 +125,6 @@ public interface IBleConnection : IAsyncDisposable
 {
     Task ConnectAsync(string address, CancellationToken ct);
     Task<byte[]> ReadAsync(Guid service, Guid characteristic, CancellationToken ct);
-    IAsyncEnumerable<byte[]> SubscribeAsync(Guid service, Guid characteristic, CancellationToken ct);
 }
 ```
 

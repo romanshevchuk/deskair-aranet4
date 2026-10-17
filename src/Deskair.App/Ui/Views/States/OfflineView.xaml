@@ -5,9 +5,6 @@
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
   <!-- DataContext: OfflineViewModel. The whole Live area while the sensor cannot be reached: the likely cause, the last reading, what to try and the buttons.
        With Bluetooth off, "Turn on Bluetooth" comes first; Try again is always there. History stays available from the header. -->
-  <UserControl.Resources>
-    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
-  </UserControl.Resources>
 
   <controls:EmptyStateCard VerticalAlignment="Top"
                            Icon="&#xE702;"
