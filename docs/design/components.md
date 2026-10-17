@@ -5,11 +5,11 @@
 | Component | Purpose and states | WPF approach |
 |---|---|---|
 | Window chrome | Logo, text nav (Live, History, Settings) with an accent underline, room chip without border, caption buttons | Custom or native title bar; DWM backdrop on Windows 11. The nav is `NavTabs` (a `ListBox`: arrow keys move the selection) |
-| Segmented control | One selected option; ranges, metric (History), settings | Restyled single-selection `ListBox` (arrow keys move the selection; announced as a selectable list) |
-| Toggle switch | 38 × 22 px, knob slides in 0.15 s; on = `accent` | ToggleButton template |
+| Segmented control | One selected option; ranges, metric (History), settings | Restyled single-selection `ListBox` (arrow keys move the selection; announced as a selectable list); the highlight is one indicator that slides to the chosen segment (`SlidingSelector`, `Motion.Selection`) |
+| Toggle switch | 38 × 22 px, knob slides in 0.15 s (not while animations are off); on = `accent` | ToggleButton template, knob animated in code through `MotionPolicy` |
 | Card | Surface, 1 px `card.border`, radius 16, neutral shadow | Border style |
 | Hero card | Zone glow, pill, value, trend, gauge, advice, three stats; chooses CO₂ for the Live chart | UserControl bound to a zone state, inside a `SelectableCard` |
-| Gauge | Three segments, round white marker with an ink ring, ticks at 1000 and 1400 | Grid with proportional columns |
+| Gauge | Three segments, round white marker with an ink ring that glides to a new value, ticks at 1000 and 1400 | Grid with proportional columns; the marker follows an animated `ShownFraction` |
 | Selectable card | A card that is one choice in a group (hero and mini cards): runs its command, carries `IsSelected`, reports the selection item pattern to Narrator | `Button` with a bare template and its own automation peer |
 | Metric mini card | Name, value, subtitle, sparkline; chooses its metric for the Live chart; chosen has an `accent` ring | `SelectableCard` with a template |
 | Live chart | Fitted axis, threshold lines with labels when in range, area fill, monotone-smoothed zone-coloured line, crosshair, hover readout | Custom control (DrawingContext) |

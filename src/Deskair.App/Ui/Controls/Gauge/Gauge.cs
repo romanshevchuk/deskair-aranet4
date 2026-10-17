@@ -1,7 +1,9 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using Deskair.App.Localization;
+using Deskair.App.Ui.Motion;
 
 namespace Deskair.App.Ui.Controls;
 
@@ -41,6 +43,14 @@ public class Gauge : Control
         typeof(Gauge),
         new PropertyMetadata(1400.0, OnScaleChanged));
 
+    /// <summary>Where the marker is now, as a fraction of the scale: it glides to the fraction of <see cref="Value"/> (<c>Motion.Glide</c>) and jumps while animations are off.</summary>
+    private static readonly DependencyProperty shownFractionProperty = DependencyProperty.Register(
+        "ShownFraction",
+        typeof(double),
+        typeof(Gauge),
+        new PropertyMetadata(0.0, (sender, _) => ((Gauge)sender).PlaceMarker()));
+
+    private bool hadValue;
     private ColumnDefinition? goodColumn;
     private ColumnDefinition? elevatedColumn;
     private ColumnDefinition? highColumn;
@@ -145,7 +155,7 @@ public class Gauge : Control
         SetText(elevatedTick, ElevatedFrom);
         SetText(highTick, HighAbove);
         PlaceTicks();
-        PlaceMarker();
+        GlideMarker();
     }
 
     private static void SetWidth(ColumnDefinition? column, double fraction)
@@ -170,6 +180,24 @@ public class Gauge : Control
         PlaceMarker();
     }
 
+    private void GlideMarker()
+    {
+        var target = Value is { } value ? Fraction(value) : 0;
+        var duration = MotionPolicy.Of("Motion.Glide");
+        var glide = IsLoaded && hadValue && Value is not null && duration.TimeSpan > TimeSpan.Zero;
+
+        hadValue = Value is not null;
+
+        if (!glide)
+        {
+            BeginAnimation(shownFractionProperty, null);
+            SetValue(shownFractionProperty, target);
+            return;
+        }
+
+        BeginAnimation(shownFractionProperty, new DoubleAnimation(target, duration) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
+    }
+
     private void PlaceMarker()
     {
         if (marker is null || markerDot is null || marker.ActualWidth <= 0)
@@ -177,7 +205,7 @@ public class Gauge : Control
             return;
         }
 
-        var fraction = Value is { } value ? Fraction(value) : 0;
+        var fraction = (double)GetValue(shownFractionProperty);
         Canvas.SetLeft(markerDot, (fraction * marker.ActualWidth) - (markerDot.Width / 2));
     }
 

@@ -167,5 +167,11 @@
   <sys:Double x:Key="Size.Empty.Icon">32</sys:Double>
   <sys:Double x:Key="Size.Empty.TextWidth">440</sys:Double>
 
+  <!-- Motion (design-tokens.md "Motion"): every animation also stops when Windows "Animation effects" is off (MotionPolicy). -->
   <Duration x:Key="Motion.Toggle">0:0:0.15</Duration>
+  <Duration x:Key="Motion.Selection">0:0:0.15</Duration>
+  <Duration x:Key="Motion.Fade">0:0:0.15</Duration>
+  <Duration x:Key="Motion.Glide">0:0:0.4</Duration>
+  <Duration x:Key="Motion.FlyoutOpen">0:0:0.12</Duration>
+  <Duration x:Key="Motion.Pulse">0:0:1.6</Duration>
 </ResourceDictionary>

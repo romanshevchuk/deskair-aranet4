@@ -143,3 +143,16 @@ Logo and tray ring: 28 × 28 viewbox, circle r 11, stroke 2.75 to 3, centre dot 
 All text pairs reach 4.5:1 and all chart colours 3:1, in both themes. Re-check if a token changes.
 
 **Exception (D-0018):** the heat steps `heat.g1` and `heat.g2` (light) and `heat.g1` (dark) are below 3:1 against the surface on purpose: fresh air is meant to recede. The grid's values are always available as text: each row's average, the tooltip and keyboard focus label of every square, and the Narrator label (accessibility.md).
+
+## Motion
+
+All animation is short, eased out and optional. `MotionPolicy` turns every one of them off while Windows "Animation effects" is off (`SystemParameters.ClientAreaAnimation`); the control then jumps to its final state.
+
+| Token | Value | Used by |
+|---|---|---|
+| `Motion.Toggle` | 150 ms | Toggle knob slide |
+| `Motion.Selection` | 150 ms, ease-out | The segmented control highlight and the nav underline sliding to the chosen item (`SlidingSelector`); the first placement is immediate |
+| `Motion.Fade` | 150 ms | The hero value fades in from 35 % opacity when its text changes (`FadeOnChange`) |
+| `Motion.Glide` | 400 ms, ease-out | The gauge marker gliding to a new value |
+| `Motion.FlyoutOpen` | 120 ms | Flyout opacity 0 to 1 when it opens (no slide: its direction would depend on the taskbar edge) |
+| `Motion.Pulse` | 1.6 s, sine, repeating | The dot in the hero pill while the zone is High (opacity 1 to 40 %) |

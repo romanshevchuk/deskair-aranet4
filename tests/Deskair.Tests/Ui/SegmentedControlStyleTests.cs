@@ -25,13 +25,16 @@ public class SegmentedControlStyleTests
 
     private static Border Frame(ListBoxItem item) => (Border)VisualTreeHelper.GetChild(item, 0);
 
+    private static Border Indicator(SegmentedControl control) => (Border)control.Template.FindName("PART_Indicator", control);
+
     [Fact]
-    public void The_selected_segment_is_a_filled_rounded_pill_with_a_border()
+    public void The_selected_segment_is_marked_by_a_filled_rounded_pill_with_a_border()
     {
         UiHost.Run(() =>
         {
-            var item = (ListBoxItem)Create(1).Items[1];
-            var frame = Frame(item);
+            var control = Create(1);
+            var item = (ListBoxItem)control.Items[1];
+            var frame = Indicator(control);
 
             Assert.True(item.IsSelected);
             Assert.Equal(((SolidColorBrush)Application.Current.FindResource("Segment.Selected.Brush")).Color, ((SolidColorBrush)frame.Background).Color);
@@ -58,8 +61,8 @@ public class SegmentedControlStyleTests
     [Fact]
     public void The_selected_segment_is_white_in_the_light_theme_and_lighter_than_the_track_in_the_dark_one()
     {
-        var light = UiHost.Run(Deskair.Services.Settings.ThemeChoice.Light, () => ((SolidColorBrush)Frame((ListBoxItem)Create(0).Items[0]).Background).Color);
-        var dark = UiHost.Run(Deskair.Services.Settings.ThemeChoice.Dark, () => ((SolidColorBrush)Frame((ListBoxItem)Create(0).Items[0]).Background).Color);
+        var light = UiHost.Run(Deskair.Services.Settings.ThemeChoice.Light, () => ((SolidColorBrush)Indicator(Create(0)).Background).Color);
+        var dark = UiHost.Run(Deskair.Services.Settings.ThemeChoice.Dark, () => ((SolidColorBrush)Indicator(Create(0)).Background).Color);
 
         Assert.Equal(Colors.White, light);
         Assert.NotEqual(light, dark);

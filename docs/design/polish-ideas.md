@@ -1,20 +1,20 @@
 # Polish ideas (to make the UI feel more premium)
 
-*Last reviewed: 2026-10-14*
+*Last reviewed: 2026-10-17*
 
 Ranked by impact for effort. The polish rework (`plans/ui-polish-plan.md`, items POL-00 to POL-17 in `plans/polish-implementation.md`) takes over several of these; the item that builds an idea is noted after it.
 
 ## Highest value, low effort
 1. **Real icons.** Replace emoji and symbol characters (⤓ ☾ ⚙ 📈) with Segoe Fluent Icons or custom vectors.
 2. **Segoe UI Variable Display for the big numbers** (optical size), with a smaller, lighter unit next to the value. *(done, Q47)*
-3. **Sliding selection pill** in segmented controls: the highlight glides to the chosen segment (150 ms). *(POL-16)*
+3. **Sliding selection pill** in segmented controls: the highlight glides to the chosen segment (150 ms). *(done, POL-16)*
 4. **Soft depth:** two-layer soft shadows, hairline borders with alpha, and a faint inner highlight on dark cards. Hero card gets a very gentle gradient of its tint, not a flat fill. *(card shadows and borders done, Q47; the hero gets a zone glow instead of a tint, POL-01, D-0017)*
 5. **Pixel snapping:** `UseLayoutRounding`, `SnapsToDevicePixels`, half-pixel aligned 1 px gridlines so lines are crisp at 125 to 200 % DPI.
 
 ## Motion (respect the Windows "reduce animations" setting)
-6. Number tween when the value changes, gauge marker glide, and a 400 ms cross-fade of the hero glow between zones. *(POL-16)*
+6. Number tween when the value changes, gauge marker glide, and a 400 ms cross-fade of the hero glow between zones. *(fade of the hero value, gauge glide and zone pulse done, POL-16; the number tween and the glow cross-fade are not built)*
 7. Chart line draws in when the metric or range changes; the chart cross-fades between metrics (the tabs go, POL-06).
-8. Flyout opens with a short fade and 8 px slide, like Windows flyouts; page change fades 150 ms. *(POL-16)*
+8. Flyout opens with a short fade and 8 px slide, like Windows flyouts; page change fades 150 ms. *(fade done, POL-16; the slide is not built)*
 9. A small pulsing dot next to "updated 12 s ago" so Live feels alive.
 
 ## Data visualisation

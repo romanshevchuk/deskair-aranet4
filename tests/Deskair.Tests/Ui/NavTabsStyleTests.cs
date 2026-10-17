@@ -23,15 +23,16 @@ public class NavTabsStyleTests
         return control;
     }
 
-    private static Border Underline(ListBoxItem item) => (Border)item.Template.FindName("Underline", item);
+    private static Border Underline(NavTabs control) => (Border)control.Template.FindName("PART_Indicator", control);
 
     [Fact]
     public void The_current_tab_has_an_accent_underline_and_semibold_text()
     {
         UiHost.Run(() =>
         {
-            var item = (ListBoxItem)Create(1).Items[1];
-            var underline = Underline(item);
+            var control = Create(1);
+            var item = (ListBoxItem)control.Items[1];
+            var underline = Underline(control);
 
             Assert.Equal(Visibility.Visible, underline.Visibility);
             Assert.Equal(18, underline.Width);
@@ -42,14 +43,18 @@ public class NavTabsStyleTests
     }
 
     [Fact]
-    public void The_other_tabs_have_no_underline()
+    public void The_underline_is_centred_under_the_current_tab_only()
     {
         UiHost.Run(() =>
         {
             var control = Create(1);
 
-            Assert.Equal(Visibility.Collapsed, Underline((ListBoxItem)control.Items[0]).Visibility);
-            Assert.Equal(Visibility.Collapsed, Underline((ListBoxItem)control.Items[2]).Visibility);
+            var item = (ListBoxItem)control.Items[1];
+            var underline = Underline(control);
+            var underlineCentre = underline.TranslatePoint(new Point(underline.ActualWidth / 2, 0), control).X;
+            var itemCentre = item.TranslatePoint(new Point(item.ActualWidth / 2, 0), control).X;
+
+            Assert.Equal(itemCentre, underlineCentre, 0.5);
             Assert.NotEqual(FontWeights.SemiBold, ((ListBoxItem)control.Items[0]).FontWeight);
         });
     }

@@ -76,6 +76,6 @@ Plan, specs and model per item: [`polish-implementation.md`](polish-implementati
 | POL-13 | Day chart with typical line and aired markers | done |
 | POL-14 | History summary card (stats and sleep merged; Q49 follow-up done: Nights section) | done |
 | POL-15 | Settings layout | done |
-| POL-16 | Motion | todo |
+| POL-16 | Motion (sliding selection, hero fade, gauge glide, High dot pulse, flyout fade; all off with Windows animations) | done |
 | POL-17 | Final review against the concept | todo |
 | POL-18 | History per metric: comfort grids for temperature and humidity, a weather line for pressure; no CO₂ typical day or sleep on other tabs | done |

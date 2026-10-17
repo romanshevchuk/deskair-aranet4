@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
+             xmlns:motion="clr-namespace:Deskair.App.Ui.Motion"
              xmlns:trend="clr-namespace:Deskair.Domain.Analytics.Trend;assembly=Deskair.Domain">
   <!-- DataContext: HeroViewModel. Zone glow, pill, value, trend, gauge, advice and the three stats. The four groups (title to trend, gauge, advice, stats)
        share the spare height through the star rows between them, so the card has no single gap above the stats (design-tokens.md "Hero padding"). -->
@@ -29,14 +30,14 @@
                    Text="{loc:T Metric_Co2}" />
         <controls:Pill HorizontalAlignment="Right" Zone="{Binding Zone}">
           <StackPanel Orientation="Horizontal">
-            <controls:StatusDot Zone="{Binding Zone}" VerticalAlignment="Center" />
+            <controls:StatusDot Pulses="True" Zone="{Binding Zone}" VerticalAlignment="Center" />
             <TextBlock Margin="{StaticResource Space.Inline}" Text="{Binding ZoneText}" />
           </StackPanel>
         </controls:Pill>
       </Grid>
 
       <StackPanel Grid.Row="1" Orientation="Horizontal">
-        <TextBlock Style="{StaticResource Text.HeroValue}" Text="{Binding ValueText}" />
+        <TextBlock motion:FadeOnChange.IsEnabled="True" Style="{StaticResource Text.HeroValue}" Text="{Binding ValueText}" />
         <TextBlock Margin="{StaticResource Space.Hero.Unit}"
                    VerticalAlignment="Bottom"
                    Style="{StaticResource Text.Secondary}"

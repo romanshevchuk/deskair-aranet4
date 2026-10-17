@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Deskair.App.Localization;
 using Deskair.App.Ui.Markup;
+using Deskair.App.Ui.Motion;
 using Deskair.App.Ui.Theme;
 using Deskair.Services.Settings;
 using Deskair.Tests.Fakes;
@@ -33,6 +34,9 @@ public static class UiHost
             "Ui/Controls/Focus/FocusVisuals.xaml",
             "Ui/Theme/Styles/BaseStyles.xaml"
         };
+
+        // Renders and layout tests see every control in its final state; the motion tests switch animations on for themselves.
+        MotionPolicy.Override = false;
 
         var thread = new Thread(() =>
         {
