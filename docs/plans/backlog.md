@@ -77,5 +77,18 @@ Plan, specs and model per item: [`polish-implementation.md`](polish-implementati
 | POL-14 | History summary card (stats and sleep merged; Q49 follow-up done: Nights section) | done |
 | POL-15 | Settings layout | done |
 | POL-16 | Motion (sliding selection, hero fade, gauge glide, High dot pulse, flyout fade; all off with Windows animations) | done |
-| POL-17 | Final review against the concept | todo |
+| POL-17 | Final review against the concept (done 2026-10-17; findings are POL-19 to POL-31) | done |
 | POL-18 | History per metric: comfort grids for temperature and humidity, a weather line for pressure; no CO₂ typical day or sleep on other tabs | done |
+| POL-19 | Review fix: Not connected turns the header logo ring and the room chip dot grey | todo |
+| POL-20 | Review fix: accessible names on the Live chart, ribbons, sparklines and History lines; the 1h / 6h / 24h selector gets its own name; announce zone changes (live region) | todo |
+| POL-21 | Review: High Contrast support (system colours; heat steps as stepped opacities; accessibility.md) | todo |
+| POL-22 | Review: `heat.comfort` (and `heat.none.line`) too close to the surface in both themes, about 1.2:1; needs a colour decision, then tokens and the contrast exception in design-tokens.md | todo |
+| POL-23 | Review fix: Year summary header names both years ("1 Nov 2025 – 12 Oct 2026") | todo |
+| POL-24 | Review fix: Live ribbon labels as "00:00 / 06:00 / 12:00 / 18:00"; Live chart title "CO₂ · last hour" | todo |
+| POL-25 | Review: render tests: stop the culture race between test classes (English renders came out in Ukrainian), add fixtures outside the comfort range, Live Good and High, dark states, flyout Bluetooth-off, Settings below the fold; delete the three stale Night-filter renders; stale fixture says "0 min", flyout says "25 min" next to a live reading | todo |
+| POL-26 | Review: style the scrollbar (light and dark; Settings shows the native one) and add its tokens | todo |
+| POL-27 | Review, owner decision: Pressure tip. Docs say one line ("Pressure follows the weather, not the room"); the concept page says no tip; the code adds "A fast fall often means rain on the way." | todo |
+| POL-28 | Review, owner decision: advice "Open a window for about 10 minutes" against D-0015 "no time estimates" | todo |
+| POL-29 | Review, owner decision: the CO₂ Day line is smoothed, the Temperature, Humidity and Pressure Day lines are stair-stepped | todo |
+| POL-30 | Review, small: Day summary title "Sleep" vs "Last night"; first-run hint says "title bar"; Ukrainian lacks `_Other` plurals for 3 keys; flyout "ppm" baseline; type scale in design-tokens.md (15, 58, 32 px); Settings and first-run cards sit 2 px from the bottom edge | todo |
+| POL-31 | Review: docs housekeeping in screens-and-states.md (stale POL-11 paragraph, Year row outside its table) | todo |
