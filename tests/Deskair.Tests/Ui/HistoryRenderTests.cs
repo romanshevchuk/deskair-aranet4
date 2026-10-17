@@ -54,6 +54,24 @@ public class HistoryRenderTests
         Write(theme, culture, shell, $"{range.ToString().ToLowerInvariant()}-{metric.ToString().ToLowerInvariant()}");
     }
 
+    // The simulated room is always comfortable; this one swings through the cool, warm, dry and humid steps so the whole scale and the tags can be seen.
+    [Theory]
+    [InlineData(ThemeChoice.Light, Period.Week, Metric.Temperature)]
+    [InlineData(ThemeChoice.Dark, Period.Month, Metric.Temperature)]
+    [InlineData(ThemeChoice.Light, Period.Week, Metric.Humidity)]
+    [InlineData(ThemeChoice.Dark, Period.Month, Metric.Humidity)]
+    [InlineData(ThemeChoice.Light, Period.Day, Metric.Temperature)]
+    [InlineData(ThemeChoice.Dark, Period.Year, Metric.Temperature)]
+    public async Task Render_the_comfort_grids_with_values_outside_the_range(ThemeChoice theme, Period range, Metric metric)
+    {
+        RenderOutput.Require();
+
+        UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo("en-US"));
+        var shell = await BuildShellAsync(range, metric, TemperatureUnit.Celsius, varied: true);
+
+        Write(theme, "en-US", shell, $"{range.ToString().ToLowerInvariant()}-{metric.ToString().ToLowerInvariant()}-varied");
+    }
+
     [Theory]
     [InlineData(ThemeChoice.Light, "en-US")]
     [InlineData(ThemeChoice.Dark, "uk-UA")]
@@ -86,7 +104,16 @@ public class HistoryRenderTests
         RenderOutput.Save($"history-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{name}.png", png);
     }
 
-    private static async Task<ShellViewModel> BuildShellAsync(Period range, Metric metric, TemperatureUnit unit, bool withReadings = true)
+    /// <summary>Temperature 17 to 28 Â°C and humidity 21 to 57 %: warm afternoons, cool nights, and a long cool or dry spell now and then.</summary>
+    private static Reading Varied(Reading reading)
+    {
+        var hour = (reading.Timestamp.Hour + (reading.Timestamp.Minute / 60.0)) / 24 * 2 * Math.PI;
+        var spell = Math.Sin(reading.Timestamp.DayOfYear / 2.5);
+
+        return reading with { TemperatureC = 22.5 + (4 * Math.Sin(hour - 2.2)) + (2 * spell), HumidityPct = Math.Round(39 + (11 * Math.Sin(hour + 1)) + (7 * spell)) };
+    }
+
+    private static async Task<ShellViewModel> BuildShellAsync(Period range, Metric metric, TemperatureUnit unit, bool withReadings = true, bool varied = false)
     {
         var messenger = new StrongReferenceMessenger();
         var dispatcher = new FakeUiDispatcher();
@@ -104,7 +131,7 @@ public class HistoryRenderTests
 
             if (withReadings && !inGap && !partialDay)
             {
-                store.Readings.Add(SimulatedSensor.ReadingAt(time));
+                store.Readings.Add(varied ? Varied(SimulatedSensor.ReadingAt(time)) : SimulatedSensor.ReadingAt(time));
             }
         }
 

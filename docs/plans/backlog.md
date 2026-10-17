@@ -85,7 +85,7 @@ Plan, specs and model per item: [`polish-implementation.md`](polish-implementati
 | POL-22 | Review: `heat.comfort` (and `heat.none.line`) too close to the surface in both themes, about 1.2:1; needs a colour decision, then tokens and the contrast exception in design-tokens.md | todo |
 | POL-23 | Review fix: Year summary header names both years ("1 Nov 2025 – 12 Oct 2026") | done |
 | POL-24 | Review fix: Live ribbon labels as "00:00 / 06:00 / 12:00 / 18:00"; Live chart title "CO₂ · last hour" | done |
-| POL-25 | Review, partly done (tests now run one at a time, so English renders stay English; three stale Night-filter renders deleted). Still open: fixtures outside the comfort range, Live Good and High, dark states, flyout Bluetooth-off, Settings below the fold; stale fixture says "0 min", flyout says "25 min" next to a live reading | todo |
+| POL-25 | Review: render coverage added (Live Good and High in both themes, dark Not connected, Stale and Low battery, flyout Bluetooth-off, Good, High and dark offline, Temperature and Humidity with values across every comfort step, full-height Settings); tests run one at a time; stale renders deleted; the flyout fixture says "updated 2 min ago" when connected. Found by it: the Settings sleep hint still named the Night filter (fixed) | done |
 | POL-26 | Review fix: thin scrollbar style in both themes (`BaseStyles.xaml`; documented in design-tokens.md) | done |
 | POL-27 | Review decision: the Pressure tip is the documented line only; the extra sentence is gone | done |
 | POL-28 | Review decision: "Open a window for about 10 minutes" stays; D-0015 and the behaviour rule now say they forbid recovery-time estimates, not a suggested duration | done |

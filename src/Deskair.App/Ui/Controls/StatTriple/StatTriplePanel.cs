@@ -38,6 +38,29 @@ public class StatTriplePanel : Panel
 
     private (double Left, double Right) Insets(int index, int count) => (index > 0 ? Gap : 0, index < count - 1 ? Gap / 4 : 0);
 
+    /// <summary>What a cell must have to keep its value on one line: for a <see cref="KeyValueCell"/> the value alone (its caption may wrap), otherwise the whole child.</summary>
+    private static double RequiredWidth(UIElement child)
+    {
+        return FindCell(child) is { } cell ? cell.MeasureValueWidth() : child.DesiredSize.Width;
+    }
+
+    private static KeyValueCell? FindCell(DependencyObject element)
+    {
+        if (element is KeyValueCell cell)
+        {
+            return cell;
+        }
+
+        for (var index = 0; index < VisualTreeHelper.GetChildrenCount(element); index++)
+        {
+            if (FindCell(VisualTreeHelper.GetChild(element, index)) is { } found)
+            {
+                return found;
+            }
+        }
+
+        return null;
+    }
     protected override Size MeasureOverride(Size availableSize)
     {
         var children = Visible();
@@ -52,7 +75,7 @@ public class StatTriplePanel : Panel
         {
             var (left, right) = Insets(index, children.Count);
             children[index].Measure(new Size(double.PositiveInfinity, availableSize.Height));
-            desired[index] = Math.Ceiling(children[index].DesiredSize.Width) + 1 + left + right;
+            desired[index] = Math.Ceiling(RequiredWidth(children[index])) + 1 + left + right;
         }
 
         if (double.IsInfinity(availableSize.Width))

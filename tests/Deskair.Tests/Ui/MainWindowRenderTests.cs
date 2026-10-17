@@ -39,6 +39,9 @@ public class MainWindowRenderTests
     [InlineData(ThemeChoice.Light, "en-US", ConnectionState.Stale, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Light, "en-US", ConnectionState.LowBattery, TemperatureUnit.Fahrenheit)]
     [InlineData(ThemeChoice.Light, "en-US", ConnectionState.NotConnected, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Dark, "en-US", ConnectionState.NotConnected, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Dark, "en-US", ConnectionState.Stale, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Dark, "en-US", ConnectionState.LowBattery, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Dark, "uk-UA", ConnectionState.NotConnected, TemperatureUnit.Celsius)]
     public void Render_the_live_screen(ThemeChoice theme, string culture, ConnectionState state, TemperatureUnit unit)
     {
@@ -50,7 +53,7 @@ public class MainWindowRenderTests
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
 
             // The dark Ukrainian offline image is the one with Bluetooth off.
-            var shell = BuildShell(state, unit, bluetoothOff: theme == ThemeChoice.Dark);
+            var shell = BuildShell(state, unit, bluetoothOff: theme == ThemeChoice.Dark && culture == "uk-UA");
             var window = new MainWindow(shell);
             var content = (FrameworkElement)window.Content;
 
@@ -64,7 +67,35 @@ public class MainWindowRenderTests
         RenderOutput.Save($"live-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{state.ToString().ToLowerInvariant()}-{unit.ToString().ToLowerInvariant()}.png", png);
     }
 
-    private static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit, bool bluetoothOff = false)
+    // The simulated room is Elevated; shifting the CO2 down gives Good air and up gives High, so each zone and theme can be looked at.
+    [Theory]
+    [InlineData(ThemeChoice.Light, -450)]
+    [InlineData(ThemeChoice.Dark, -450)]
+    [InlineData(ThemeChoice.Light, 600)]
+    [InlineData(ThemeChoice.Dark, 600)]
+    public void Render_the_live_screen_in_the_good_and_high_zones(ThemeChoice theme, double co2Shift)
+    {
+        RenderOutput.Require();
+
+        var png = UiHost.Run(theme, () =>
+        {
+            UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo("en-US"));
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+
+            var shell = BuildShell(ConnectionState.Normal, TemperatureUnit.Celsius, co2Shift: co2Shift);
+            var window = new MainWindow(shell);
+            var content = (FrameworkElement)window.Content;
+
+            content.DataContext = shell;
+            window.Content = null;
+
+            return ControlRenderer.ToPng(content, 1200, 700);
+        });
+
+        RenderOutput.Save($"live-{theme.ToString().ToLowerInvariant()}-en-{(co2Shift < 0 ? "good" : "high")}.png", png);
+    }
+
+    private static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit, bool bluetoothOff = false, double co2Shift = 0)
     {
         var messenger = new StrongReferenceMessenger();
         var dispatcher = new FakeUiDispatcher();
@@ -75,7 +106,8 @@ public class MainWindowRenderTests
         var store = new FakeReadingStore();
         for (var time = now.AddHours(-24); time <= now; time += TimeSpan.FromMinutes(2))
         {
-            store.Readings.Add(SimulatedSensor.ReadingAt(time));
+            var reading = SimulatedSensor.ReadingAt(time);
+            store.Readings.Add(reading with { Co2Ppm = reading.Co2Ppm + co2Shift });
         }
 
         var deviceStore = new FakeDeviceStore();

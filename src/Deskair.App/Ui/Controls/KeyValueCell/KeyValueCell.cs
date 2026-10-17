@@ -46,4 +46,19 @@ public class KeyValueCell : Control
         get => (bool)GetValue(ValueFirstProperty);
         set => SetValue(ValueFirstProperty, value);
     }
+
+    /// <summary>The width the value needs on one line, without the caption. A panel that shares width between cells uses it so a value never wraps while a caption may.</summary>
+    public double MeasureValueWidth()
+    {
+        ApplyTemplate();
+
+        if (GetTemplateChild("Value") is not TextBlock value)
+        {
+            return 0;
+        }
+
+        value.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+        return value.DesiredSize.Width;
+    }
 }

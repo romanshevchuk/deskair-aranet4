@@ -160,7 +160,7 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Chart_Today / Chart_Avg | Today / avg | Сьогодні / сер. |
 | Stats_Header_Average / Stats_Header_NightAverage | Average · {range} / Night average · {range} | Середнє · {range} / Середнє за ніч · {range} |
 | Settings_Sleep / Settings_Sleep_Start / Settings_Sleep_End | Sleep / Night starts / Night ends | Сон / Ніч починається / Ніч закінчується |
-| Settings_Sleep_Hint | The Night filter in History and the sleep card use these hours | Ці години використовують фільтр «Ніч» в Історії та картка сну |
+| Settings_Sleep_Hint | The night band and the Nights and Last night sections in History use these hours | Ці години визначають смугу ночі та розділи «Ночі» й «Остання ніч» в Історії |
 | Settings_Sleep_SameTime | The night must start and end at different times. | Ніч має починатися й закінчуватися в різний час. |
 | Sleep_Title | Sleep · {from} – {to} | Сон · {from} – {to} |
 | Sleep_Verdict_Good / Fair / Poor | Good night / Fair night / Poor night | Гарна ніч / Посередня ніч / Погана ніч |

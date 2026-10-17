@@ -29,7 +29,15 @@ public class SettingsRenderTests
     [InlineData(ThemeChoice.Light, "en-US")]
     [InlineData(ThemeChoice.Dark, "en-US")]
     [InlineData(ThemeChoice.Light, "uk-UA")]
-    public void Render_the_settings_screen(ThemeChoice theme, string culture)
+    public void Render_the_settings_screen(ThemeChoice theme, string culture) => RenderSettings(theme, culture, 700, string.Empty);
+
+    // The window shows only the first sections; this one is tall enough to show every section down to Start-up.
+    [Theory]
+    [InlineData(ThemeChoice.Light)]
+    [InlineData(ThemeChoice.Dark)]
+    public void Render_the_whole_settings_screen(ThemeChoice theme) => RenderSettings(theme, "en-US", 2400, "-full");
+
+    private static void RenderSettings(ThemeChoice theme, string culture, int height, string suffix)
     {
         RenderOutput.Require();
 
@@ -45,10 +53,10 @@ public class SettingsRenderTests
             content.DataContext = shell;
             window.Content = null;
 
-            return ControlRenderer.ToPng(content, 1200, 700);
+            return ControlRenderer.ToPng(content, 1200, height);
         });
 
-        RenderOutput.Save($"settings-{theme.ToString().ToLowerInvariant()}-{culture[..2]}.png", png);
+        RenderOutput.Save($"settings-{theme.ToString().ToLowerInvariant()}-{culture[..2]}{suffix}.png", png);
     }
 
     private static ShellViewModel BuildShell(ThemeChoice theme, string culture)

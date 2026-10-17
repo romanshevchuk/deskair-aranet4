@@ -25,7 +25,11 @@ public class FlyoutRenderTests
     [InlineData(ThemeChoice.Light, "en-US", true)]
     [InlineData(ThemeChoice.Dark, "uk-UA", true)]
     [InlineData(ThemeChoice.Light, "en-US", false, true)]
-    public void Render_the_flyout(ThemeChoice theme, string culture, bool notConnected, bool snoozed = false)
+    [InlineData(ThemeChoice.Dark, "en-US", true)]
+    [InlineData(ThemeChoice.Light, "en-US", true, false, 0, true)]
+    [InlineData(ThemeChoice.Light, "en-US", false, false, 600)]
+    [InlineData(ThemeChoice.Dark, "en-US", false, false, -450)]
+    public void Render_the_flyout(ThemeChoice theme, string culture, bool notConnected, bool snoozed = false, double co2Shift = 0, bool bluetoothOff = false)
     {
         RenderOutput.Require();
 
@@ -45,21 +49,23 @@ public class FlyoutRenderTests
                 snooze.ForOneHour();
             }
 
-            var viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), calendar, new FakeWindowController(), snooze, new FriendlyTime(localizer, calendar, clock), new FakeBluetoothRadio());
+            var viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), calendar, new FakeWindowController(), snooze, new FriendlyTime(localizer, calendar, clock), new FakeBluetoothRadio { IsOn = !bluetoothOff });
             var recent = new List<Reading>();
 
             for (var time = now.AddHours(-24); time <= now; time += TimeSpan.FromMinutes(2))
             {
-                recent.Add(SimulatedSensor.ReadingAt(time));
+                var reading = SimulatedSensor.ReadingAt(time);
+                recent.Add(reading with { Co2Ppm = reading.Co2Ppm + co2Shift });
             }
 
-            viewModel.Update(notConnected ? null : recent[^1], recent, now.AddMinutes(25), "Office");
+            // Connected: the reading is 2 minutes old. Not connected: it was last seen 25 minutes ago.
+            viewModel.Update(notConnected ? null : recent[^1], recent, now.AddMinutes(notConnected ? 25 : 2), "Office");
 
             var view = new FlyoutView { DataContext = viewModel };
 
             return ControlRenderer.ToPng(view, 420);
         });
 
-        RenderOutput.Save($"flyout-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{(notConnected ? "offline" : snoozed ? "snoozed" : "live")}.png", png);
+        RenderOutput.Save($"flyout-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{(notConnected ? (bluetoothOff ? "offline-bluetoothoff" : "offline") : snoozed ? "snoozed" : co2Shift < 0 ? "good" : co2Shift > 0 ? "high" : "live")}.png", png);
     }
 }

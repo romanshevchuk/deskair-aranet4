@@ -32,7 +32,7 @@
   <data name="Mini_Temperature_High" xml:space="preserve"><value>Too warm · ideal {min}–{max} {unit}</value></data>
   <data name="Mini_Humidity_Low" xml:space="preserve"><value>Too dry · ideal {min}–{max} {unit}</value></data>
   <data name="Mini_Humidity_High" xml:space="preserve"><value>Too humid · ideal {min}–{max} {unit}</value></data>
-  <data name="Stat_GoodShare" xml:space="preserve"><value>Good in last 24 h</value></data>
+  <data name="Stat_GoodShare" xml:space="preserve"><value>Good in last 24&#160;h</value></data>
   <data name="Stat_Peak" xml:space="preserve"><value>Peak at {time}</value></data>
   <data name="Range_Day" xml:space="preserve"><value>Day</value></data>
   <data name="Range_Week" xml:space="preserve"><value>Week</value></data>
@@ -110,7 +110,7 @@
   <data name="Settings_Sleep" xml:space="preserve"><value>Sleep</value></data>
   <data name="Settings_Sleep_Start" xml:space="preserve"><value>Night starts</value></data>
   <data name="Settings_Sleep_End" xml:space="preserve"><value>Night ends</value></data>
-  <data name="Settings_Sleep_Hint" xml:space="preserve"><value>The Night filter in History and the sleep card use these hours</value></data>
+  <data name="Settings_Sleep_Hint" xml:space="preserve"><value>The night band and the Nights and Last night sections in History use these hours</value></data>
   <data name="Settings_Sleep_SameTime" xml:space="preserve"><value>The night must start and end at different times.</value></data>
   <data name="Sleep_Title" xml:space="preserve"><value>Last night · {from} – {to}</value></data>
   <data name="Sleep_Verdict_Good" xml:space="preserve"><value>Good night</value></data>
