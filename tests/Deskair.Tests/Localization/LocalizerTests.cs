@@ -39,7 +39,7 @@ public class LocalizerTests
     public void Get_returns_the_text_for_the_selected_language()
     {
         Assert.Equal("Live", Create(english).Get("Nav_Live"));
-        Assert.Equal("Наживо", Create(ukrainian).Get("Nav_Live"));
+        Assert.Equal("Зараз", Create(ukrainian).Get("Nav_Live"));
     }
 
     [Fact]

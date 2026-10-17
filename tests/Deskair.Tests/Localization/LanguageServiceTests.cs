@@ -41,7 +41,7 @@ public class LanguageServiceTests
 
             service.Apply(LanguageChoice.Ukrainian);
 
-            Assert.Equal("Наживо", localizer.Get("Nav_Live"));
+            Assert.Equal("Зараз", localizer.Get("Nav_Live"));
             Assert.Equal(new[] { "uk-UA" }, received);
         }
         finally

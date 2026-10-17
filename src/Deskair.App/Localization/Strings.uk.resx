@@ -5,7 +5,7 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <!-- Every Ukrainian string is a draft and needs native review (docs/plans/questions.md, Q17). -->
-  <data name="Nav_Live" xml:space="preserve"><value>Наживо</value><comment>Draft: needs native review.</comment></data>
+  <data name="Nav_Live" xml:space="preserve"><value>Зараз</value><comment>Draft: needs native review.</comment></data>
   <data name="Nav_History" xml:space="preserve"><value>Історія</value><comment>Draft: needs native review.</comment></data>
   <data name="Room_Chip_Help" xml:space="preserve"><value>Обрати кімнату</value><comment>Draft: needs native review.</comment></data>
   <data name="Nav_Settings" xml:space="preserve"><value>Налаштування</value><comment>Draft: needs native review.</comment></data>
@@ -22,7 +22,7 @@
   <data name="Trend_Detail" xml:space="preserve"><value>{ppm} ppm за {min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_Good_Title" xml:space="preserve"><value>Повітря свіже, нічого робити не потрібно</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_Good_Text" xml:space="preserve"><value>Нижче 1 000 ppm, тож концентрація та якість сну не страждають.</value><comment>Draft: needs native review.</comment></data>
-  <data name="Advice_Elevated_Title" xml:space="preserve"><value>Відчиніть вікно приблизно на 10 хвилин</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Elevated_Title" xml:space="preserve"><value>Відчиніть вікно хвилин на 10</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_High_Title" xml:space="preserve"><value>Провітріть зараз: відчиніть вікна навстіж</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_Elevated_Text_Falling" xml:space="preserve"><value>Вище бажаного рівня, але знижується.</value></data>
   <data name="Advice_Elevated_Text_Steady" xml:space="preserve"><value>Вище бажаного рівня. Провітрювання допоможе.</value></data>
@@ -30,12 +30,12 @@
   <data name="Advice_High_Text_Falling" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон. Зараз знижується.</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_High_Text_Steady" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон.</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_High_Text_Rising" xml:space="preserve"><value>Понад 1 400 ppm і ще зростає. Страждають концентрація і сон.</value><comment>Draft: needs native review.</comment></data>
-  <data name="Mini_Temperature_Low" xml:space="preserve"><value>Прохолодно · ідеально {min}–{max} {unit}</value></data>
-  <data name="Mini_Temperature_High" xml:space="preserve"><value>Занадто тепло · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Mini_Humidity_Low" xml:space="preserve"><value>Занадто сухо · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Mini_Humidity_ABitLow" xml:space="preserve"><value>Трохи сухо · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Mini_Humidity_ABitHigh" xml:space="preserve"><value>Трохи волого · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Mini_Humidity_High" xml:space="preserve"><value>Занадто волого · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Temperature_Low" xml:space="preserve"><value>Прохолодно · бажано {min}–{max}&#160;{unit}</value></data>
+  <data name="Mini_Temperature_High" xml:space="preserve"><value>Занадто тепло · бажано {min}–{max}&#160;{unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Humidity_Low" xml:space="preserve"><value>Занадто сухо · бажано {min}–{max}&#160;{unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Humidity_ABitLow" xml:space="preserve"><value>Трохи сухо · бажано {min}–{max}&#160;{unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Humidity_ABitHigh" xml:space="preserve"><value>Трохи волого · бажано {min}–{max}&#160;{unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Humidity_High" xml:space="preserve"><value>Занадто волого · бажано {min}–{max}&#160;{unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_GoodShare" xml:space="preserve"><value>Добре за останні 24&#160;год</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_Peak" xml:space="preserve"><value>Пік о {time}</value><comment>Draft: needs native review.</comment></data>
   <data name="Metric_Co2_Spoken" xml:space="preserve"><value>вуглекислий газ</value><comment>Draft: needs native review.</comment></data>
@@ -102,8 +102,8 @@
   <data name="Unit_Fahrenheit" xml:space="preserve"><value>°F</value></data>
   <data name="Settings_Alerts_Enabled" xml:space="preserve"><value>Сповіщення</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Alerts_EnabledHint" xml:space="preserve"><value>Повідомлення, коли повітря погіршується</value><comment>Draft: needs native review.</comment></data>
-  <data name="Settings_Alerts_Elevated" xml:space="preserve"><value>Сповіщати при підвищеному</value><comment>Draft: needs native review.</comment></data>
-  <data name="Settings_Alerts_High" xml:space="preserve"><value>Сповіщати при високому</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Alerts_Elevated" xml:space="preserve"><value>Сповіщати про підвищений рівень</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Alerts_High" xml:space="preserve"><value>Сповіщати про високий рівень</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_QuietHours_Hint" xml:space="preserve"><value>Без сповіщень уночі</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_QuietHours_From" xml:space="preserve"><value>З</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_QuietHours_To" xml:space="preserve"><value>До</value><comment>Draft: needs native review.</comment></data>
@@ -189,15 +189,15 @@
   <data name="Ribbon_Name" xml:space="preserve"><value>Останні 24 години за зонами якості повітря</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Live_AccessibleName" xml:space="preserve"><value>{metric}, {span}: мін. {low}, сер. {avg}, макс. {high} {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Live_AccessibleName_Empty" xml:space="preserve"><value>{metric}, {span}: немає вимірювань</value><comment>Draft: needs native review.</comment></data>
-  <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ідеально 20–24</value><comment>Draft: needs native review.</comment></data>
-  <data name="Gallery_Sample_IdealHumidity" xml:space="preserve"><value>ідеально 30–50</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>бажано 20–24</value><comment>Draft: needs native review.</comment></data>
+  <data name="Gallery_Sample_IdealHumidity" xml:space="preserve"><value>бажано 30–50</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_PeakNow" xml:space="preserve"><value>Пік зараз</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_InZone_Good" xml:space="preserve"><value>У цій зоні</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_InZone_Elevated" xml:space="preserve"><value>У цій зоні</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_InZone_High" xml:space="preserve"><value>У цій зоні</value><comment>Draft: needs native review.</comment></data>
   <data name="Duration_Minutes" xml:space="preserve"><value>{min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Duration_HoursMinutes" xml:space="preserve"><value>{h} год {min} хв</value><comment>Draft: needs native review.</comment></data>
-  <data name="Chart_Ideal" xml:space="preserve"><value>ідеально {min}–{max}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Ideal" xml:space="preserve"><value>бажано {min}–{max}</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Підвищений від {ppm}</value><comment>Draft: needs native review. Label on the dashed line where the Elevated zone starts.</comment></data>
   <data name="Chart_Threshold_High" xml:space="preserve"><value>Високий від {ppm}</value><comment>Draft: needs native review. Label on the dashed line where the High zone starts.</comment></data>
   <data name="Live_Card_AccessibleName" xml:space="preserve"><value>{metric}, {value} {unit}, {status}</value><comment>Read by Narrator for the hero and the mini cards.</comment></data>
@@ -273,7 +273,7 @@
   <data name="Flyout_LastReadingAt" xml:space="preserve"><value>{unit} о {time}</value><comment>Draft: needs native review.</comment></data>
   <data name="Duration_Hours" xml:space="preserve"><value>{h} год</value><comment>Draft: needs native review.</comment></data>
   <data name="Toast_High_Title" xml:space="preserve"><value>Провітріть зараз · {room}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Toast_Elevated_Body" xml:space="preserve"><value>{value}. Відчиніть вікно приблизно на 10 хвилин.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Toast_Elevated_Body" xml:space="preserve"><value>{value}. Відчиніть вікно хвилин на 10.</value><comment>Draft: needs native review.</comment></data>
   <data name="Toast_High_Body" xml:space="preserve"><value>{value}. Відчиніть вікна повністю.</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_TrayValue" xml:space="preserve"><value>Показувати CO₂ на значку в треї</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_TrayValue_Hint" xml:space="preserve"><value>Значок показує значення (1.1k) замість кільця</value><comment>Draft: needs native review.</comment></data>
@@ -284,12 +284,12 @@
   <data name="Flyout_Resume" xml:space="preserve"><value>Відновити сповіщення</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Import" xml:space="preserve"><value>Імпортувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Export" xml:space="preserve"><value>Експортувати</value><comment>Draft: needs native review.</comment></data>
-  <data name="Settings_Data_Folder" xml:space="preserve"><value>Тека даних</value><comment>Draft: needs native review.</comment></data>
-  <data name="Settings_Data_OpenFolder" xml:space="preserve"><value>Відкрити теку</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_Folder" xml:space="preserve"><value>Папка даних</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_OpenFolder" xml:space="preserve"><value>Відкрити папку</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Data_ChangeFolder" xml:space="preserve"><value>Змінити</value><comment>Draft: needs native review.</comment></data>
-  <data name="Settings_Data_ChangeTitle" xml:space="preserve"><value>Виберіть теку даних</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_Data_ChangeTitle" xml:space="preserve"><value>Виберіть папку даних</value><comment>Draft: needs native review.</comment></data>
   <data name="Data_Folder_Restart" xml:space="preserve"><value>Deskair використовуватиме {folder} після перезапуску. Наявні файли не переносяться: скопіюйте їх туди самостійно, щоб зберегти історію.</value><comment>Draft: needs native review.</comment></data>
-  <data name="Data_Folder_Failed" xml:space="preserve"><value>Не вдалося використати цю теку. Виберіть іншу.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Data_Folder_Failed" xml:space="preserve"><value>Не вдалося використати цю папку. Виберіть іншу.</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Data_Import" xml:space="preserve"><value>Імпорт із застосунку на телефоні</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Data_ImportHint" xml:space="preserve"><value>Заповнює прогалини вимірюваннями з експорту застосунку на телефоні</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Data_ChooseFile" xml:space="preserve"><value>Вибрати файл</value><comment>Draft: needs native review.</comment></data>

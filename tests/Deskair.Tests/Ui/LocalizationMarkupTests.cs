@@ -32,7 +32,7 @@ public class LocalizationMarkupTests
 
             UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo("uk-UA"));
 
-            Assert.Equal("Наживо", block.Text);
+            Assert.Equal("Зараз", block.Text);
 
             UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo("en-US"));
 
