@@ -102,6 +102,8 @@
   <Thickness x:Key="Space.Hero.Advice">0,18,0,0</Thickness>
   <Thickness x:Key="Space.Hero.Stats">0,16,0,0</Thickness>
   <Thickness x:Key="Space.Hero.Unit">8,0,0,10</Thickness>
+  <!-- The unit beside the flyout value (58 px): nudged up to the digit baseline, as Space.Hero.Unit is for the hero. -->
+  <Thickness x:Key="Space.Flyout.Unit">8,0,0,8</Thickness>
   <Thickness x:Key="Space.Mini.Gap">8,0,8,0</Thickness>
   <Thickness x:Key="Space.Mini.Row">-8,0,-8,0</Thickness>
   <Thickness x:Key="Space.Chart.Card">24,20,24,16</Thickness>

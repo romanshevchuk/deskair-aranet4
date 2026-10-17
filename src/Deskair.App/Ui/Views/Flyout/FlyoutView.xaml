@@ -135,7 +135,7 @@
                        Typography.NumeralAlignment="Proportional"
                        FontWeight="{DynamicResource Font.Weight.Light}"
                        Text="{Binding ValueText}" />
-            <TextBlock Margin="{StaticResource Space.Inline}"
+            <TextBlock Margin="{StaticResource Space.Flyout.Unit}"
                        VerticalAlignment="Bottom"
                        Style="{StaticResource Text.Secondary}"
                        Text="{Binding UnitText}" />

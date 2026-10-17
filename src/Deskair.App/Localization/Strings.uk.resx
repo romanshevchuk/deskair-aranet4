@@ -113,7 +113,7 @@
   <data name="Settings_Sleep_End" xml:space="preserve"><value>Ніч закінчується</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Sleep_Hint" xml:space="preserve"><value>Ці години використовують фільтр «Ніч» в Історії та картка сну</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Sleep_SameTime" xml:space="preserve"><value>Ніч має починатися й закінчуватися в різний час.</value><comment>Draft: needs native review.</comment></data>
-  <data name="Sleep_Title" xml:space="preserve"><value>Сон · {from} – {to}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Sleep_Title" xml:space="preserve"><value>Остання ніч · {from} – {to}</value><comment>Draft: needs native review.</comment></data>
   <data name="Sleep_Verdict_Good" xml:space="preserve"><value>Гарна ніч</value><comment>Draft: needs native review.</comment></data>
   <data name="Sleep_Verdict_Fair" xml:space="preserve"><value>Посередня ніч</value><comment>Draft: needs native review.</comment></data>
   <data name="Sleep_Verdict_Poor" xml:space="preserve"><value>Погана ніч</value><comment>Draft: needs native review.</comment></data>
@@ -232,7 +232,7 @@
   <data name="Onboarding_BluetoothOff" xml:space="preserve"><value>Bluetooth вимкнено. Увімкніть його в налаштуваннях Windows і спробуйте ще раз.</value><comment>Draft: needs native review.</comment></data>
   <data name="Onboarding_Room_Title" xml:space="preserve"><value>Кімната</value><comment>Draft: needs native review.</comment></data>
   <data name="Onboarding_Room_Name" xml:space="preserve"><value>Назва</value><comment>Draft: needs native review.</comment></data>
-  <data name="Onboarding_Room_NameHint" xml:space="preserve"><value>Показується в заголовку вікна та у сповіщеннях</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Room_NameHint" xml:space="preserve"><value>Показується в заголовку та у сповіщеннях</value><comment>Draft: needs native review.</comment></data>
   <data name="Onboarding_PairFailed" xml:space="preserve"><value>Не вдалося додати датчик. Спробуйте ще раз.</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_TextInput" xml:space="preserve"><value>Текстове поле</value><comment>Draft: needs native review.</comment></data>
   <data name="Banner_LowBattery" xml:space="preserve"><value>Низький заряд датчика ({percent})</value><comment>Draft: needs native review.</comment></data>
