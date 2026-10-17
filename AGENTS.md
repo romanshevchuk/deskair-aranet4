@@ -51,7 +51,7 @@ WPF cannot be built or run on Linux or macOS. If a command here is wrong, fix it
 | Solution structure and rules | `docs/engineering/architecture.md` |
 | WPF choices and risks | `docs/engineering/wpf-mapping.md` |
 | How to do common tasks | `docs/guides/` |
-| What to build and when | `docs/plans/roadmap.md`, `docs/plans/backlog.md`, `docs/plans/handoff.md` |
+| What to build and when | `docs/plans/roadmap.md`, `docs/plans/backlog.md` (only what is left before release; finished items are in `backlog-done.md`), `docs/plans/handoff.md` |
 | Why something was decided | `docs/decisions.md` |
 | What is undecided | `docs/plans/questions.md` |
 

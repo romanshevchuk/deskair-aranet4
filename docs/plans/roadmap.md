@@ -12,6 +12,6 @@ Each milestone ends with a working, testable result.
 | M3 Tray and alerts | Icon states, flyout, menu, toasts, Do Not Disturb indicator | Works on Windows 10 and 11, multiple monitors | built; open checks in `handoff.md` |
 | M4 History | Charts, filters, group by, gap states, stats card, typical day | All bucket states render; Night filter works | built; open checks in `handoff.md` |
 | M5 Settings and states | Settings, first run with import, stale, low battery, not connected, export | Every state in `screens-and-states.md` reachable | built; open checks in `handoff.md` |
-| M6 Quality and release | Accessibility, DPI, Windows 10 and 11, soak test, Ukrainian review, Store packaging | Store submission passes | not started |
+| M6 Quality and release | Accessibility, DPI, Windows 10 and 11, soak test, Ukrainian review, Store packaging | Store submission passes | not started; the open work is in `backlog.md` R1 to R4 |
 
 Later: airing feedback, sleep verdicts, drill-down, shareable report, all-rooms view, editable thresholds.

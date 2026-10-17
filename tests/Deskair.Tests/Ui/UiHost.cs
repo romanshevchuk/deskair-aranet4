@@ -1,5 +1,6 @@
 using System.Runtime.ExceptionServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 using Deskair.App.Localization;
 using Deskair.App.Ui.Markup;
@@ -50,6 +51,7 @@ public static class UiHost
 
             themeService = new ThemeService(fakeTheme);
             localizerService = new Localizer();
+            application.Resources["BoolToVisibility"] = new BooleanToVisibilityConverter();
             application.Resources[TExtension.LocalizerResourceKey] = localizerService;
 
             uiDispatcher = Dispatcher.CurrentDispatcher;

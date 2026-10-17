@@ -10,6 +10,7 @@
         <ResourceDictionary Source="Ui/Controls/Focus/FocusVisuals.xaml" />
         <ResourceDictionary Source="Ui/Theme/Styles/BaseStyles.xaml" />
       </ResourceDictionary.MergedDictionaries>
+      <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     </ResourceDictionary>
   </Application.Resources>
 </Application>

@@ -11,6 +11,7 @@ using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
+using Deskair.Services.Platform;
 using Deskair.Services.Queries;
 using Microsoft.Extensions.Logging;
 
@@ -27,6 +28,7 @@ public sealed partial class HistoryViewModel : ObservableObject
     private readonly LocalCalendar calendar;
     private readonly TimeProvider timeProvider;
     private readonly IMessenger messenger;
+    private readonly IUiDispatcher dispatcher;
     private readonly ILogger<HistoryViewModel> logger;
     private readonly MetricFormatter formatter;
     private readonly PeriodLabeler labeler;
@@ -111,6 +113,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         PeriodLabeler labeler,
         HourGridBuilder gridBuilder,
         DayChartBuilder dayChart,
+        IUiDispatcher dispatcher,
         ILogger<HistoryViewModel> logger)
     {
         this.toolbar = toolbar;
@@ -123,6 +126,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         this.calendar = calendar;
         this.timeProvider = timeProvider;
         this.messenger = messenger;
+        this.dispatcher = dispatcher;
         this.logger = logger;
         this.formatter = formatter;
         this.labeler = labeler;
@@ -174,10 +178,10 @@ public sealed partial class HistoryViewModel : ObservableObject
                 Refresh();
             }
         };
-        messenger.Register<HistoryViewModel, SyncCompleted>(this, static (self, _) => self.Refresh());
-        messenger.Register<HistoryViewModel, ReadingsImported>(this, static (self, _) => self.Refresh());
-        messenger.Register<HistoryViewModel, DeviceSelected>(this, static (self, _) => self.Refresh());
-        messenger.Register<HistoryViewModel, SettingsChanged>(this, static (self, _) => self.Refresh());
+        messenger.Register<HistoryViewModel, SyncCompleted>(this, (self, _) => self.dispatcher.Post(self.Refresh));
+        messenger.Register<HistoryViewModel, ReadingsImported>(this, (self, _) => self.dispatcher.Post(self.Refresh));
+        messenger.Register<HistoryViewModel, DeviceSelected>(this, (self, _) => self.dispatcher.Post(self.Refresh));
+        messenger.Register<HistoryViewModel, SettingsChanged>(this, (self, _) => self.dispatcher.Post(self.Refresh));
     }
 
     private async Task RefreshQuietlyAsync()
@@ -239,12 +243,23 @@ public sealed partial class HistoryViewModel : ObservableObject
             return;
         }
 
-        var period = HistoryPeriod.For(range, toolbar.Offset, now, calendar);
-        var before = period.Before(now, calendar);
-        var (start, end) = (period.Start, period.End);
+        var loaded = await ReadAsync(device, first, maxOffset, now, token);
+
+        token.ThrowIfCancellationRequested();
+
+        ShowSummary(loaded);
+        ShowChart(loaded);
+    }
+
+    /// <summary>Reads everything the screen needs for the toolbar choice. Nothing is shown yet, so a refresh that is replaced half way leaves the screen as it was.</summary>
+    private async Task<HistoryLoad> ReadAsync(DeviceId device, DateTimeOffset? first, int maxOffset, DateTimeOffset now, CancellationToken token)
+    {
+        var range = toolbar.Range;
+        var window = HistoryPeriod.For(range, toolbar.Offset, now, calendar);
+        var before = window.Before(now, calendar);
+        var (start, end) = (window.Start, window.End);
         var metric = toolbar.Metric;
         var grouping = range == Period.Year ? Period.Week : Period.Day;
-        var interval = devices.IntervalFor(device, end);
 
         var buckets = await Task.Run(
             () => query.GetBucketsAsync(device, metric, start, end, grouping, token),
@@ -258,8 +273,8 @@ public sealed partial class HistoryViewModel : ObservableObject
         var recent = range == Period.Day ? await query.GetRangeAsync(device, start, end, token) : null;
         var wantSleep = range == Period.Day;
 
-        // The latest Day's night is last night; a calendar day's is the night that ended that morning (behaviour-rules.md "Sleep" rule 2).
-        var lastNight = wantSleep && metric != Metric.Pressure ? await query.GetLastNightAsync(device, metric, period.IsRolling ? now : end, token) : null;
+        // The latest Day shows last night; a calendar day shows the night that ended that morning (behaviour-rules.md "Sleep" rule 2).
+        var lastNight = wantSleep && metric != Metric.Pressure ? await query.GetLastNightAsync(device, metric, window.IsRolling ? now : end, token) : null;
         var nights = wantSleep || metric == Metric.Pressure ? null : await query.GetNightsAsync(device, metric, start, end, token);
 
         // D-0018, POL-18: CO₂, Temperature and Humidity on Week and Month are a grid of days and hours, on Year of months and days. Pressure keeps its line.
@@ -270,73 +285,112 @@ public sealed partial class HistoryViewModel : ObservableObject
         var gridMonths = (wantGrid || wantLine) && range == Period.Year ? await query.GetMonthGridAsync(device, metric, start, end, token) : null;
         var pressure = !wantLine ? null : gridMonths is not null ? dayChart.PressureLine(gridMonths) : dayChart.PressureLine(gridDays ?? []);
 
-        token.ThrowIfCancellationRequested();
+        return new HistoryLoad(
+            first,
+            maxOffset,
+            window,
+            now,
+            metric,
+            range,
+            grouping,
+            devices.IntervalFor(device, end),
+            buckets,
+            previous,
+            hours,
+            zoneShare,
+            comfort,
+            recent,
+            lastNight,
+            nights,
+            gridDays,
+            gridMonths,
+            pressure);
+    }
 
-        IsEmpty = first is null;
-        toolbar.MaxOffset = maxOffset;
-        toolbar.PeriodLabel = labeler.Label(period);
-        IsPeriodEmpty = first is not null && (recent is null ? buckets.All(bucket => bucket.ReadingCount == 0) : recent.Count == 0);
+    /// <summary>The period label, the empty-period message, the stats card and the sleep cards.</summary>
+    private void ShowSummary(HistoryLoad loaded)
+    {
+        IsEmpty = loaded.First is null;
+        toolbar.MaxOffset = loaded.MaxOffset;
+        toolbar.PeriodLabel = labeler.Label(loaded.Window);
+        IsPeriodEmpty = loaded.First is not null && (loaded.Recent is null ? loaded.Buckets.All(bucket => bucket.ReadingCount == 0) : loaded.Recent.Count == 0);
         PeriodEmptyTitle = IsPeriodEmpty ? labeler.EmptyTitle(toolbar.PeriodLabel) : null;
-        PeriodEmptyText = IsPeriodEmpty && first is { } since ? labeler.EmptyText(since) : null;
-        stats.Update(new StatsInput(buckets)
+        PeriodEmptyText = IsPeriodEmpty && loaded.First is { } since ? labeler.EmptyText(since) : null;
+        stats.Update(new StatsInput(loaded.Buckets)
         {
-            Metric = metric,
-            Range = range,
-            Grouping = grouping,
-            Previous = previous,
-            ZoneShare = zoneShare,
-            Comfort = comfort,
-            PressureChange = pressure?.Change,
-            TypicalDay = hours,
+            Metric = loaded.Metric,
+            Range = loaded.Range,
+            Grouping = loaded.Grouping,
+            Previous = loaded.Previous,
+            ZoneShare = loaded.ZoneShare,
+            Comfort = loaded.Comfort,
+            PressureChange = loaded.Pressure?.Change,
+            TypicalDay = loaded.TypicalDay,
             Night = query.Night
         });
 
-        ShowSleep = lastNight is not null;
-        sleep.Update(lastNight);
-        sleep.UpdateNights(nights);
+        ShowSleep = loaded.LastNight is not null;
+        sleep.Update(loaded.LastNight);
+        sleep.UpdateNights(loaded.Nights);
+    }
 
-        if (recent is null)
+    /// <summary>The main card: the Day line, the Pressure line, or the hour or month grid.</summary>
+    private void ShowChart(HistoryLoad loaded)
+    {
+        if (loaded.Recent is { } recent)
         {
-            if (pressure is not null)
-            {
-                ShowPressureLine(pressure, metric, range, grouping);
-                return;
-            }
-
-            Points = null;
-            TypicalPoints = null;
-            ComfortBand = null;
-            Highlight = null;
-            NightSpans = null;
-            Markers = null;
-            Gaps = EmptyRuns(buckets);
-            chartHeader.Update(metric, range, grouping, Gaps.Count > 0);
-            var today = calendar.LocalDateOf(now);
-
-            Grid = gridMonths is not null
-                ? gridBuilder.BuildYear(gridMonths, metric, today)
-                : gridDays is null ? null : gridBuilder.Build(gridDays, hours, metric, range, query.Night, today);
-            GridName = Grid is null ? null : labeler.GridName(metric, toolbar.PeriodLabel, byDay: gridMonths is not null);
-            ChartName = null;
-
-            if (Grid is not null)
-            {
-                chartHeader.UpdateForGrid(metric, byDay: gridMonths is not null);
-            }
-
-            return;
+            ShowDayLine(loaded, recent);
         }
+        else if (loaded.Pressure is { } pressure)
+        {
+            ShowPressureLine(pressure, loaded.Metric, loaded.Range, loaded.Grouping);
+        }
+        else
+        {
+            ShowGridChart(loaded);
+        }
+    }
 
+    private void ShowGridChart(HistoryLoad loaded)
+    {
+        var (metric, range, grouping) = (loaded.Metric, loaded.Range, loaded.Grouping);
+        Points = null;
+        TypicalPoints = null;
+        ComfortBand = null;
+        Highlight = null;
+        NightSpans = null;
+        Markers = null;
+        Gaps = EmptyRuns(loaded.Buckets);
+        chartHeader.Update(metric, range, grouping, Gaps.Count > 0);
+        var today = calendar.LocalDateOf(loaded.Now);
+        var byDay = loaded.GridMonths is not null;
+
+        Grid = loaded.GridMonths is not null
+            ? gridBuilder.BuildYear(loaded.GridMonths, metric, today)
+            : loaded.GridDays is null ? null : gridBuilder.Build(loaded.GridDays, loaded.TypicalDay, metric, range, query.Night, today);
+        GridName = Grid is null ? null : labeler.GridName(metric, toolbar.PeriodLabel ?? string.Empty, byDay);
+        ChartName = null;
+
+        if (Grid is not null)
+        {
+            chartHeader.UpdateForGrid(metric, byDay);
+        }
+    }
+
+    private void ShowDayLine(HistoryLoad loaded, IReadOnlyList<Reading> recent)
+    {
+        var (metric, range, grouping) = (loaded.Metric, loaded.Range, loaded.Grouping);
+        var (start, end) = (loaded.Window.Start, loaded.Window.End);
         Grid = null;
         GridName = null;
         ChartName = labeler.ChartName(metric, toolbar.PeriodLabel ?? string.Empty);
         Points = recent.Select(reading => new ChartPoint(reading.Timestamp, formatter.ToDisplay(metric, reading.ValueOf(metric)))).ToList();
         NightSpans = metric == Metric.Pressure ? null : dayChart.NightSpans(query.Night, start, end);
         Highlight = null;
-        TypicalPoints = metric == Metric.Pressure ? null : dayChart.TypicalLine(hours, start, end, metric);
+        TypicalPoints = metric == Metric.Pressure ? null : dayChart.TypicalLine(loaded.TypicalDay, start, end, metric);
         ComfortBand = dayChart.ComfortBand(metric);
         Markers = metric == Metric.Co2 ? dayChart.Markers(AirImprovedDetector.Detect([.. recent.OrderBy(reading => reading.Timestamp)])) : null;
-        Gaps = MissingStretches(recent.Select(reading => reading.Timestamp).ToList(), interval);
+        Gaps = MissingStretches(recent.Select(reading => reading.Timestamp).ToList(), loaded.Interval);
         chartHeader.Update(metric, range, grouping, Gaps.Count > 0);
     }
 

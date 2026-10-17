@@ -162,6 +162,7 @@ public class HistoryRenderTests
             new PeriodLabeler(localizer, calendar),
             new HourGridBuilder(localizer, formatter),
             new DayChartBuilder(localizer, formatter, calendar),
+            new FakeUiDispatcher(),
             NullLogger<HistoryViewModel>.Instance);
         await history.RefreshAsync(CancellationToken.None);
 

@@ -40,7 +40,11 @@ public sealed partial class DevicesSettingsViewModel : ObservableObject
             // The first load also starts following new rooms, so a sensor paired from the search shows up in the list. Stops when cancelled.
             listening = true;
             messenger.Register<DevicesSettingsViewModel, DeviceSelected>(this, static (self, _) => self.Reload());
-            cancellationToken.Register(() => messenger.UnregisterAll(this));
+            cancellationToken.Register(() =>
+            {
+                messenger.UnregisterAll(this);
+                listening = false;
+            });
         }
 
         Items = await devices.LoadAsync(cancellationToken);

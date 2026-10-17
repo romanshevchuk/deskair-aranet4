@@ -5,39 +5,6 @@
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
   <!-- DataContext: DataSettingsViewModel. The data folder (Open, Change; a new folder is used after a restart and the files are not copied), import from the phone app (choose a file, see what it holds, then confirm) and export to CSV.
        The result of an import or export shows as one line under its row. -->
-  <UserControl.Resources>
-    <Style x:Key="Data.Row.Hidden" TargetType="{x:Type controls:SettingsRow}" BasedOn="{StaticResource {x:Type controls:SettingsRow}}">
-      <Setter Property="Visibility" Value="Collapsed" />
-    </Style>
-    <Style x:Key="Data.Row.FolderNote" TargetType="{x:Type controls:SettingsRow}" BasedOn="{StaticResource Data.Row.Hidden}">
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding HasFolderNote}" Value="True">
-          <Setter Property="Visibility" Value="Visible" />
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
-    <Style x:Key="Data.Row.ImportPreview" TargetType="{x:Type controls:SettingsRow}" BasedOn="{StaticResource Data.Row.Hidden}">
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding Import.HasPreview}" Value="True">
-          <Setter Property="Visibility" Value="Visible" />
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
-    <Style x:Key="Data.Row.ImportStatus" TargetType="{x:Type controls:SettingsRow}" BasedOn="{StaticResource Data.Row.Hidden}">
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding Import.HasStatus}" Value="True">
-          <Setter Property="Visibility" Value="Visible" />
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
-    <Style x:Key="Data.Row.ExportStatus" TargetType="{x:Type controls:SettingsRow}" BasedOn="{StaticResource Data.Row.Hidden}">
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding Export.HasStatus}" Value="True">
-          <Setter Property="Visibility" Value="Visible" />
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
-  </UserControl.Resources>
 
   <controls:SettingsCard Header="{loc:T Settings_Data}">
     <StackPanel>
@@ -47,23 +14,23 @@
           <controls:SecondaryButton Margin="{StaticResource Space.Inline}" Command="{Binding ChangeFolderCommand}" Content="{loc:T Settings_Data_ChangeFolder}" />
         </StackPanel>
       </controls:SettingsRow>
-      <controls:SettingsRow Description="{Binding FolderNote}" Style="{StaticResource Data.Row.FolderNote}" />
+      <TextBlock Style="{StaticResource Text.Caption}" Margin="{StaticResource Space.SettingsRow.Caption}" TextWrapping="Wrap" Text="{Binding FolderNote}" Visibility="{Binding HasFolderNote, Converter={StaticResource BoolToVisibility}}" />
 
       <controls:SettingsRow Header="{loc:T Settings_Data_Import}" Description="{loc:T Settings_Data_ImportHint}">
         <controls:SecondaryButton Command="{Binding Import.ChooseFileCommand}" Content="{loc:T Settings_Data_ChooseFile}" />
       </controls:SettingsRow>
-      <controls:SettingsRow Description="{Binding Import.PreviewText}" Style="{StaticResource Data.Row.ImportPreview}">
+      <controls:SettingsRow Description="{Binding Import.PreviewText}" Visibility="{Binding Import.HasPreview, Converter={StaticResource BoolToVisibility}}">
         <StackPanel Orientation="Horizontal">
           <controls:SecondaryButton Command="{Binding Import.CancelCommand}" Content="{loc:T Action_Cancel}" />
           <controls:PrimaryButton Margin="{StaticResource Space.Inline}" Command="{Binding Import.ConfirmCommand}" Content="{loc:T Action_Import}" />
         </StackPanel>
       </controls:SettingsRow>
-      <controls:SettingsRow Description="{Binding Import.StatusText}" Style="{StaticResource Data.Row.ImportStatus}" />
+      <TextBlock Style="{StaticResource Text.Caption}" Margin="{StaticResource Space.SettingsRow.Caption}" TextWrapping="Wrap" Text="{Binding Import.StatusText}" Visibility="{Binding Import.HasStatus, Converter={StaticResource BoolToVisibility}}" />
 
       <controls:SettingsRow Header="{loc:T Settings_Data_Export}" Description="{loc:T Settings_Data_ExportHint}">
         <controls:SecondaryButton Command="{Binding Export.ExportCommand}" Content="{loc:T Action_Export}" />
       </controls:SettingsRow>
-      <controls:SettingsRow Description="{Binding Export.StatusText}" Style="{StaticResource Data.Row.ExportStatus}" />
+      <TextBlock Style="{StaticResource Text.Caption}" Margin="{StaticResource Space.SettingsRow.Caption}" TextWrapping="Wrap" Text="{Binding Export.StatusText}" Visibility="{Binding Export.HasStatus, Converter={StaticResource BoolToVisibility}}" />
     </StackPanel>
   </controls:SettingsCard>
 </UserControl>

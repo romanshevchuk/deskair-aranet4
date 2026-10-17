@@ -56,24 +56,20 @@ public class AppearanceSettingsViewModelTests
     }
 
     [Fact]
-    public async Task Apply_keeps_the_other_settings()
+    public async Task A_change_keeps_the_other_settings()
     {
         store.Stored = AppSettings.Default with { AlertsEnabled = false };
         await settings.LoadAsync(TestContext.Current.CancellationToken);
         viewModel.Load();
         viewModel.Theme = ThemeChoice.Dark;
 
-        await viewModel.ApplyAsync(TestContext.Current.CancellationToken);
-
         Assert.False(Assert.Single(store.Saved).AlertsEnabled);
     }
 
     [Fact]
-    public async Task Unchanged_values_do_nothing()
+    public void Unchanged_values_do_nothing()
     {
         viewModel.Load();
-
-        await viewModel.ApplyAsync(TestContext.Current.CancellationToken);
 
         Assert.Empty(store.Saved);
     }

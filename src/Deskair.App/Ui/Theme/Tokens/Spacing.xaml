@@ -3,6 +3,8 @@
                     xmlns:sys="clr-namespace:System;assembly=System.Runtime">
   <!-- Spacing and size tokens (docs/design/design-tokens.md). Items marked Q are assumptions: see docs/plans/questions.md. -->
   <sys:Double x:Key="Size.Header.Height">52</sys:Double>
+  <sys:Double x:Key="Size.Window.MinWidth">1100</sys:Double>
+  <sys:Double x:Key="Size.Window.MinHeight">700</sys:Double>
   <GridLength x:Key="Grid.Header.Height">52</GridLength>
   <GridLength x:Key="Grid.Footer.Height">40</GridLength>
   <sys:Double x:Key="Size.Footer.Height">40</sys:Double>
@@ -130,6 +132,8 @@
   <Thickness x:Key="Space.SettingsRow.Label">0,0,16,0</Thickness>
   <Thickness x:Key="Space.SettingsRow.Padding">0,4,0,4</Thickness>
   <sys:Double x:Key="Size.SettingsRow.MinHeight">40</sys:Double>
+  <Thickness x:Key="Space.SettingsRow.Caption">0,0,0,6</Thickness>
+  <sys:Double x:Key="Size.Segmented.SettingsMinWidth">296</sys:Double>
   <!-- History stats card (prototype: zone share bar 10 px high, insight box padding 9 12). -->
   <sys:Double x:Key="Size.ZoneShare.Height">10</sys:Double>
   <Thickness x:Key="Space.Insight.Padding">12,9,12,9</Thickness>

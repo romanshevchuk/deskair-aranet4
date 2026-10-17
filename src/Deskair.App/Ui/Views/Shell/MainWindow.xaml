@@ -12,6 +12,8 @@
         Style="{StaticResource Window.Base}"
         Title="Deskair"
         Width="1200"
+        MinWidth="{StaticResource Size.Window.MinWidth}"
+        MinHeight="{StaticResource Size.Window.MinHeight}"
         Height="728">
   <!-- The header is the title bar: a 52 px caption with the system's own caption buttons, so dragging, double-click, resizing and the snap layouts box on the maximize
        button all work as usual (docs/plans/spike-s3-title-bar.md). BackdropService adds Mica on Windows 11. -->

@@ -9,10 +9,8 @@ using Microsoft.Extensions.Logging;
 namespace Deskair.App.ViewModels.Settings;
 
 /// <summary>Language, theme, temperature unit and the value on the tray icon. A change from the screen is saved at once (and announced, so the app follows); <see cref="Load"/> does not save. It reloads when the settings change elsewhere.</summary>
-public sealed partial class AppearanceSettingsViewModel : ObservableObject
+public sealed partial class AppearanceSettingsViewModel : SettingsSectionViewModel
 {
-    private readonly SettingsService settings;
-    private readonly ILogger<AppearanceSettingsViewModel> logger;
     private bool loading;
 
     [ObservableProperty]
@@ -28,17 +26,15 @@ public sealed partial class AppearanceSettingsViewModel : ObservableObject
     private bool showValueOnTrayIcon;
 
     public AppearanceSettingsViewModel(SettingsService settings, IMessenger messenger, IUiDispatcher dispatcher, ILogger<AppearanceSettingsViewModel> logger)
+        : base(settings, logger)
     {
-        this.settings = settings;
-        this.logger = logger;
-
         // Another part of the app (the tray menu) can change these too; the screen follows, so it never shows or writes back an old value.
         messenger.Register<AppearanceSettingsViewModel, SettingsChanged>(this, (self, _) => dispatcher.Post(self.Load));
     }
 
     public void Load()
     {
-        var current = settings.Current;
+        var current = Settings.Current;
         loading = true;
 
         try
@@ -54,39 +50,19 @@ public sealed partial class AppearanceSettingsViewModel : ObservableObject
         }
     }
 
-    public Task ApplyAsync(CancellationToken cancellationToken)
-    {
-        return settings.UpdateAsync(current => current with { Language = Language, Theme = Theme, TemperatureUnit = TemperatureUnit, ShowValueOnTrayIcon = ShowValueOnTrayIcon }, cancellationToken);
-    }
+    partial void OnLanguageChanged(LanguageChoice value) => Save(current => current with { Language = value });
 
-    partial void OnLanguageChanged(LanguageChoice value) => ApplyLater();
+    partial void OnThemeChanged(ThemeChoice value) => Save(current => current with { Theme = value });
 
-    partial void OnThemeChanged(ThemeChoice value) => ApplyLater();
+    partial void OnTemperatureUnitChanged(TemperatureUnit value) => Save(current => current with { TemperatureUnit = value });
 
-    partial void OnTemperatureUnitChanged(TemperatureUnit value) => ApplyLater();
+    partial void OnShowValueOnTrayIconChanged(bool value) => Save(current => current with { ShowValueOnTrayIcon = value });
 
-    partial void OnShowValueOnTrayIconChanged(bool value) => ApplyLater();
-
-    private void ApplyLater()
+    private void Save(Func<AppSettings, AppSettings> change)
     {
         if (!loading)
         {
-            _ = ApplyQuietlyAsync();
-        }
-    }
-
-    private async Task ApplyQuietlyAsync()
-    {
-        try
-        {
-            await ApplyAsync(CancellationToken.None);
-        }
-        catch (Exception exception) when (exception is not OperationCanceledException)
-        {
-            if (logger.IsEnabled(LogLevel.Warning))
-            {
-                logger.LogWarning(exception, "Saving the appearance settings failed.");
-            }
+            SaveInBackground(change, "Saving the appearance settings failed.");
         }
     }
 }

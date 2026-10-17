@@ -2,103 +2,68 @@
 
 *Last reviewed: 2026-10-17*
 
-Status: `todo`, `doing`, `done`. Update this file in the same change as the work.
+**Start here.** Everything v1 needs is built. This file lists only what is left before release. Finished items are in [`backlog-done.md`](backlog-done.md) (archive, do not read unless you need history). Update this file in the same change as the work: move a row to the archive when it is done.
 
-## Version 1
+Status: `todo`, `doing`. Who: **agent** (an AI agent can do it and test it), **owner** (needs the owner's hands, eyes, hardware or decision; an agent must not mark it done), **both** (agent prepares, owner confirms).
 
-| ID | Item | Milestone | Status |
+Order of work: 1. Owner checks (R1) and decisions (R2), which can start now. 2. Agent code work (R3) in the order shown. 3. Release (R4) after R1 and R2 pass.
+
+## R1. Owner checks before release (hardware and eyes)
+
+| ID | What to check | Who | Status |
 |---|---|---|---|
-| ARCH-01 | Solution skeleton, repo files, DI composition root | M1 | done |
-| ARCH-02 | Dependency-rules tests | M1 | done |
-| ARCH-03 | Control gallery (`--gallery` option, all builds) | M1 | done |
-| ARCH-04 | Simulated sensor module | M1 | done |
-| DATA-01 | Monthly CSV readings store | M1 | done |
-| DATA-02 | Sensor history sync | M0/M1 | done |
-| DATA-03 | Merge and dedupe by interval slot | M1 | done |
-| DATA-04 | Import from phone app (.xlsx) with preview | M5 | done |
-| DATA-05 | Export CSV | M5 | done |
-| I18N-01 | Localization infrastructure (resx, runtime switch, plurals) | M1 | done |
-| I18N-02 | Ukrainian translation and native review | M6 | todo |
-| THEME-01 | Light, dark, system themes and tokens | M1 | done |
-| LIVE-01 | Hero card with zones | M2 | done |
-| LIVE-02 | Mini cards and metric tabs | M2 | done |
-| LIVE-03 | Live chart, ranges, hover | M2 | done |
-| LIVE-04 | 24 h ribbon | M2 | done |
-| TRAY-01 | Tray icon states | M3 | done |
-| TRAY-02 | Flyout | M3 | done |
-| TRAY-03 | Tray menu | M3 | done |
-| ALERT-01 | Toasts and alert rules | M3 | done |
-| ALERT-02 | "Alerts paused by Windows" indicator | M3 | done |
-| HIST-01 | History charts (line and bars) | M4 | done |
-| HIST-02 | Hours filter: All day, Night | M4 | done |
-| HIST-03 | Group by | M4 | done |
-| HIST-04 | Gap, partial and coverage states | M4 | done |
-| HIST-05 | Typical-day chart | M4 | done |
-| HIST-06 | Stats card | M4 | done |
-| SET-01 | Settings screen | M5 | done |
-| FIRST-01 | First-run onboarding with import | M5 | done |
-| STATE-01 | Stale, low battery, not connected | M5 | done |
-| A11Y-01 | Accessibility pass: tests for names, contrast and High Contrast are done; the manual check in accessibility.md (Narrator, keyboard, scaling) is the owner's part | doing |
-| REL-01 | Store packaging; winget and GitHub later | M6 | todo |
+| OWN-01 | Quiet-hours and night-hours times typed by hand in Settings (Settings was reworked 2026-10-17: one "Active between" row, captions under fields) | owner | todo |
+| OWN-02 | A real press on an alert toast (Snooze, Open), also with the app not running; Do Not Disturb and the "paused by Windows" row | owner | todo |
+| OWN-03 | Tray: menu items, value icon, flyout closes on click-away and Esc, the Snooze menu inside the flyout stays open | owner | todo |
+| OWN-04 | Flyout and tray on other taskbar edges, other DPI scales, a second monitor (spike S2) | owner | todo |
+| OWN-05 | "Try again" and the 30 s read timeout with the sensor out of range; PC sleep and wake with the real sensor | owner | todo |
+| OWN-06 | Sleep card, History Night view and Stats card on real data | owner | todo |
+| OWN-07 | Real open and save dialogs, Open folder, importing the phone export through the UI. (Pair, Add, Cancel and Bluetooth off then on were checked by the owner 2026-10-17: fine.) | owner | todo |
+| OWN-08 | Windows 10 (never tried): solid backdrop, title bar, toasts, Do Not Disturb | owner | todo |
+| A11Y-01 | Manual accessibility check in `accessibility.md` (Narrator, keyboard, scaling); the automated part is done | owner | doing |
+| I18N-02 | Native Ukrainian review of every string marked "Draft: needs native review" (`ukrainian.md`) | owner | todo |
 
-## Later
+## R2. Owner decisions (questions an agent cannot settle)
+
+Full text in [`questions.md`](questions.md) "Open". Until answered, the agent keeps the stated assumption.
+
+| ID | Decision | Who | Status |
+|---|---|---|---|
+| Q27 | What the user sees when local history cannot be read (locked or corrupt file, missing folder). Likely needed before release | owner | todo |
+| Q7 | Phone export date order and the repeated autumn hour | owner | todo |
+| Q17 | Placeholder strings: owner wording | owner | todo |
+| Q30, Q32, Q33 | Footer signal wording; signal strength not reported by a connected Aranet4; older firmware service id (not supported) | owner | todo |
+| P1 | Store listing: app name, privacy policy page, screenshots | owner | todo |
+| P2, P3 | Interval to recommend on first run; trend rule values after more real data | owner | todo |
+
+## R3. Code work for agents (do in this order; POL-37 is done)
+
+| ID | Item | Who | Status |
+|---|---|---|---|
+| REL-02 | Known gaps still open (the rest of the old list was checked 2026-10-17: the grey header ring and the dark Settings scrollbar were already fixed; History now refreshes on the UI thread; the main window has a minimum size, 1100 × 700; Devices follows new rooms again after leaving and re-entering Settings): (1) a room switch rebuilds the Devices rows while a name is being edited and drops the typed text (small); (2) `WindowsBleConnection` opens a new `GattDeviceService` for each characteristic lookup in an already-opened service (freed on dispose) and attaches its disconnect handler after the pairing checks (needs a real sensor to test) | both | todo |
+| POL-34 | Critical pass over `ViewModels/History`, what is left. Done 2026-10-17: `HistoryViewModel.LoadAsync` (129 lines) is split into read (`ReadAsync` into a `HistoryLoad`), `ShowSummary` and `ShowChart`, with no change in behaviour. Left: `ChartHeaderViewModel.Update` still has non-Day branches (what one bar stands for, the CO₂ zone legend) that only the old bars needed; the grid and line screens overwrite them, so they matter only when a period has no grid (check what the header shows then, with a render, before removing); `StatsViewModel` is 483 lines (the comfort and CO₂ insight text could move to a helper) | agent | todo |
+| POL-35 | Critical pass over `ReadingQueryService` and `Domain/Analytics`: overlapping queries, several scans per History refresh (a Year range is heavy) | agent | todo |
+| POL-36 | Tests: merge the four near-identical render-test `BuildShell` helpers; look for other duplicates | agent | todo |
+| POL-38 | Small: `StatTriplePanel` may be heavier than needed; `HighContrastPalette` maps tokens by name pattern (a new token is silently uncovered); check the Gallery cannot be opened in a release build (`StartupSequence`) | agent | todo |
+| REL-03 | Stats card: time of the highest and lowest reading needs timestamps in `Bucket`; "· N partial" missing in the coverage box | agent | todo |
+| REL-04 | Cleanup: remove the redundant `BoolToVisibility` copies in Flyout, History and Onboarding views (now in `App.xaml`); remove or verify `IBleConnection.SubscribeAsync` (unused by the Aranet4) | agent | todo |
+
+## R4. Release
+
+| ID | Item | Who | Status |
+|---|---|---|---|
+| REL-01 | Store packaging; winget and GitHub later. Needs P1 from the owner for the listing; the packaging itself is agent work | both | todo |
+| REL-05 | Final pass: build, tests, format clean, renders in light and dark (EN), soak test, then tag | both | todo |
+
+## Later (not v1)
 
 | ID | Item | Status |
 |---|---|---|
+| POL-08 | Spike: acrylic flyout (optional) | later |
 | AIR-01 | Airing feedback | later |
-| SLEEP-01 | Sleep verdict card (done, SLEEP-01a) and morning toast (later) | partly done |
+| SLEEP-01 | Morning toast (the sleep verdict card is done) | later |
 | HIST-07 | Click a bar to drill in | later |
 | REPORT-01 | Shareable report | later |
 | ROOMS-01 | All-rooms view | later |
 | THRESH-01 | Editable CO₂ thresholds | later |
-| POLISH-01 | Premium polish pass: now the Polish section below (`plans/polish-implementation.md`) | doing |
 | WORK-01 | Work-hours filter (dropped from v1) | later |
-
-## Polish
-
-Plan, specs and model per item: [`polish-implementation.md`](polish-implementation.md). What and why: [`ui-polish-plan.md`](ui-polish-plan.md). Visual target: `design/polish/deskair-polish-concept.html`.
-
-| ID | Item | Status |
-|---|---|---|
-| POL-00 | Design docs updated to the new direction; decisions recorded | done |
-| POL-01 | Surfaces and accent (zone glow, no zone borders, ink accent, gauge knob, flyout corners) | done |
-| POL-02 | Numbers and units (ppm without separator, proportional hero figures, percent and time formats) | done |
-| POL-03 | Shell chrome (text nav, plain room chip, footer) | done |
-| POL-04 | Live chart (fitted axis, threshold line, area fill, smoothing) | done |
-| POL-05 | Sparklines (minimum range, area fill) | done |
-| POL-06 | Metric selection by hero and mini cards; tabs removed | done |
-| POL-07 | Flyout rework (Q48 follow-up done: Bluetooth step) | done |
-| POL-08 | Spike: acrylic flyout (optional) | todo |
-| POL-09 | History period model and ‹ › navigator | done |
-| POL-10 | History toolbar: metric and range only | done |
-| POL-11 | HourGridChart for Week and Month | done |
-| POL-12 | Year as a months × days grid | done |
-| POL-13 | Day chart with typical line and aired markers | done |
-| POL-14 | History summary card (stats and sleep merged; Q49 follow-up done: Nights section) | done |
-| POL-15 | Settings layout | done |
-| POL-16 | Motion (sliding selection, hero fade, gauge glide, High dot pulse, flyout fade; all off with Windows animations) | done |
-| POL-17 | Final review against the concept (done 2026-10-17; findings are POL-19 to POL-31) | done |
-| POL-18 | History per metric: comfort grids for temperature and humidity, a weather line for pressure; no CO₂ typical day or sleep on other tabs | done |
-| POL-19 | Review fix: Not connected turns the header logo ring and the room chip dot grey | done |
-| POL-20 | Review fix: charts expose a Narrator peer (`ChartAutomationPeer`); names on the Live chart, both ribbons and the History line charts; the 1h / 6h / 24h selector has its own name; the hero zone text is a polite live region. Sparklines stay hidden (the card has the name) | done |
-| POL-21 | Review fix: High Contrast: `HighContrastPalette` laid over the tokens by `ThemeService` while Windows High Contrast is on (surfaces, text and outlines in system colours; zones, metrics and heat steps as stepped opacities); render test and palette tests; documented in accessibility.md | done |
-| POL-22 | Review decision: `heat.comfort` is a slightly stronger grey (light #D5DBE0, dark #3A444E, about 1.4:1 and 1.8:1) and joins the contrast exception in design-tokens.md | done |
-| POL-23 | Review fix: Year summary header names both years ("1 Nov 2025 – 12 Oct 2026") | done |
-| POL-24 | Review fix: Live ribbon labels as "00:00 / 06:00 / 12:00 / 18:00"; Live chart title "CO₂ · last hour" | done |
-| POL-25 | Review: render coverage added (Live Good and High in both themes, dark Not connected, Stale and Low battery, flyout Bluetooth-off, Good, High and dark offline, Temperature and Humidity with values across every comfort step, full-height Settings); tests run one at a time; stale renders deleted; the flyout fixture says "updated 2 min ago" when connected. Found by it: the Settings sleep hint still named the Night filter (fixed) | done |
-| POL-26 | Review fix: thin scrollbar style in both themes (`BaseStyles.xaml`; documented in design-tokens.md) | done |
-| POL-27 | Review decision: the Pressure tip is the documented line only; the extra sentence is gone | done |
-| POL-28 | Review decision: "Open a window for about 10 minutes" stays; D-0015 and the behaviour rule now say they forbid recovery-time estimates, not a suggested duration | done |
-| POL-29 | Review decision: every metric draws its History Day line as a monotone curve (done; the stairs on Humidity and Pressure remain, see POL-32) | done |
-| POL-30 | Review, small: Day summary title is now "Last night · 22:00 – 07:00"; first-run hint says "header"; flyout "ppm" nudged to the baseline (`Space.Flyout.Unit`). No change needed: Ukrainian never uses the `_Other` plural form; the 2 px card bottom padding follows the token. The type scale moved to POL-33 | done |
-| POL-31 | Review: docs housekeeping in screens-and-states.md (stale POL-11 paragraph, Year row outside its table) | done |
-| POL-32 | Review decision: keep the raw readings on the Day lines of Temperature, Humidity and Pressure (steps from coarse sensor values are the data); noted in screens-and-states.md | done |
-| POL-33 | Review fix: the type scale is applied (hero 104, History average 48, stat 20, hero title 14, mini label 13, welcome 20, period title 16); a test keeps every `Font.Size.*` on the scale; the hero stats share their width by need (`StatTriplePanel.Allocate`); the summary card blocks sit 9 px apart so the tallest card still fits | done |
-| POL-34 | Critical pass over `ViewModels/History` (`ChartHeaderViewModel.Update` still has non-Day branches that only the bars used; `HistoryViewModel.LoadAsync` is 129 lines; `StatsViewModel` 483 lines; metric branches added one at a time) | todo |
-| POL-35 | Critical pass over `ReadingQueryService` and `Domain/Analytics` (HourGrid, Comfort, Pressure, Nights, AirImproved): overlapping queries, several scans per History refresh | todo |
-| POL-36 | Tests: merge the four near-identical render-test `BuildShell` helpers; check the other polish-era tests for duplicates | todo |
-| POL-37 | Critical pass over Onboarding (397 lines) and the Bluetooth platform code: older, large, most critical for real use | todo |
-| POL-38 | Small: `StatTriplePanel` may be heavier than needed (a plain Grid could do); `HighContrastPalette` maps tokens by name pattern, so a new token is silently uncovered; check the Gallery cannot be opened in a release build (`StartupSequence`) | todo |
-| POL-39 | Removed after the polish: the range-bar chart (HistoryChart bar mode, six bar layers, `ChartBar`, weekend and average lines), the Typical-day card with its chart, view model, strings and tokens, the unused bar-era header strings, six unused spacing tokens; HistoryChart is now a line-only chart | done |
-| POL-40 | Settings code review findings: `ApplyLater`/`ApplyQuietlyAsync` is copied into five view models (a small base class would do); Appearance and Alerts save all their fields on any change (a change from the tray menu in the same moment can be overwritten; save only the field that changed); `Data` view has four near-identical hidden-row styles (a `Visibility` binding on the row does the same); `BoolToVisibility` is declared in every view | todo |
-| POL-41 | Settings UI polish ideas: segmented controls have three different widths, so their left edges are ragged (equal widths); Quiet hours "From" and "Until" as one row "22:00 to 07:00"; status lines under Data rows are full-height rows with a divider (make them small captions); the "invalid time" caption sits at the card edge, not under its field | todo |

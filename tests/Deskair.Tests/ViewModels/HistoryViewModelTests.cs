@@ -43,7 +43,7 @@ public class HistoryViewModelTests
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(readingStore ?? store, registry, clock, calendar);
 
-        return new HistoryViewModel(toolbar, stats, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), NullLogger<HistoryViewModel>.Instance);
+        return new HistoryViewModel(toolbar, stats, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), new FakeUiDispatcher(), NullLogger<HistoryViewModel>.Instance);
     }
 
     private async Task SelectDeviceAsync()
@@ -556,7 +556,7 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(store, registry, clock, calendar, settings);
-        var viewModel = new HistoryViewModel(toolbar, stats, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), NullLogger<HistoryViewModel>.Instance);
+        var viewModel = new HistoryViewModel(toolbar, stats, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), new FakeUiDispatcher(), NullLogger<HistoryViewModel>.Instance);
         toolbar.Range = Period.Day;
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
@@ -582,7 +582,7 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(new ThrowingReadingStore(), registry, clock, calendar);
-        var viewModel = new HistoryViewModel(toolbar, stats, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), logger);
+        var viewModel = new HistoryViewModel(toolbar, stats, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), new FakeUiDispatcher(), logger);
 
         viewModel.Refresh();
 

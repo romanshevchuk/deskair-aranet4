@@ -15,6 +15,7 @@ namespace Deskair.Tests.ViewModels;
 public class OnboardingViewModelTests
 {
     private readonly FakeBluetoothRadio radio = new();
+    private readonly FakeUiDispatcher dispatcher = new();
     private readonly ListLogger<OnboardingViewModel> logger = new();
     private readonly FakeClock clock = new(new DateTimeOffset(2026, 10, 12, 19, 0, 0, TimeSpan.Zero));
     private readonly FakeDeviceStore store = new();
@@ -30,7 +31,7 @@ public class OnboardingViewModelTests
 
     private OnboardingViewModel Create(params ISensorProvider[] providers)
     {
-        return new OnboardingViewModel(providers, enrollment, radio, new FakeLocalizer(), clock, logger);
+        return new OnboardingViewModel(providers, enrollment, radio, new FakeLocalizer(), clock, dispatcher, logger);
     }
 
     private static DiscoveredSensor Sensor(string provider, string address, int signal = -60)
@@ -112,20 +113,6 @@ public class OnboardingViewModelTests
         await scan.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
 
         Assert.True(viewModel.BluetoothOff);
-    }
-
-    [Fact]
-    public async Task Changing_the_step_stops_the_scan()
-    {
-        var provider = new ControlledProvider("first");
-        var viewModel = Create(provider);
-
-        var scan = viewModel.ScanAsync(TestContext.Current.CancellationToken);
-        await Wait.Until(() => provider.Scans == 1);
-        viewModel.StepIndex = 1;
-        await scan.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
-
-        Assert.True(scan.IsCompletedSuccessfully);
     }
 
     [Fact]
@@ -266,7 +253,7 @@ public class OnboardingViewModelTests
         var failingStore = new ThrowingStore();
         var failingRegistry = new DeviceRegistry(failingStore);
         var failingEnrollment = new DeviceEnrollment(failingStore, failingRegistry, new SettingsService(new FakeSettingsStore(), messenger), messenger);
-        var viewModel = new OnboardingViewModel([], failingEnrollment, radio, new FakeLocalizer(), clock, logger);
+        var viewModel = new OnboardingViewModel([], failingEnrollment, radio, new FakeLocalizer(), clock, dispatcher, logger);
 
         await viewModel.PairCommand.ExecuteAsync(new NearbySensorItem(new DeviceId("aranet4", "A"), "A", string.Empty));
 
@@ -482,6 +469,50 @@ public class OnboardingViewModelTests
 
         Assert.False(viewModel.IsOpen);
         Assert.Equal(new DeviceId("aranet4", "C3DEC8FCC7C6"), registry.Selected);
+    }
+
+    [Fact]
+    public async Task A_search_that_was_replaced_cannot_change_what_the_screen_shows()
+    {
+        var provider = new ControlledProvider("first");
+        var viewModel = Create(provider);
+        using var lifetime = new CancellationTokenSource();
+        viewModel.Start(lifetime.Token);
+        await Wait.Until(() => provider.Scans == 1 && viewModel.IsScanning);
+
+        viewModel.RetryCommand.Execute(null);
+        await Wait.Until(() => provider.Scans == 2);
+        await Wait.Quiet();
+
+        Assert.True(viewModel.IsScanning);
+        Assert.False(viewModel.NoSensorFound);
+    }
+
+    [Fact]
+    public async Task The_screen_state_is_set_through_the_dispatcher()
+    {
+        var provider = new ControlledProvider("first");
+        var viewModel = Create(provider);
+
+        viewModel.Start(TestContext.Current.CancellationToken);
+        await Wait.Until(() => viewModel.IsScanning);
+
+        Assert.True(dispatcher.Posted > 0);
+    }
+
+    [Fact]
+    public async Task A_sensor_found_after_the_search_was_stopped_is_not_listed()
+    {
+        var provider = new ControlledProvider("first");
+        var viewModel = Create(provider);
+        viewModel.OpenToAddSensor();
+        await Wait.Until(() => provider.Scans == 1);
+
+        viewModel.CancelCommand.Execute(null);
+        provider.Found.Writer.TryWrite(Sensor("first", "A"));
+        await Wait.Quiet();
+
+        Assert.Empty(viewModel.Nearby);
     }
 
     private sealed class ThrowingStore : IDeviceStore

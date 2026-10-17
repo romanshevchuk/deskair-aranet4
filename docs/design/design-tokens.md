@@ -2,7 +2,7 @@
 
 *Last reviewed: 2026-10-15*
 
-Design size is 1200 × 728 px at 100 % scale. Implement every value as a named resource in a light and a dark `ResourceDictionary`. The visual target is `design/polish/deskair-polish-concept.html` (POL-00); where it and this file differ, this file wins.
+Design size is 1200 × 728 px at 100 % scale; the window cannot be made smaller than 1100 × 700 (below that the History hour grid legend and the Live tip card no longer fit; checked with renders), so a snap to half a 1080p screen (960 px) opens at the minimum and overflows its zone. Implement every value as a named resource in a light and a dark `ResourceDictionary`. The visual target is `design/polish/deskair-polish-concept.html` (POL-00); where it and this file differ, this file wins.
 
 ## Neutrals
 
@@ -128,7 +128,7 @@ Segoe UI Variable Text, falling back to Segoe UI; display sizes use Segoe UI Var
 | Header nav | Text tabs 14 px, 26 px apart; the current one in `text.primary` 600 with a 18 × 3 px `accent` underline (radius 2) 9 px above the header's bottom edge; others `text.secondary`. Room chip: no border or shadow, hover background `segment.bg` |
 | Hero padding | 22 / 24 / 20 px. Content groups spread over the height (top block, gauge, advice, stats) instead of a gap above the stats |
 | Gauge marker | 20 px, `surface` fill, 3 px `text.primary` ring, soft shadow 0 2 6 at 18 % black |
-| Settings | One column, at most 720 px wide, centred. Section titles 14 px 600 above their cards. Card padding 12 / 22 / 8 px; row at least 40 px tall with 4 px above and below, 16 px between label and control, a 1 px divider above every row but the first. Time fields 88 px wide |
+| Settings | One column, at most 720 px wide, centred. Section titles 14 px 600 above their cards. Card padding 12 / 22 / 8 px; row at least 40 px tall with 4 px above and below, 16 px between label and control, a 1 px divider above every row but the first. Time fields 88 px wide; the three segmented controls in Appearance are at least 296 px wide, with equal segments so their left edges line up; a note or status under a row is a caption (6 px below, no divider), and "invalid time" captions sit right-aligned under the field |
 | Live grid | 3 equal columns; rows 1 fr and 132 px |
 | History | Toolbar 40 px: metric segmented control, period navigator (title 16 px 600, at least 176 px wide, 32 px arrow buttons), range segmented control, 34 px export icon button. Main card padding 18 / 22 / 12. Summary card 330 px wide, padding 20 / 22, full height |
 | History grid | Label column 84 px; end column 160 px (row average right-aligned 46 px in, zone bar 60 px wide and up to 6 px high at 56 px, tag at 124 px); 2 px between squares; square radius 4 px or a quarter of its height if smaller; row height 9 to 44 px from the space available; a collapsed run is one 28 px row; the typical row follows a 16 px separator; legend band 50 px; the night bracket above the hour labels |

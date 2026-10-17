@@ -119,7 +119,7 @@ Good, Elevated, High: ring in zone colour. Not connected: grey dashed ring with 
 | Theme (Light / Dark / System) | System | Whole app and flyout |
 | Temperature unit | °C | Live, History, flyout, toasts (stored data and exports stay in °C) |
 | Notify at Elevated / High | On / On | Toasts |
-| Quiet hours 22:00 to 07:00 | Off | Mutes toasts only |
+| Quiet hours 22:00 to 07:00 (one row "Active between [22:00] to [07:00]") | Off | Mutes toasts only |
 | Night starts / ends (Sleep) | 22:00 / 07:00 | The night band and the Nights and Last night sections in History; typed as HH:mm, saved when valid; the start must differ from the end |
 | Devices | Rename, Add (secondary button) | Per-device data folder; the selected device is remembered |
 | Data folder | Documents\Deskair | Open folder; change (used after a restart, files are not copied; Q34) |

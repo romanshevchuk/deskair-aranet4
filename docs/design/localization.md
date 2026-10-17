@@ -174,4 +174,5 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Sleep_Empty | No readings from last night. | Немає даних за минулу ніч. |
 | Tray_AlertsPausedByWindows | Alerts paused by Windows | Сповіщення призупинено Windows |
 | Settings_Alerts_PausedByWindows | Alerts paused by Windows: Do Not Disturb is on, so Windows holds the notifications. | Сповіщення призупинено Windows: увімкнено «Не турбувати», тому Windows утримує сповіщення. |
-| Settings_QuietHours_From / To / Invalid | From / Until / Use hours and minutes, like 22:00. | З / До / Вкажіть години й хвилини, наприклад 22:00. |
+| -0/ To / Invalid | From / Until (names of the two time fields) / Use hours and minutes, like 22:00. | З / До / Вкажіть години й хвилини, наприклад 22:00. |
+| Settings_QuietHours_Between / Separator | Active between / to | Діють з / до |

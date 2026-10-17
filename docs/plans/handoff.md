@@ -1,6 +1,6 @@
 # Handoff (updated 2026-10-14)
 
-*Last reviewed: 2026-10-14*
+*Last reviewed: 2026-10-17*
 
 For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory (`AranetHomeDesktop`) unless the owner points you to it, and do not read `../deskair-legacy`.
 
@@ -56,31 +56,11 @@ The owner's sensor is an Aranet4 `0A0B3`, address `C3DEC8FCC7C6`, Bluetooth is o
 
 The per-feature rules and what was and was not verified are in the decided Q entries of `docs/plans/questions.md` (tray Q37, flyout Q38, single instance Q39, resume Q40, toasts Q41, snooze Q42, Do Not Disturb Q43, reconnect Q44, try again Q45, sleep Q46, prototype alignment Q47, title bar Q14, offline Q31, stats Q36). The spike notes (`spike-s1` to `spike-s5`, `research-do-not-disturb.md`) record how the Windows parts were found out. The Aranet4 history download is documented in `spike-s1-ble-history.md` (5040 readings every 120 s; a real capture is `tests/Deskair.Tests/TestData/aranet4-history-capture.txt`).
 
-**Next: a UI/UX improvement pass.** Brief for it: `docs/plans/ui-review-brief.md`.
+**Next: the "Left before release" lists in `backlog.md` (start with R3 for agents).** The UI/UX review (`ui-review-brief.md`) is done (POL-17).
 
-### Open, in the owner's hands (nobody else can do them)
+### What is left
 
-Not verified on real hardware or by eye:
-
-- Quiet-hours and night-hours times typed by hand in Settings.
-- A real press on an alert toast (Snooze, Open), including with the app not running; Do Not Disturb and "paused by Windows" rows by eye.
-- The Snooze menu in the flyout stays open (a context menu inside the flyout window might close it on deactivation); the tray menu items and the value icon in the real tray; closing the flyout on click-away and Esc.
-- Flyout and tray on other taskbar edges, DPI scales and a second monitor (S2).
-- "Try again" and the 30 s read timeout with the sensor out of range; sleep and wake of the PC with the real sensor.
-- Sleep card and History Night view on real data; Stats card on real data.
-- The real open and save dialogs, Open folder, and importing the phone export through the UI.
-- Pressing Pair and Add in the real UI.
-- `IBleConnection.SubscribeAsync` is not used by the Aranet4 and not verified on hardware: remove it or verify it when a sensor that needs notifications is added.
-- Windows 10 (nothing was ever tried there): the solid backdrop path, the title bar, toasts, Do Not Disturb.
-
-### Known, not fixed
-
-- `HistoryViewModel` re-reads stored readings several times per refresh and refreshes while hidden (a Year range is heavy); its refresh runs on the sender's thread and its `CancellationTokenSource` field is unguarded.
-- `DevicesSettingsViewModel` keeps its `listening` flag after cancel (only matters at shutdown) and a room switch rebuilds the rows while a name is being edited.
-- The Settings scrollbar is the light WPF default in the dark theme; the Settings page was not compared with the prototype's Settings view; Live in the dark theme was not looked at after the last styling pass.
-- Stats card: time of the highest and lowest reading needs timestamps in `Bucket`; "· N partial" is missing in the coverage box.
-- The header ring is not grey in the offline state; the main window has no minimum width (snap zones want 500 px or less).
-- Per-feature gaps are listed at the end of the Q entries above ("Not built").
+Everything left before release (owner checks, owner decisions, agent code work, release steps) is in [`backlog.md`](backlog.md). The old "Open, in the owner's hands" and "Known, not fixed" lists moved there (OWN-01 to OWN-08, REL-02 to REL-04). Do not keep a second list here.
 
 ## Open questions for the owner (`docs/plans/questions.md` "Open")
 

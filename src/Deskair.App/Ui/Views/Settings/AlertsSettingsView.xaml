@@ -5,9 +5,6 @@
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
   <!-- DataContext: AlertsSettingsViewModel. The switches save at once. The quiet hours times show while quiet hours are on, and a time is saved as soon as it reads as HH:mm.
        The "paused by Windows" row shows only while Windows Do Not Disturb holds the alerts. -->
-  <UserControl.Resources>
-    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
-  </UserControl.Resources>
   <controls:SettingsCard Header="{loc:T Settings_Alerts}">
     <StackPanel>
       <controls:Banner Margin="0,0,0,8"
@@ -26,20 +23,21 @@
         <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_QuietHours}" IsChecked="{Binding QuietHoursEnabled, Mode=TwoWay}" />
       </controls:SettingsRow>
       <StackPanel Visibility="{Binding QuietHoursEnabled, Converter={StaticResource BoolToVisibility}}">
-        <controls:SettingsRow Header="{loc:T Settings_QuietHours_From}">
-          <controls:TextInput Width="{StaticResource Size.TimeField.Width}" MinWidth="0" Padding="4,3" HorizontalContentAlignment="Center"
-                              AutomationProperties.Name="{loc:T Settings_QuietHours_From}"
-                              Text="{Binding QuietHoursStart.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <controls:SettingsRow Header="{loc:T Settings_QuietHours_Between}">
+          <StackPanel Orientation="Horizontal">
+            <controls:TextInput Width="{StaticResource Size.TimeField.Width}" MinWidth="0" Padding="4,3" HorizontalContentAlignment="Center"
+                                AutomationProperties.Name="{loc:T Settings_QuietHours_From}"
+                                Text="{Binding QuietHoursStart.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource Text.Secondary}" Margin="8,0" VerticalAlignment="Center" Text="{loc:T Settings_QuietHours_Separator}" />
+            <controls:TextInput Width="{StaticResource Size.TimeField.Width}" MinWidth="0" Padding="4,3" HorizontalContentAlignment="Center"
+                                AutomationProperties.Name="{loc:T Settings_QuietHours_To}"
+                                Text="{Binding QuietHoursEnd.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+          </StackPanel>
         </controls:SettingsRow>
-        <TextBlock Style="{StaticResource Text.Caption}"
+        <TextBlock Style="{StaticResource Text.Caption}" HorizontalAlignment="Right" Margin="{StaticResource Space.SettingsRow.Caption}"
                    Text="{loc:T Settings_QuietHours_Invalid}"
                    Visibility="{Binding QuietHoursStart.IsInvalid, Converter={StaticResource BoolToVisibility}}" />
-        <controls:SettingsRow Header="{loc:T Settings_QuietHours_To}">
-          <controls:TextInput Width="{StaticResource Size.TimeField.Width}" MinWidth="0" Padding="4,3" HorizontalContentAlignment="Center"
-                              AutomationProperties.Name="{loc:T Settings_QuietHours_To}"
-                              Text="{Binding QuietHoursEnd.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        </controls:SettingsRow>
-        <TextBlock Style="{StaticResource Text.Caption}"
+        <TextBlock Style="{StaticResource Text.Caption}" HorizontalAlignment="Right" Margin="{StaticResource Space.SettingsRow.Caption}"
                    Text="{loc:T Settings_QuietHours_Invalid}"
                    Visibility="{Binding QuietHoursEnd.IsInvalid, Converter={StaticResource BoolToVisibility}}" />
       </StackPanel>

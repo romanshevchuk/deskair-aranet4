@@ -106,6 +106,8 @@
   <data name="Settings_QuietHours_Hint" xml:space="preserve"><value>No notifications at night</value></data>
   <data name="Settings_QuietHours_From" xml:space="preserve"><value>From</value></data>
   <data name="Settings_QuietHours_To" xml:space="preserve"><value>Until</value></data>
+  <data name="Settings_QuietHours_Between" xml:space="preserve"><value>Active between</value></data>
+  <data name="Settings_QuietHours_Separator" xml:space="preserve"><value>to</value></data>
   <data name="Settings_QuietHours_Invalid" xml:space="preserve"><value>Use hours and minutes, like 22:00.</value></data>
   <data name="Settings_Sleep" xml:space="preserve"><value>Sleep</value></data>
   <data name="Settings_Sleep_Start" xml:space="preserve"><value>Night starts</value></data>

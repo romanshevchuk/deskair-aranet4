@@ -4,9 +4,6 @@
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
   <!-- DataContext: SleepSettingsViewModel. The night hours, typed as HH:mm and saved as soon as they read as a time. The night band and the Nights and Last night sections in History use them. -->
-  <UserControl.Resources>
-    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
-  </UserControl.Resources>
   <controls:SettingsCard Header="{loc:T Settings_Sleep}">
     <StackPanel>
       <controls:SettingsRow Header="{loc:T Settings_Sleep_Start}" Description="{loc:T Settings_Sleep_Hint}">
@@ -14,7 +11,7 @@
                             AutomationProperties.Name="{loc:T Settings_Sleep_Start}"
                             Text="{Binding NightStart.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
       </controls:SettingsRow>
-      <TextBlock Style="{StaticResource Text.Caption}"
+      <TextBlock Style="{StaticResource Text.Caption}" HorizontalAlignment="Right" Margin="{StaticResource Space.SettingsRow.Caption}"
                  Text="{loc:T Settings_QuietHours_Invalid}"
                  Visibility="{Binding NightStart.IsInvalid, Converter={StaticResource BoolToVisibility}}" />
       <controls:SettingsRow Header="{loc:T Settings_Sleep_End}">
@@ -22,10 +19,10 @@
                             AutomationProperties.Name="{loc:T Settings_Sleep_End}"
                             Text="{Binding NightEnd.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
       </controls:SettingsRow>
-      <TextBlock Style="{StaticResource Text.Caption}"
+      <TextBlock Style="{StaticResource Text.Caption}" HorizontalAlignment="Right" Margin="{StaticResource Space.SettingsRow.Caption}"
                  Text="{loc:T Settings_QuietHours_Invalid}"
                  Visibility="{Binding NightEnd.IsInvalid, Converter={StaticResource BoolToVisibility}}" />
-      <TextBlock Style="{StaticResource Text.Caption}"
+      <TextBlock Style="{StaticResource Text.Caption}" HorizontalAlignment="Right" Margin="{StaticResource Space.SettingsRow.Caption}"
                  Text="{loc:T Settings_Sleep_SameTime}"
                  Visibility="{Binding IsEmptyWindow, Converter={StaticResource BoolToVisibility}}" />
     </StackPanel>

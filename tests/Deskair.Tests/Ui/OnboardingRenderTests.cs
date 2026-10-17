@@ -99,6 +99,7 @@ public class OnboardingRenderTests
             radio,
             localizer,
             clock,
+            new FakeUiDispatcher(),
             NullLogger<OnboardingViewModel>.Instance);
         Apply(onboarding, step);
 

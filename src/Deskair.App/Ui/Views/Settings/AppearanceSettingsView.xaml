@@ -6,10 +6,15 @@
              xmlns:metrics="clr-namespace:Deskair.Domain.Metrics;assembly=Deskair.Domain"
              xmlns:settings="clr-namespace:Deskair.Services.Settings;assembly=Deskair.Services">
   <!-- DataContext: AppearanceSettingsViewModel. Language, theme and temperature unit. A change is saved and applied at once. -->
+  <UserControl.Resources>
+    <ItemsPanelTemplate x:Key="Settings.Segments.Panel">
+      <UniformGrid Rows="1" />
+    </ItemsPanelTemplate>
+  </UserControl.Resources>
   <controls:SettingsCard Header="{loc:T Settings_Appearance}">
     <StackPanel>
       <controls:SettingsRow Header="{loc:T Settings_Language}">
-        <controls:SegmentedControl AutomationProperties.Name="{loc:T Settings_Language}"
+        <controls:SegmentedControl ItemsPanel="{StaticResource Settings.Segments.Panel}" MinWidth="{StaticResource Size.Segmented.SettingsMinWidth}" AutomationProperties.Name="{loc:T Settings_Language}"
                                    SelectedValue="{Binding Language, Mode=TwoWay}"
                                    SelectedValuePath="Tag">
           <ListBoxItem Content="{loc:T Language_System}" Tag="{x:Static settings:LanguageChoice.System}" />
@@ -18,7 +23,7 @@
         </controls:SegmentedControl>
       </controls:SettingsRow>
       <controls:SettingsRow Header="{loc:T Settings_Theme}">
-        <controls:SegmentedControl AutomationProperties.Name="{loc:T Settings_Theme}"
+        <controls:SegmentedControl ItemsPanel="{StaticResource Settings.Segments.Panel}" MinWidth="{StaticResource Size.Segmented.SettingsMinWidth}" AutomationProperties.Name="{loc:T Settings_Theme}"
                                    SelectedValue="{Binding Theme, Mode=TwoWay}"
                                    SelectedValuePath="Tag">
           <ListBoxItem Content="{loc:T Theme_System}" Tag="{x:Static settings:ThemeChoice.System}" />
@@ -27,7 +32,7 @@
         </controls:SegmentedControl>
       </controls:SettingsRow>
       <controls:SettingsRow Header="{loc:T Settings_Unit}">
-        <controls:SegmentedControl AutomationProperties.Name="{loc:T Settings_Unit}"
+        <controls:SegmentedControl ItemsPanel="{StaticResource Settings.Segments.Panel}" MinWidth="{StaticResource Size.Segmented.SettingsMinWidth}" AutomationProperties.Name="{loc:T Settings_Unit}"
                                    SelectedValue="{Binding TemperatureUnit, Mode=TwoWay}"
                                    SelectedValuePath="Tag">
           <ListBoxItem Content="{loc:T Unit_Celsius}" Tag="{x:Static metrics:TemperatureUnit.Celsius}" />

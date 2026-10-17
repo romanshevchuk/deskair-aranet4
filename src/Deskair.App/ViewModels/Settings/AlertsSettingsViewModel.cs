@@ -12,12 +12,10 @@ namespace Deskair.App.ViewModels.Settings;
 /// Alert switches and quiet hours. A change from the screen is saved at once; <see cref="Load"/> does not save. The quiet hours times are <see cref="TimeField"/>s:
 /// a time that does not parse is flagged and not saved. <see cref="IsPausedByWindows"/> says Windows Do Not Disturb is holding the alerts.
 /// </summary>
-public sealed partial class AlertsSettingsViewModel : ObservableObject
+public sealed partial class AlertsSettingsViewModel : SettingsSectionViewModel
 {
-    private readonly SettingsService settings;
     private readonly IDoNotDisturb doNotDisturb;
     private readonly IUiDispatcher dispatcher;
-    private readonly ILogger<AlertsSettingsViewModel> logger;
     private bool loading;
     private bool windowsHoldsAlerts;
 
@@ -43,14 +41,13 @@ public sealed partial class AlertsSettingsViewModel : ObservableObject
         IMessenger messenger,
         IUiDispatcher dispatcher,
         ILogger<AlertsSettingsViewModel> logger)
+        : base(settings, logger)
     {
-        this.settings = settings;
         this.doNotDisturb = doNotDisturb;
         this.dispatcher = dispatcher;
-        this.logger = logger;
 
-        QuietHoursStart.ValueChanged += (_, _) => ApplyLater();
-        QuietHoursEnd.ValueChanged += (_, _) => ApplyLater();
+        QuietHoursStart.ValueChanged += (_, _) => Save(current => current with { QuietHoursStart = QuietHoursStart.Value });
+        QuietHoursEnd.ValueChanged += (_, _) => Save(current => current with { QuietHoursEnd = QuietHoursEnd.Value });
         messenger.Register<AlertsSettingsViewModel, DoNotDisturbChanged>(this, static (self, message) => self.dispatcher.Post(() => self.OnDoNotDisturb(message.IsActive)));
     }
 
@@ -60,7 +57,7 @@ public sealed partial class AlertsSettingsViewModel : ObservableObject
 
     public void Load()
     {
-        var current = settings.Current;
+        var current = Settings.Current;
         loading = true;
 
         try
@@ -80,32 +77,17 @@ public sealed partial class AlertsSettingsViewModel : ObservableObject
         }
     }
 
-    public Task ApplyAsync(CancellationToken cancellationToken)
-    {
-        return settings.UpdateAsync(
-            current => current with
-            {
-                AlertsEnabled = AlertsEnabled,
-                NotifyAtElevated = NotifyAtElevated,
-                NotifyAtHigh = NotifyAtHigh,
-                QuietHoursEnabled = QuietHoursEnabled,
-                QuietHoursStart = QuietHoursStart.Value,
-                QuietHoursEnd = QuietHoursEnd.Value
-            },
-            cancellationToken);
-    }
-
     partial void OnAlertsEnabledChanged(bool value)
     {
         RefreshPaused();
-        ApplyLater();
+        Save(current => current with { AlertsEnabled = value });
     }
 
-    partial void OnNotifyAtElevatedChanged(bool value) => ApplyLater();
+    partial void OnNotifyAtElevatedChanged(bool value) => Save(current => current with { NotifyAtElevated = value });
 
-    partial void OnNotifyAtHighChanged(bool value) => ApplyLater();
+    partial void OnNotifyAtHighChanged(bool value) => Save(current => current with { NotifyAtHigh = value });
 
-    partial void OnQuietHoursEnabledChanged(bool value) => ApplyLater();
+    partial void OnQuietHoursEnabledChanged(bool value) => Save(current => current with { QuietHoursEnabled = value });
 
     private void OnDoNotDisturb(bool active)
     {
@@ -118,26 +100,11 @@ public sealed partial class AlertsSettingsViewModel : ObservableObject
         IsPausedByWindows = AlertsEnabled && windowsHoldsAlerts;
     }
 
-    private void ApplyLater()
+    private void Save(Func<AppSettings, AppSettings> change)
     {
         if (!loading)
         {
-            _ = ApplyQuietlyAsync();
-        }
-    }
-
-    private async Task ApplyQuietlyAsync()
-    {
-        try
-        {
-            await ApplyAsync(CancellationToken.None);
-        }
-        catch (Exception exception) when (exception is not OperationCanceledException)
-        {
-            if (logger.IsEnabled(LogLevel.Warning))
-            {
-                logger.LogWarning(exception, "Saving the alert settings failed.");
-            }
+            SaveInBackground(change, "Saving the alert settings failed.");
         }
     }
 }

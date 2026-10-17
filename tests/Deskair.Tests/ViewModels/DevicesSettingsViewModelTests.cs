@@ -112,4 +112,18 @@ public sealed class DevicesSettingsViewModelTests : IDisposable
         await Wait.Until(() => viewModel.Rows.Count == 1);
         Assert.Equal("My room", viewModel.Rows[0].Name);
     }
+
+    [Fact]
+    public async Task Coming_back_to_Settings_follows_new_rooms_again()
+    {
+        using var firstVisit = new CancellationTokenSource();
+        await viewModel.LoadAsync(firstVisit.Token);
+        await firstVisit.CancelAsync();
+        await viewModel.LoadAsync(stop.Token);
+
+        store.Devices.Add(new DeviceInfo(office, "My room", null, [], null));
+        messenger.Send(new DeviceSelected(office));
+
+        await Wait.Until(() => viewModel.Rows.Count == 1);
+    }
 }

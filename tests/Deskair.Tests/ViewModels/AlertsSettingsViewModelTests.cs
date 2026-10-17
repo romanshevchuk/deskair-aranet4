@@ -61,24 +61,20 @@ public class AlertsSettingsViewModelTests
     }
 
     [Fact]
-    public async Task Apply_keeps_language_and_theme()
+    public async Task A_change_keeps_language_and_theme()
     {
         store.Stored = AppSettings.Default with { Theme = ThemeChoice.Dark };
         await settings.LoadAsync(TestContext.Current.CancellationToken);
         viewModel.Load();
         viewModel.AlertsEnabled = false;
 
-        await viewModel.ApplyAsync(TestContext.Current.CancellationToken);
-
         Assert.Equal(ThemeChoice.Dark, Assert.Single(store.Saved).Theme);
     }
 
     [Fact]
-    public async Task Unchanged_values_do_nothing()
+    public void Unchanged_values_do_nothing()
     {
         viewModel.Load();
-
-        await viewModel.ApplyAsync(TestContext.Current.CancellationToken);
 
         Assert.Empty(store.Saved);
     }
@@ -126,5 +122,29 @@ public class AlertsSettingsViewModelTests
         viewModel.AlertsEnabled = false;
 
         Assert.False(viewModel.IsPausedByWindows);
+    }
+
+    [Fact]
+    public async Task Changing_one_alert_setting_does_not_undo_one_changed_elsewhere_since_the_screen_loaded()
+    {
+        viewModel.Load();
+        await settings.UpdateAsync(current => current with { NotifyAtHigh = false }, TestContext.Current.CancellationToken);
+
+        viewModel.NotifyAtElevated = false;
+
+        Assert.False(store.Stored.NotifyAtHigh);
+        Assert.False(store.Stored.NotifyAtElevated);
+    }
+
+    [Fact]
+    public async Task Typing_a_quiet_hours_time_does_not_undo_a_switch_changed_elsewhere_since_the_screen_loaded()
+    {
+        viewModel.Load();
+        await settings.UpdateAsync(current => current with { AlertsEnabled = false }, TestContext.Current.CancellationToken);
+
+        viewModel.QuietHoursEnd.Text = "06:30";
+
+        Assert.False(store.Stored.AlertsEnabled);
+        Assert.Equal(new TimeOnly(6, 30), store.Stored.QuietHoursEnd);
     }
 }

@@ -69,6 +69,7 @@ public class ShellViewModelTests
             new FakeBluetoothRadio(),
             new FakeLocalizer(),
             new FakeClock(DateTimeOffset.UnixEpoch),
+            new FakeUiDispatcher(),
             NullLogger<OnboardingViewModel>.Instance);
         var viewModel = new ShellViewModel(messenger) { Onboarding = onboarding, Section = ShellSection.Settings };
 
