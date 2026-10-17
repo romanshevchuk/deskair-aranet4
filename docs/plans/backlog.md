@@ -13,7 +13,7 @@ Order of work: 1. Owner checks (R1) and decisions (R2), which can start now. 2. 
 | ID | What to check | Who | Status |
 |---|---|---|---|
 | OWN-01 | Quiet-hours and night-hours times typed by hand in Settings (Settings was reworked 2026-10-17: one "Active between" row, captions under fields) | owner | todo |
-| OWN-02 | A real press on an alert toast (Snooze, Open), also with the app not running; Do Not Disturb and the "paused by Windows" row | owner | todo |
+| OWN-02 | A real press on an alert toast: Open was checked by the owner 2026-10-17 (app opened). Still to check: Snooze on the toast, a press with the app not running, Do Not Disturb and the "paused by Windows" row | owner | doing |
 | OWN-03 | Tray: menu items, value icon, flyout closes on click-away and Esc, the Snooze menu inside the flyout stays open | owner | todo |
 | OWN-04 | Flyout and tray on other taskbar edges, other DPI scales, a second monitor (spike S2) | owner | todo |
 | OWN-05 | "Try again" and the 30 s read timeout with the sensor out of range; PC sleep and wake with the real sensor | owner | todo |
