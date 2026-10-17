@@ -122,7 +122,6 @@
                                    Highlight="{Binding Highlight}"
                                    Metric="{Binding Toolbar.Metric}"
                                    NoDataText="{loc:T Chart_NoData}"
-                                   MarkerLabel="{loc:T History_AirImproved_Label}"
                                    Markers="{Binding Markers}"
                                    NightLabel="{loc:T History_Legend_Night}"
                                    NightSpans="{Binding NightSpans}"
@@ -150,7 +149,10 @@
 
         </Grid>
 
-        <history:SummaryCard Grid.Column="2" VerticalAlignment="Top" />
+        <!-- The two cards can be taller than the window at its smallest size, so the column scrolls; the margins keep the card shadows from being cut off. -->
+        <ScrollViewer Grid.Column="2" Margin="-6,0,-6,0" VerticalScrollBarVisibility="Auto">
+          <history:SummaryCard Margin="6,0,6,10" VerticalAlignment="Top" />
+        </ScrollViewer>
       </Grid>
     </Grid>
 

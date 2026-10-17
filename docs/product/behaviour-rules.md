@@ -100,7 +100,7 @@ When several apply, the first of this list wins: First run, Not connected, Stale
 
 1. **Where:** History with the Day range shows "Last night" as a section of the summary card (it replaces the sleep card, D-0019). The chart above shows the day as usual.
 2. **Which night:** for the last 24 hours, the most recent night that has ended, in the night hours from Settings → Sleep (22:00 to 07:00 by default). The night in progress is not "last night": at 23:00 the section still shows the night that ended that morning. For a calendar day, the night that ended on that day's morning. Times are local, and a night with a clock change is an hour longer or shorter.
-3. **Verdict (CO₂ only):** Good = average under 1,000 ppm and at most 1 hour at or above 1,000 ppm; Poor = average above 1,400 ppm or 5 hours or more at or above 1,000 ppm; otherwise Fair. A reading counts for one sensor interval.
+3. **Verdict (CO₂ only):** Good = average under 1,000 ppm and at most 1 hour at or above 1,000 ppm; Poor = average above 1,400 ppm or 5 hours or more at or above 1,000 ppm; otherwise Fair. A reading counts for one sensor interval. The pill is green for Good, neutral for Fair and amber for Poor: red stays for the air being High now.
 4. **Numbers:** time at or above 1,000 ppm (out of the hours recorded), the peak with its time, and the average between 02:00 and 05:00 local (deep sleep; shown as "–" when the night has none). Other metrics have no verdict and show the lowest value first.
 5. **Missing data:** under 80 % of the night recorded shows "Only N of M hours were recorded". A night without readings says so. Nothing is interpolated.
 6. **Not built yet:** the morning toast (SLEEP-01).

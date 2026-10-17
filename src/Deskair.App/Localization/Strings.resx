@@ -296,8 +296,9 @@
   <data name="Data_NoSensor" xml:space="preserve"><value>Add a sensor first.</value></data>
   <data name="Dialog_AllFiles" xml:space="preserve"><value>All files</value></data>
   <data name="Import_DialogTitle" xml:space="preserve"><value>Choose the phone app’s export</value></data>
-  <data name="Import_Preview_One" xml:space="preserve"><value>{count} reading, {first} to {last} · {new} new · {present} already present</value></data>
-  <data name="Import_Preview_Other" xml:space="preserve"><value>{count} readings, {first} to {last} · {new} new · {present} already present</value></data>
+  <data name="Import_Preview_One" xml:space="preserve"><value>{new} new reading will be added to {room} · the file has {count} in all, {first} – {last}, {present} already stored</value></data>
+  <data name="Import_Preview_Other" xml:space="preserve"><value>{new} new readings will be added to {room} · the file has {count} in all, {first} – {last}, {present} already stored</value></data>
+  <data name="Import_NothingNew" xml:space="preserve"><value>Nothing new in this file: every reading is already stored.</value></data>
   <data name="Import_Done_One" xml:space="preserve"><value>{count} new reading added.</value></data>
   <data name="Import_Done_Other" xml:space="preserve"><value>{count} new readings added.</value></data>
   <data name="Import_Empty" xml:space="preserve"><value>This file has no readings Deskair can use.</value></data>
@@ -326,6 +327,7 @@
   <data name="History_Chart_ByDay" xml:space="preserve"><value>by day</value><comment>Subtitle of the History grid (Year).</comment></data>
   <data name="History_AirImproved_Hover" xml:space="preserve"><value>Air improved at {time} · −{drop} {unit} in {min} min</value></data>
   <data name="History_AirImproved_Label" xml:space="preserve"><value>air improved</value><comment>Label on the small ring on the History Day chart where CO₂ dropped quickly.</comment></data>
+  <data name="History_Legend_AirImproved" xml:space="preserve"><value>Air improved</value></data>
   <data name="History_Hover_Typical" xml:space="preserve"><value>typical {value}</value><comment>Added to the hover readout of the History Day chart.</comment></data>
   <data name="History_Legend_Typical" xml:space="preserve"><value>Typical, previous 7 days</value></data>
   <data name="History_Chart_ComfortRange" xml:space="preserve"><value>comfort {from}–{to} {unit}</value></data>

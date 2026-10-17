@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- DataContext: HistoryViewModel. One card, top to bottom (screens-and-states.md "History summary card"): the average with its change and the coverage as a line of text, the time in each zone,
-       last night (Day only), the highest and lowest reading with their day and time, and the tip in the colours of the zone of the average. A part without numbers is hidden. -->
+  <!-- DataContext: HistoryViewModel. Two cards, top to bottom (screens-and-states.md "History summary card"):
+       the period: the average with its change and the coverage as a line of text, the time in each zone, the highest and lowest reading with their day and time, and the tip in the colours
+       of the zone of the average; and the night: "Last night" on Day, the nights of the period on Week, Month and Year. A part without numbers is hidden. -->
   <UserControl.Resources>
     <Style x:Key="Summary.Coverage" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Secondary}">
       <Setter Property="Margin" Value="{StaticResource Space.Stats.Change}" />
@@ -14,11 +15,21 @@
         </DataTrigger>
       </Style.Triggers>
     </Style>
+    <Style x:Key="Summary.RowLabel" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Secondary}">
+      <Setter Property="Margin" Value="0,0,16,0" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="Summary.RowValue" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Body}">
+      <Setter Property="FontWeight" Value="{DynamicResource Font.Weight.SemiBold}" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
   </UserControl.Resources>
 
-  <controls:Card Padding="{StaticResource Space.Stats.Card}">
-    <StackPanel>
-      <!-- Average: the value, its change against the period before and the coverage. -->
+  <StackPanel>
+    <!-- The period. -->
+    <controls:Card Padding="{StaticResource Space.Stats.Card}">
       <StackPanel DataContext="{Binding Stats}">
         <TextBlock Style="{StaticResource Text.SectionLabel}" Text="{Binding HeaderText}" TextTrimming="CharacterEllipsis" />
 
@@ -75,92 +86,11 @@
             </StackPanel>
           </Grid>
         </StackPanel>
-      </StackPanel>
 
-      <!-- Last night (Day): the verdict pill (CO₂ only), three numbers and a short tip; a night only partly recorded says so. -->
-      <StackPanel Margin="{StaticResource Space.Stats.Block}"
-                  DataContext="{Binding Sleep}"
-                  Visibility="{Binding DataContext.ShowSleep, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Converter={StaticResource BoolToVisibility}}">
-        <StackPanel Orientation="Horizontal">
-          <TextBlock VerticalAlignment="Center"
-                     FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
-                     Style="{StaticResource Text.SectionLabel}"
-                     Text="&#xE708;" />
-          <TextBlock Margin="{StaticResource Space.Inline}"
-                     VerticalAlignment="Center"
-                     Style="{StaticResource Text.SectionLabel}"
-                     Text="{Binding Title}" />
-          <controls:Pill Margin="{StaticResource Space.Inline}"
-                         VerticalAlignment="Center"
-                         Content="{Binding VerdictText}"
-                         Visibility="{Binding HasVerdict, Converter={StaticResource BoolToVisibility}}"
-                         Zone="{Binding VerdictZone}" />
-        </StackPanel>
-
-        <Grid Margin="{StaticResource Space.Stats.Block}" Visibility="{Binding HasData, Converter={StaticResource BoolToVisibility}}">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-          </Grid.ColumnDefinitions>
-          <controls:KeyValueCell Grid.Column="0" Label="{Binding FirstLabel}" Value="{Binding FirstValue}" />
-          <controls:KeyValueCell Grid.Column="1" Label="{Binding PeakLabel}" Value="{Binding PeakValue}" />
-          <controls:KeyValueCell Grid.Column="2" Label="{Binding DeepLabel}" Value="{Binding DeepValue}" />
-        </Grid>
-
-        <TextBlock Margin="{StaticResource Space.Stats.Block}"
-                   Style="{StaticResource Text.Secondary}"
-                   Text="{Binding Tip}"
-                   TextWrapping="Wrap" />
-
-        <TextBlock Margin="{StaticResource Space.Chart.Caption}"
-                   FontWeight="SemiBold"
-                   Style="{StaticResource Text.Secondary}"
-                   Text="{Binding PartialNote}"
-                   TextWrapping="Wrap"
-                   Visibility="{Binding ShowPartialNote, Converter={StaticResource BoolToVisibility}}" />
-      </StackPanel>
-
-      <!-- Nights (Week, Month, Year): the average night, and for CO₂ the best and worst night with their dates. -->
-      <StackPanel Margin="{StaticResource Space.Stats.Block}"
-                  DataContext="{Binding Sleep}"
-                  Visibility="{Binding HasNights, Converter={StaticResource BoolToVisibility}}">
-        <StackPanel Orientation="Horizontal">
-          <TextBlock VerticalAlignment="Center"
-                     FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
-                     Style="{StaticResource Text.SectionLabel}"
-                     Text="&#xE708;" />
-          <TextBlock Margin="{StaticResource Space.Inline}"
-                     VerticalAlignment="Center"
-                     Style="{StaticResource Text.SectionLabel}"
-                     Text="{Binding NightsTitle}" />
-        </StackPanel>
-
-        <Grid Margin="{StaticResource Space.Stats.Block}">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-          </Grid.ColumnDefinitions>
-          <controls:KeyValueCell Grid.Column="0" Label="{loc:T Nights_Average}" Value="{Binding NightsAverage}" />
-          <StackPanel Grid.Column="1" Visibility="{Binding HasNightExtremes, Converter={StaticResource BoolToVisibility}}">
-            <controls:KeyValueCell Label="{Binding LowestNightLabel}" Value="{Binding LowestNightValue}" />
-            <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding LowestNightWhen}" />
-          </StackPanel>
-          <StackPanel Grid.Column="2" Visibility="{Binding HasNightExtremes, Converter={StaticResource BoolToVisibility}}">
-            <controls:KeyValueCell Label="{Binding HighestNightLabel}" Value="{Binding HighestNightValue}" />
-            <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding HighestNightWhen}" />
-          </StackPanel>
-        </Grid>
-
-        <TextBlock Margin="{StaticResource Space.Chart.Caption}" Style="{StaticResource Text.Caption}" Text="{loc:T Nights_Hint}" TextWrapping="Wrap" />
-      </StackPanel>
-
-      <StackPanel DataContext="{Binding Stats}">
         <!-- Highest and lowest reading with their day and time. -->
         <Border Margin="{StaticResource Space.Stats.Block}"
                 BorderBrush="{DynamicResource Divider.Brush}"
-                BorderThickness="0,1,0,1"
+                BorderThickness="0,1,0,0"
                 Padding="{StaticResource Space.Stats.Cells}">
           <Grid>
             <Grid.ColumnDefinitions>
@@ -193,6 +123,96 @@
 
         <controls:InsightBox Margin="{StaticResource Space.Stats.Block}" Content="{Binding InsightText}" Zone="{Binding InsightZone}" />
       </StackPanel>
-    </StackPanel>
-  </controls:Card>
+    </controls:Card>
+
+    <!-- Last night (Day): the verdict pill (CO₂ only), the numbers as rows and a short tip; a night only partly recorded says so. -->
+    <controls:Card Margin="0,16,0,0"
+                   Padding="{StaticResource Space.Stats.Card}"
+                   Visibility="{Binding ShowSleep, Converter={StaticResource BoolToVisibility}}">
+      <StackPanel DataContext="{Binding Sleep}">
+        <StackPanel Orientation="Horizontal">
+          <TextBlock VerticalAlignment="Center"
+                     FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                     Style="{StaticResource Text.SectionLabel}"
+                     Text="&#xE708;" />
+          <TextBlock Margin="{StaticResource Space.Inline}"
+                     VerticalAlignment="Center"
+                     Style="{StaticResource Text.SectionLabel}"
+                     Text="{Binding Title}" />
+          <controls:Pill Margin="{StaticResource Space.Inline}"
+                         VerticalAlignment="Center"
+                         Content="{Binding VerdictText}"
+                         Visibility="{Binding HasVerdict, Converter={StaticResource BoolToVisibility}}"
+                         Zone="{Binding VerdictZone}" />
+        </StackPanel>
+
+        <Grid Margin="{StaticResource Space.Stats.Block}" Visibility="{Binding HasData, Converter={StaticResource BoolToVisibility}}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,16,4" Style="{StaticResource Summary.RowLabel}" Text="{Binding FirstLabel}" />
+          <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,0,0,4" Style="{StaticResource Summary.RowValue}" Text="{Binding FirstValue}" />
+          <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,16,4" Style="{StaticResource Summary.RowLabel}" Text="{Binding PeakLabel}" />
+          <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,0,0,4" Style="{StaticResource Summary.RowValue}" Text="{Binding PeakValue}" />
+          <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource Summary.RowLabel}" Text="{Binding DeepLabel}" />
+          <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Summary.RowValue}" Text="{Binding DeepValue}" />
+        </Grid>
+
+        <TextBlock Margin="{StaticResource Space.Stats.Block}"
+                   Style="{StaticResource Text.Secondary}"
+                   Text="{Binding Tip}"
+                   TextWrapping="Wrap" />
+
+        <TextBlock Margin="{StaticResource Space.Chart.Caption}"
+                   FontWeight="SemiBold"
+                   Style="{StaticResource Text.Secondary}"
+                   Text="{Binding PartialNote}"
+                   TextWrapping="Wrap"
+                   Visibility="{Binding ShowPartialNote, Converter={StaticResource BoolToVisibility}}" />
+      </StackPanel>
+    </controls:Card>
+
+    <!-- Nights (Week, Month, Year): the average night, and for CO₂ the best and worst night with their dates. -->
+    <controls:Card Margin="0,16,0,0"
+                   Padding="{StaticResource Space.Stats.Card}"
+                   Visibility="{Binding Sleep.HasNights, Converter={StaticResource BoolToVisibility}}">
+      <StackPanel DataContext="{Binding Sleep}">
+        <StackPanel Orientation="Horizontal">
+          <TextBlock VerticalAlignment="Center"
+                     FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                     Style="{StaticResource Text.SectionLabel}"
+                     Text="&#xE708;" />
+          <TextBlock Margin="{StaticResource Space.Inline}"
+                     VerticalAlignment="Center"
+                     Style="{StaticResource Text.SectionLabel}"
+                     Text="{Binding NightsTitle}" />
+        </StackPanel>
+
+        <Grid Margin="{StaticResource Space.Stats.Block}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <controls:KeyValueCell Grid.Column="0" Label="{loc:T Nights_Average}" Value="{Binding NightsAverage}" />
+          <StackPanel Grid.Column="1" Visibility="{Binding HasNightExtremes, Converter={StaticResource BoolToVisibility}}">
+            <controls:KeyValueCell Label="{Binding LowestNightLabel}" Value="{Binding LowestNightValue}" />
+            <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding LowestNightWhen}" />
+          </StackPanel>
+          <StackPanel Grid.Column="2" Visibility="{Binding HasNightExtremes, Converter={StaticResource BoolToVisibility}}">
+            <controls:KeyValueCell Label="{Binding HighestNightLabel}" Value="{Binding HighestNightValue}" />
+            <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding HighestNightWhen}" />
+          </StackPanel>
+        </Grid>
+
+        <TextBlock Margin="{StaticResource Space.Chart.Caption}" Style="{StaticResource Text.Caption}" Text="{loc:T Nights_Hint}" TextWrapping="Wrap" />
+      </StackPanel>
+    </controls:Card>
+  </StackPanel>
 </UserControl>

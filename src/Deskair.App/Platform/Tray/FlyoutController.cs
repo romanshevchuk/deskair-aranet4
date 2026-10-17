@@ -56,7 +56,7 @@ public sealed class FlyoutController
         {
             if (window is { IsVisible: true })
             {
-                window.Hide();
+                window.Close();
                 return;
             }
 
@@ -88,6 +88,15 @@ public sealed class FlyoutController
     {
         var created = new FlyoutWindow(new FlyoutView { DataContext = viewModel });
         created.Dismissed += (_, _) => guard.NotifyHidden();
+
+        // A new window for every opening: a hidden transparent window shows its last picture for a frame when it is shown again, which looked like a blink.
+        created.Closed += (_, _) =>
+        {
+            if (ReferenceEquals(window, created))
+            {
+                window = null;
+            }
+        };
 
         // The first time, the content has no real size until the window is on screen, so the position worked out before showing is too low.
         // Place it again as soon as the window knows its size; moving without resizing does not raise this event again.

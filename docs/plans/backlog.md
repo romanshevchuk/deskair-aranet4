@@ -12,10 +12,10 @@ Order of work: 1. Owner checks (R1) and decisions (R2), which can start now. 2. 
 
 | ID | What to check | Who | Status |
 |---|---|---|---|
-| OWN-03 | Tray: all checked by the owner 2026-10-17 except one thing: the flyout blinked when it opened with Windows animations on (fix made: the window starts see-through before it is shown); the owner confirms it is gone | owner | doing |
+| OWN-03 | Tray checked by the owner 2026-10-17 except the flyout blink on every open after the first (with Windows animations on): fixed by making a new flyout window for each opening (a hidden transparent window showed its last picture for a frame). The owner confirms it is gone | owner | doing |
 | OWN-05 | "Try again" and the 30 s read timeout with the sensor out of range; PC sleep and wake with the real sensor | owner | todo |
-| OWN-06 | Sleep card, History Night view and Stats card on real data: the Day view was looked at 2026-10-17 (design remarks pending); Week and Month and the Night filter still to look at | owner | doing |
-| OWN-07 | Open folder, Export and Choose file (preview) were checked by the owner 2026-10-17. Still to check: press Import on a real phone export and read the result line | owner | doing |
+| OWN-06 | History on real data: the Day view was reviewed 2026-10-17 and reworked (two cards, calmer chart, see screens-and-states.md "Two cards"). The owner looks at Day, Week, Month and the Night filter again with the new layout | owner | doing |
+| OWN-07 | Open folder, Export and Choose file were checked by the owner 2026-10-17; the preview text was reworded ("573 new readings will be added to Office · …", and "Nothing new" with no Import button). Still to check: press Import on a real phone export and read the result line | owner | doing |
 | OWN-08 | Windows 10 (never tried): solid backdrop, title bar, toasts, Do Not Disturb | owner | todo |
 | A11Y-01 | Manual accessibility check in `accessibility.md` (Narrator, keyboard, scaling); the automated part is done | owner | doing |
 | I18N-02 | Native Ukrainian review of every string marked "Draft: needs native review" (`ukrainian.md`) | owner | todo |

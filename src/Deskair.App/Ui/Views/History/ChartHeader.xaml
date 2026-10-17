@@ -61,9 +61,13 @@
             </Border>
             <TextBlock Style="{StaticResource Text.Caption}" Text="{loc:T Metric_Co2}" />
           </StackPanel>
+          <StackPanel Style="{StaticResource Legend.Item}">
+            <Ellipse Width="9" Height="9" Margin="0,0,5,0" VerticalAlignment="Center" Fill="{DynamicResource Surface.Brush}" Stroke="{DynamicResource Text.Primary.Brush}" StrokeThickness="1.5" />
+            <TextBlock Style="{StaticResource Text.Caption}" Text="{loc:T History_Legend_AirImproved}" />
+          </StackPanel>
         </StackPanel>
         <StackPanel Style="{StaticResource Legend.Item}" Visibility="{Binding ShowDayTypicalLegend, Converter={StaticResource BoolToVisibility}}">
-          <Border Width="14" Height="2" Margin="0,0,5,0" VerticalAlignment="Center" Background="{DynamicResource Text.Tertiary.Brush}" CornerRadius="1" Opacity="0.6" />
+          <Border Width="14" Height="2" Margin="0,0,5,0" VerticalAlignment="Center" Background="{DynamicResource Text.Tertiary.Brush}" CornerRadius="1" Opacity="0.45" />
           <TextBlock Style="{StaticResource Text.Caption}" Text="{loc:T History_Legend_Typical}" />
         </StackPanel>
         <StackPanel Style="{StaticResource Legend.Item}" Visibility="{Binding ShowComfortLegend, Converter={StaticResource BoolToVisibility}}">

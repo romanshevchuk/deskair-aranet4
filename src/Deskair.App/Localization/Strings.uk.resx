@@ -297,9 +297,10 @@
   <data name="Data_NoSensor" xml:space="preserve"><value>Спочатку додайте датчик.</value><comment>Draft: needs native review.</comment></data>
   <data name="Dialog_AllFiles" xml:space="preserve"><value>Усі файли</value><comment>Draft: needs native review.</comment></data>
   <data name="Import_DialogTitle" xml:space="preserve"><value>Виберіть експорт із застосунку на телефоні</value><comment>Draft: needs native review.</comment></data>
-  <data name="Import_Preview_One" xml:space="preserve"><value>{count} вимірювання, {first} – {last} · нових: {new} · уже є: {present}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Import_Preview_Few" xml:space="preserve"><value>{count} вимірювання, {first} – {last} · нових: {new} · уже є: {present}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Import_Preview_Many" xml:space="preserve"><value>{count} вимірювань, {first} – {last} · нових: {new} · уже є: {present}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Preview_One" xml:space="preserve"><value>{new} нове вимірювання буде додано до «{room}» · у файлі всього {count}, {first} – {last}, уже є: {present}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Preview_Few" xml:space="preserve"><value>{new} нові вимірювання буде додано до «{room}» · у файлі всього {count}, {first} – {last}, уже є: {present}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_Preview_Many" xml:space="preserve"><value>{new} нових вимірювань буде додано до «{room}» · у файлі всього {count}, {first} – {last}, уже є: {present}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Import_NothingNew" xml:space="preserve"><value>У цьому файлі немає нового: усі вимірювання вже збережено.</value><comment>Draft: needs native review.</comment></data>
   <data name="Import_Done_One" xml:space="preserve"><value>Додано {count} нове вимірювання.</value><comment>Draft: needs native review.</comment></data>
   <data name="Import_Done_Few" xml:space="preserve"><value>Додано {count} нові вимірювання.</value><comment>Draft: needs native review.</comment></data>
   <data name="Import_Done_Many" xml:space="preserve"><value>Додано {count} нових вимірювань.</value><comment>Draft: needs native review.</comment></data>
@@ -329,6 +330,7 @@
   <data name="History_Chart_ByDay" xml:space="preserve"><value>за днями</value><comment>Draft: needs native review.</comment></data>
   <data name="History_AirImproved_Hover" xml:space="preserve"><value>Повітря покращилось о {time} · −{drop} {unit} за {min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="History_AirImproved_Label" xml:space="preserve"><value>повітря покращилось</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Legend_AirImproved" xml:space="preserve"><value>Повітря покращилось</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Hover_Typical" xml:space="preserve"><value>типово {value}</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Legend_Typical" xml:space="preserve"><value>Типово, попередні 7 днів</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Chart_ComfortRange" xml:space="preserve"><value>комфорт {from}–{to} {unit}</value><comment>Draft: needs native review.</comment></data>

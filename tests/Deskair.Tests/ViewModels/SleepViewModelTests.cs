@@ -64,9 +64,9 @@ public class SleepViewModelTests
 
     [Theory]
     [InlineData(SleepVerdict.Good, Zone.Good, "Sleep_Verdict_Good")]
-    [InlineData(SleepVerdict.Fair, Zone.Elevated, "Sleep_Verdict_Fair")]
-    [InlineData(SleepVerdict.Poor, Zone.High, "Sleep_Verdict_Poor")]
-    public void The_verdict_has_its_text_and_zone_colour(SleepVerdict verdict, Zone zone, string text)
+    [InlineData(SleepVerdict.Fair, null, "Sleep_Verdict_Fair")]
+    [InlineData(SleepVerdict.Poor, Zone.Elevated, "Sleep_Verdict_Poor")]
+    public void The_verdict_has_its_text_and_a_calm_colour(SleepVerdict verdict, Zone? zone, string text)
     {
         var viewModel = Create();
 

@@ -100,9 +100,15 @@ public sealed partial class ImportViewModel : ObservableObject
                 return;
             }
 
+            if (preview.NewReadings == 0)
+            {
+                Show("Import_NothingNew");
+                return;
+            }
+
             pending = request;
             StatusText = null;
-            PreviewText = Describe(preview);
+            PreviewText = Describe(preview, device);
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
@@ -152,17 +158,19 @@ public sealed partial class ImportViewModel : ObservableObject
         return await import.ImportAsync(request.Importer, source, request.Device, request.Interval, CancellationToken.None);
     }
 
-    private string Describe(ImportPreview preview)
+    /// <summary>"573 new readings will be added to Office", then what the file holds. The plural follows the number of new readings.</summary>
+    private string Describe(ImportPreview preview, DeviceId device)
     {
         return localizer.Plural(
             "Import_Preview",
-            preview.TotalReadings,
+            preview.NewReadings,
+            ("new", preview.NewReadings.ToString("N0", localizer.Culture)),
+            ("room", devices.Info(device)?.RoomName ?? device.Address),
+            ("count", preview.TotalReadings.ToString("N0", localizer.Culture)),
             ("first", Date(preview.First)),
             ("last", Date(preview.Last)),
-            ("new", preview.NewReadings),
-            ("present", preview.AlreadyPresent));
+            ("present", preview.AlreadyPresent.ToString("N0", localizer.Culture)));
     }
-
     private string Date(DateTimeOffset? instant)
     {
         return instant is { } value ? calendar.LocalDateOf(value).ToString("d MMM yyyy", localizer.Culture) : string.Empty;

@@ -32,7 +32,7 @@ public sealed partial class SleepViewModel : ObservableObject
     private string verdictText = string.Empty;
 
     [ObservableProperty]
-    private Zone verdictZone;
+    private Zone? verdictZone;
 
     [ObservableProperty]
     private string firstLabel = string.Empty;
@@ -126,8 +126,8 @@ public sealed partial class SleepViewModel : ObservableObject
         VerdictText = summary.Verdict is { } verdict ? localizer.Get($"Sleep_Verdict_{verdict}") : string.Empty;
         VerdictZone = summary.Verdict switch
         {
-            SleepVerdict.Poor => Zone.High,
-            SleepVerdict.Fair => Zone.Elevated,
+            SleepVerdict.Poor => Zone.Elevated,
+            SleepVerdict.Fair => null,
             _ => Zone.Good
         };
 

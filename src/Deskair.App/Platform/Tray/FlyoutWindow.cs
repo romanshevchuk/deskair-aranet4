@@ -9,10 +9,12 @@ namespace Deskair.App.Platform.Tray;
 
 /// <summary>
 /// The borderless, transparent window the flyout lives in. It stays out of the taskbar and above other windows, and goes away when it loses the focus
-/// (a click anywhere else) or on Esc. It is created once and shown again each time; <see cref="Dismissed"/> tells the owner when it went away.
+/// (a click anywhere else) or on Esc. A new one is made for each opening; <see cref="Dismissed"/> tells the owner when it went away.
 /// </summary>
 public sealed class FlyoutWindow : Window
 {
+    private bool closing;
+
     public FlyoutWindow(FlyoutView view)
     {
         WindowStyle = WindowStyle.None;
@@ -71,12 +73,19 @@ public sealed class FlyoutWindow : Window
         };
         BeginAnimation(OpacityProperty, fade);
     }
+    /// <summary>Losing the focus while the window is already closing must not close it a second time.</summary>
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    {
+        closing = true;
+        base.OnClosing(e);
+    }
+
 
     private void Dismiss()
     {
-        if (IsVisible)
+        if (IsVisible && !closing)
         {
-            Hide();
+            Close();
         }
     }
 

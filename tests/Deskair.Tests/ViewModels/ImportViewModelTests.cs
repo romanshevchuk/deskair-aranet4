@@ -69,10 +69,22 @@ public sealed class ImportViewModelTests : IDisposable
         await viewModel.ChooseFileCommand.ExecuteAsync(null);
 
         Assert.True(viewModel.HasPreview);
-        Assert.StartsWith("Import_Preview[3]", viewModel.PreviewText);
+        Assert.StartsWith("Import_Preview[2]", viewModel.PreviewText);
         Assert.Empty(store.Merges);
     }
 
+
+    [Fact]
+    public async Task A_file_with_nothing_new_says_so_and_offers_no_import()
+    {
+        store.Readings.Add(At(0));
+        var viewModel = await CreateAsync(new FakeReadingImporter(At(0)));
+
+        await viewModel.ChooseFileCommand.ExecuteAsync(null);
+
+        Assert.False(viewModel.HasPreview);
+        Assert.Equal("Import_NothingNew", viewModel.StatusText);
+    }
     [Fact]
     public async Task The_dialog_offers_the_importers_file_types()
     {
@@ -189,10 +201,13 @@ public sealed class ImportViewModelTests : IDisposable
         var viewModel = await CreateAsync(new FakeReadingImporter(At(0)));
         await viewModel.ChooseFileCommand.ExecuteAsync(null);
         await viewModel.ConfirmCommand.ExecuteAsync(null);
+        var done = viewModel.StatusText;
+        Assert.NotNull(done);
 
         await viewModel.ChooseFileCommand.ExecuteAsync(null);
 
-        Assert.True(viewModel.HasPreview);
-        Assert.False(viewModel.HasStatus);
+        // The same file again holds nothing new, so what shows is that, not the earlier "added" line.
+        Assert.NotEqual(done, viewModel.StatusText);
+        Assert.False(viewModel.HasPreview);
     }
 }

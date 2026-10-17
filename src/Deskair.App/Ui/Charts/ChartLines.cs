@@ -178,14 +178,19 @@ internal static class ChartLines
         return tangents;
     }
 
+    /// <summary>How far above and below a zone limit the colours blend, in the unit of the value (ppm).</summary>
+    public const double ZoneBlend = 30;
+
     /// <summary>
     /// The colour of a COâ‚‚ value at each height of the plot: green below <paramref name="elevatedFrom"/>, amber up to <paramref name="highAbove"/>, red above (the Zone.*.Line colours),
-    /// with hard stops at the limits. The line and the fill under it both use it, so they always agree.
+    /// with a short blend (<see cref="ZoneBlend"/> ppm each side) at the limits, so a line that hugs a limit does not flicker between two colours. The line and the fill under it both use it, so they always agree.
     /// </summary>
     public static LinearGradientBrush ZoneGradient(ChartArea area, double elevatedFrom, double highAbove)
     {
-        var elevated = Offset(area, elevatedFrom);
-        var high = Offset(area, highAbove);
+        var elevatedLow = Offset(area, elevatedFrom - ZoneBlend);
+        var elevatedHigh = Offset(area, elevatedFrom + ZoneBlend);
+        var highLow = Offset(area, highAbove - ZoneBlend);
+        var highHigh = Offset(area, highAbove + ZoneBlend);
         var good = ((SolidColorBrush)area.Brush("Zone.Good.Line.Brush")).Color;
         var amber = ((SolidColorBrush)area.Brush("Zone.Elevated.Line.Brush")).Color;
         var red = ((SolidColorBrush)area.Brush("Zone.High.Line.Brush")).Color;
@@ -196,7 +201,7 @@ internal static class ChartLines
             MappingMode = BrushMappingMode.Absolute,
             StartPoint = new Point(0, area.Plot.Bottom),
             EndPoint = new Point(0, area.Plot.Top),
-            GradientStops = [new GradientStop(good, 0), new GradientStop(good, elevated), new GradientStop(amber, elevated), new GradientStop(amber, high), new GradientStop(red, high), new GradientStop(red, 1)]
+            GradientStops = [new GradientStop(good, 0), new GradientStop(good, elevatedLow), new GradientStop(amber, elevatedHigh), new GradientStop(amber, highLow), new GradientStop(red, highHigh), new GradientStop(red, 1)]
         };
         brush.Freeze();
 

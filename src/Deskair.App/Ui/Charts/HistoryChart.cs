@@ -19,7 +19,8 @@ public sealed class HistoryChart : ChartBase
     private const double ElevatedFrom = 1000;
     private const double HighAbove = 1400;
     private const double NightBandRoom = 22;
-    private const double TypicalOpacity = 0.6;
+    private const double TypicalOpacity = 0.45;
+    private const double TypicalThickness = 1.25;
     private const double AreaOpacity = 0.06;
     private const double MarkerHitRadius = 9;
     private static readonly Dictionary<double, string> limitBrushes = new() { [ElevatedFrom] = "Zone.Elevated.PillText.Brush", [HighAbove] = "Zone.High.PillText.Brush" };
@@ -236,7 +237,7 @@ public sealed class HistoryChart : ChartBase
             layers.Add(new ThresholdLayer { ElevatedFrom = ElevatedFrom, HighAbove = HighAbove });
         }
 
-        layers.Add(new LineLayer { Points = TypicalPoints, BrushKey = "Text.Tertiary.Brush", Opacity = TypicalOpacity, Smooth = true });
+        layers.Add(new LineLayer { Points = TypicalPoints, BrushKey = "Text.Tertiary.Brush", Opacity = TypicalOpacity, Thickness = TypicalThickness, Smooth = true });
 
         if (co2)
         {
@@ -334,9 +335,22 @@ public sealed class HistoryChart : ChartBase
             : (DateTimeOffset.UnixEpoch.UtcTicks, DateTimeOffset.UnixEpoch.UtcTicks + TimeSpan.TicksPerDay);
     }
 
-    /// <summary>The y labels of the CO₂ axis: the bottom, the two limits and the top (and 2000 when the top is 2600).</summary>
+    /// <summary>The CO₂ axis labels: every 200 ppm (every 400 above 1600) so they are evenly spaced, with both limits always among them.</summary>
     private static double[] Co2Ticks(double high)
-        => high > Co2Maximum ? [Co2Minimum, ElevatedFrom, HighAbove, Co2Maximum, high] : [Co2Minimum, ElevatedFrom, HighAbove, high];
+    {
+        var step = high > Co2Maximum ? 400.0 : 200.0;
+        var ticks = new List<double>();
+
+        for (var tick = Co2Minimum; tick < high; tick += step)
+        {
+            ticks.Add(tick);
+        }
+
+        ticks.Add(high);
+
+        // Both limits are always labelled, even when the step skips them.
+        return [.. ticks.Concat([ElevatedFrom, HighAbove]).Distinct().Order()];
+    }
 
     /// <summary>The top of the CO₂ axis: 1600, 2000 or 2600 by how high the readings and the typical line go.</summary>
     private (double Low, double High) Co2Range()
