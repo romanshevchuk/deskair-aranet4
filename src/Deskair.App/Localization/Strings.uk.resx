@@ -5,16 +5,16 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <!-- Every Ukrainian string is a draft and needs native review (docs/plans/questions.md, Q17). -->
-  <data name="Nav_Live" xml:space="preserve"><value>Зараз</value><comment>Draft: needs native review.</comment></data>
-  <data name="Nav_History" xml:space="preserve"><value>Історія</value><comment>Draft: needs native review.</comment></data>
-  <data name="Room_Chip_Help" xml:space="preserve"><value>Обрати кімнату</value><comment>Draft: needs native review.</comment></data>
-  <data name="Nav_Settings" xml:space="preserve"><value>Налаштування</value><comment>Draft: needs native review.</comment></data>
-  <data name="Metric_Co2" xml:space="preserve"><value>CO₂</value><comment>Draft: needs native review.</comment></data>
-  <data name="Metric_Temperature" xml:space="preserve"><value>Температура</value><comment>Draft: needs native review.</comment></data>
-  <data name="Metric_Humidity" xml:space="preserve"><value>Вологість</value><comment>Draft: needs native review.</comment></data>
-  <data name="Metric_Pressure" xml:space="preserve"><value>Тиск</value><comment>Draft: needs native review.</comment></data>
-  <data name="Zone_Good" xml:space="preserve"><value>Добре</value><comment>Draft: needs native review.</comment></data>
-  <data name="Zone_Elevated" xml:space="preserve"><value>Підвищений</value><comment>Draft: needs native review.</comment></data>
+  <data name="Nav_Live" xml:space="preserve"><value>Зараз</value></data>
+  <data name="Nav_History" xml:space="preserve"><value>Історія</value></data>
+  <data name="Room_Chip_Help" xml:space="preserve"><value>Обрати кімнату</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>Налаштування</value></data>
+  <data name="Metric_Co2" xml:space="preserve"><value>CO₂</value></data>
+  <data name="Metric_Temperature" xml:space="preserve"><value>Температура</value></data>
+  <data name="Metric_Humidity" xml:space="preserve"><value>Вологість</value></data>
+  <data name="Metric_Pressure" xml:space="preserve"><value>Тиск</value></data>
+  <data name="Zone_Good" xml:space="preserve"><value>Добре</value></data>
+  <data name="Zone_Elevated" xml:space="preserve"><value>Підвищений</value></data>
   <data name="Zone_High" xml:space="preserve"><value>Високий</value><comment>Draft: needs native review.</comment></data>
   <data name="Trend_Falling" xml:space="preserve"><value>Знижується</value><comment>Draft: needs native review.</comment></data>
   <data name="Trend_Rising" xml:space="preserve"><value>Зростає</value><comment>Draft: needs native review.</comment></data>
@@ -27,7 +27,7 @@
   <data name="Advice_Elevated_Text_Falling" xml:space="preserve"><value>Вище бажаного рівня, але знижується.</value></data>
   <data name="Advice_Elevated_Text_Steady" xml:space="preserve"><value>Вище бажаного рівня. Провітрювання допоможе.</value></data>
   <data name="Advice_Elevated_Text_Rising" xml:space="preserve"><value>Вище бажаного рівня і ще зростає. Провітріть незабаром.</value></data>
-  <data name="Advice_High_Text_Falling" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон. Зараз знижується.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_High_Text_Falling" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон. Знижується.</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_High_Text_Steady" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон.</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_High_Text_Rising" xml:space="preserve"><value>Понад 1 400 ppm і ще зростає. Страждають концентрація і сон.</value><comment>Draft: needs native review.</comment></data>
   <data name="Mini_Temperature_Low" xml:space="preserve"><value>Прохолодно · бажано {min}–{max}&#160;{unit}</value></data>

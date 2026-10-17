@@ -14,7 +14,6 @@ Order of work: 1. Owner checks (R1) and decisions (R2), which can start now. 2. 
 |---|---|---|---|
 | OWN-05 | "Try again" and the 30 s read timeout with the sensor out of range; PC sleep and wake with the real sensor | owner | todo |
 | OWN-06 | History on real data: the Day view was reworked after the owner review 2026-10-17 (two cards, tip under the chart, calmer chart). The owner looks at Day, Week, Month and the Night filter once more | owner | doing |
-| OWN-07 | Open folder, Export and Choose file checked by the owner 2026-10-17 (the reworded preview is fine). Still to check: press Import on a real phone export and read the result line | owner | doing |
 | OWN-08 | Windows 10 (never tried): solid backdrop, title bar, toasts, Do Not Disturb | owner | todo |
 | A11Y-01 | Manual accessibility check in `accessibility.md` (Narrator, keyboard, scaling); the automated part is done | owner | doing |
 | I18N-02 | Native Ukrainian review of every string marked "Draft: needs native review" (`ukrainian.md`) | owner | todo |
