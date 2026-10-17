@@ -149,6 +149,21 @@ public class ChartCardViewModelTests
     }
 
     [Fact]
+    public async Task The_chart_has_an_accessible_name_with_the_span_and_the_figures_or_says_there_are_no_readings()
+    {
+        await SelectDeviceAsync();
+
+        await viewModel.RefreshAsync(Metric.Co2, LiveRange.OneHour, TestContext.Current.CancellationToken);
+        Assert.StartsWith("Chart_Live_AccessibleName_Empty(", viewModel.AccessibleName);
+
+        store.Readings.AddRange([Samples.Co2(now.AddMinutes(-6), 1000), Samples.Co2(now.AddMinutes(-4), 1500), Samples.Co2(now.AddMinutes(-2), 1100)]);
+        await viewModel.RefreshAsync(Metric.Co2, LiveRange.SixHours, TestContext.Current.CancellationToken);
+
+        Assert.StartsWith("Chart_Live_AccessibleName(low=1000, avg=1200, high=1500, unit=ppm", viewModel.AccessibleName);
+        Assert.Contains("span=Chart_Subtitle_SixHours", viewModel.AccessibleName);
+    }
+
+    [Fact]
     public async Task The_ribbon_shows_the_last_day_whatever_range_is_selected()
     {
         await SelectDeviceAsync();

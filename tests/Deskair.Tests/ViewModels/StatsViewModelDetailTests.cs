@@ -267,6 +267,18 @@ public class StatsViewModelDetailTests
     }
 
     [Fact]
+    public async Task The_header_names_both_years_when_the_period_crosses_a_new_year()
+    {
+        var viewModel = await CreateAsync();
+        var december = new Bucket(new DateTimeOffset(2025, 12, 30, 0, 0, 0, TimeSpan.Zero), new DateTimeOffset(2025, 12, 31, 0, 0, 0, TimeSpan.Zero), 1000, 1000, 1000, 10, 10, BucketState.Complete);
+        var january = new Bucket(new DateTimeOffset(2026, 1, 2, 0, 0, 0, TimeSpan.Zero), new DateTimeOffset(2026, 1, 3, 0, 0, 0, TimeSpan.Zero), 1000, 1000, 1000, 10, 10, BucketState.Complete);
+
+        viewModel.Update(Week([december, january]));
+
+        Assert.Equal("Stats_Header_Average(range=30 Dec 2025 – 2 Jan 2026)", viewModel.HeaderText);
+    }
+
+    [Fact]
     public async Task The_header_of_a_single_day_is_that_day()
     {
         var viewModel = await CreateAsync();

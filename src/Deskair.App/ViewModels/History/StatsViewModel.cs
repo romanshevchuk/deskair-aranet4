@@ -270,7 +270,7 @@ public sealed partial class StatsViewModel : ObservableObject
         var last = calendar.LocalDateOf(input.Buckets[^1].End.AddTicks(-1));
         var range = first == last
             ? first.ToString("d MMM yyyy", culture)
-            : $"{first.ToString("d MMM", culture)} – {last.ToString("d MMM yyyy", culture)}";
+            : $"{first.ToString(first.Year == last.Year ? "d MMM" : "d MMM yyyy", culture)} – {last.ToString("d MMM yyyy", culture)}";
 
         HeaderText = localizer.Format("Stats_Header_Average", ("range", range));
     }

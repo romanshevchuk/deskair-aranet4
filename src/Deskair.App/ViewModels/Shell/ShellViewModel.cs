@@ -6,6 +6,8 @@ using Deskair.App.ViewModels.History;
 using Deskair.App.ViewModels.Live;
 using Deskair.App.ViewModels.Onboarding;
 using Deskair.App.ViewModels.Settings;
+using Deskair.Domain.Zones;
+using Deskair.Services.Connection;
 using Deskair.Services.Messages;
 
 namespace Deskair.App.ViewModels.Shell;
@@ -43,6 +45,46 @@ public sealed partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private HistoryViewModel? history;
 
+    /// <summary>The zone of the header's logo ring and room chip: the current air, or none (grey) while there is no sensor to read (not connected, first run).</summary>
+    [ObservableProperty]
+    private Zone? headerZone;
+
+    partial void OnConnectionChanged(ConnectionViewModel? value)
+    {
+        if (value is not null)
+        {
+            value.PropertyChanged += (_, args) =>
+            {
+                if (args.PropertyName == nameof(ConnectionViewModel.State))
+                {
+                    UpdateHeaderZone();
+                }
+            };
+        }
+
+        UpdateHeaderZone();
+    }
+
+    partial void OnLiveChanged(LiveViewModel? value)
+    {
+        if (value is not null)
+        {
+            value.Hero.PropertyChanged += (_, args) =>
+            {
+                if (args.PropertyName == nameof(HeroViewModel.Zone))
+                {
+                    UpdateHeaderZone();
+                }
+            };
+        }
+
+        UpdateHeaderZone();
+    }
+
+    private void UpdateHeaderZone()
+    {
+        HeaderZone = Connection?.State is ConnectionState.NotConnected or ConnectionState.FirstRun ? null : Live?.Hero.Zone;
+    }
     public ShellViewModel()
     {
     }

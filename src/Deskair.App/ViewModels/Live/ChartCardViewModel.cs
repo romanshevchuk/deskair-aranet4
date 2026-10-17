@@ -38,6 +38,14 @@ public sealed partial class ChartCardViewModel : ObservableObject
     [ObservableProperty]
     private string? title;
 
+    /// <summary>The span the chart shows, beside the title ("last hour"): the summary line no longer repeats it.</summary>
+    [ObservableProperty]
+    private string? subtitle;
+
+    /// <summary>What a screen reader says for the chart: the metric, the span and the low, average and high.</summary>
+    [ObservableProperty]
+    private string? accessibleName;
+
     /// <summary>The labels on the CO₂ threshold lines ("Elevated from 1000", "High from 1400"); null for the other metrics.</summary>
     [ObservableProperty]
     private string? elevatedLineLabel;
@@ -79,6 +87,7 @@ public sealed partial class ChartCardViewModel : ObservableObject
         var descriptor = MetricDescriptor.For(metric);
 
         Title = localizer.Get(descriptor.NameKey);
+        Subtitle = localizer.Get($"Chart_Subtitle_{range}");
         Unit = formatter.Unit(metric);
         Window = length;
         EndTime = timeProvider.GetUtcNow();
@@ -98,6 +107,7 @@ public sealed partial class ChartCardViewModel : ObservableObject
         {
             Points = [];
             SummaryText = null;
+            AccessibleName = null;
             RibbonSegments = [];
             return;
         }
@@ -107,6 +117,7 @@ public sealed partial class ChartCardViewModel : ObservableObject
 
         Points = ToPoints(recent, metric, device);
         SummaryText = Summary(recent, metric, range);
+        AccessibleName = AccessibleNameOf(recent, metric);
         RibbonSegments = RibbonCalculator.Build(day, EndTime ?? timeProvider.GetUtcNow())
             .Select(span => new ChartZoneSegment(span.Start, span.End, span.Zone))
             .ToList();
@@ -148,6 +159,14 @@ public sealed partial class ChartCardViewModel : ObservableObject
     }
 
     private string? Summary(IReadOnlyList<Reading> recent, Metric metric, LiveRange range)
+        => Describe($"Chart_Summary_{range}", recent, metric);
+
+    /// <summary>The same figures as the summary line, in a sentence for a screen reader ("CO₂, last hour: low 1076, average 1105, high 1171 ppm").</summary>
+    private string AccessibleNameOf(IReadOnlyList<Reading> recent, Metric metric)
+        => Describe("Chart_Live_AccessibleName", recent, metric, ("metric", Title ?? string.Empty), ("span", Subtitle ?? string.Empty))
+           ?? localizer.Format("Chart_Live_AccessibleName_Empty", ("metric", Title ?? string.Empty), ("span", Subtitle ?? string.Empty));
+
+    private string? Describe(string key, IReadOnlyList<Reading> recent, Metric metric, params (string Name, object Value)[] extra)
     {
         if (recent.Count == 0)
         {
@@ -157,10 +176,13 @@ public sealed partial class ChartCardViewModel : ObservableObject
         var values = recent.Select(reading => reading.ValueOf(metric)).ToList();
 
         return localizer.Format(
-            $"Chart_Summary_{range}",
-            ("low", formatter.Value(metric, values.Min())),
-            ("avg", formatter.Value(metric, values.Average())),
-            ("high", formatter.Value(metric, values.Max())),
-            ("unit", formatter.Unit(metric)));
+            key,
+            [
+                ("low", formatter.Value(metric, values.Min())),
+                ("avg", formatter.Value(metric, values.Average())),
+                ("high", formatter.Value(metric, values.Max())),
+                ("unit", formatter.Unit(metric)),
+                .. extra
+            ]);
     }
 }

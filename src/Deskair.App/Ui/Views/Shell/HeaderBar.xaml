@@ -18,7 +18,7 @@
     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
       <controls:LogoRing Width="{StaticResource Size.Logo}"
                          Height="{StaticResource Size.Logo}"
-                         Zone="{Binding Live.Hero.Zone}" />
+                         Zone="{Binding HeaderZone}" />
       <TextBlock Margin="{StaticResource Space.Inline}"
                  VerticalAlignment="Center"
                  Style="{StaticResource Text.Title}"
@@ -54,7 +54,7 @@
       </StackPanel.Style>
       <controls:RoomChip IsOpen="{Binding IsOpen, Mode=TwoWay}"
                          RoomName="{Binding SelectedRoom.Name}"
-                         Zone="{Binding SelectedRoom.Zone}" />
+                         Zone="{Binding DataContext.HeaderZone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
       <controls:RoomMenu IsOpen="{Binding IsOpen, Mode=TwoWay}"
                          ItemsSource="{Binding Rooms}"
                          RoomChosenCommand="{Binding ChooseRoomCommand}" />

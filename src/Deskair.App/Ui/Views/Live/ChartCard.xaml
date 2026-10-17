@@ -24,10 +24,12 @@
         </Grid.ColumnDefinitions>
         <TextBlock VerticalAlignment="Center"
                    FontFamily="{DynamicResource Font.Family.Display}"
-                   Style="{StaticResource Text.Title}"
-                   Text="{Binding ChartCard.Title}" />
+                   Style="{StaticResource Text.Title}">
+          <Run Text="{Binding ChartCard.Title, Mode=OneWay}" />
+          <Run FontWeight="Normal" Foreground="{DynamicResource Text.Secondary.Brush}" Text="{Binding ChartCard.Subtitle, Mode=OneWay, StringFormat='· {0}'}" />
+        </TextBlock>
         <controls:SegmentedControl Grid.Column="1"
-                                   AutomationProperties.Name="{loc:T Range_Day}"
+                                   AutomationProperties.Name="{loc:T Chart_Range_Name}"
                                    SelectedValuePath="Tag"
                                    SelectedValue="{Binding Tabs.SelectedRange, Mode=TwoWay}">
           <ListBoxItem Content="{loc:T Range_1h}" Tag="{x:Static vm:LiveRange.OneHour}" />
@@ -43,6 +45,7 @@
                  Foreground="{DynamicResource Text.Secondary.Brush}" />
 
       <charts:LiveChart Grid.Row="2"
+                        AutomationProperties.Name="{Binding ChartCard.AccessibleName}"
                         Margin="0,12,0,0"
                         Metric="{Binding Tabs.SelectedMetric}"
                         Points="{Binding ChartCard.Points}"
@@ -73,7 +76,8 @@
             </Style.Triggers>
           </Style>
         </Border.Style>
-        <charts:ZoneRibbon Caption="{loc:T Ribbon_Caption}"
+        <charts:ZoneRibbon AutomationProperties.Name="{loc:T Ribbon_Name}"
+                           Caption="{loc:T Ribbon_Caption}"
                            EndTime="{Binding ChartCard.EndTime}"
                            Height="{StaticResource Size.Ribbon.Labelled.Height}"
                            Segments="{Binding ChartCard.RibbonSegments}" />

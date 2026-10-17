@@ -186,6 +186,9 @@
   <data name="Gallery_Section_ZoneRibbon" xml:space="preserve"><value>24 h ribbon</value></data>
   <data name="Chart_Now" xml:space="preserve"><value>Now</value></data>
   <data name="Ribbon_Caption" xml:space="preserve"><value>24 h</value></data>
+  <data name="Ribbon_Name" xml:space="preserve"><value>Last 24 hours by air quality zone</value><comment>Accessible name of the 24 h ribbon.</comment></data>
+  <data name="Chart_Live_AccessibleName" xml:space="preserve"><value>{metric}, {span}: low {low}, average {avg}, high {high} {unit}</value><comment>Accessible name of the Live chart.</comment></data>
+  <data name="Chart_Live_AccessibleName_Empty" xml:space="preserve"><value>{metric}, {span}: no readings</value></data>
   <data name="Chart_Today" xml:space="preserve"><value>Today</value></data>
   <data name="Chart_Avg" xml:space="preserve"><value>avg</value></data>
   <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ideal 20–24</value></data>
@@ -200,9 +203,13 @@
   <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Elevated from {ppm}</value></data>
   <data name="Chart_Threshold_High" xml:space="preserve"><value>High from {ppm}</value></data>
   <data name="Live_Card_AccessibleName" xml:space="preserve"><value>{metric}, {value} {unit}, {status}</value><comment>Read by Narrator for the hero and the mini cards, which choose the metric of the Live chart.</comment></data>
-  <data name="Chart_Summary_OneHour" xml:space="preserve"><value>Last hour · Low **{low}** · Avg **{avg}** · High **{high}** {unit}</value></data>
-  <data name="Chart_Summary_SixHours" xml:space="preserve"><value>Last 6 hours · Low **{low}** · Avg **{avg}** · High **{high}** {unit}</value></data>
-  <data name="Chart_Summary_TwentyFourHours" xml:space="preserve"><value>Last 24 hours · Low **{low}** · Avg **{avg}** · High **{high}** {unit}</value></data>
+  <data name="Chart_Subtitle_OneHour" xml:space="preserve"><value>last hour</value></data>
+  <data name="Chart_Subtitle_SixHours" xml:space="preserve"><value>last 6 hours</value></data>
+  <data name="Chart_Subtitle_TwentyFourHours" xml:space="preserve"><value>last 24 hours</value></data>
+  <data name="Chart_Range_Name" xml:space="preserve"><value>Time span</value><comment>Accessible name of the 1h / 6h / 24h selector on the Live chart.</comment></data>
+  <data name="Chart_Summary_OneHour" xml:space="preserve"><value>Low **{low}** · Avg **{avg}** · High **{high}** {unit}</value></data>
+  <data name="Chart_Summary_SixHours" xml:space="preserve"><value>Low **{low}** · Avg **{avg}** · High **{high}** {unit}</value></data>
+  <data name="Chart_Summary_TwentyFourHours" xml:space="preserve"><value>Low **{low}** · Avg **{avg}** · High **{high}** {unit}</value></data>
   <data name="Range_1h" xml:space="preserve"><value>1h</value></data>
   <data name="Range_6h" xml:space="preserve"><value>6h</value></data>
   <data name="Range_24h" xml:space="preserve"><value>24h</value></data>

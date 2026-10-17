@@ -187,6 +187,9 @@
   <data name="Gallery_Section_ZoneRibbon" xml:space="preserve"><value>24-годинна стрічка</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Now" xml:space="preserve"><value>Зараз</value><comment>Draft: needs native review.</comment></data>
   <data name="Ribbon_Caption" xml:space="preserve"><value>24 год</value><comment>Draft: needs native review.</comment></data>
+  <data name="Ribbon_Name" xml:space="preserve"><value>Останні 24 години за зонами якості повітря</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Live_AccessibleName" xml:space="preserve"><value>{metric}, {span}: мін. {low}, сер. {avg}, макс. {high} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Live_AccessibleName_Empty" xml:space="preserve"><value>{metric}, {span}: немає вимірювань</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Today" xml:space="preserve"><value>Сьогодні</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Avg" xml:space="preserve"><value>сер.</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ідеально 20–24</value><comment>Draft: needs native review.</comment></data>
@@ -201,9 +204,13 @@
   <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Підвищений від {ppm}</value><comment>Draft: needs native review. Label on the dashed line where the Elevated zone starts.</comment></data>
   <data name="Chart_Threshold_High" xml:space="preserve"><value>Високий від {ppm}</value><comment>Draft: needs native review. Label on the dashed line where the High zone starts.</comment></data>
   <data name="Live_Card_AccessibleName" xml:space="preserve"><value>{metric}, {value} {unit}, {status}</value><comment>Read by Narrator for the hero and the mini cards.</comment></data>
-  <data name="Chart_Summary_OneHour" xml:space="preserve"><value>Остання година · Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Chart_Summary_SixHours" xml:space="preserve"><value>Останні 6 годин · Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Chart_Summary_TwentyFourHours" xml:space="preserve"><value>Останні 24 години · Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Subtitle_OneHour" xml:space="preserve"><value>остання година</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Subtitle_SixHours" xml:space="preserve"><value>останні 6 годин</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Subtitle_TwentyFourHours" xml:space="preserve"><value>останні 24 години</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Range_Name" xml:space="preserve"><value>Проміжок часу</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Summary_OneHour" xml:space="preserve"><value>Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Summary_SixHours" xml:space="preserve"><value>Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Summary_TwentyFourHours" xml:space="preserve"><value>Мін. **{low}** · Сер. **{avg}** · Макс. **{high}** {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_1h" xml:space="preserve"><value>1 год</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_6h" xml:space="preserve"><value>6 год</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_24h" xml:space="preserve"><value>24 год</value><comment>Draft: needs native review.</comment></data>

@@ -42,7 +42,7 @@ public sealed class RibbonLabelLayer : IChartLayer
 
             context.DrawLine(notch, new Point(x, area.Plot.Top), new Point(x, area.Plot.Bottom));
 
-            var label = area.Text($"{hour:00}h", quiet);
+            var label = area.Text($"{hour:00}:00", quiet);
 
             context.DrawText(label, new Point(x - (label.Width / 2), area.Plot.Bottom + LabelTop));
         }
