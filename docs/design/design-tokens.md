@@ -124,6 +124,7 @@ Segoe UI Variable Text, falling back to Segoe UI; display sizes use Segoe UI Var
 | Radius: segmented track / segment | 10 px / 8 px |
 | Radius: pill, toggle track, focus ring | Half the control height, so both ends are half circles (prototype: border-radius 999). WPF clamps a large radius on each axis separately, which gives elliptical ends, so `PillRadiusConverter` binds the radius to the height |
 | Radius: window | 10 px (Windows 11); 1 px border at 30 % grey |
+| Scroll bar | 10 px wide, no track and no arrows; a rounded thumb (radius 3, 2 px inset) in `card.border.hover`, `text.tertiary` while hovered or dragged. Settings is the only screen that scrolls |
 | Header nav | Text tabs 14 px, 26 px apart; the current one in `text.primary` 600 with a 18 × 3 px `accent` underline (radius 2) 9 px above the header's bottom edge; others `text.secondary`. Room chip: no border or shadow, hover background `segment.bg` |
 | Hero padding | 22 / 24 / 20 px. Content groups spread over the height (top block, gauge, advice, stats) instead of a gap above the stats |
 | Gauge marker | 20 px, `surface` fill, 3 px `text.primary` ring, soft shadow 0 2 6 at 18 % black |

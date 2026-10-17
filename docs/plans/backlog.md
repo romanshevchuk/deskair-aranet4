@@ -86,7 +86,7 @@ Plan, specs and model per item: [`polish-implementation.md`](polish-implementati
 | POL-23 | Review fix: Year summary header names both years ("1 Nov 2025 – 12 Oct 2026") | done |
 | POL-24 | Review fix: Live ribbon labels as "00:00 / 06:00 / 12:00 / 18:00"; Live chart title "CO₂ · last hour" | done |
 | POL-25 | Review, partly done (tests now run one at a time, so English renders stay English; three stale Night-filter renders deleted). Still open: fixtures outside the comfort range, Live Good and High, dark states, flyout Bluetooth-off, Settings below the fold; stale fixture says "0 min", flyout says "25 min" next to a live reading | todo |
-| POL-26 | Review: style the scrollbar (light and dark; Settings shows the native one) and add its tokens | todo |
+| POL-26 | Review fix: thin scrollbar style in both themes (`BaseStyles.xaml`; documented in design-tokens.md) | done |
 | POL-27 | Review decision: the Pressure tip is the documented line only; the extra sentence is gone | done |
 | POL-28 | Review decision: "Open a window for about 10 minutes" stays; D-0015 and the behaviour rule now say they forbid recovery-time estimates, not a suggested duration | done |
 | POL-29 | Review decision: every metric draws its History Day line as a monotone curve (done; the stairs on Humidity and Pressure remain, see POL-32) | done |
