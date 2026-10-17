@@ -106,7 +106,15 @@ public class MiniCardsViewModelTests
     }
 
     [Theory]
-    [InlineData(25, "Mini_Humidity_Low(min=30, max=50, unit=%)")]
+    [InlineData(20, "Mini_Humidity_Low(min=30, max=50, unit=%)")]
+    [InlineData(24, "Mini_Humidity_Low(min=30, max=50, unit=%)")]
+    [InlineData(25, "Mini_Humidity_ABitLow(min=30, max=50, unit=%)")]
+    [InlineData(29, "Mini_Humidity_ABitLow(min=30, max=50, unit=%)")]
+    [InlineData(30, "Trend_Steady")]
+    [InlineData(50, "Trend_Steady")]
+    [InlineData(51, "Mini_Humidity_ABitHigh(min=30, max=50, unit=%)")]
+    [InlineData(55, "Mini_Humidity_ABitHigh(min=30, max=50, unit=%)")]
+    [InlineData(56, "Mini_Humidity_High(min=30, max=50, unit=%)")]
     [InlineData(60, "Mini_Humidity_High(min=30, max=50, unit=%)")]
     public void Humidity_outside_the_ideal_range_shows_a_label(double percent, string expected)
     {

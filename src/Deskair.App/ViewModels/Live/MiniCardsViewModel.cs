@@ -9,6 +9,8 @@ namespace Deskair.App.ViewModels.Live;
 
 public sealed partial class MiniCardsViewModel : ObservableObject
 {
+    private const double SlightHumidityMargin = 5;
+
     private readonly ILocalizer localizer;
     private readonly MetricFormatter formatter;
 
@@ -55,17 +57,25 @@ public sealed partial class MiniCardsViewModel : ObservableObject
 
     private string Subtitle(MetricDescriptor descriptor, double latest, IReadOnlyList<Reading> recent, DateTimeOffset now)
     {
-        if (descriptor is { IdealMin: { } min, IdealMax: { } max } && (latest < min || latest > max))
+        if (descriptor is { IdealMin: { } min, IdealMax: { } max })
         {
-            var side = latest < min ? "Low" : "High";
+            // Judge the value as the card shows it: a reading of 19.96 Â°C is shown as 20.0 and must not be called too cool.
+            var shown = Math.Round(latest, descriptor.Metric == Metric.Humidity ? 0 : 1, MidpointRounding.AwayFromZero);
 
-            return localizer.Format(
-                $"Mini_{descriptor.Metric}_{side}",
-                ("min", Math.Round(formatter.ToDisplay(descriptor.Metric, min))),
-                ("max", Math.Round(formatter.ToDisplay(descriptor.Metric, max))),
-                ("unit", formatter.Unit(descriptor.Metric)));
+            if (shown < min || shown > max)
+            {
+                var side = shown < min ? "Low" : "High";
+
+                // Humidity is "a bit" off within 5 points of the range and "too" off beyond that (D-0021).
+                var slight = descriptor.Metric == Metric.Humidity && shown >= min - SlightHumidityMargin && shown <= max + SlightHumidityMargin ? "ABit" : string.Empty;
+
+                return localizer.Format(
+                    $"Mini_{descriptor.Metric}_{slight}{side}",
+                    ("min", Math.Round(formatter.ToDisplay(descriptor.Metric, min))),
+                    ("max", Math.Round(formatter.ToDisplay(descriptor.Metric, max))),
+                    ("unit", formatter.Unit(descriptor.Metric)));
+            }
         }
-
         var trend = descriptor.Metric == Metric.Co2
             ? TrendCalculator.Co2(recent, now)
             : TrendCalculator.Other(recent, descriptor.Metric, now);

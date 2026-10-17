@@ -55,6 +55,8 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Mini_Temperature_Low | Too cool · ideal {min}–{max} {unit} | Занадто прохолодно · ідеально {min}–{max} {unit} |
 | Mini_Temperature_High | Too warm · ideal {min}–{max} {unit} | Занадто тепло · ідеально {min}–{max} {unit} |
 | Mini_Humidity_Low | Too dry · ideal {min}–{max} {unit} | Занадто сухо · ідеально {min}–{max} {unit} |
+| Mini_Humidity_ABitLow | A bit dry · ideal {min}–{max} {unit} | Трохи сухо · ідеально {min}–{max} {unit} |
+| Mini_Humidity_ABitHigh | A bit humid · ideal {min}–{max} {unit} | Трохи волого · ідеально {min}–{max} {unit} |
 | Mini_Humidity_High | Too humid · ideal {min}–{max} {unit} | Занадто волого · ідеально {min}–{max} {unit} |
 | Stat_GoodShare | Good in last 24 h | Добре за останні 24 год |
 | Stat_Peak | Peak at {time} | Пік о {time} |

@@ -32,6 +32,8 @@
   <data name="Mini_Temperature_Low" xml:space="preserve"><value>Too cool · ideal {min}–{max} {unit}</value></data>
   <data name="Mini_Temperature_High" xml:space="preserve"><value>Too warm · ideal {min}–{max} {unit}</value></data>
   <data name="Mini_Humidity_Low" xml:space="preserve"><value>Too dry · ideal {min}–{max} {unit}</value></data>
+  <data name="Mini_Humidity_ABitLow" xml:space="preserve"><value>A bit dry · ideal {min}–{max} {unit}</value></data>
+  <data name="Mini_Humidity_ABitHigh" xml:space="preserve"><value>A bit humid · ideal {min}–{max} {unit}</value></data>
   <data name="Mini_Humidity_High" xml:space="preserve"><value>Too humid · ideal {min}–{max} {unit}</value></data>
   <data name="Stat_GoodShare" xml:space="preserve"><value>Good in last 24&#160;h</value></data>
   <data name="Stat_Peak" xml:space="preserve"><value>Peak at {time}</value></data>

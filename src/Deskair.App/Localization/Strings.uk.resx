@@ -33,6 +33,8 @@
   <data name="Mini_Temperature_Low" xml:space="preserve"><value>Прохолодно · ідеально {min}–{max} {unit}</value></data>
   <data name="Mini_Temperature_High" xml:space="preserve"><value>Занадто тепло · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Mini_Humidity_Low" xml:space="preserve"><value>Занадто сухо · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Humidity_ABitLow" xml:space="preserve"><value>Трохи сухо · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Humidity_ABitHigh" xml:space="preserve"><value>Трохи волого · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Mini_Humidity_High" xml:space="preserve"><value>Занадто волого · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_GoodShare" xml:space="preserve"><value>Добре за останні 24&#160;год</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_Peak" xml:space="preserve"><value>Пік о {time}</value><comment>Draft: needs native review.</comment></data>
