@@ -1,6 +1,5 @@
 using Deskair.App.ViewModels.History;
 using Deskair.Domain.Metrics;
-using Deskair.Domain.Time;
 using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.ViewModels;
@@ -9,57 +8,58 @@ public class ChartHeaderViewModelTests
 {
     private readonly ChartHeaderViewModel viewModel = new(new FakeLocalizer());
 
-    [Theory]
-    [InlineData(Period.Week, Period.Day, "History_Chart_Daily")]
-    [InlineData(Period.Month, Period.Day, "History_Chart_Daily")]
-    [InlineData(Period.Month, Period.Week, "History_Chart_Weekly")]
-    [InlineData(Period.Year, Period.Week, "History_Chart_Weekly")]
-    [InlineData(Period.Year, Period.Month, "History_Chart_Monthly")]
-    [InlineData(Period.Day, Period.Day, "History_Chart_Hourly")]
-    public void The_subtitle_says_what_one_bar_or_point_stands_for(Period range, Period grouping, string expected)
-    {
-        viewModel.Update(Metric.Co2, range, grouping, hasGaps: false);
-
-        Assert.Equal("Metric_Co2", viewModel.Title);
-        Assert.Equal(expected, viewModel.Subtitle);
-    }
-
     [Fact]
-    public void The_title_is_the_metric()
+    public void The_day_line_is_hourly_and_the_title_is_the_metric()
     {
-        viewModel.Update(Metric.Humidity, Period.Week, Period.Day, hasGaps: false);
+        viewModel.UpdateForDay(Metric.Humidity, hasGaps: false);
 
         Assert.Equal("Metric_Humidity", viewModel.Title);
-    }
-
-    [Fact]
-    public void CO2_shows_the_zone_legend_and_no_legend_text()
-    {
-        viewModel.Update(Metric.Co2, Period.Week, Period.Day, hasGaps: false);
-
-        Assert.True(viewModel.ShowZoneLegend);
-        Assert.Equal(string.Empty, viewModel.LegendText);
+        Assert.Equal("History_Chart_Hourly", viewModel.Subtitle);
     }
 
     [Theory]
-    [InlineData(Period.Week, "")]
-    [InlineData(Period.Day, "History_Legend_Line")]
-    public void Other_metrics_explain_how_to_read_the_chart(Period range, string expected)
+    [InlineData(Metric.Co2, true, true, true, false, "")]
+    [InlineData(Metric.Temperature, true, false, true, true, "History_Legend_Line")]
+    [InlineData(Metric.Humidity, true, false, true, true, "History_Legend_Line")]
+    [InlineData(Metric.Pressure, false, false, false, false, "History_Legend_Line")]
+    public void The_day_legend_follows_the_metric(Metric metric, bool day, bool co2, bool typical, bool comfort, string text)
     {
-        viewModel.Update(Metric.Temperature, range, Period.Day, hasGaps: false);
+        viewModel.UpdateForDay(metric, hasGaps: false);
 
-        Assert.False(viewModel.ShowZoneLegend);
-        Assert.Equal(expected, viewModel.LegendText);
+        Assert.Equal((day, co2, typical, comfort, text), (viewModel.ShowDayLegend, viewModel.ShowDayCo2Legend, viewModel.ShowDayTypicalLegend, viewModel.ShowComfortLegend, viewModel.LegendText));
     }
 
     [Fact]
     public void A_gap_adds_the_no_data_legend_and_none_removes_it()
     {
-        viewModel.Update(Metric.Co2, Period.Week, Period.Day, hasGaps: true);
+        viewModel.UpdateForDay(Metric.Co2, hasGaps: true);
         Assert.True(viewModel.ShowNoDataLegend);
 
-        viewModel.Update(Metric.Co2, Period.Week, Period.Day, hasGaps: false);
+        viewModel.UpdateForDay(Metric.Co2, hasGaps: false);
         Assert.False(viewModel.ShowNoDataLegend);
     }
 
+    [Theory]
+    [InlineData(false, "History_Chart_ByHour")]
+    [InlineData(true, "History_Chart_ByDay")]
+    public void The_grid_has_a_title_and_no_legend_of_its_own_here(bool byDay, string subtitle)
+    {
+        viewModel.UpdateForDay(Metric.Co2, hasGaps: true);
+
+        viewModel.UpdateForGrid(Metric.Co2, byDay);
+
+        Assert.Equal(("Metric_Co2", subtitle, false, false), (viewModel.Title, viewModel.Subtitle, viewModel.ShowDayLegend, viewModel.ShowNoDataLegend));
+    }
+
+    [Theory]
+    [InlineData(false, "History_Chart_MeansByHour")]
+    [InlineData(true, "History_Chart_MeansByDay")]
+    public void The_pressure_line_says_what_the_means_are_and_keeps_the_gap_legend(bool byDay, string subtitle)
+    {
+        viewModel.UpdateForDay(Metric.Temperature, hasGaps: false);
+
+        viewModel.UpdateForLine(Metric.Pressure, byDay, hasGaps: true);
+
+        Assert.Equal(("Metric_Pressure", subtitle, false, true, string.Empty), (viewModel.Title, viewModel.Subtitle, viewModel.ShowDayLegend, viewModel.ShowNoDataLegend, viewModel.LegendText));
+    }
 }

@@ -23,6 +23,7 @@ public sealed partial class StatsViewModel : ObservableObject
 
     private readonly MetricFormatter? formatter;
     private readonly ILocalizer? localizer;
+    private readonly StatsInsight? insight;
     private readonly LocalCalendar? calendar;
 
     [ObservableProperty]
@@ -179,6 +180,7 @@ public sealed partial class StatsViewModel : ObservableObject
     {
         this.formatter = formatter;
         this.localizer = localizer;
+        insight = new StatsInsight(formatter, localizer);
         this.calendar = calendar;
     }
 
@@ -337,7 +339,7 @@ public sealed partial class StatsViewModel : ObservableObject
 
             ShowShare(comfort.Low, comfort.Inside, comfort.High);
             ShareTitle = localizer.Get("Stats_ComfortShare");
-            ShareRange = RangeText(scale);
+            ShareRange = insight?.RangeText(scale);
             ShareFirstLabel = localizer.Get(temperature ? "Comfort_Cool" : "Comfort_Dry");
             ShareSecondLabel = localizer.Get("Comfort_Comfortable");
             ShareThirdLabel = localizer.Get(temperature ? "Comfort_Warm" : "Comfort_Humid");
@@ -354,19 +356,6 @@ public sealed partial class StatsViewModel : ObservableObject
         ZoneElevatedText = NumberFormat.Percent(second, localizer.Culture);
         ZoneHighText = NumberFormat.Percent(third, localizer.Culture);
         HasZoneShare = true;
-    }
-
-    /// <summary>"20–24 °C" or "30–50 %": the comfortable range in the unit shown.</summary>
-    private string? RangeText(ComfortScale scale)
-    {
-        if (formatter is null)
-        {
-            return null;
-        }
-
-        var unit = formatter.Unit(scale.Metric);
-
-        return $"{formatter.Value(scale.Metric, scale.Low)}–{formatter.Value(scale.Metric, scale.High)} {unit}";
     }
 
     /// <summary>The pill beside the average for Temperature and Humidity: comfortable, or a bit or too far on one side.</summary>
@@ -404,80 +393,10 @@ public sealed partial class StatsViewModel : ObservableObject
 
     private void UpdateInsight(StatsInput input)
     {
-        InsightText = null;
-        InsightZone = null;
-
-        if (localizer is null || input.TypicalDay is null)
-        {
-            return;
-        }
-
-        if (input.Metric == Metric.Co2)
-        {
-            UpdateCo2Insight(input);
-        }
-        else if (ComfortScale.For(input.Metric) is { } scale)
-        {
-            UpdateComfortInsight(input, scale);
-        }
+        var insight = this.insight?.Build(input, Average);
+        InsightText = insight?.Text;
+        InsightZone = insight?.Zone;
     }
 
-    private void UpdateComfortInsight(StatsInput input, ComfortScale scale)
-    {
-        var typical = input.TypicalDay!;
-
-        if (typical.All(hour => hour.Average is null))
-        {
-            return;
-        }
-
-        if (TypicalDayCalculator.FurthestOutsideWindow(typical, scale) is not { } window)
-        {
-            InsightText = localizer!.Format("Insight_Comfortable", ("range", RangeText(scale) ?? string.Empty));
-            InsightZone = Zone.Good;
-            return;
-        }
-
-        var name = (input.Metric, scale.Side(window.Average)) switch
-        {
-            (Metric.Temperature, ComfortSide.Low) => "Coolest",
-            (Metric.Temperature, _) => "Warmest",
-            (_, ComfortSide.Low) => "Driest",
-            _ => "MostHumid"
-        };
-        var night = WhileSleeping(input.Night, window.StartHour) ? "_Night" : string.Empty;
-
-        InsightText = localizer!.Format(
-            $"Insight_{name}{night}",
-            ("from", Hour(window.StartHour)),
-            ("to", Hour(window.StartHour + 3)),
-            ("value", Text(window.Average, input.Metric)));
-        InsightZone = Zone.Elevated;
-    }
-
-    private void UpdateCo2Insight(StatsInput input)
-    {
-        if (TypicalDayCalculator.WorstWindow(input.TypicalDay!) is not { } window)
-        {
-            return;
-        }
-
-        var key = window.Average < ZoneThresholds.Default.ElevatedFromPpm ? "Insight_AllGood" : WhileSleeping(input.Night, window.StartHour) ? "Insight_WorstHours_Night" : "Insight_WorstHours";
-
-        InsightText = localizer!.Format(
-            key,
-            ("from", Hour(window.StartHour)),
-            ("to", Hour(window.StartHour + 3)),
-            ("value", Text(window.Average, Metric.Co2)));
-        InsightZone = Average is { } average ? ZoneClassifier.Classify(average) : null;
-    }
-
-    /// <summary>True when at least 2 of the 3 worst hours are night hours (behaviour-rules.md "Aggregation" rule 9).</summary>
-    public static bool WhileSleeping(NightWindow? night, int startHour)
-        => night is { IsEmpty: false } && Enumerable.Range(startHour, 3).Count(hour => night.Includes(TimeSpan.FromHours(hour % 24))) >= 2;
-
-    private string? Text(double? value, Metric metric)
-        => formatter is not null && value is { } stored ? $"{formatter.Value(metric, stored)} {formatter.Unit(metric)}" : null;
-
-    private static string Hour(int hour) => $"{hour % 24:00}:00";
+    private string? Text(double? value, Metric metric) => insight?.ValueText(value, metric);
 }

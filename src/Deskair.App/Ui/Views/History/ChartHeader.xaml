@@ -46,20 +46,6 @@
     </StackPanel>
 
     <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Bottom">
-      <StackPanel Orientation="Horizontal" Visibility="{Binding ShowZoneLegend, Converter={StaticResource BoolToVisibility}}">
-        <StackPanel Style="{StaticResource Legend.Item}">
-          <Ellipse Fill="{DynamicResource Zone.Good.Segment.Brush}" Style="{StaticResource Legend.Dot}" />
-          <TextBlock Style="{StaticResource Text.Caption}" Text="{loc:T Zone_Good}" />
-        </StackPanel>
-        <StackPanel Style="{StaticResource Legend.Item}">
-          <Ellipse Fill="{DynamicResource Zone.Elevated.Segment.Brush}" Style="{StaticResource Legend.Dot}" />
-          <TextBlock Style="{StaticResource Text.Caption}" Text="{loc:T Zone_Elevated}" />
-        </StackPanel>
-        <StackPanel Style="{StaticResource Legend.Item}">
-          <Ellipse Fill="{DynamicResource Zone.High.Segment.Brush}" Style="{StaticResource Legend.Dot}" />
-          <TextBlock Style="{StaticResource Text.Caption}" Text="{loc:T Zone_High}" />
-        </StackPanel>
-      </StackPanel>
 
       <!-- Day: the CO₂ line, the typical day and the night band. -->
       <StackPanel Orientation="Horizontal" Visibility="{Binding ShowDayLegend, Converter={StaticResource BoolToVisibility}}">

@@ -36,12 +36,11 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 | P1 | Store listing: app name, privacy policy page, screenshots | owner | todo |
 | P2, P3 | Interval to recommend on first run; trend rule values after more real data | owner | todo |
 
-## R3. Code work for agents (do in this order; POL-37 is done)
+## R3. Code work for agents (do in this order)
 
 | ID | Item | Who | Status |
 |---|---|---|---|
 | REL-02 | Known gaps still open (the rest of the old list was checked 2026-10-17: the grey header ring and the dark Settings scrollbar were already fixed; History now refreshes on the UI thread; the main window has a minimum size, 1100 × 700; Devices follows new rooms again after leaving and re-entering Settings): (1) a room switch rebuilds the Devices rows while a name is being edited and drops the typed text (small); (2) `WindowsBleConnection` opens a new `GattDeviceService` for each characteristic lookup in an already-opened service (freed on dispose) and attaches its disconnect handler after the pairing checks (needs a real sensor to test) | both | todo |
-| POL-34 | Critical pass over `ViewModels/History`, what is left. Done 2026-10-17: `HistoryViewModel.LoadAsync` (129 lines) is split into read (`ReadAsync` into a `HistoryLoad`), `ShowSummary` and `ShowChart`, with no change in behaviour. Left: `ChartHeaderViewModel.Update` still has non-Day branches (what one bar stands for, the CO₂ zone legend) that only the old bars needed; the grid and line screens overwrite them, so they matter only when a period has no grid (check what the header shows then, with a render, before removing); `StatsViewModel` is 483 lines (the comfort and CO₂ insight text could move to a helper) | agent | todo |
 | POL-35 | Critical pass over `ReadingQueryService` and `Domain/Analytics`: overlapping queries, several scans per History refresh (a Year range is heavy) | agent | todo |
 | POL-36 | Tests: merge the four near-identical render-test `BuildShell` helpers; look for other duplicates | agent | todo |
 | POL-38 | Small: `StatTriplePanel` may be heavier than needed; `HighContrastPalette` maps tokens by name pattern (a new token is silently uncovered); check the Gallery cannot be opened in a release build (`StartupSequence`) | agent | todo |

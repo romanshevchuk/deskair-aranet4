@@ -140,13 +140,13 @@ public class StatsViewModelDetailTests
     [InlineData(21, true)]
     [InlineData(14, false)]
     public void A_worst_window_with_two_night_hours_or_more_is_while_you_sleep(int startHour, bool expected)
-        => Assert.Equal(expected, StatsViewModel.WhileSleeping(NightWindow.Default, startHour));
+        => Assert.Equal(expected, StatsInsight.WhileSleeping(NightWindow.Default, startHour));
 
     [Fact]
     public void Without_night_hours_nothing_is_while_you_sleep()
     {
-        Assert.False(StatsViewModel.WhileSleeping(null, 23));
-        Assert.False(StatsViewModel.WhileSleeping(new NightWindow(new TimeOnly(7, 0), new TimeOnly(7, 0)), 23));
+        Assert.False(StatsInsight.WhileSleeping(null, 23));
+        Assert.False(StatsInsight.WhileSleeping(new NightWindow(new TimeOnly(7, 0), new TimeOnly(7, 0)), 23));
     }
 
     [Fact]

@@ -6,8 +6,8 @@ using Deskair.Domain.Time;
 namespace Deskair.App.ViewModels.History;
 
 /// <summary>
-/// The line above the main History chart: the metric ("CO₂"), what one bar or point stands for ("daily range &amp; average", "· nights only") and, on the right,
-/// how to read the chart: the three zones for CO₂, "Bar = min–max · tick = average" or "Line = hourly average" for the others, and the hatched "No data" swatch when there are gaps.
+/// The line above the main History chart: the metric ("CO₂"), what one point or square stands for ("hourly", "by hour") and, on the right, the legend of the Day line (line,
+/// typical day, night band, comfortable range) and the hatched "No data" swatch when there are gaps. The grid draws its own legend.
 /// </summary>
 public sealed partial class ChartHeaderViewModel : ObservableObject
 {
@@ -18,9 +18,6 @@ public sealed partial class ChartHeaderViewModel : ObservableObject
 
     [ObservableProperty]
     private string subtitle = string.Empty;
-
-    [ObservableProperty]
-    private bool showZoneLegend;
 
     [ObservableProperty]
     private string legendText = string.Empty;
@@ -53,43 +50,41 @@ public sealed partial class ChartHeaderViewModel : ObservableObject
         this.localizer = localizer;
     }
 
+    /// <summary>The Day line: "CO₂ · hourly", with the legend of what the line, the typical day and the bands mean.</summary>
+    public void UpdateForDay(Metric metric, bool hasGaps)
+    {
+        Title = localizer.Get($"Metric_{metric}");
+        Subtitle = localizer.Get("History_Chart_Hourly");
+        ShowDayLegend = metric != Metric.Pressure;
+        ShowDayCo2Legend = metric == Metric.Co2;
+        ShowDayTypicalLegend = metric is Metric.Co2 or Metric.Temperature or Metric.Humidity;
+        ShowComfortLegend = metric is Metric.Temperature or Metric.Humidity;
+        LegendMetric = metric;
+        LegendText = metric != Metric.Co2 ? localizer.Get("History_Legend_Line") : string.Empty;
+        ShowNoDataLegend = hasGaps;
+    }
+
     /// <summary>The History grid (D-0018): "CO₂ · by hour", or "by day" for the Year grid; the grid draws its own legend, so the header shows none.</summary>
     public void UpdateForGrid(Metric metric, bool byDay = false)
     {
-        Title = localizer.Get($"Metric_{metric}");
-        Subtitle = localizer.Get(byDay ? "History_Chart_ByDay" : "History_Chart_ByHour");
-        ShowZoneLegend = false;
-        LegendText = string.Empty;
-        ShowNoDataLegend = false;
+        ShowChartTitle(metric, byDay ? "History_Chart_ByDay" : "History_Chart_ByHour", hasGaps: false);
     }
 
-    /// <summary>The Pressure line for Week, Month and Year: "Pressure · hourly averages", or "daily averages" for Year. Call after <see cref="Update"/>.</summary>
-    public void UpdateForLine(bool byDay)
+    /// <summary>The Pressure line for Week, Month and Year: "Pressure · hourly averages", or "daily averages" for Year.</summary>
+    public void UpdateForLine(Metric metric, bool byDay, bool hasGaps)
     {
-        Subtitle = localizer.Get(byDay ? "History_Chart_MeansByDay" : "History_Chart_MeansByHour");
-        LegendText = string.Empty;
+        ShowChartTitle(metric, byDay ? "History_Chart_MeansByDay" : "History_Chart_MeansByHour", hasGaps);
     }
 
-    public void Update(Metric metric, Period range, Period grouping, bool hasGaps)
+    private void ShowChartTitle(Metric metric, string subtitleKey, bool hasGaps)
     {
-        var hourly = range == Period.Day;
-        var what = localizer.Get(hourly ? "History_Chart_Hourly" : grouping switch
-        {
-            Period.Month => "History_Chart_Monthly",
-            Period.Week => "History_Chart_Weekly",
-            _ => "History_Chart_Daily"
-        });
-
         Title = localizer.Get($"Metric_{metric}");
-
-        Subtitle = what;
-        ShowDayLegend = hourly && metric != Metric.Pressure;
-        ShowDayCo2Legend = hourly && metric == Metric.Co2;
-        ShowDayTypicalLegend = hourly && metric is Metric.Co2 or Metric.Temperature or Metric.Humidity;
-        ShowComfortLegend = hourly && metric is Metric.Temperature or Metric.Humidity;
-        LegendMetric = metric;
-        ShowZoneLegend = metric == Metric.Co2 && !hourly;
-        LegendText = hourly && metric != Metric.Co2 ? localizer.Get("History_Legend_Line") : string.Empty;
+        Subtitle = localizer.Get(subtitleKey);
+        ShowDayLegend = false;
+        ShowDayCo2Legend = false;
+        ShowDayTypicalLegend = false;
+        ShowComfortLegend = false;
+        LegendText = string.Empty;
         ShowNoDataLegend = hasGaps;
     }
 }

@@ -343,7 +343,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         }
         else if (loaded.Pressure is { } pressure)
         {
-            ShowPressureLine(pressure, loaded.Metric, loaded.Range, loaded.Grouping);
+            ShowPressureLine(pressure, loaded.Metric, loaded.Range);
         }
         else
         {
@@ -353,7 +353,7 @@ public sealed partial class HistoryViewModel : ObservableObject
 
     private void ShowGridChart(HistoryLoad loaded)
     {
-        var (metric, range, grouping) = (loaded.Metric, loaded.Range, loaded.Grouping);
+        var (metric, range) = (loaded.Metric, loaded.Range);
         Points = null;
         TypicalPoints = null;
         ComfortBand = null;
@@ -361,7 +361,6 @@ public sealed partial class HistoryViewModel : ObservableObject
         NightSpans = null;
         Markers = null;
         Gaps = EmptyRuns(loaded.Buckets);
-        chartHeader.Update(metric, range, grouping, Gaps.Count > 0);
         var today = calendar.LocalDateOf(loaded.Now);
         var byDay = loaded.GridMonths is not null;
 
@@ -379,7 +378,7 @@ public sealed partial class HistoryViewModel : ObservableObject
 
     private void ShowDayLine(HistoryLoad loaded, IReadOnlyList<Reading> recent)
     {
-        var (metric, range, grouping) = (loaded.Metric, loaded.Range, loaded.Grouping);
+        var metric = loaded.Metric;
         var (start, end) = (loaded.Window.Start, loaded.Window.End);
         Grid = null;
         GridName = null;
@@ -391,10 +390,10 @@ public sealed partial class HistoryViewModel : ObservableObject
         ComfortBand = dayChart.ComfortBand(metric);
         Markers = metric == Metric.Co2 ? dayChart.Markers(AirImprovedDetector.Detect([.. recent.OrderBy(reading => reading.Timestamp)])) : null;
         Gaps = MissingStretches(recent.Select(reading => reading.Timestamp).ToList(), loaded.Interval);
-        chartHeader.Update(metric, range, grouping, Gaps.Count > 0);
+        chartHeader.UpdateForDay(metric, Gaps.Count > 0);
     }
 
-    private void ShowPressureLine(PressureSeries pressure, Metric metric, Period range, Period grouping)
+    private void ShowPressureLine(PressureSeries pressure, Metric metric, Period range)
     {
         Grid = null;
         GridName = null;
@@ -406,8 +405,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         Markers = null;
         Highlight = dayChart.ChangeHighlight(pressure.Change);
         Gaps = MissingStretches([.. pressure.Points.Select(point => point.Time)], pressure.Interval);
-        chartHeader.Update(metric, range, grouping, Gaps.Count > 0);
-        chartHeader.UpdateForLine(byDay: range == Period.Year);
+        chartHeader.UpdateForLine(metric, range == Period.Year, Gaps.Count > 0);
     }
 
     private void Clear()
@@ -428,7 +426,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         ShowSleep = false;
         sleep.Update(null);
         sleep.UpdateNights(null);
-        chartHeader.Update(toolbar.Metric, toolbar.Range, toolbar.Range == Period.Year ? Period.Week : Period.Day, hasGaps: false);
+        chartHeader.UpdateForGrid(toolbar.Metric, byDay: toolbar.Range == Period.Year);
     }
 
     private static List<ChartGap> EmptyRuns(IReadOnlyList<Bucket> buckets)

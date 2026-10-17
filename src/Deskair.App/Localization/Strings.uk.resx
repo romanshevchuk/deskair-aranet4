@@ -47,9 +47,6 @@
   <data name="Range_Month" xml:space="preserve"><value>Місяць</value><comment>Draft: needs native review.</comment></data>
   <data name="Range_Year" xml:space="preserve"><value>Рік</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Chart_Hourly" xml:space="preserve"><value>виміри за останні 24 години</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_Chart_Daily" xml:space="preserve"><value>діапазон і середнє за день</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_Chart_Weekly" xml:space="preserve"><value>діапазон і середнє за тиждень</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_Chart_Monthly" xml:space="preserve"><value>діапазон і середнє за місяць</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Legend_Line" xml:space="preserve"><value>Лінія = виміри</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Legend_NoData" xml:space="preserve"><value>Немає даних</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Today" xml:space="preserve"><value>Сьогодні</value><comment>Draft: needs native review.</comment></data>
