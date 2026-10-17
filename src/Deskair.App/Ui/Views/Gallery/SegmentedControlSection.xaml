@@ -19,17 +19,26 @@
       <controls:SegmentedControl Margin="{StaticResource Space.Item}"
                                  AutomationProperties.Name="{loc:T Gallery_Section_SegmentedControl}"
                                  SelectedIndex="0">
-        <ListBoxItem Content="{loc:T Hours_AllDay}" />
-        <ListBoxItem Content="{loc:T Hours_Night}" />
+        <ListBoxItem Content="{loc:T Range_Day}" />
+        <ListBoxItem Content="{loc:T Range_Week}" />
       </controls:SegmentedControl>
       <controls:SegmentedControl Margin="{StaticResource Space.Item}"
                                  IsEnabled="False"
                                  AutomationProperties.Name="{loc:T Gallery_Sample_Disabled}"
                                  SelectedIndex="0">
-        <ListBoxItem Content="{loc:T Group_ByDay}" />
-        <ListBoxItem Content="{loc:T Group_ByWeek}" />
-        <ListBoxItem Content="{loc:T Group_ByMonth}" />
+        <ListBoxItem Content="{loc:T Range_Week}" />
+        <ListBoxItem Content="{loc:T Range_Month}" />
+        <ListBoxItem Content="{loc:T Range_Year}" />
       </controls:SegmentedControl>
+      <!-- The header navigation: as tall as the header, so the underline sits 9 px above the bottom edge. -->
+      <controls:NavTabs Height="52"
+                        Margin="{StaticResource Space.Item}"
+                        AutomationProperties.Name="{loc:T Nav_Main}"
+                        SelectedIndex="0">
+        <ListBoxItem Content="{loc:T Nav_Live}" />
+        <ListBoxItem Content="{loc:T Nav_History}" />
+        <ListBoxItem Content="{loc:T Nav_Settings}" />
+      </controls:NavTabs>
     </WrapPanel>
   </StackPanel>
 </UserControl>

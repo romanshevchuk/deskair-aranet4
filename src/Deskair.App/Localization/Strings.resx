@@ -38,14 +38,10 @@
   <data name="Range_Week" xml:space="preserve"><value>Week</value></data>
   <data name="Range_Month" xml:space="preserve"><value>Month</value></data>
   <data name="Range_Year" xml:space="preserve"><value>Year</value></data>
-  <data name="Hours_AllDay" xml:space="preserve"><value>All day</value></data>
-  <data name="Hours_Night" xml:space="preserve"><value>Night</value></data>
-  <data name="Hours_NightHint" xml:space="preserve"><value>The night hours from Settings</value></data>
   <data name="History_Chart_Hourly" xml:space="preserve"><value>readings of the last 24 hours</value></data>
   <data name="History_Chart_Daily" xml:space="preserve"><value>daily range &amp; average</value></data>
   <data name="History_Chart_Weekly" xml:space="preserve"><value>weekly range &amp; average</value></data>
   <data name="History_Chart_Monthly" xml:space="preserve"><value>monthly range &amp; average</value></data>
-  <data name="History_Chart_NightsOnly" xml:space="preserve"><value>{what} · nights only</value></data>
   <data name="History_Legend_Bars" xml:space="preserve"><value>Bar = min–max · tick = average</value></data>
   <data name="History_Legend_Line" xml:space="preserve"><value>Line = readings</value></data>
   <data name="History_Legend_NoData" xml:space="preserve"><value>No data</value></data>
@@ -55,17 +51,27 @@
   <data name="History_TypicalDay_These30" xml:space="preserve"><value>these 30 days</value></data>
   <data name="History_TypicalDay_These12Months" xml:space="preserve"><value>these 12 months</value></data>
   <data name="History_TypicalDay_Worst" xml:space="preserve"><value>worst {from}–{to}h</value></data>
-  <data name="Group_ByDay" xml:space="preserve"><value>By day</value></data>
-  <data name="Group_ByWeek" xml:space="preserve"><value>By week</value></data>
-  <data name="Group_ByMonth" xml:space="preserve"><value>By month</value></data>
   <data name="Chart_NoData" xml:space="preserve"><value>No data</value></data>
   <data name="Chart_TypicalDay" xml:space="preserve"><value>Typical day</value></data>
   <data name="Stats_Average" xml:space="preserve"><value>Average</value></data>
+  <data name="Stats_BiggestChange" xml:space="preserve"><value>Biggest change in 24 hours</value></data>
+  <data name="Stats_BiggestChange_From" xml:space="preserve"><value>from {when}</value></data>
+  <data name="Stats_PressureRange" xml:space="preserve"><value>Range of the period</value></data>
+  <data name="Insight_Pressure" xml:space="preserve"><value>**Pressure follows the weather, not the room.** A fast fall often means rain on the way.</value></data>
   <data name="Stats_Highest" xml:space="preserve"><value>Highest reading</value></data>
   <data name="Stats_Lowest" xml:space="preserve"><value>Lowest reading</value></data>
   <data name="Stats_ZoneShare" xml:space="preserve"><value>Time in each zone</value></data>
+  <data name="Stats_ComfortShare" xml:space="preserve"><value>Time in comfort range</value></data>
+  <data name="Comfort_Status_Comfortable" xml:space="preserve"><value>Comfortable</value></data>
+  <data name="Comfort_Status_ABitCool" xml:space="preserve"><value>A bit cool</value></data>
+  <data name="Comfort_Status_TooCool" xml:space="preserve"><value>Too cool</value></data>
+  <data name="Comfort_Status_ABitWarm" xml:space="preserve"><value>A bit warm</value></data>
+  <data name="Comfort_Status_TooWarm" xml:space="preserve"><value>Too warm</value></data>
+  <data name="Comfort_Status_ABitDry" xml:space="preserve"><value>A bit dry</value></data>
+  <data name="Comfort_Status_TooDry" xml:space="preserve"><value>Too dry</value></data>
+  <data name="Comfort_Status_ABitHumid" xml:space="preserve"><value>A bit humid</value></data>
+  <data name="Comfort_Status_TooHumid" xml:space="preserve"><value>Too humid</value></data>
   <data name="Stats_Header_Average" xml:space="preserve"><value>Average · {range}</value></data>
-  <data name="Stats_Header_NightAverage" xml:space="preserve"><value>Night average · {range}</value></data>
   <data name="Gap_DaysNoData_One" xml:space="preserve"><value>{count} day with no data</value></data>
   <data name="Gap_DaysNoData_Other" xml:space="preserve"><value>{count} days with no data</value></data>
   <data name="Banner_Stale" xml:space="preserve"><value>Last reading {min} min ago</value></data>
@@ -119,6 +125,15 @@
   <data name="Sleep_Tip_Other" xml:space="preserve"><value>Overnight values for the night hours.</value></data>
   <data name="Sleep_Partial" xml:space="preserve"><value>Only {recorded} of {total} hours were recorded: Deskair was not connected for the rest.</value></data>
   <data name="Sleep_Empty" xml:space="preserve"><value>No readings from last night.</value></data>
+  <data name="Nights_Title" xml:space="preserve"><value>Nights · {count}</value></data>
+  <data name="Nights_Average" xml:space="preserve"><value>Average night</value></data>
+  <data name="Nights_Best" xml:space="preserve"><value>Best night</value></data>
+  <data name="Nights_Worst" xml:space="preserve"><value>Worst night</value></data>
+  <data name="Nights_Coolest" xml:space="preserve"><value>Coolest night</value></data>
+  <data name="Nights_Warmest" xml:space="preserve"><value>Warmest night</value></data>
+  <data name="Nights_Driest" xml:space="preserve"><value>Driest night</value></data>
+  <data name="Nights_MostHumid" xml:space="preserve"><value>Most humid night</value></data>
+  <data name="Nights_Hint" xml:space="preserve"><value>Nights with at least 6 hours of readings</value></data>
   <data name="Settings_Alerts_PausedByWindows" xml:space="preserve"><value>Alerts paused by Windows: Do Not Disturb is on, so Windows holds the notifications.</value></data>
   <data name="Settings_Startup_Windows" xml:space="preserve"><value>Start with Windows</value></data>
   <data name="Settings_Startup_WindowsHint" xml:space="preserve"><value>Deskair opens when you sign in</value></data>
@@ -131,8 +146,6 @@
   <data name="Unit_Ppm" xml:space="preserve"><value>ppm</value></data>
   <data name="Chart_Partial" xml:space="preserve"><value>only {recorded} of {expected} h recorded</value></data>
   <data name="Toolbar_Metric" xml:space="preserve"><value>Metric</value></data>
-  <data name="Toolbar_Hours" xml:space="preserve"><value>Hours</value></data>
-  <data name="Toolbar_GroupBy" xml:space="preserve"><value>Group by</value></data>
   <data name="Toolbar_Range" xml:space="preserve"><value>Range</value></data>
   <data name="Coverage_Chip" xml:space="preserve"><value>Based on {percent} of expected readings</value></data>
   <data name="Gallery_Section_CoverageChip" xml:space="preserve"><value>Coverage chip</value></data>
@@ -227,15 +240,18 @@
   <data name="Stats_Change_Month" xml:space="preserve"><value>vs previous 30 days</value></data>
   <data name="Stats_Change_Year" xml:space="preserve"><value>vs previous 12 months</value></data>
   <data name="Stats_Change_None" xml:space="preserve"><value>no earlier data to compare</value></data>
-  <data name="Stats_BestPeriod" xml:space="preserve"><value>Best {period}</value></data>
-  <data name="Stats_WorstPeriod" xml:space="preserve"><value>Worst {period}</value></data>
-  <data name="Stats_LowestPeriod" xml:space="preserve"><value>Lowest {period}</value></data>
-  <data name="Stats_HighestPeriod" xml:space="preserve"><value>Highest {period}</value></data>
-  <data name="Stats_Period_Day" xml:space="preserve"><value>day</value></data>
-  <data name="Stats_Period_Week" xml:space="preserve"><value>week</value></data>
-  <data name="Stats_Period_Month" xml:space="preserve"><value>month</value></data>
   <data name="Insight_WorstHours" xml:space="preserve"><value>**Worst hours: {from}–{to}** (avg {value}). Opening a window shortly before keeps you in the good zone.</value></data>
+  <data name="Insight_WorstHours_Night" xml:space="preserve"><value>**Worst hours: {from}–{to}**, while you sleep (avg {value}). A window left slightly open at night keeps the bedroom fresher.</value></data>
   <data name="Insight_AllGood" xml:space="preserve"><value>**All good.** On a typical day CO₂ stays in the good zone, even at its worst around {from}–{to} (avg {value}).</value></data>
+  <data name="Insight_Comfortable" xml:space="preserve"><value>**Comfortable around the clock.** Every hour of the typical day is inside {range}.</value></data>
+  <data name="Insight_Coolest" xml:space="preserve"><value>**Coolest hours: {from}–{to}** (avg {value}).</value></data>
+  <data name="Insight_Coolest_Night" xml:space="preserve"><value>**Coolest hours: {from}–{to}**, while you sleep (avg {value}). A slightly cooler bedroom is fine for sleep.</value></data>
+  <data name="Insight_Warmest" xml:space="preserve"><value>**Warmest hours: {from}–{to}** (avg {value}). Airing in the morning keeps the afternoon cooler.</value></data>
+  <data name="Insight_Warmest_Night" xml:space="preserve"><value>**Warmest hours: {from}–{to}**, while you sleep (avg {value}). A slightly open window helps the bedroom cool down.</value></data>
+  <data name="Insight_Driest" xml:space="preserve"><value>**Driest hours: {from}–{to}** (avg {value}). This is usual in a heated room in winter.</value></data>
+  <data name="Insight_Driest_Night" xml:space="preserve"><value>**Driest hours: {from}–{to}**, while you sleep (avg {value}). This is usual in a heated room in winter.</value></data>
+  <data name="Insight_MostHumid" xml:space="preserve"><value>**Most humid hours: {from}–{to}** (avg {value}). Airing for a few minutes after cooking or a shower brings it down.</value></data>
+  <data name="Insight_MostHumid_Night" xml:space="preserve"><value>**Most humid hours: {from}–{to}**, while you sleep (avg {value}). A slightly open window helps.</value></data>
   <data name="Offline_Text" xml:space="preserve"><value>The sensor may be out of range or asleep.</value></data>
   <data name="Offline_Text_BluetoothOff" xml:space="preserve"><value>Bluetooth is off, so Deskair cannot reach the sensor.</value></data>
   <data name="Offline_LastReading" xml:space="preserve"><value>Your last reading was {value} at {time}.</value></data>
@@ -248,6 +264,8 @@
   <data name="Tray_Quit" xml:space="preserve"><value>Quit</value></data>
   <data name="Flyout_Updated" xml:space="preserve"><value>updated {sec} s ago</value></data>
   <data name="Flyout_UpdatedMinutes" xml:space="preserve"><value>updated {min} min ago</value></data>
+  <data name="Flyout_LastSeen" xml:space="preserve"><value>last seen {ago} ago</value></data>
+  <data name="Flyout_LastReadingAt" xml:space="preserve"><value>{unit} at {time}</value></data>
   <data name="Duration_Hours" xml:space="preserve"><value>{h} h</value></data>
   <data name="Toast_High_Title" xml:space="preserve"><value>Ventilate now · {room}</value></data>
   <data name="Toast_Elevated_Body" xml:space="preserve"><value>{value}. Open a window for about 10 minutes.</value></data>
@@ -298,16 +316,38 @@
   <data name="History_Period_Empty_Text" xml:space="preserve"><value>Deskair has readings from {date}.</value></data>
   <data name="History_Period_Latest" xml:space="preserve"><value>Go to the latest</value></data>
   <data name="History_Chart_ByHour" xml:space="preserve"><value>by hour</value><comment>Subtitle of the History grid (Week, Month).</comment></data>
+  <data name="History_Chart_MeansByHour" xml:space="preserve"><value>hourly averages</value><comment>Subtitle of the Pressure line (Week, Month).</comment></data>
+  <data name="History_Chart_MeansByDay" xml:space="preserve"><value>daily averages</value><comment>Subtitle of the Pressure line (Year).</comment></data>
+  <data name="History_Chart_PressureChange" xml:space="preserve"><value>{value} {unit} in 24 h</value><comment>Label on the shaded biggest pressure change; {value} carries its sign.</comment></data>
+  <data name="History_Chart_ByDay" xml:space="preserve"><value>by day</value><comment>Subtitle of the History grid (Year).</comment></data>
+  <data name="History_AirImproved_Hover" xml:space="preserve"><value>Air improved at {time} · −{drop} {unit} in {min} min</value></data>
+  <data name="History_AirImproved_Label" xml:space="preserve"><value>air improved</value><comment>Label on the small ring on the History Day chart where CO₂ dropped quickly.</comment></data>
+  <data name="History_Hover_Typical" xml:space="preserve"><value>typical {value}</value><comment>Added to the hover readout of the History Day chart.</comment></data>
+  <data name="History_Legend_Typical" xml:space="preserve"><value>Typical, previous 7 days</value></data>
+  <data name="History_Chart_ComfortRange" xml:space="preserve"><value>comfort {from}–{to} {unit}</value></data>
+  <data name="History_Legend_ComfortRange" xml:space="preserve"><value>Comfort range</value></data>
+  <data name="History_Legend_Night" xml:space="preserve"><value>Night</value><comment>Legend and label of the night band on the History Day chart.</comment></data>
   <data name="History_Grid_Name" xml:space="preserve"><value>{metric} by hour, {period}</value><comment>What Narrator reads for the History grid.</comment></data>
+  <data name="History_Grid_NameDay" xml:space="preserve"><value>{metric} by day, {period}</value><comment>What Narrator reads for the Year grid.</comment></data>
   <data name="History_Grid_Cell" xml:space="preserve"><value>{day}, {from}–{to}</value></data>
   <data name="History_Grid_Value" xml:space="preserve"><value>{where} · {value} {unit}</value></data>
   <data name="History_Grid_Value_None" xml:space="preserve"><value>{where} · No data</value></data>
   <data name="History_Grid_Typical" xml:space="preserve"><value>Typical</value></data>
   <data name="History_Grid_TypicalCell" xml:space="preserve"><value>Typical, {from}–{to}</value></data>
   <data name="History_Grid_Worst" xml:space="preserve"><value>Worst {from}–{to}</value></data>
+  <data name="History_Grid_Coolest" xml:space="preserve"><value>Coolest {from}–{to}</value></data>
+  <data name="History_Grid_Warmest" xml:space="preserve"><value>Warmest {from}–{to}</value></data>
+  <data name="History_Grid_Driest" xml:space="preserve"><value>Driest {from}–{to}</value></data>
+  <data name="History_Grid_MostHumid" xml:space="preserve"><value>Most humid {from}–{to}</value></data>
+  <data name="Comfort_Cool" xml:space="preserve"><value>Cool</value></data>
+  <data name="Comfort_Comfortable" xml:space="preserve"><value>Comfortable</value></data>
+  <data name="Comfort_Warm" xml:space="preserve"><value>Warm</value></data>
+  <data name="Comfort_Dry" xml:space="preserve"><value>Dry</value></data>
+  <data name="Comfort_Humid" xml:space="preserve"><value>Humid</value></data>
   <data name="History_Grid_Night" xml:space="preserve"><value>Night · {from}–{to}</value></data>
   <data name="History_Grid_TagBest" xml:space="preserve"><value>best</value><comment>Tag next to the day with the lowest average.</comment></data>
   <data name="History_Grid_TagWorst" xml:space="preserve"><value>worst</value><comment>Tag next to the day with the highest average.</comment></data>
   <data name="History_Grid_NoReadings" xml:space="preserve"><value>No readings · {from} – {to}</value></data>
   <data name="History_Grid_UnitHour" xml:space="preserve"><value>Each square is one hour</value></data>
+  <data name="History_Grid_UnitDay" xml:space="preserve"><value>Each square is one day</value></data>
 </root>

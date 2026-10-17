@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Zones;
+using Deskair.Sensors.Aranet4;
+using Deskair.Sensors.Simulated;
 using Deskair.Services.Connection;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
@@ -11,7 +13,7 @@ using Deskair.Services.Sensors;
 
 namespace Deskair.App.ViewModels.Shell;
 
-/// <summary>The footer: status dot, "Connected · updated 12 s ago", room, sensor id, signal and battery. Text is already localized.</summary>
+/// <summary>The footer: status dot, "Connected · updated 12 s ago", the sensor model and the battery. The hardware ID is only in the tooltip. Text is already localized.</summary>
 public sealed partial class FooterViewModel : ObservableObject
 {
     private readonly DeviceRegistry devices;
@@ -21,7 +23,6 @@ public sealed partial class FooterViewModel : ObservableObject
     private readonly ILocalizer localizer;
     private ConnectionState state = ConnectionState.FirstRun;
     private DateTimeOffset? lastReadingAt;
-    private int? signalDbm;
 
     /// <summary>The colour of the dot as a zone: green when connected, amber when stale, none (grey) otherwise.</summary>
     [ObservableProperty]
@@ -34,9 +35,13 @@ public sealed partial class FooterViewModel : ObservableObject
     [ObservableProperty]
     private string? syncText;
 
-    /// <summary>"Office · 0A0B3 · Signal fair". Null without a sensor.</summary>
+    /// <summary>"Aranet4". Null without a sensor.</summary>
     [ObservableProperty]
     private string? detailText;
+
+    /// <summary>The hardware ID of the sensor, for the tooltip of the detail text. Null without a sensor.</summary>
+    [ObservableProperty]
+    private string? detailTooltip;
 
     /// <summary>"Sensor battery is low (8%)" for the banner; null unless the state is low battery.</summary>
     [ObservableProperty]
@@ -67,7 +72,6 @@ public sealed partial class FooterViewModel : ObservableObject
     {
         state = initial;
         lastReadingAt = lastReading;
-        signalDbm = null;
         BatteryPercent = null;
         BatteryText = null;
 
@@ -106,10 +110,18 @@ public sealed partial class FooterViewModel : ObservableObject
             _ => Connected(age)
         };
         DetailText = Detail();
+        DetailTooltip = state == ConnectionState.FirstRun ? null : devices.Selected?.Address;
         LowBatteryText = state == ConnectionState.LowBattery && BatteryText is { } battery
             ? localizer.Format("Banner_LowBattery", ("percent", battery))
             : null;
     }
+
+    private static string ModelKey(DeviceId device) => device.ProviderId switch
+    {
+        Aranet4Provider.ProviderId => "Sensor_Aranet4_Name",
+        SimulatedProvider.ProviderId => "Sensor_Simulated_Name",
+        _ => "Sensor_Aranet4_Name"
+    };
 
     private static int Minutes(TimeSpan? age) => (int)Math.Floor((age ?? TimeSpan.Zero).TotalMinutes);
 
@@ -129,19 +141,7 @@ public sealed partial class FooterViewModel : ObservableObject
             return null;
         }
 
-        var parts = new List<string> { devices.Info(device)?.RoomName ?? device.Address, device.Address };
-
-        if (signalDbm is { } dbm)
-        {
-            parts.Add(localizer.Get(SignalClassifier.Classify(dbm) switch
-            {
-                SignalLevel.Good => "Footer_Signal_Good",
-                SignalLevel.Fair => "Footer_Signal_Fair",
-                _ => "Footer_Signal_Weak"
-            }));
-        }
-
-        return string.Join(" · ", parts);
+        return localizer.Get(ModelKey(device));
     }
 
     private async Task TickAsync(CancellationToken cancellationToken)
@@ -192,7 +192,6 @@ public sealed partial class FooterViewModel : ObservableObject
 
         dispatcher.Post(() =>
         {
-            signalDbm = message.Status.SignalDbm;
             BatteryPercent = message.Status.BatteryPercent;
             BatteryText = message.Status.BatteryPercent is { } percent ? NumberFormat.Percent(percent / 100.0, localizer.Culture) : null;
             Refresh();
@@ -209,7 +208,6 @@ public sealed partial class FooterViewModel : ObservableObject
         dispatcher.Post(() =>
         {
             lastReadingAt = null;
-            signalDbm = null;
             BatteryPercent = null;
             BatteryText = null;
             Refresh();

@@ -44,8 +44,23 @@
                           Points="{x:Static gallery:GallerySamples.NoPoints}"
                           NowLabel="{loc:T Chart_Now}" NoDataText="{loc:T Chart_NoData}" />
       </controls:Card>
+      <!-- The History Day chart: night band, typical day, an air improved marker (hover the ring for its text). -->
+      <controls:Card Width="760" Height="300" Margin="{StaticResource Space.Item}" Padding="{StaticResource Space.Card.Padding}">
+        <charts:HistoryChart Metric="Co2" Unit="ppm" TimeZone="{x:Static sys:TimeZoneInfo.Utc}"
+                             Points="{x:Static gallery:GallerySamples.DayLine}"
+                             TypicalPoints="{x:Static gallery:GallerySamples.DayTypical}"
+                             NightSpans="{x:Static gallery:GallerySamples.DayNight}"
+                             Markers="{x:Static gallery:GallerySamples.DayMarkers}"
+                             NightLabel="{loc:T History_Legend_Night}"
+                             MarkerLabel="{loc:T History_AirImproved_Label}"
+                             TypicalHoverText="{loc:T History_Hover_Typical}"
+                             NoDataText="{loc:T Chart_NoData}" />
+      </controls:Card>
       <controls:Card Width="760" Height="470" Margin="{StaticResource Space.Item}" Padding="{StaticResource Space.Card.Padding}">
         <charts:HourGridChart Model="{x:Static gallery:GallerySamples.Grid}" />
+      </controls:Card>
+      <controls:Card Width="760" Height="330" Margin="{StaticResource Space.Item}" Padding="{StaticResource Space.Card.Padding}">
+        <charts:HourGridChart Model="{x:Static gallery:GallerySamples.YearGrid}" />
       </controls:Card>
     </WrapPanel>
 
@@ -55,6 +70,8 @@
     <WrapPanel>
       <charts:ZoneRibbon EndTime="{x:Static gallery:GallerySamples.End}" Width="560" Height="14" Margin="{StaticResource Space.Item}" Segments="{x:Static gallery:GallerySamples.Day}" />
       <charts:ZoneRibbon EndTime="{x:Static gallery:GallerySamples.End}" Width="340" Height="22" Margin="{StaticResource Space.Item}" Segments="{x:Static gallery:GallerySamples.Day}" />
+      <!-- The flyout ribbon: 8 px high, each zone its own block 2 px apart. -->
+      <charts:ZoneRibbon EndTime="{x:Static gallery:GallerySamples.End}" Width="328" Height="8" Margin="{StaticResource Space.Item}" SegmentGap="2" SegmentRadius="3" Segments="{x:Static gallery:GallerySamples.Day}" />
     </WrapPanel>
   </StackPanel>
 </UserControl>

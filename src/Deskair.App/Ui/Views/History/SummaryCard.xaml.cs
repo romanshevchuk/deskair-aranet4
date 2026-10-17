@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace Deskair.App.Ui.Views.History;
 
-public partial class SleepCard : UserControl
+public partial class SummaryCard : UserControl
 {
-    public SleepCard()
+    public SummaryCard()
     {
         InitializeComponent();
     }

@@ -38,8 +38,9 @@ public sealed class PeriodLabeler(ILocalizer localizer, LocalCalendar calendar)
     public string EmptyText(DateTimeOffset firstReading)
         => localizer.Format("History_Period_Empty_Text", ("date", calendar.LocalDateOf(firstReading).ToString("d MMM yyyy", localizer.Culture)));
 
-    /// <summary>What Narrator reads for the History grid: "CO₂ by hour, 8 – 14 Oct 2026".</summary>
-    public string GridName(Metric metric, string period) => localizer.Format("History_Grid_Name", ("metric", localizer.Get($"Metric_{metric}")), ("period", period));
+    /// <summary>What Narrator reads for the History grid: "CO₂ by hour, 8 – 14 Oct 2026", or "CO₂ by day, Nov 2025 – Oct 2026" for Year.</summary>
+    public string GridName(Metric metric, string period, bool byDay = false)
+        => localizer.Format(byDay ? "History_Grid_NameDay" : "History_Grid_Name", ("metric", localizer.Get($"Metric_{metric}")), ("period", period));
 
     private string Span(string from, string to) => localizer.Format("History_Period_Span", ("from", from), ("to", to));
 

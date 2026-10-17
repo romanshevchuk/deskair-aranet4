@@ -28,7 +28,7 @@
         </controls:SettingsRow.Style>
       </controls:SettingsRow>
       <controls:SettingsRow Header="{loc:T Settings_Devices_Add}" Description="{loc:T Settings_Devices_AddHint}">
-        <controls:PrimaryButton Command="{Binding AddSensorCommand}" Content="{loc:T Action_Add}" />
+        <controls:SecondaryButton Command="{Binding AddSensorCommand}" Content="{loc:T Action_Add}" />
       </controls:SettingsRow>
     </StackPanel>
   </controls:SettingsCard>

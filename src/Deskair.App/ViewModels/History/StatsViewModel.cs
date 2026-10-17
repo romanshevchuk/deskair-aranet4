@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Deskair.App.Localization;
+using Deskair.App.ViewModels.ChartModels;
 using Deskair.Domain.Analytics.Aggregation;
+using Deskair.Domain.Analytics.Comfort;
 using Deskair.Domain.Analytics.Coverage;
 using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Analytics.TypicalDay;
@@ -64,6 +66,17 @@ public sealed partial class StatsViewModel : ObservableObject
     [ObservableProperty]
     private string? lowestText;
 
+    /// <summary>When the highest reading was taken ("Tue 13 Oct, 14:16"). Null without a time.</summary>
+    [ObservableProperty]
+    private string? highestWhen;
+
+    [ObservableProperty]
+    private string? lowestWhen;
+
+    /// <summary>"Based on 82% of expected readings" as one line of text; null when the coverage is not worth a note (98% or more, behaviour-rules.md "Aggregation" rule 5).</summary>
+    [ObservableProperty]
+    private string? coverageText;
+
     /// <summary>The unit of the metric shown ("ppm", "°C"), for the chart readout.</summary>
     [ObservableProperty]
     private string? unitText;
@@ -83,30 +96,6 @@ public sealed partial class StatsViewModel : ObservableObject
     /// <summary>Good when CO₂ fell, High when it rose; null for no change and for the other metrics, which have no better or worse.</summary>
     [ObservableProperty]
     private Zone? changeZone;
-
-    /// <summary>True when the best and worst period show: at least two complete periods with different averages, and a range longer than a day.</summary>
-    [ObservableProperty]
-    private bool hasPeriods;
-
-    /// <summary>"Best day" for CO₂, "Lowest day" for the other metrics.</summary>
-    [ObservableProperty]
-    private string? bestLabel;
-
-    [ObservableProperty]
-    private string? bestText;
-
-    /// <summary>When the best period was ("2 Oct", "1 Oct – 7 Oct", "October 2026").</summary>
-    [ObservableProperty]
-    private string? bestWhen;
-
-    [ObservableProperty]
-    private string? worstLabel;
-
-    [ObservableProperty]
-    private string? worstText;
-
-    [ObservableProperty]
-    private string? worstWhen;
 
     /// <summary>True for CO₂ when there are readings: the shares below make a bar.</summary>
     [ObservableProperty]
@@ -130,9 +119,57 @@ public sealed partial class StatsViewModel : ObservableObject
     [ObservableProperty]
     private string? zoneHighText;
 
+    /// <summary>For Temperature and Humidity: "Comfortable", "A bit cool", "Too warm" and so on for the average, shown as a pill beside it. Null for the other metrics.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasComfort))]
+    private string? comfortText;
+
+    /// <summary>Good while the average is comfortable, Elevated outside the range. Null without a comfort text.</summary>
+    [ObservableProperty]
+    private Zone? comfortZone;
+
+    /// <summary>"Time in each zone" for CO₂, "Time in comfort range" for Temperature and Humidity.</summary>
+    [ObservableProperty]
+    private string? shareTitle;
+
+    /// <summary>The comfortable range ("20–24 °C") next to the title. Null for CO₂.</summary>
+    [ObservableProperty]
+    private string? shareRange;
+
+    /// <summary>The names under the bar, left to right: Good, Elevated, High; or Cool, Comfortable, Warm; or Dry, Comfortable, Humid.</summary>
+    [ObservableProperty]
+    private string? shareFirstLabel;
+
+    [ObservableProperty]
+    private string? shareSecondLabel;
+
+    [ObservableProperty]
+    private string? shareThirdLabel;
+
+    /// <summary>The colours of the share bar: the zones, or a comfort scale.</summary>
+    [ObservableProperty]
+    private HourGridPalette sharePalette;
+
     /// <summary>One sentence about the worst three hours of the typical day (CO₂ only), or null.</summary>
     [ObservableProperty]
     private string? insightText;
+
+    /// <summary>For Pressure: the biggest change over 24 hours as "▼ 3.8 hPa". Null without one.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasBiggestChange))]
+    private string? biggestChangeText;
+
+    /// <summary>"from Tue 6 Oct, 18:00": where the biggest change started.</summary>
+    [ObservableProperty]
+    private string? biggestChangeWhen;
+
+    /// <summary>For Pressure: highest minus lowest of the period ("8.0 hPa").</summary>
+    [ObservableProperty]
+    private string? pressureRangeText;
+
+    public bool HasComfort => ComfortText is not null;
+
+    public bool HasBiggestChange => BiggestChangeText is not null;
 
     public StatsViewModel()
     {
@@ -153,11 +190,37 @@ public sealed partial class StatsViewModel : ObservableObject
     public void Update(StatsInput input)
     {
         UpdateNumbers(input.Buckets, input.Metric);
+        UpdateExtremeTimes(input.Buckets);
         UpdateHeader(input);
         UpdateChange(input);
-        UpdatePeriods(input);
+        UpdateComfort(input);
         UpdateZoneShare(input);
         UpdateInsight(input);
+        UpdatePressure(input);
+    }
+
+    /// <summary>Pressure follows the weather: the biggest 24 hour change, the range of the period and one line saying so (behaviour-rules.md rule 12).</summary>
+    private void UpdatePressure(StatsInput input)
+    {
+        BiggestChangeText = BiggestChangeWhen = PressureRangeText = null;
+
+        if (formatter is null || localizer is null || input.Metric != Metric.Pressure || !HasData)
+        {
+            return;
+        }
+
+        if (Highest is { } high && Lowest is { } low)
+        {
+            PressureRangeText = $"{formatter.Difference(Metric.Pressure, high - low)} {formatter.Unit(Metric.Pressure)}";
+        }
+
+        InsightText = localizer.Get("Insight_Pressure");
+
+        if (input.PressureChange is { } change)
+        {
+            BiggestChangeText = $"{(change.Delta < 0 ? '▼' : '▲')} {formatter.Difference(Metric.Pressure, Math.Abs(change.Delta))} {formatter.Unit(Metric.Pressure)}";
+            BiggestChangeWhen = ReadingTime(change.Start) is { } when ? localizer.Format("Stats_BiggestChange_From", ("when", when)) : null;
+        }
     }
 
     private void UpdateNumbers(IReadOnlyList<Bucket> buckets, Metric metric)
@@ -171,12 +234,27 @@ public sealed partial class StatsViewModel : ObservableObject
         Coverage = CoverageCalculator.Fraction(readings, buckets.Sum(bucket => bucket.ExpectedCount));
         HasData = withData.Count > 0;
         ShowCoverage = buckets.Count > 0 && CoverageCalculator.ShouldShowChip(Coverage, buckets.Count(bucket => bucket.State == BucketState.NoData));
+        CoverageText = ShowCoverage && localizer is not null ? localizer.Format("Coverage_Chip", ("percent", NumberFormat.Percent(Coverage, localizer.Culture))) : null;
         AverageText = Text(Average, metric);
         AverageNumber = formatter is not null && Average is { } stored ? formatter.Value(metric, stored) : null;
         HighestText = Text(Highest, metric);
         LowestText = Text(Lowest, metric);
         UnitText = formatter?.Unit(metric);
     }
+
+    /// <summary>When the highest and the lowest reading were taken, from the buckets that hold them, in the day-and-time form ("Tue 13 Oct, 14:16").</summary>
+    private void UpdateExtremeTimes(IReadOnlyList<Bucket> buckets)
+    {
+        var withData = buckets.Where(BucketStatistics.HasData).ToList();
+
+        HighestWhen = withData.Count == 0 ? null : ReadingTime(withData.MaxBy(bucket => bucket.Maximum)?.MaximumAt);
+        LowestWhen = withData.Count == 0 ? null : ReadingTime(withData.MinBy(bucket => bucket.Minimum)?.MinimumAt);
+    }
+
+    private string? ReadingTime(DateTimeOffset? time)
+        => time is { } at && localizer is not null && calendar is not null
+            ? TimeZoneInfo.ConvertTime(at, calendar.Zone).ToString("ddd d MMM, HH:mm", localizer.Culture)
+            : null;
 
     private void UpdateHeader(StatsInput input)
     {
@@ -194,7 +272,7 @@ public sealed partial class StatsViewModel : ObservableObject
             ? first.ToString("d MMM yyyy", culture)
             : $"{first.ToString("d MMM", culture)} – {last.ToString("d MMM yyyy", culture)}";
 
-        HeaderText = localizer.Format(input.Hours == HoursFilterMode.Night ? "Stats_Header_NightAverage" : "Stats_Header_Average", ("range", range));
+        HeaderText = localizer.Format("Stats_Header_Average", ("range", range));
     }
 
     private void UpdateChange(StatsInput input)
@@ -228,53 +306,100 @@ public sealed partial class StatsViewModel : ObservableObject
         ChangeZone = unchanged || input.Metric != Metric.Co2 ? null : difference < 0 ? Zone.Good : Zone.High;
     }
 
-    private void UpdatePeriods(StatsInput input)
-    {
-        HasPeriods = false;
-        BestLabel = BestText = BestWhen = null;
-        WorstLabel = WorstText = WorstWhen = null;
-
-        if (formatter is null || localizer is null || calendar is null || input.Range == Period.Day)
-        {
-            return;
-        }
-
-        if (BucketStatistics.Lowest(input.Buckets) is not { } best
-            || BucketStatistics.Highest(input.Buckets) is not { } worst
-            || best.Start == worst.Start)
-        {
-            return;
-        }
-
-        var co2 = input.Metric == Metric.Co2;
-        var period = localizer.Get($"Stats_Period_{input.Grouping}");
-
-        BestLabel = localizer.Format(co2 ? "Stats_BestPeriod" : "Stats_LowestPeriod", ("period", period));
-        BestText = Text(best.Average, input.Metric);
-        BestWhen = When(best, input.Grouping);
-        WorstLabel = localizer.Format(co2 ? "Stats_WorstPeriod" : "Stats_HighestPeriod", ("period", period));
-        WorstText = Text(worst.Average, input.Metric);
-        WorstWhen = When(worst, input.Grouping);
-        HasPeriods = true;
-    }
-
+    /// <summary>
+    /// The three shares behind the bar: for CO₂ the zones (Good, Elevated, High); for Temperature and Humidity below, inside and above the comfortable range, left to right
+    /// (the properties keep their zone names).
+    /// </summary>
     private void UpdateZoneShare(StatsInput input)
     {
-        if (localizer is null || input.Metric != Metric.Co2 || input.ZoneShare is not { } share)
+        HasZoneShare = false;
+        ZoneGood = ZoneElevated = ZoneHigh = 0;
+        ZoneGoodText = ZoneElevatedText = ZoneHighText = null;
+        ShareTitle = ShareRange = ShareFirstLabel = ShareSecondLabel = ShareThirdLabel = null;
+        SharePalette = HourGridPalette.Zones;
+
+        if (localizer is null)
         {
-            HasZoneShare = false;
-            ZoneGood = ZoneElevated = ZoneHigh = 0;
-            ZoneGoodText = ZoneElevatedText = ZoneHighText = null;
             return;
         }
 
-        ZoneGood = share.Good;
-        ZoneElevated = share.Elevated;
-        ZoneHigh = share.High;
-        ZoneGoodText = NumberFormat.Percent(share.Good, localizer.Culture);
-        ZoneElevatedText = NumberFormat.Percent(share.Elevated, localizer.Culture);
-        ZoneHighText = NumberFormat.Percent(share.High, localizer.Culture);
+        if (input.Metric == Metric.Co2 && input.ZoneShare is { } zones)
+        {
+            ShowShare(zones.Good, zones.Elevated, zones.High);
+            ShareTitle = localizer.Get("Stats_ZoneShare");
+            ShareFirstLabel = localizer.Get("Zone_Good");
+            ShareSecondLabel = localizer.Get("Zone_Elevated");
+            ShareThirdLabel = localizer.Get("Zone_High");
+        }
+        else if (ComfortScale.For(input.Metric) is { } scale && input.Comfort is { } comfort)
+        {
+            var temperature = input.Metric == Metric.Temperature;
+
+            ShowShare(comfort.Low, comfort.Inside, comfort.High);
+            ShareTitle = localizer.Get("Stats_ComfortShare");
+            ShareRange = RangeText(scale);
+            ShareFirstLabel = localizer.Get(temperature ? "Comfort_Cool" : "Comfort_Dry");
+            ShareSecondLabel = localizer.Get("Comfort_Comfortable");
+            ShareThirdLabel = localizer.Get(temperature ? "Comfort_Warm" : "Comfort_Humid");
+            SharePalette = temperature ? HourGridPalette.Temperature : HourGridPalette.Humidity;
+        }
+    }
+
+    private void ShowShare(double first, double second, double third)
+    {
+        ZoneGood = first;
+        ZoneElevated = second;
+        ZoneHigh = third;
+        ZoneGoodText = NumberFormat.Percent(first, localizer!.Culture);
+        ZoneElevatedText = NumberFormat.Percent(second, localizer.Culture);
+        ZoneHighText = NumberFormat.Percent(third, localizer.Culture);
         HasZoneShare = true;
+    }
+
+    /// <summary>"20–24 °C" or "30–50 %": the comfortable range in the unit shown.</summary>
+    private string? RangeText(ComfortScale scale)
+    {
+        if (formatter is null)
+        {
+            return null;
+        }
+
+        var unit = formatter.Unit(scale.Metric);
+
+        return $"{formatter.Value(scale.Metric, scale.Low)}–{formatter.Value(scale.Metric, scale.High)} {unit}";
+    }
+
+    /// <summary>The pill beside the average for Temperature and Humidity: comfortable, or a bit or too far on one side.</summary>
+    private void UpdateComfort(StatsInput input)
+    {
+        ComfortText = null;
+        ComfortZone = null;
+
+        if (localizer is null || ComfortScale.For(input.Metric) is not { } scale || Average is not { } average)
+        {
+            return;
+        }
+
+        var side = scale.Side(average);
+
+        if (side == ComfortSide.Inside)
+        {
+            ComfortText = localizer.Get("Comfort_Status_Comfortable");
+            ComfortZone = Zone.Good;
+            return;
+        }
+
+        var far = scale.IsFarOutside(average) ? "Too" : "ABit";
+        var word = (input.Metric, side) switch
+        {
+            (Metric.Temperature, ComfortSide.Low) => "Cool",
+            (Metric.Temperature, _) => "Warm",
+            (_, ComfortSide.Low) => "Dry",
+            _ => "Humid"
+        };
+
+        ComfortText = localizer.Get($"Comfort_Status_{far}{word}");
+        ComfortZone = Zone.Elevated;
     }
 
     private void UpdateInsight(StatsInput input)
@@ -282,14 +407,64 @@ public sealed partial class StatsViewModel : ObservableObject
         InsightText = null;
         InsightZone = null;
 
-        if (localizer is null || input.Metric != Metric.Co2 || input.TypicalDay is null || TypicalDayCalculator.WorstWindow(input.TypicalDay) is not { } window)
+        if (localizer is null || input.TypicalDay is null)
         {
             return;
         }
 
-        var key = window.Average >= ZoneThresholds.Default.ElevatedFromPpm ? "Insight_WorstHours" : "Insight_AllGood";
+        if (input.Metric == Metric.Co2)
+        {
+            UpdateCo2Insight(input);
+        }
+        else if (ComfortScale.For(input.Metric) is { } scale)
+        {
+            UpdateComfortInsight(input, scale);
+        }
+    }
 
-        InsightText = localizer.Format(
+    private void UpdateComfortInsight(StatsInput input, ComfortScale scale)
+    {
+        var typical = input.TypicalDay!;
+
+        if (typical.All(hour => hour.Average is null))
+        {
+            return;
+        }
+
+        if (TypicalDayCalculator.FurthestOutsideWindow(typical, scale) is not { } window)
+        {
+            InsightText = localizer!.Format("Insight_Comfortable", ("range", RangeText(scale) ?? string.Empty));
+            InsightZone = Zone.Good;
+            return;
+        }
+
+        var name = (input.Metric, scale.Side(window.Average)) switch
+        {
+            (Metric.Temperature, ComfortSide.Low) => "Coolest",
+            (Metric.Temperature, _) => "Warmest",
+            (_, ComfortSide.Low) => "Driest",
+            _ => "MostHumid"
+        };
+        var night = WhileSleeping(input.Night, window.StartHour) ? "_Night" : string.Empty;
+
+        InsightText = localizer!.Format(
+            $"Insight_{name}{night}",
+            ("from", Hour(window.StartHour)),
+            ("to", Hour(window.StartHour + 3)),
+            ("value", Text(window.Average, input.Metric)));
+        InsightZone = Zone.Elevated;
+    }
+
+    private void UpdateCo2Insight(StatsInput input)
+    {
+        if (TypicalDayCalculator.WorstWindow(input.TypicalDay!) is not { } window)
+        {
+            return;
+        }
+
+        var key = window.Average < ZoneThresholds.Default.ElevatedFromPpm ? "Insight_AllGood" : WhileSleeping(input.Night, window.StartHour) ? "Insight_WorstHours_Night" : "Insight_WorstHours";
+
+        InsightText = localizer!.Format(
             key,
             ("from", Hour(window.StartHour)),
             ("to", Hour(window.StartHour + 3)),
@@ -297,22 +472,12 @@ public sealed partial class StatsViewModel : ObservableObject
         InsightZone = Average is { } average ? ZoneClassifier.Classify(average) : null;
     }
 
+    /// <summary>True when at least 2 of the 3 worst hours are night hours (behaviour-rules.md "Aggregation" rule 9).</summary>
+    public static bool WhileSleeping(NightWindow? night, int startHour)
+        => night is { IsEmpty: false } && Enumerable.Range(startHour, 3).Count(hour => night.Includes(TimeSpan.FromHours(hour % 24))) >= 2;
+
     private string? Text(double? value, Metric metric)
         => formatter is not null && value is { } stored ? $"{formatter.Value(metric, stored)} {formatter.Unit(metric)}" : null;
-
-    private string When(Bucket bucket, Period grouping)
-    {
-        var culture = localizer!.Culture;
-        var first = calendar!.LocalDateOf(bucket.Start);
-        var last = calendar.LocalDateOf(bucket.End.AddTicks(-1));
-
-        return grouping switch
-        {
-            Period.Week when last != first => $"{first.ToString("d MMM", culture)} – {last.ToString("d MMM", culture)}",
-            Period.Month => first.ToString("MMMM yyyy", culture),
-            _ => first.ToString("d MMM", culture)
-        };
-    }
 
     private static string Hour(int hour) => $"{hour % 24:00}:00";
 }

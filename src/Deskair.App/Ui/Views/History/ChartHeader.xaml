@@ -61,6 +61,47 @@
         </StackPanel>
       </StackPanel>
 
+      <!-- Day: the CO₂ line, the typical day and the night band. -->
+      <StackPanel Orientation="Horizontal" Visibility="{Binding ShowDayLegend, Converter={StaticResource BoolToVisibility}}">
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ShowDayCo2Legend, Converter={StaticResource BoolToVisibility}}">
+          <StackPanel Style="{StaticResource Legend.Item}">
+            <Border Width="14" Height="4" Margin="0,0,5,0" VerticalAlignment="Center" CornerRadius="2">
+              <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                  <GradientStop Color="{DynamicResource Zone.Good.Line.Color}" Offset="0" />
+                  <GradientStop Color="{DynamicResource Zone.Elevated.Line.Color}" Offset="0.5" />
+                  <GradientStop Color="{DynamicResource Zone.High.Line.Color}" Offset="1" />
+                </LinearGradientBrush>
+              </Border.Background>
+            </Border>
+            <TextBlock Style="{StaticResource Text.Caption}" Text="{loc:T Metric_Co2}" />
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Style="{StaticResource Legend.Item}" Visibility="{Binding ShowDayTypicalLegend, Converter={StaticResource BoolToVisibility}}">
+          <Border Width="14" Height="2" Margin="0,0,5,0" VerticalAlignment="Center" Background="{DynamicResource Text.Tertiary.Brush}" CornerRadius="1" Opacity="0.6" />
+          <TextBlock Style="{StaticResource Text.Caption}" Text="{loc:T History_Legend_Typical}" />
+        </StackPanel>
+        <StackPanel Style="{StaticResource Legend.Item}" Visibility="{Binding ShowComfortLegend, Converter={StaticResource BoolToVisibility}}">
+          <Border Width="12" Height="12" Margin="0,0,5,0" VerticalAlignment="Center" CornerRadius="3" Opacity="0.25">
+            <Border.Style>
+              <Style TargetType="{x:Type Border}">
+                <Setter Property="Background" Value="{DynamicResource Metric.Temperature.Brush}" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding LegendMetric}" Value="Humidity">
+                    <Setter Property="Background" Value="{DynamicResource Metric.Humidity.Brush}" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Border.Style>
+          </Border>
+          <TextBlock Style="{StaticResource Text.Caption}" Text="{loc:T History_Legend_ComfortRange}" />
+        </StackPanel>
+        <StackPanel Style="{StaticResource Legend.Item}">
+          <Border Width="12" Height="12" Margin="0,0,5,0" VerticalAlignment="Center" Background="{DynamicResource Grid.Brush}" CornerRadius="3" />
+          <TextBlock Style="{StaticResource Text.Caption}" Text="{loc:T History_Legend_Night}" />
+        </StackPanel>
+      </StackPanel>
+
       <TextBlock Margin="12,0,0,0" Style="{StaticResource Text.Caption}" Text="{Binding LegendText}" />
 
       <StackPanel Style="{StaticResource Legend.Item}" Visibility="{Binding ShowNoDataLegend, Converter={StaticResource BoolToVisibility}}">

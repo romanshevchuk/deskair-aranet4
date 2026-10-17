@@ -20,6 +20,9 @@
   --m-temp:#D9731A; --m-hum:#2F6FD6; --m-pres:#7B52C9; --m-co2:#C98A12;
   /* History heatmap: CO₂ in six steps, lighter to darker as the level rises, two per zone. */
   --hm-g1:#DDF2E7; --hm-g2:#B4E0C9; --hm-e1:#F0CC78; --hm-e2:#E3A23C; --hm-h1:#E07462; --hm-h2:#C23B2B; --hm-none:transparent; --hm-none-line:rgba(20,28,36,.16);
+  /* Comfort scales (temperature, humidity): diverging around a neutral "comfortable" grey; each side has its own hue. */
+  --hm-c2:#4F86D1; --hm-c1:#B5CDEE; --hm-ok:#E6EAED; --hm-w1:#F4C29A; --hm-w2:#DE7A31;
+  --hm-d2:#B9844A; --hm-d1:#E8CFAA; --hm-m1:#A9D3E9; --hm-m2:#3B8CC4;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0C0F12;--fg:#EDF0F3;--muted:#9AA4AD;--rule:rgba(255,255,255,.09);--chip:#1C2126;--chip-on:#2F353C;--ink:#EDF0F3;--ink-on:#0C0F12;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0C0F12;--fg:#EDF0F3;--muted:#9AA4AD;--rule:rgba(255,255,255,.09);--chip:#1C2126;--chip-on:#2F353C;--ink:#EDF0F3;--ink-on:#0C0F12;color-scheme:dark}
@@ -59,7 +62,8 @@ button:focus-visible{outline:2px solid #2563C9;outline-offset:2px}
   --z-g-glow:rgba(76,192,140,.11);--z-e-glow:rgba(240,183,74,.11);--z-h-glow:rgba(240,122,110,.13);--z-off-glow:rgba(150,160,170,.06);
   --t-fall:#5FCB98;--t-rise:#FF8A7E;
   --m-temp:#F0954A;--m-hum:#6FA0F0;--m-pres:#A88BE8;--m-co2:#F0B74A;
-  --hm-g1:#1D3B30;--hm-g2:#2B6650;--hm-e1:#77612C;--hm-e2:#B88A35;--hm-h1:#D06A5C;--hm-h2:#F08A7C;--hm-none-line:rgba(255,255,255,.16)}
+  --hm-g1:#1D3B30;--hm-g2:#2B6650;--hm-e1:#77612C;--hm-e2:#B88A35;--hm-h1:#D06A5C;--hm-h2:#F08A7C;--hm-none-line:rgba(255,255,255,.16);
+  --hm-c2:#5C93DE;--hm-c1:#2D4567;--hm-ok:#262D34;--hm-w1:#6A4A33;--hm-w2:#E0813A;--hm-d2:#C99456;--hm-d1:#5A4734;--hm-m1:#2C5466;--hm-m2:#52A9DF;}
 .zg{--zc:var(--z-g);--zc-text:var(--z-g-text);--zc-soft:var(--z-g-soft);--zc-glow:var(--z-g-glow)}
 .ze{--zc:var(--z-e);--zc-text:var(--z-e-text);--zc-soft:var(--z-e-soft);--zc-glow:var(--z-e-glow)}
 .zh{--zc:var(--z-h);--zc-text:var(--z-h-text);--zc-soft:var(--z-h-soft);--zc-glow:var(--z-h-glow)}
@@ -435,7 +439,7 @@ button:focus-visible{outline:2px solid #2563C9;outline-offset:2px}
   </ol>
 
   <h2>History</h2>
-  <p class="lede">History has to answer two questions: was this period good or bad, and when does the air go wrong? Week and Month become a grid with one row per day and one square per hour, so stuffy nights and bad afternoons show as patterns. Year uses the same grid with one square per day. Day compares the last 24 hours with a typical day. The ‹ › arrows step back through time. The concept draws CO₂; the other metrics would use the same layout with their own scale. Hover any square or the line for values.</p>
+  <p class="lede">History has to answer two questions: was this period good or bad, and when does the air go wrong? Week and Month become a grid with one row per day and one square per hour, so stuffy nights and bad afternoons show as patterns. Year uses the same grid with one square per day. Day compares the last 24 hours with a typical day. The ‹ › arrows step back through time. Switch the metric tabs in the window: each metric gets the chart that fits it (note 9). Hover any square or the line for values.</p>
   <div class="bar">
     <span id="dml">Data</span>
     <div class="pseg dm" role="group" aria-labelledby="dml"><button type="button" data-d="oct" aria-pressed="true">Since 6 Oct, like yours</button><button type="button" data-d="year">A full year (example)</button></div>
@@ -465,7 +469,7 @@ button:focus-visible{outline:2px solid #2563C9;outline-offset:2px}
 
       <div class="hbody">
         <div class="htool">
-          <div class="mseg" aria-label="Metric"><span aria-pressed="true"><i style="background:var(--m-co2)"></i>CO₂</span><span><i style="background:var(--m-temp)"></i>Temperature</span><span><i style="background:var(--m-hum)"></i>Humidity</span><span><i style="background:var(--m-pres)"></i>Pressure</span></div>
+          <div class="mseg" id="hmetric" role="group" aria-label="Metric"><button type="button" data-m="co2" aria-pressed="true"><i style="background:var(--m-co2)"></i>CO₂</button><button type="button" data-m="temp"><i style="background:var(--m-temp)"></i>Temperature</button><button type="button" data-m="hum"><i style="background:var(--m-hum)"></i>Humidity</button><button type="button" data-m="pres"><i style="background:var(--m-pres)"></i>Pressure</button></div>
           <div class="navr">
             <button type="button" id="hprev" aria-label="Previous period"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M8.5 3 4.5 7l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             <b id="hlabel" aria-live="polite"></b>
@@ -507,6 +511,7 @@ button:focus-visible{outline:2px solid #2563C9;outline-offset:2px}
     <li><span class="num">6</span><div><b>Day: today against usual</b><span>The grey line is the typical day of the last 7 days, so a worse-than-usual afternoon shows. Each "air improved" event (a drop of 150 ppm within 10 minutes from 1000 or above) is marked, at most one per hour. Hover for the value and the typical value at that time.</span></div></li>
     <li><span class="num">7</span><div><b>One summary, top to bottom</b><span>Average with its zone and change, time in each zone, nights, extremes, then one tip. Coverage is a line of text, not a box. Best and worst day moved into the grid, next to their rows.</span></div></li>
     <li><span class="num">8</span><div><b>Year: months × days</b><span>The same grid, one square per day, one row per month. Seasons, holidays and the weeks the sensor was off show at once. Switch Data to "A full year" to see it filled.</span></div></li>
+    <li><span class="num">9</span><div><b>Each metric gets the chart that fits it</b><span>CO₂ uses its zones. Temperature and humidity have a comfort range, so the same grid uses a diverging scale: cool or dry on one side, warm or humid on the other, a quiet grey for comfortable. Rows end with time in the comfort range, and the tip names the coolest, warmest, driest or most humid hours. Pressure follows the weather, not the room or the hour: one continuous line with the biggest 24-hour change called out, and no grid, nights or tip. There is no CO₂ typical day on the other tabs.</span></div></li>
   </ol>
 </main>
 
@@ -639,53 +644,110 @@ button:focus-visible{outline:2px solid #2563C9;outline-offset:2px}
     function wdm(d){return WD[d.getDay()]+' '+dm(d);}
     function hh(x){return (x<10?'0':'')+x+':00';}
     function hhmm(m){m=((m%1440)+1440)%1440;var H=Math.floor(m/60),M=m%60;return (H<10?'0':'')+H+':'+(M<10?'0':'')+M;}
-    function zoneOf(v){return v<1000?'g':v<1400?'e':'h';}
-    function bin(v){return v<800?'g1':v<1000?'g2':v<1200?'e1':v<1400?'e2':v<2000?'h1':'h2';}
     function mean(a){var s=0,n=0;a.forEach(function(v){if(v!=null){s+=v;n++;}});return n?s/n:null;}
-    function sharesOf(a){var t={g:0,e:0,h:0},n=0;a.forEach(function(v){if(v!=null){t[zoneOf(v)]++;n++;}});if(n){t.g/=n;t.e/=n;t.h/=n;}return t;}
     function spanLabel(s,e){var a=dayAt(s),b=dayAt(e);return (a.getMonth()===b.getMonth()?a.getDate():dm(a))+' – '+dm(b)+' '+b.getFullYear();}
     function nightLabel(x){var a=dayAt(x),b=dayAt(x+1);return a.getMonth()===b.getMonth()?a.getDate()+'–'+dm(b):dm(a)+' – '+dm(b);}
 
-    // The last 24 hours at 5-minute steps, from 13:00 yesterday (the shape of the screenshots).
+    // Each metric gets the chart that shows its patterns. CO₂: zones (status). Temperature and humidity: a comfort range, so a diverging scale
+    // around a neutral "comfortable" grey. Pressure: weather, not the room or the hour, so one continuous line and no grid.
+    var METRICS={
+      co2:{key:'co2',name:'CO₂',unit:'ppm',dec:0,kind:'zone',color:'var(--m-co2)'},
+      temp:{key:'temp',name:'Temperature',unit:'°C',dec:1,kind:'comfort',color:'var(--m-temp)',lo:20,hi:24,steps:[18,20,24,26],bins:['c2','c1','ok','w1','w2'],
+        names:{lo:'Cool',ok:'Comfortable',hi:'Warm'},status:{lo:['A bit cool','Too cool'],hi:['A bit warm','Too warm']},extreme:{lo:'Coolest',hi:'Warmest'},
+        advice:{lo:'',hi:'Airing in the morning keeps the afternoon cooler.'},nightNote:'A slightly cooler bedroom (17–19 °C) is fine for sleep.'},
+      hum:{key:'hum',name:'Humidity',unit:'%',dec:0,kind:'comfort',color:'var(--m-hum)',lo:30,hi:50,steps:[25,30,50,60],bins:['d2','d1','ok','m1','m2'],
+        names:{lo:'Dry',ok:'Comfortable',hi:'Humid'},status:{lo:['A bit dry','Too dry'],hi:['A bit humid','Too humid']},extreme:{lo:'Driest',hi:'Most humid'},
+        advice:{lo:'Usual in a heated room in winter.',hi:'Airing for a few minutes after cooking or a shower brings it down.'},nightNote:''},
+      pres:{key:'pres',name:'Pressure',unit:'hPa',dec:1,kind:'trend',color:'var(--m-pres)'}
+    };
+    function M(){return METRICS[state.metric];}
+    function f(v){return M().dec?v.toFixed(M().dec):String(Math.round(v));}
+    function withUnit(v){return f(v)+(M().unit==='%'?'%':' '+M().unit);}
+    function zoneOf(v){return v<1000?'g':v<1400?'e':'h';}
+    function classOf(v){var m=M();return m.kind==='zone'?zoneOf(v):v<m.lo?'lo':v>m.hi?'hi':'ok';}
+    function shareKeys(){return M().kind==='zone'?['g','e','h']:['lo','ok','hi'];}
+    function shareColor(k){var m=M();return m.kind==='zone'?'var(--z-'+k+'-seg)':k==='ok'?'var(--z-g-seg)':'var(--hm-'+(k==='lo'?m.bins[0]:m.bins[4])+')';}
+    function shareName(k){return M().kind==='zone'?ZN[k]:M().names[k];}
+    function bin(v){
+      var m=M();
+      if(m.kind==='zone')return v<800?'g1':v<1000?'g2':v<1200?'e1':v<1400?'e2':v<2000?'h1':'h2';
+      for(var s=0;s<m.steps.length;s++)if(v<m.steps[s])return m.bins[s];
+      return m.bins[m.bins.length-1];
+    }
+    function sharesOf(a){var t={},n=0;shareKeys().forEach(function(k){t[k]=0;});a.forEach(function(v){if(v!=null){t[classOf(v)]++;n++;}});if(n)for(var k in t)t[k]/=n;return t;}
+    // How far a value is outside the comfort range (0 inside): what "worst hours" means for temperature and humidity.
+    function outside(v){var m=M();return v<m.lo?m.lo-v:v>m.hi?v-m.hi:0;}
+
+    // The last 24 hours of CO₂ at 5-minute steps, from 13:00 yesterday (the shape of the screenshots).
     var keys=[[0,950],[.3,1250],[.9,2350],[1.27,2534],[1.45,1600],[1.65,2050],[1.85,1900],[2.3,700],[2.6,900],[3.5,1100],[5,1250],[6.7,1380],[6.8,1040],[7.2,1300],[9.8,1260],[9.9,470],[10.9,450],[11.4,850],[12.5,1100],[17,1080],[18,1040],[20,1150],[21.4,1330],[21.6,1250],[21.9,820],[22.2,1100],[22.6,1250],[22.9,1000],[24,1150]];
     var r2=rng(3),day5=[];
     for(i=0;i<=288;i++){var hx=i/12,k=0;while(k<keys.length-2&&keys[k+1][0]<hx)k++;var ka=keys[k],kb=keys[k+1],kf=(hx-ka[0])/(kb[0]-ka[0]);day5.push(Math.round(ka[1]+(kb[1]-ka[1])*kf+(r2()-.5)*26+9*Math.sin(i*.7)));}
 
     // A year of hourly averages ending today at 13:00 (example data; "Since 6 Oct" hides everything before).
-    var r=rng(11),raw=[],prof=[1150,1180,1210,1240,1260,1280,1290,1200,900,850,950,1000,980,1050,1100,1150,1230,1260,1220,1150,1100,1080,1050,900],season=[80,80,40,0,-120,-300,-320,-300,-120,0,30,80];
+    var r=rng(11),rt=rng(21),rh=rng(31),rp=rng(41),raw=[],rawT=[],rawH=[],rawP=[];
+    var prof=[1150,1180,1210,1240,1260,1280,1290,1200,900,850,950,1000,980,1050,1100,1150,1230,1260,1220,1150,1100,1080,1050,900],season=[80,80,40,0,-120,-300,-320,-300,-120,0,30,80];
+    var tSeason=[20.4,20.6,21.0,21.6,22.6,24.2,25.0,24.6,22.8,21.4,20.8,20.4],tProf=[-1.1,-1.4,-1.7,-1.9,-2.0,-2.0,-1.6,-.6,.1,.3,.4,.6,.8,.9,1.0,1.1,1.0,.9,.8,.6,.4,.1,-.3,-.7];
+    var hSeason=[34,33,36,40,46,54,57,56,52,48,42,36],hProf=[3,3,3,3,3,3,4,9,6,1,-1,-2,-2,-2,-3,-3,-2,1,7,8,5,3,2,2];
+    var pw=0;
     for(i=0;i<N;i++){
       var d=dayAt(i),wk=d.getDay()===0||d.getDay()===6,off=(r()-.5)*200,sea=season[d.getMonth()],away=d.getMonth()===7&&d.getDate()>=10&&d.getDate()<=18;
-      var sp=r()<.12?17+Math.floor(r()*4):-9,amt=500+r()*900,row=[];
+      var sp=r()<.12?17+Math.floor(r()*4):-9,amt=500+r()*900,row=[],rowT=[],rowH=[],rowP=[];
+      var tOff=(rt()-.5)*1.2,hOff=(rh()-.5)*6,cold=rt()<.08;
       for(h=0;h<24;h++){
         var v=prof[h]+off+sea+(r()-.5)*130;
         if(wk&&h>=10&&h<=18)v-=170;
         if(h>=sp&&h<sp+3)v+=amt*(1-(h-sp)*.3);
-        if(r()<.04)v=520+r()*200;
+        var aired=r()<.04;
+        if(aired)v=520+r()*200;
         if(away)v=440+r()*70;
         row.push(Math.round(Math.min(2600,Math.max(420,v))));
+        // Temperature follows the heating and the sun; a cold snap now and then; airing cools it for the hour.
+        var t=tSeason[d.getMonth()]+tProf[h]+tOff+(rt()-.5)*.3-(cold&&h<9?1.6:0)-(aired?1.4:0);
+        rowT.push(Math.round(t*10)/10);
+        // Humidity: drier in heated winters, peaks at the morning shower and the evening cooking.
+        var hu=hSeason[d.getMonth()]+hProf[h]+hOff+(rh()-.5)*2-(aired?4:0);
+        rowH.push(Math.round(Math.max(18,Math.min(80,hu))));
+        // Pressure: weather fronts over days, almost nothing by hour (this flat at ~985 hPa because the room is above sea level).
+        var hour=i*24+h;pw=pw*.985+(rp()-.5)*.6;
+        rowP.push(Math.round((985+6*Math.sin(2*Math.PI*hour/(24*5.3))+4*Math.sin(2*Math.PI*hour/(24*2.2)+1.3)+pw+(rp()-.5)*.2)*10)/10);
       }
-      raw.push(row);
+      raw.push(row);rawT.push(rowT);rawH.push(rowH);rawP.push(rowP);
     }
     for(j=0;j<24;j++)raw[j<11?N-2:N-1][(13+j)%24]=Math.round(mean(day5.slice(j*12,j*12+12)));
     raw[N-1][13]=day5[288];
-    [idxOf(2026,2,9),idxOf(2026,2,10)].forEach(function(x){raw[x]=raw[x].map(function(){return null;});});
-    for(h=2;h<=5;h++)raw[idxOf(2026,9,10)][h]=null;
+    [raw,rawT,rawH,rawP].forEach(function(a){[idxOf(2026,2,9),idxOf(2026,2,10)].forEach(function(x){a[x]=a[x].map(function(){return null;});});for(h=2;h<=5;h++)a[idxOf(2026,9,10)][h]=null;});
+    var DATA={co2:raw,temp:rawT,hum:rawH,pres:rawP};
 
-    var state={range:'week',k:0,mode:'oct'},LEN={day:1,week:7,month:30};
+    var state={range:'week',k:0,mode:'oct',metric:'co2'},LEN={day:1,week:7,month:30};
     function first(){return state.mode==='oct'?idxOf(2026,9,6):0;}
     function fut(x,hr){return x>N-1||(x===N-1&&hr>NOWH);}
-    function val(x,hr){if(x<0||x<first()||fut(x,hr))return null;return raw[x][hr];}
+    function val(x,hr){if(x<0||x<first()||fut(x,hr))return null;return DATA[state.metric][x][hr];}
     function maxK(R){if(R==='year')return 0;var L=LEN[R];return Math.min(Math.floor((N-L)/L),Math.floor((N-1-first())/L)+(state.mode==='oct'?1:0));}
     function typicalOf(s,e){var t=[];for(var hr=0;hr<24;hr++){var vs=[];for(var x=s;x<=e;x++)vs.push(val(x,hr));t.push(mean(vs));}return t;}
-    function worstOf(t){var w=null;for(var hr=0;hr<=21;hr++){if(t[hr]==null||t[hr+1]==null||t[hr+2]==null)continue;var a=(t[hr]+t[hr+1]+t[hr+2])/3;if(!w||a>w.avg)w={h:hr,avg:a};}return w;}
+    // CO₂: the highest three hours. Comfort metrics: the three hours furthest outside the range, and on which side.
+    function worstOf(t){
+      var w=null,comfort=M().kind==='comfort';
+      for(var hr=0;hr<=21;hr++){
+        if(t[hr]==null||t[hr+1]==null||t[hr+2]==null)continue;
+        var a=(t[hr]+t[hr+1]+t[hr+2])/3,score=comfort?outside(a):a;
+        if(!w||score>w.score)w={h:hr,avg:a,score:score};
+      }
+      if(w&&comfort){if(w.score<=0)return null;w.side=w.avg<M().lo?'lo':'hi';}
+      return w;
+    }
+    function worstLabel(w){return M().kind==='zone'?'Worst':M().extreme[w.side];}
 
     function showTip(text,cx,cy){var wr=hwin.getBoundingClientRect(),s=wr.width/1200;tip.textContent=text;tip.style.left=((cx-wr.left)/s)+'px';tip.style.top=((cy-wr.top)/s)+'px';tip.style.display='block';}
     function hideTip(){tip.style.display='none';}
+    function hoverTips(svg){
+      svg.addEventListener('mousemove',function(e){var t=e.target.getAttribute&&e.target.getAttribute('data-tip');if(!t){hideTip();return;}var b=e.target.getBoundingClientRect();showTip(t,b.left+b.width/2,b.top);});
+      svg.addEventListener('mouseleave',hideTip);
+    }
 
-    // Rows of squares: days x hours (Week, Month) or months x days (Year). Each row ends with its average, its zone split and a best / worst tag.
+    // Rows of squares: days x hours (Week, Month) or months x days (Year). Each row ends with its average, its split (zones or comfort) and a tag.
     function drawGrid(o){
       vbody.innerHTML='';
-      var W=762,H=vbody.clientHeight,LW=84,RW=160,gx=LW,gw=W-LW-RW,cw=gw/o.cols;
+      var m=M(),W=762,H=vbody.clientHeight,LW=84,RW=160,gx=LW,gw=W-LW-RW,cw=gw/o.cols;
       var svg=el('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':o.aria},vbody);
       var top=o.night?44:28,legH=50,sep=o.typical?16:0,nCol=0,nReg=o.typical?1:0;
       o.rows.forEach(function(rw){if(rw.collapsed)nCol++;else nReg++;});
@@ -707,8 +769,8 @@ button:focus-visible{outline:2px solid #2563C9;outline-offset:2px}
       function right(rw,yy){
         if(rw.avg==null)return;
         var cy=yy+rh/2,bx=gx+gw+56,bw=60,bh=Math.max(3,Math.min(6,rh-6)),x0=bx;
-        if(rh>=13)txt('text',{x:gx+gw+46,y:cy+4,'text-anchor':'end','font-size':fs,fill:'var(--w-tx)','font-variant-numeric':'tabular-nums'},svg,fmt(rw.avg));
-        ['g','e','h'].forEach(function(z){var w=bw*rw.shares[z];if(w<1)return;el('rect',{x:x0,y:cy-bh/2,width:Math.max(.5,w-1.5),height:bh,rx:Math.min(2,bh/2),fill:'var(--z-'+z+'-seg)'},svg);x0+=w;});
+        if(rh>=13)txt('text',{x:gx+gw+46,y:cy+4,'text-anchor':'end','font-size':fs,fill:'var(--w-tx)','font-variant-numeric':'tabular-nums'},svg,f(rw.avg));
+        shareKeys().forEach(function(z){var w=bw*rw.shares[z];if(w<1)return;el('rect',{x:x0,y:cy-bh/2,width:Math.max(.5,w-1.5),height:bh,rx:Math.min(2,bh/2),fill:shareColor(z)},svg);x0+=w;});
         if(rw.tag)txt('text',{x:bx+bw+8,y:cy+4,'font-size':11,'font-weight':600,fill:rw.tag==='best'?'var(--z-g-text)':'var(--z-h-text)'},svg,rw.tag);
       }
       o.rows.forEach(function(rw){
@@ -725,105 +787,164 @@ button:focus-visible{outline:2px solid #2563C9;outline-offset:2px}
         y+=sep;
         txt('text',{x:0,y:y+rh/2+4,'font-size':fs,'font-weight':600,fill:'var(--w-tx)'},svg,'Typical');
         cells(o.typical,y);
-        if(o.typical.worst!=null){
-          el('rect',{x:gx+o.typical.worst*cw-1.5,y:y-1.5,width:3*cw+3,height:rh+3,rx:rx+2,fill:'none',stroke:'var(--w-tx)','stroke-width':1.5},svg);
-          txt('text',{x:gx+gw+14,y:y+rh/2+4,'font-size':12,fill:'var(--w-mu)'},svg,'Worst '+hh(o.typical.worst)+'–'+hh(o.typical.worst+3));
+        if(o.typical.worst){
+          var ws=o.typical.worst;
+          el('rect',{x:gx+ws.h*cw-1.5,y:y-1.5,width:3*cw+3,height:rh+3,rx:rx+2,fill:'none',stroke:'var(--w-tx)','stroke-width':1.5},svg);
+          txt('text',{x:gx+gw+14,y:y+rh/2+4,'font-size':12,fill:'var(--w-mu)'},svg,worstLabel(ws)+' '+hh(ws.h)+'–'+hh(ws.h+3));
         }
       }
-      var ly=H-26,BW=46;
-      ['g1','g2','e1','e2','h1','h2'].forEach(function(b,bi){el('rect',{x:gx+bi*(BW+2),y:ly,width:BW,height:8,rx:2,fill:'var(--hm-'+b+')'},svg);});
-      [['Good',0],['Elevated',1],['High',2]].forEach(function(z){txt('text',{x:gx+z[1]*2*(BW+2)+BW,y:ly-7,'text-anchor':'middle','font-size':11.5,fill:'var(--w-mu)'},svg,z[0]);});
-      [800,1000,1200,1400,2000].forEach(function(t,ti){txt('text',{x:gx+(ti+1)*(BW+2)-1,y:ly+20,'text-anchor':'middle','font-size':11,fill:'var(--w-faint)'},svg,t);});
-      var nx=gx+6*(BW+2)+22;
+      // Legend: the steps of this metric's scale, with group names above and limits below.
+      var ly=H-26,BW=46,groups,ticks,bins;
+      if(m.kind==='zone'){bins=['g1','g2','e1','e2','h1','h2'];groups=[['Good',0,2],['Elevated',2,4],['High',4,6]];ticks=[800,1000,1200,1400,2000];}
+      else{bins=m.bins;groups=[[m.names.lo,0,2],[m.names.ok,2,3],[m.names.hi,3,5]];ticks=m.steps.map(function(s){return s+(m.unit==='%'?'%':'°');});}
+      bins.forEach(function(b,bi){el('rect',{x:gx+bi*(BW+2),y:ly,width:BW,height:8,rx:2,fill:'var(--hm-'+b+')',stroke:b==='ok'?'var(--hm-none-line)':'none'},svg);});
+      groups.forEach(function(g){txt('text',{x:gx+(g[1]+g[2])/2*(BW+2)-1,y:ly-7,'text-anchor':'middle','font-size':11.5,fill:'var(--w-mu)'},svg,g[0]);});
+      ticks.forEach(function(t,ti){txt('text',{x:gx+(ti+1)*(BW+2)-1,y:ly+20,'text-anchor':'middle','font-size':11,fill:'var(--w-faint)'},svg,t);});
+      var nx=gx+bins.length*(BW+2)+22;
       el('rect',{x:nx+.5,y:ly+.5,width:14,height:8,rx:2,fill:'var(--hm-none)',stroke:'var(--hm-none-line)'},svg);
       txt('text',{x:nx+20,y:ly+8,'font-size':11.5,fill:'var(--w-mu)'},svg,'No data');
       txt('text',{x:W,y:ly+8,'text-anchor':'end','font-size':11.5,fill:'var(--w-faint)'},svg,o.unitText);
-      svg.addEventListener('mousemove',function(e){var t=e.target.getAttribute&&e.target.getAttribute('data-tip');if(!t){hideTip();return;}var b=e.target.getBoundingClientRect();showTip(t,b.left+b.width/2,b.top);});
-      svg.addEventListener('mouseleave',hideTip);
+      hoverTips(svg);
     }
 
-    // One day as a line, against the typical day.
-    function drawDay(o){
+    // A line over time with a fitted axis (Day for every metric; Week, Month and Year for pressure).
+    // o: pts [{x,v,t}] with x in hours from the left edge, span (hours), typ, night, band, xl, aired, now, change, aria.
+    function drawLine(o){
       vbody.innerHTML='';
-      var W=762,H=vbody.clientHeight,L=44,R=10,T=18,B=26;
+      var m=M(),W=762,H=vbody.clientHeight,L=44,R=10,T=18,B=26;
       var svg=el('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':o.aria},vbody),defs=el('defs',{},svg);
-      var mx=0;o.pts.concat(o.typ).forEach(function(p){if(p.v>mx)mx=p.v;});
-      var y0=400,y1=mx>2000?2600:mx>1600?2000:1600;
-      var x=function(hr){return L+(W-L-R)*hr/24;},y=function(v){return T+(H-T-B)*(1-(v-y0)/(y1-y0));};
-      o.night.forEach(function(n){
+      var vs=o.pts.concat(o.typ||[]).map(function(p){return p.v;});
+      if(o.band)vs.push(o.band[0],o.band[1]);
+      var y0,y1,ticks;
+      if(m.kind==='zone'){var mx=Math.max.apply(null,vs);y0=400;y1=mx>2000?2600:mx>1600?2000:1600;ticks=[400,1000,1400,y1];if(y1===2600)ticks.splice(3,0,2000);}
+      else{
+        var lo=Math.min.apply(null,vs),hi=Math.max.apply(null,vs),pad=Math.max((hi-lo)*.1,m.dec?.5:2),stepv=m.key==='pres'?(hi-lo>12?5:2):m.key==='temp'?(hi-lo>6?2:1):5;
+        y0=Math.floor((lo-pad)/stepv)*stepv;y1=Math.ceil((hi+pad)/stepv)*stepv;ticks=[];for(var tv=y0;tv<=y1+1e-9;tv+=stepv)ticks.push(Math.round(tv*10)/10);
+        if(ticks.length>7)ticks=ticks.filter(function(_,ti){return ti%2===0;});
+      }
+      var x=function(hr){return L+(W-L-R)*hr/o.span;},y=function(v){return T+(H-T-B)*(1-(v-y0)/(y1-y0));};
+      (o.night||[]).forEach(function(n){
         el('rect',{x:x(n[0]),y:T-14,width:x(n[1])-x(n[0]),height:H-B-T+14,fill:'var(--w-grid)',rx:6},svg);
         if(n[1]-n[0]>=5)txt('text',{x:x(n[0])+8,y:T-1,'font-size':11.5,fill:'var(--w-mu)'},svg,'Night');
       });
-      var ticks=[400,1000,1400,y1];if(y1===2600)ticks.splice(3,0,2000);
+      if(o.band){
+        // The comfort range as a soft band in the metric colour, labelled on the right.
+        el('rect',{x:L,y:y(o.band[1]),width:W-L-R,height:y(o.band[0])-y(o.band[1]),fill:m.color,'fill-opacity':.09},svg);
+        txt('text',{x:W-R-6,y:y(o.band[1])+15,'text-anchor':'end','font-size':11.5,fill:'var(--w-mu)'},svg,'comfort '+o.band[0]+'–'+o.band[1]+(m.unit==='%'?' %':' '+m.unit));
+      }
       ticks.forEach(function(v){
-        var th=v===1000||v===1400;
+        var th=m.kind==='zone'&&(v===1000||v===1400);
         el('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:th?(v===1000?'var(--z-e)':'var(--z-h)'):'var(--w-grid)','stroke-dasharray':th?'4 4':'','stroke-opacity':th?.6:1},svg);
-        txt('text',{x:L-10,y:y(v)+4,'text-anchor':'end','font-size':12,fill:th?(v===1000?'var(--z-e-text)':'var(--z-h-text)'):'var(--w-faint)','font-weight':th?600:400},svg,v);
+        txt('text',{x:L-10,y:y(v)+4,'text-anchor':'end','font-size':12,fill:th?(v===1000?'var(--z-e-text)':'var(--z-h-text)'):'var(--w-faint)','font-weight':th?600:400},svg,m.dec&&m.key==='pres'?v.toFixed(0):v);
       });
-      if(o.typ.length>1)el('path',{d:smooth(o.typ.map(function(p){return [x(p.x),y(p.v)];})),fill:'none',stroke:'var(--w-faint)','stroke-width':2,'stroke-opacity':.6,'stroke-linecap':'round'},svg);
+      if(o.typ&&o.typ.length>1)el('path',{d:smooth(o.typ.map(function(p){return [x(p.x),y(p.v)];})),fill:'none',stroke:'var(--w-faint)','stroke-width':2,'stroke-opacity':.6,'stroke-linecap':'round'},svg);
       var step=o.pts.length>1?o.pts[1].x-o.pts[0].x:1,segs=[],cur=[];
       o.pts.forEach(function(p,pi){if(pi&&p.x-o.pts[pi-1].x>step*1.5){segs.push(cur);cur=[];}cur.push(p);});segs.push(cur);
-      var zg=zoneGradient(defs,'dz',y),af=fade(defs,'da','var(--w-tx)',.06);
+      var stroke=m.kind==='zone'?zoneGradient(defs,'dz',y):m.color,af=fade(defs,'da',m.kind==='zone'?'var(--w-tx)':m.color,m.kind==='zone'?.06:m.kind==='trend'?.14:0);
       segs.forEach(function(sg){
-        if(sg.length===1){el('circle',{cx:x(sg[0].x),cy:y(sg[0].v),r:2.5,fill:'var(--z-'+zoneOf(sg[0].v)+')'},svg);return;}
+        if(!sg.length)return;
+        if(sg.length===1){el('circle',{cx:x(sg[0].x),cy:y(sg[0].v),r:2.5,fill:m.kind==='zone'?'var(--z-'+zoneOf(sg[0].v)+')':m.color},svg);return;}
         var path=smooth(sg.map(function(p){return [x(p.x),y(p.v)];}));
         el('path',{d:path+'L'+x(sg[sg.length-1].x)+','+y(y0)+'L'+x(sg[0].x)+','+y(y0)+'Z',fill:af},svg);
-        el('path',{d:path,fill:'none',stroke:zg,'stroke-width':2,'stroke-linecap':'round','stroke-linejoin':'round'},svg);
+        el('path',{d:path,fill:'none',stroke:stroke,'stroke-width':2,'stroke-linecap':'round','stroke-linejoin':'round'},svg);
       });
-      o.aired.forEach(function(a){var X=x(a.x),Y=y(a.v);el('circle',{cx:X,cy:Y,r:4,fill:'var(--w-card)',stroke:'var(--w-tx)','stroke-width':1.5},svg);txt('text',{x:X,y:Y-10,'text-anchor':'middle','font-size':11,fill:'var(--w-mu)'},svg,'air improved');});
-      if(o.now){var lp=o.pts[o.pts.length-1];el('circle',{cx:x(lp.x),cy:y(lp.v),r:4.5,fill:'var(--w-card)',stroke:'var(--z-'+zoneOf(lp.v)+')','stroke-width':2.5},svg);}
+      (o.aired||[]).forEach(function(a){var X=x(a.x),Y=y(a.v);el('circle',{cx:X,cy:Y,r:4,fill:'var(--w-card)',stroke:'var(--w-tx)','stroke-width':1.5},svg);txt('text',{x:X,y:Y-10,'text-anchor':'middle','font-size':11,fill:'var(--w-mu)'},svg,'air improved');});
+      if(o.change){
+        // The biggest change in 24 hours, as a bracket over the line: pressure is about weather fronts.
+        var c=o.change,X1=x(c.x1),X2=x(c.x2);
+        el('rect',{x:X1,y:T-14,width:Math.max(2,X2-X1),height:H-B-T+14,fill:'var(--w-tx)','fill-opacity':.06,rx:6},svg);
+        txt('text',{x:(X1+X2)/2,y:T-1,'text-anchor':'middle','font-size':12,'font-weight':600,fill:'var(--w-tx)'},svg,(c.v2-c.v1>0?'+':'−')+Math.abs(c.v2-c.v1).toFixed(1)+' hPa in 24 h');
+      }
+      if(o.now){var lp=o.pts[o.pts.length-1];el('circle',{cx:x(lp.x),cy:y(lp.v),r:4.5,fill:'var(--w-card)',stroke:m.kind==='zone'?'var(--z-'+zoneOf(lp.v)+')':m.color,'stroke-width':2.5},svg);}
       o.xl.forEach(function(l){txt('text',{x:x(l[0]),y:H-6,'text-anchor':l[2]||'middle','font-size':12,fill:l[3]?'var(--w-tx)':'var(--w-faint)','font-weight':l[3]?600:400},svg,l[1]);});
       var cross=el('g',{},svg),cl=el('line',{y1:T,y2:H-B,stroke:'var(--w-tx)','stroke-opacity':.3},cross),cd=el('circle',{r:4.5,fill:'var(--w-card)','stroke-width':2.5},cross);
       cross.style.display='none';
       var hit=el('rect',{x:L,y:T-14,width:W-L-R,height:H-B-T+14,fill:'transparent'},svg);
       hit.addEventListener('mousemove',function(e){
-        var m=svg.getScreenCTM(),p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;
-        var q=p.matrixTransform(m.inverse()),hx=(q.x-L)/(W-L-R)*24,best=null,bt=null;
+        var mm=svg.getScreenCTM(),p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;
+        var q=p.matrixTransform(mm.inverse()),hx=(q.x-L)/(W-L-R)*o.span,best=null,bt=null;
         o.pts.forEach(function(pt){if(!best||Math.abs(pt.x-hx)<Math.abs(best.x-hx))best=pt;});
-        o.typ.forEach(function(pt){if(!bt||Math.abs(pt.x-hx)<Math.abs(bt.x-hx))bt=pt;});
+        (o.typ||[]).forEach(function(pt){if(!bt||Math.abs(pt.x-hx)<Math.abs(bt.x-hx))bt=pt;});
         if(!best)return;
         var X=x(best.x),Y=y(best.v);cross.style.display='';
-        cl.setAttribute('x1',X);cl.setAttribute('x2',X);cd.setAttribute('cx',X);cd.setAttribute('cy',Y);cd.setAttribute('stroke','var(--z-'+zoneOf(best.v)+')');
-        p.x=X;p.y=Y;var c=p.matrixTransform(m);
-        showTip(best.t+' · '+best.v+' ppm'+(bt?' · typical '+Math.round(bt.v):''),c.x,c.y);
+        cl.setAttribute('x1',X);cl.setAttribute('x2',X);cd.setAttribute('cx',X);cd.setAttribute('cy',Y);cd.setAttribute('stroke',m.kind==='zone'?'var(--z-'+zoneOf(best.v)+')':m.color);
+        p.x=X;p.y=Y;var cc=p.matrixTransform(mm);
+        showTip(best.t+' · '+withUnit(best.v)+(bt?' · typical '+withUnit(bt.v):''),cc.x,cc.y);
       });
       hit.addEventListener('mouseleave',function(){cross.style.display='none';hideTip();});
     }
 
     function statsHTML(s){
-      var z=zoneOf(s.avg),out='<div class="sc-eye">'+s.eyebrow+'</div><div class="sc-big"><b>'+fmt(s.avg)+'</b><small>ppm</small><span class="pill z'+z+'"><span class="dot"></span>'+ZN[z]+'</span></div>';
-      if(s.prev!=null){var dd=Math.round(s.avg-s.prev),up=dd>0;out+='<div class="sc-delta"><em class="'+(up?'up':'down')+'">'+(up?'▲ ':'▼ ')+Math.abs(dd)+' ppm</em> '+(up?'higher':'lower')+' than '+s.prevText+'</div>';}
-      else out+='<div class="sc-delta">No earlier data to compare</div>';
+      var m=M(),out='<div class="sc-eye">'+s.eyebrow+'</div><div class="sc-big"><b>'+f(s.avg)+'</b><small>'+m.unit+'</small>';
+      if(m.kind==='zone'){var z=zoneOf(s.avg);out+='<span class="pill z'+z+'"><span class="dot"></span>'+ZN[z]+'</span>';}
+      else if(m.kind==='comfort'){var side=s.avg<m.lo?'lo':s.avg>m.hi?'hi':null,far=side&&outside(s.avg)>(m.key==='temp'?2:5);out+='<span class="pill '+(side?'ze':'zg')+'"><span class="dot"></span>'+(side?m.status[side][far?1:0]:'Comfortable')+'</span>';}
+      out+='</div>';
+      if(s.prev!=null){
+        var dd=s.avg-s.prev,up=dd>0,amount=m.dec?Math.abs(dd).toFixed(1):Math.round(Math.abs(dd));
+        // CO₂: lower is better, so the change carries the zone colours. Other metrics: no better or worse, so the change is neutral.
+        var words=m.kind==='zone'?(up?'higher':'lower'):m.key==='temp'?(up?'warmer':'cooler'):m.key==='hum'?(up?'more humid':'drier'):(up?'higher':'lower');
+        out+='<div class="sc-delta"><em class="'+(m.kind==='zone'?(up?'up':'down'):'')+'">'+(up?'▲ ':'▼ ')+amount+(m.unit==='%'?' %':' '+m.unit)+'</em> '+words+' than '+s.prevText+'</div>';
+      } else out+='<div class="sc-delta">No earlier data to compare</div>';
       if(s.cov<.9)out+='<div class="sc-cov">Based on '+Math.round(s.cov*100)+'% of expected readings</div>';
-      out+='<div class="sc-sec"><h4>Time in each zone</h4><div class="zbar">'+['g','e','h'].map(function(q){return s.shares[q]>0?'<i style="flex:'+s.shares[q]+';background:var(--z-'+q+'-seg)"></i>':'';}).join('')+'</div><div class="zlab">'+['g','e','h'].map(function(q){return '<span><b>'+Math.round(s.shares[q]*100)+'%</b> '+ZN[q]+'</span>';}).join('')+'</div></div>';
-      out+='<div class="sc-sec"><h4>'+s.nightTitle+'<span>22:00–07:00</span></h4><div class="kv">'+s.night.map(function(p){return '<div><b>'+p[0]+'</b><span>'+p[1]+'</span></div>';}).join('')+'</div></div>';
-      out+='<div class="sc-sec"><div class="kv two"><div><b>'+fmt(s.hi[0])+'</b><span>Highest<br>'+s.hi[1]+'</span></div><div><b>'+fmt(s.lo[0])+'</b><span>Lowest<br>'+s.lo[1]+'</span></div></div></div>';
+      if(m.kind!=='trend'){
+        var title=m.kind==='zone'?'Time in each zone':'Time in comfort range',sub=m.kind==='zone'?'':'<span>'+m.lo+'–'+m.hi+(m.unit==='%'?' %':' '+m.unit)+'</span>';
+        out+='<div class="sc-sec"><h4>'+title+sub+'</h4><div class="zbar">'+shareKeys().map(function(q){return s.shares[q]>0?'<i style="flex:'+s.shares[q]+';background:'+shareColor(q)+'"></i>':'';}).join('')+'</div><div class="zlab">'+shareKeys().map(function(q){return '<span><b>'+Math.round(s.shares[q]*100)+'%</b> '+shareName(q)+'</span>';}).join('')+'</div></div>';
+      }
+      if(s.night)out+='<div class="sc-sec"><h4>'+s.nightTitle+'<span>22:00–07:00</span></h4><div class="kv">'+s.night.map(function(p){return '<div><b>'+p[0]+'</b><span>'+p[1]+'</span></div>';}).join('')+'</div>'+(m.nightNote&&state.metric==='temp'?'<p class="sc-cov" style="margin-top:8px">'+m.nightNote+'</p>':'')+'</div>';
+      if(s.change)out+='<div class="sc-sec"><h4>Biggest change in 24 hours</h4><div class="kv two"><div><b>'+(s.change.d>0?'+':'−')+Math.abs(s.change.d).toFixed(1)+' hPa</b><span>'+s.change.when+'</span></div><div><b>'+f(s.lo[0])+'–'+f(s.hi[0])+'</b><span>Range in this period<br>hPa</span></div></div><p class="sc-cov" style="margin-top:8px">Pressure follows the weather, not the room: a drop of 10 hPa or more in a day usually means a front is passing.</p></div>';
+      else out+='<div class="sc-sec"><div class="kv two"><div><b>'+withUnit(s.hi[0])+'</b><span>Highest<br>'+s.hi[1]+'</span></div><div><b>'+withUnit(s.lo[0])+'</b><span>Lowest<br>'+s.lo[1]+'</span></div></div></div>';
       if(s.worst){
-        var atNight=s.worst.h<7||s.worst.h>=20;
-        out+='<div class="tip z'+zoneOf(s.worst.avg)+'"><b>Worst hours: '+hh(s.worst.h)+'–'+hh(s.worst.h+3)+'</b>'+(atNight?', while you sleep':'')+' (avg '+fmt(s.worst.avg)+' ppm). '+
-          (atNight?'A window left slightly open at night keeps the bedroom fresher.':'Opening a window shortly before keeps you in the good zone.')+'</div>';
+        var w=s.worst,atNight=w.h<7||w.h>=20,when=hh(w.h)+'–'+hh(w.h+3);
+        if(m.kind==='zone'){
+          out+='<div class="tip z'+zoneOf(w.avg)+'"><b>Worst hours: '+when+'</b>'+(atNight?', while you sleep':'')+' (avg '+f(w.avg)+' ppm). '+
+            (atNight?'A window left slightly open at night keeps the bedroom fresher.':'Opening a window shortly before keeps you in the good zone.')+'</div>';
+        } else if(m.kind==='comfort'){
+          out+='<div class="tip ze"><b>'+m.extreme[w.side]+' hours: '+when+'</b>'+(atNight?', while you sleep':'')+' (avg '+withUnit(w.avg)+'). '+(m.advice[w.side]||'')+'</div>';
+        }
+      } else if(m.kind==='comfort'){
+        out+='<div class="tip zg"><b>Comfortable around the clock.</b> Every hour of the typical day is inside '+m.lo+'–'+m.hi+(m.unit==='%'?' %':' '+m.unit)+'.</div>';
       }
       return out;
     }
 
     function periodStats(s,e,ps,pe,eyebrow,prevText){
-      var vals=[],exp=0,hi=null,lo=null,x,hr,v;
+      var m=M(),vals=[],exp=0,hi=null,lo=null,x,hr,v;
       for(x=s;x<=e;x++)for(hr=0;hr<24;hr++){if(fut(x,hr))continue;exp++;v=val(x,hr);if(v==null)continue;vals.push(v);if(!hi||v>hi.v)hi={v:v,i:x,h:hr};if(!lo||v<lo.v)lo={v:v,i:x,h:hr};}
       if(!vals.length)return null;
       var pv=[],pexp=0;for(x=Math.max(0,ps);x<=pe;x++)for(hr=0;hr<24;hr++){pexp++;v=val(x,hr);if(v!=null)pv.push(v);}
+      var out={eyebrow:eyebrow,avg:mean(vals),prev:pexp&&pv.length/pexp>=.5?mean(pv):null,prevText:prevText,cov:vals.length/exp,shares:sharesOf(vals),
+        hi:[hi.v,wdm(dayAt(hi.i))+', '+hh(hi.h)],lo:[lo.v,wdm(dayAt(lo.i))+', '+hh(lo.h)]};
+      if(m.kind==='trend'){out.change=biggestChange(s,e);return out;}
       var nights=[];
       for(x=s-1;x<e;x++){var nv=[val(x,22),val(x,23)];for(hr=0;hr<7;hr++)nv.push(val(x+1,hr));nv=nv.filter(function(q){return q!=null;});if(nv.length>=6)nights.push({avg:mean(nv),i:x});}
       var nrows=[['–','No complete night']];
       if(nights.length){
+        // CO₂: best is the lowest. Temperature and humidity: best is the closest to the comfort range, so name them by what they were.
         var b=nights[0],w=nights[0];nights.forEach(function(n){if(n.avg<b.avg)b=n;if(n.avg>w.avg)w=n;});
-        nrows=[[fmt(mean(nights.map(function(n){return n.avg;}))),'Average'+(nights.length>1?'<br>'+nights.length+' nights':'')]];
-        if(nights.length>1)nrows.push([fmt(b.avg),'Best<br>'+nightLabel(b.i)],[fmt(w.avg),'Worst<br>'+nightLabel(w.i)]);
+        nrows=[[f(mean(nights.map(function(n){return n.avg;}))),'Average'+(nights.length>1?'<br>'+nights.length+' nights':'')]];
+        if(nights.length>1){
+          var lowName=m.kind==='zone'?'Best':m.key==='temp'?'Coolest':'Driest',highName=m.kind==='zone'?'Worst':m.key==='temp'?'Warmest':'Most humid';
+          nrows.push([f(b.avg),lowName+'<br>'+nightLabel(b.i)],[f(w.avg),highName+'<br>'+nightLabel(w.i)]);
+        }
       }
-      return {eyebrow:eyebrow,avg:mean(vals),prev:pexp&&pv.length/pexp>=.5?mean(pv):null,prevText:prevText,cov:vals.length/exp,shares:sharesOf(vals),nightTitle:'Nights',night:nrows,
-        hi:[hi.v,wdm(dayAt(hi.i))+', '+hh(hi.h)],lo:[lo.v,wdm(dayAt(lo.i))+', '+hh(lo.h)]};
+      out.nightTitle='Nights';out.night=nrows;
+      return out;
+    }
+    function biggestChange(s,e){
+      var best=null,x,hr,a,b;
+      for(x=s;x<=e;x++)for(hr=0;hr<24;hr++){a=val(x,hr);b=val(x+1,hr);if(a==null||b==null)continue;if(!best||Math.abs(b-a)>Math.abs(best.d))best={d:b-a,i:x,h:hr,v1:a,v2:b};}
+      if(!best)return null;
+      best.when='From '+wdm(dayAt(best.i))+', '+hh(best.h);
+      return best;
     }
 
-    function tag(rows,min){var ok=rows.filter(function(rw){return rw.cnt>=min;});if(ok.length<3)return;var b=ok[0],w=ok[0];ok.forEach(function(rw){if(rw.avg<b.avg)b=rw;if(rw.avg>w.avg)w=rw;});b.tag='best';w.tag='worst';}
+    function tag(rows,min){
+      // CO₂: the lowest average is best. Temperature and humidity: the most time in the comfort range is best.
+      var ok=rows.filter(function(rw){return rw.cnt>=min;});if(ok.length<3)return;
+      var score=M().kind==='zone'?function(rw){return rw.avg;}:function(rw){return -rw.shares.ok;};
+      var b=ok[0],w=ok[0];ok.forEach(function(rw){if(score(rw)<score(b))b=rw;if(score(rw)>score(w))w=rw;});
+      if(b!==w){b.tag='best';w.tag='worst';}
+    }
     function collapse(rows,lab){
       var out=[],run=[];
       function flush(){if(run.length>=2)out.push({collapsed:true,text:'No readings · '+lab(run[0],run[run.length-1])});else out.push.apply(out,run);run=[];}
@@ -833,7 +954,7 @@ button:focus-visible{outline:2px solid #2563C9;outline-offset:2px}
       var rows=[];
       for(var x=s;x<=e;x++){
         var dd=dayAt(x),vs=[],cl=[];
-        for(var hr=0;hr<24;hr++){if(fut(x,hr)){cl.push({future:true});continue;}var v=val(x,hr);vs.push(v);cl.push({v:v,tip:wdm(dd)+', '+hh(hr)+'–'+hh(hr+1)+' · '+(v==null?'No data':v+' ppm')});}
+        for(var hr=0;hr<24;hr++){if(fut(x,hr)){cl.push({future:true});continue;}var v=val(x,hr);vs.push(v);cl.push({v:v,tip:wdm(dd)+', '+hh(hr)+'–'+hh(hr+1)+' · '+(v==null?'No data':withUnit(v))});}
         var cnt=vs.filter(function(q){return q!=null;}).length;
         rows.push({i:x,label:x===N-1?'Today':isWeek?WD[dd.getDay()]+' '+dd.getDate():wdm(dd),force:x===N-1||dd.getDay()===1,bold:x===N-1,cells:cl,avg:cnt?mean(vs):null,shares:sharesOf(vs),cnt:cnt});
       }
@@ -848,8 +969,8 @@ button:focus-visible{outline:2px solid #2563C9;outline-offset:2px}
           var dt=new Date(yr,mo,dn);if(dt.getMonth()!==mo){cl.push(null);continue;}
           var x=idxOf(yr,mo,dn);if(x>N-1){cl.push({future:true});continue;}
           var vs=[];for(var hr=0;hr<24;hr++){var v=val(x,hr);if(v!=null){vs.push(v);hv.push(v);}}
-          var dv=vs.length>=6?Math.round(mean(vs)):null;
-          cl.push({v:dv,tip:WD[dt.getDay()]+' '+dn+' '+MON[mo]+' '+yr+' · '+(dv==null?'No data':'average '+dv+' ppm')});
+          var dv=vs.length>=6?mean(vs):null;
+          cl.push({v:dv,tip:WD[dt.getDay()]+' '+dn+' '+MON[mo]+' '+yr+' · '+(dv==null?'No data':'average '+withUnit(dv))});
         }
         rows.push({label:MON[mo]+(m===0||mo===0?' '+yr:''),force:true,cells:cl,avg:hv.length?mean(hv):null,shares:sharesOf(hv),cnt:hv.length,ym:[yr,mo]});
       }
@@ -858,78 +979,115 @@ button:focus-visible{outline:2px solid #2563C9;outline-offset:2px}
     }
 
     function empty(label){
-      vtitle.innerHTML='CO₂';vleg.innerHTML='';
+      vtitle.innerHTML=M().name;vleg.innerHTML='';
       vbody.innerHTML='<div class="empty"><b>No readings for '+label+'</b><span>Deskair has readings from 6 Oct 2026.</span><button type="button" class="ghost" id="hlatest">Go to the latest</button></div>';
       document.getElementById('hlatest').addEventListener('click',function(){state.k=0;render();});
       statsEl.innerHTML='<div class="sc-eye">'+label+'</div><div class="sc-delta">Nothing was recorded in this period.</div>';
     }
 
+    function legendFor(withTypical,withNight){
+      var m=M(),line=m.kind==='zone'?'linear-gradient(90deg,var(--z-g),var(--z-e) 50%,var(--z-h))':m.color;
+      return '<span><i style="background:'+line+'"></i>'+m.name+'</span>'+
+        (withTypical?'<span><i style="background:var(--w-faint);opacity:.6"></i>Typical, previous 7 days</span>':'')+
+        (m.kind==='comfort'?'<span><i class="sq" style="background:'+m.color+';opacity:.25"></i>Comfort range</span>':'')+
+        (withNight?'<span><i class="sq" style="background:var(--w-grid)"></i>Night</span>':'');
+    }
+
     function renderDay(k){
-      var pts=[],typ=[],night,xl,aired=[],label,st,x,hr,tp;
+      var m=M(),pts=[],typ=[],night,xl,aired=[],label,st,x,hr,tp,di=N-1-k,dd=dayAt(di),hiP,loP;
+      var trend=m.kind==='trend';
       if(k===0){
         label='Last 24 hours';hlabel.textContent=label;
-        pts=day5.map(function(v,n){var m=13*60+n*5;return {x:n/12,v:v,t:(m>=1440?'Today ':'Yesterday ')+hhmm(m)};});
+        if(m.kind==='zone'){
+          pts=day5.map(function(v,n){var mm=13*60+n*5;return {x:n/12,v:v,t:(mm>=1440?'Today ':'Yesterday ')+hhmm(mm)};});
+          for(x=0;x<day5.length-2;x++){if(day5[x]>=1000&&day5[x]-Math.min(day5[x+1],day5[x+2])>=150){aired.push({x:x/12,v:day5[x]});x+=11;}}
+        } else {
+          // Other metrics, hourly: from 13:00 yesterday to now.
+          for(j=0;j<=24;j++){var xi=j<11?N-2:N-1,hi2=(13+j)%24,v=val(xi,hi2);if(v!=null)pts.push({x:j,v:v,t:(j<11?'Yesterday ':'Today ')+hh(hi2)});}
+        }
         tp=typicalOf(N-8,N-2);
-        for(j=0;j<24;j++){var tv=tp[(13+j)%24];if(tv!=null)typ.push({x:j+.5,v:tv});}
-        night=[[9,18]];
+        if(!trend)for(j=0;j<24;j++){var tv=tp[(13+j)%24];if(tv!=null)typ.push({x:j+.5,v:tv});}
+        night=trend?[]:[[9,18]];
         xl=[[2,'15:00'],[5,'18:00'],[8,'21:00'],[11,'00:00'],[14,'03:00'],[17,'06:00'],[20,'09:00'],[24,'Now','end',true]];
-        for(x=0;x<day5.length-2;x++){if(day5[x]>=1000&&day5[x]-Math.min(day5[x+1],day5[x+2])>=150){aired.push({x:x/12,v:day5[x]});x+=11;}}
-        var hiI=0,loI=0;day5.forEach(function(v,n){if(v>day5[hiI])hiI=n;if(v<day5[loI])loI=n;});
-        var nv=day5.slice(108,217),pkI=0;nv.forEach(function(v,n){if(v>nv[pkI])pkI=n;});
-        var good=nv.filter(function(v){return v<1000;}).length*5,pv=[];
-        for(hr=13;hr<24;hr++)pv.push(val(N-3,hr));for(hr=0;hr<13;hr++)pv.push(val(N-2,hr));
-        st={eyebrow:'Average · last 24 hours',avg:mean(day5),prev:pv.filter(function(q){return q!=null;}).length>=12?mean(pv):null,prevText:'the 24 hours before',cov:1,shares:sharesOf(day5),
-          nightTitle:'Last night',night:[[fmt(mean(nv)),'Average'],[nv[pkI],'Peak at '+hhmm(22*60+pkI*5)],[good?hm(good/60):'0 min','In the Good zone']],
-          hi:[day5[hiI],pts[hiI].t],lo:[day5[loI],pts[loI].t],worst:worstOf(tp)};
       } else {
-        var di=N-1-k,dd=dayAt(di);label=wdm(dd);hlabel.textContent=label;
-        for(hr=0;hr<24;hr++){var v=val(di,hr);if(v!=null)pts.push({x:hr+.5,v:v,t:wdm(dd)+', '+hh(hr)});}
+        label=wdm(dd);hlabel.textContent=label;
+        for(hr=0;hr<24;hr++){var v2=val(di,hr);if(v2!=null)pts.push({x:hr+.5,v:v2,t:wdm(dd)+', '+hh(hr)});}
         if(!pts.length){empty(label);return;}
-        tp=typicalOf(di-7,di-1);tp.forEach(function(tv,n){if(tv!=null)typ.push({x:n+.5,v:tv});});
-        night=[[0,7],[22,24]];
+        tp=typicalOf(di-7,di-1);if(!trend)tp.forEach(function(tv,n){if(tv!=null)typ.push({x:n+.5,v:tv});});
+        night=trend?[]:[[0,7],[22,24]];
         xl=[[0,'00:00','start'],[3,'03:00'],[6,'06:00'],[9,'09:00'],[12,'12:00'],[15,'15:00'],[18,'18:00'],[21,'21:00'],[24,'24:00','end']];
-        for(x=1;x<pts.length;x++)if(pts[x-1].v>=1000&&pts[x-1].v-pts[x].v>=150&&pts[x].x-pts[x-1].x<1.5&&(!aired.length||pts[x-1].x-aired[aired.length-1].x>=1))aired.push(pts[x-1]);
-        var hiP=pts[0],loP=pts[0];pts.forEach(function(p){if(p.v>hiP.v)hiP=p;if(p.v<loP.v)loP=p;});
-        var nvv=[val(di-1,22),val(di-1,23)];for(hr=0;hr<7;hr++)nvv.push(val(di,hr));nvv=nvv.filter(function(q){return q!=null;});
-        var pvv=[];for(hr=0;hr<24;hr++)pvv.push(val(di-1,hr));
-        st={eyebrow:'Average · '+label,avg:mean(pts.map(function(p){return p.v;})),prev:pvv.filter(function(q){return q!=null;}).length>=12?mean(pvv):null,prevText:'the day before',cov:pts.length/24,shares:sharesOf(pts.map(function(p){return p.v;})),
-          nightTitle:'Night '+nightLabel(di-1),night:nvv.length?[[fmt(mean(nvv)),'Average'],[Math.max.apply(null,nvv),'Peak'],[hm(nvv.filter(function(q){return q<1000;}).length)||'0 min','In the Good zone']]:[['–','No readings']],
-          hi:[hiP.v,hiP.t.split(', ')[1]],lo:[loP.v,loP.t.split(', ')[1]],worst:worstOf(tp)};
+        if(m.kind==='zone')for(x=1;x<pts.length;x++)if(pts[x-1].v>=1000&&pts[x-1].v-pts[x].v>=150&&pts[x].x-pts[x-1].x<1.5&&(!aired.length||pts[x-1].x-aired[aired.length-1].x>=1))aired.push(pts[x-1]);
       }
-      vtitle.innerHTML='CO₂ <span>· '+(k===0?'last 24 hours':'by time of day')+'</span>';
-      vleg.innerHTML='<span><i style="background:linear-gradient(90deg,var(--z-g),var(--z-e) 50%,var(--z-h))"></i>CO₂</span><span><i style="background:var(--w-faint);opacity:.6"></i>Typical, previous 7 days</span><span><i class="sq" style="background:var(--w-grid)"></i>Night</span>';
-      drawDay({pts:pts,typ:typ,night:night,xl:xl,aired:aired,now:k===0,aria:'CO2, '+label});
+      hiP=pts[0];loP=pts[0];pts.forEach(function(p){if(p.v>hiP.v)hiP=p;if(p.v<loP.v)loP=p;});
+      var vsAll=pts.map(function(p){return p.v;}),pv=[];
+      if(k===0){for(hr=13;hr<24;hr++)pv.push(val(N-3,hr));for(hr=0;hr<13;hr++)pv.push(val(N-2,hr));}else for(hr=0;hr<24;hr++)pv.push(val(di-1,hr));
+      st={eyebrow:'Average · '+(k===0?'last 24 hours':label),avg:mean(vsAll),prev:pv.filter(function(q){return q!=null;}).length>=12?mean(pv):null,prevText:k===0?'the 24 hours before':'the day before',
+        cov:k===0?1:pts.length/24,shares:sharesOf(vsAll),hi:[hiP.v,hiP.t.replace(wdm(dd)+', ','')],lo:[loP.v,loP.t.replace(wdm(dd)+', ','')],worst:trend?null:worstOf(tp)};
+      if(!trend){
+        // Last night: CO₂ keeps the sleep verdict numbers; temperature and humidity show the night's average, low and high.
+        var nightDay=k===0?N-1:di,nv=[val(nightDay-1,22),val(nightDay-1,23)];for(hr=0;hr<7;hr++)nv.push(val(nightDay,hr));nv=nv.filter(function(q){return q!=null;});
+        st.nightTitle='Last night';
+        st.night=nv.length?(m.kind==='zone'
+          ?[[f(mean(nv)),'Average'],[f(Math.max.apply(null,nv)),'Peak'],[hm(nv.filter(function(q){return q<1000;}).length)||'0 min','In the Good zone']]
+          :[[f(mean(nv)),'Average'],[f(Math.min.apply(null,nv)),'Lowest'],[f(Math.max.apply(null,nv)),'Highest']]):[['–','No readings']];
+      }
+      vtitle.innerHTML=m.name+' <span>· '+(k===0?'last 24 hours':'by time of day')+'</span>';
+      vleg.innerHTML=legendFor(!trend,!trend);
+      drawLine({pts:pts,span:24,typ:typ,night:night,band:m.kind==='comfort'?[m.lo,m.hi]:null,xl:xl,aired:aired,now:k===0,aria:m.name+', '+label});
       statsEl.innerHTML=statsHTML(st);
     }
-    function renderSpan(R,k){
-      var L=LEN[R],e=N-1-L*k,s=e-L+1,label=spanLabel(s,e);hlabel.textContent=label;
-      var st=periodStats(s,e,s-L,e-L,'Average · '+label,R==='week'?'the week before':'the 30 days before');
+
+    // Pressure over a week, 30 days or a year: one line of hourly (or daily) means and the biggest change in 24 hours.
+    function renderTrend(s,e,label,R,prevText){
+      var m=M(),pts=[],x,hr,daily=R==='year';
+      var st=periodStats(s,e,daily?-1:s-LEN[R],daily?-2:e-LEN[R],'Average · '+label,prevText);
       if(!st){empty(label);return;}
-      vtitle.innerHTML='CO₂ <span>· by hour</span>';vleg.innerHTML='';
+      for(x=s;x<=e;x++){
+        if(daily){var dv=mean(DATA.pres[x].map(function(_,q){return val(x,q);}));if(dv!=null)pts.push({x:(x-s)*24+12,v:Math.round(dv*10)/10,t:wdm(dayAt(x))});continue;}
+        for(hr=0;hr<24;hr++){var v=val(x,hr);if(v!=null)pts.push({x:(x-s)*24+hr+.5,v:v,t:wdm(dayAt(x))+', '+hh(hr)});}
+      }
+      var span=(e-s+1)*24,xl=[],every=R==='week'?1:R==='month'?7:61;
+      for(x=s;x<=e;x+=every){var d=dayAt(x);xl.push([(x-s)*24+12,R==='week'?(x===N-1?'Today':WD[d.getDay()]+' '+d.getDate()):dm(d),'middle',x===N-1]);}
+      var c=st.change;
+      vtitle.innerHTML=m.name+' <span>· '+(daily?'daily average':'hourly')+'</span>';
+      vleg.innerHTML='<span><i style="background:'+m.color+'"></i>'+m.name+'</span><span><i class="sq" style="background:var(--w-tx);opacity:.12"></i>Biggest change in 24 h</span>';
+      drawLine({pts:pts,span:span,xl:xl,now:e===N-1,aria:m.name+', '+label,change:c&&!daily?{x1:(c.i-s)*24+c.h+.5,x2:(c.i+1-s)*24+c.h+.5,v1:c.v1,v2:c.v2}:null});
+      statsEl.innerHTML=statsHTML(st);
+    }
+
+    function renderSpan(R,k){
+      var m=M(),L=LEN[R],e=N-1-L*k,s=e-L+1,label=spanLabel(s,e),prevText=R==='week'?'the week before':'the 30 days before';hlabel.textContent=label;
+      if(m.kind==='trend'){renderTrend(s,e,label,R,prevText);return;}
+      var st=periodStats(s,e,s-L,e-L,'Average · '+label,prevText);
+      if(!st){empty(label);return;}
+      vtitle.innerHTML=m.name+' <span>· by hour</span>';vleg.innerHTML='';
       var tp=typicalOf(s,e),w=worstOf(tp);
       drawGrid({rows:dayRows(s,e,R==='week'),cols:24,night:true,colLabels:[[0,'00:00'],[3,'03:00'],[6,'06:00'],[9,'09:00'],[12,'12:00'],[15,'15:00'],[18,'18:00'],[21,'21:00']],
-        typical:{cells:tp.map(function(v,hr){return {v:v==null?null:Math.round(v),tip:'Typical '+hh(hr)+'–'+hh(hr+1)+' · '+(v==null?'No data':Math.round(v)+' ppm')};}),worst:w?w.h:null},
-        unitText:'Each square is one hour',aria:'CO2 by hour, '+label});
+        typical:{cells:tp.map(function(v,hr){return {v:v,tip:'Typical '+hh(hr)+'–'+hh(hr+1)+' · '+(v==null?'No data':withUnit(v))};}),worst:w},
+        unitText:'Each square is one hour',aria:m.name+' by hour, '+label});
       st.worst=w;statsEl.innerHTML=statsHTML(st);
     }
     function renderYear(){
-      var label='Nov 2025 – Oct 2026',s=idxOf(2025,10,1);hlabel.textContent=label;
+      var m=M(),label='Nov 2025 – Oct 2026',s=idxOf(2025,10,1);hlabel.textContent=label;
+      if(m.kind==='trend'){renderTrend(s,N-1,label,'year','');return;}
       var st=periodStats(s,N-1,-1,-2,'Average · '+label,'');
       if(!st){empty(label);return;}
-      vtitle.innerHTML='CO₂ <span>· daily average</span>';vleg.innerHTML='';
+      vtitle.innerHTML=m.name+' <span>· daily average</span>';vleg.innerHTML='';
       st.worst=worstOf(typicalOf(s,N-1));
-      drawGrid({rows:yearRows(),cols:31,night:false,colCenter:true,colLabels:[[0,'1'],[4,'5'],[9,'10'],[14,'15'],[19,'20'],[24,'25'],[30,'31']],typical:null,unitText:'Each square is one day',aria:'CO2 daily average, '+label});
+      drawGrid({rows:yearRows(),cols:31,night:false,colCenter:true,colLabels:[[0,'1'],[4,'5'],[9,'10'],[14,'15'],[19,'20'],[24,'25'],[30,'31']],typical:null,unitText:'Each square is one day',aria:m.name+' daily average, '+label});
       statsEl.innerHTML=statsHTML(st);
     }
     function render(){
       var R=state.range,mk=maxK(R);if(state.k>mk)state.k=mk;var k=state.k;
       document.querySelectorAll('#hrange button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.r===R));});
+      document.querySelectorAll('#hmetric button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.m===state.metric));});
       prevB.disabled=k>=mk;nextB.disabled=k===0;
-      hwin.querySelectorAll('.pin').forEach(function(p){p.hidden=p.dataset.v.split(' ').indexOf(R)<0;});
+      hwin.querySelectorAll('.pin').forEach(function(p){p.hidden=p.dataset.v.split(' ').indexOf(R)<0||(p.dataset.m&&p.dataset.m.split(' ').indexOf(state.metric)<0);});
       hideTip();
       if(R==='day')renderDay(k);else if(R==='year')renderYear();else renderSpan(R,k);
     }
     document.querySelectorAll('#hrange button').forEach(function(b){b.addEventListener('click',function(){state.range=b.dataset.r;state.k=0;render();});});
+    document.querySelectorAll('#hmetric button').forEach(function(b){b.addEventListener('click',function(){state.metric=b.dataset.m;render();});});
     prevB.addEventListener('click',function(){state.k++;render();});
     nextB.addEventListener('click',function(){if(state.k>0){state.k--;render();}});
     document.querySelectorAll('.dm button').forEach(function(b){b.addEventListener('click',function(){state.mode=b.dataset.d;state.k=0;document.querySelectorAll('.dm button').forEach(function(o){o.setAttribute('aria-pressed',String(o===b));});render();});});

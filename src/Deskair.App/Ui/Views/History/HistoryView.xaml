@@ -21,6 +21,10 @@
         <DataTrigger Binding="{Binding DataContext.ShowSleep, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="True">
           <Setter Property="Visibility" Value="Collapsed" />
         </DataTrigger>
+        <!-- The typical day is a CO₂ rule: other metrics have no card. -->
+        <DataTrigger Binding="{Binding DataContext.ShowTypicalDay, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="False">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
         <!-- The grid has the typical day as its last row. -->
         <DataTrigger Binding="{Binding DataContext.ShowGrid, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="True">
           <Setter Property="Visibility" Value="Collapsed" />
@@ -47,14 +51,6 @@
       <Style.Triggers>
         <DataTrigger Binding="{Binding ShowGrid}" Value="True">
           <Setter Property="Text" Value="{Binding Hover.Text, ElementName=HourGrid}" />
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
-    <Style x:Key="History.Sleep" TargetType="{x:Type history:SleepCard}">
-      <Setter Property="Visibility" Value="Collapsed" />
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding DataContext.ShowSleep, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="True">
-          <Setter Property="Visibility" Value="Visible" />
         </DataTrigger>
       </Style.Triggers>
     </Style>
@@ -140,13 +136,21 @@
                                    AverageLabel="{loc:T Chart_Avg}"
                                    AverageValue="{Binding AverageLine}"
                                    Bars="{Binding Bars}"
+                                   ComfortBand="{Binding ComfortBand}"
                                    Gaps="{Binding Gaps}"
+                                   Highlight="{Binding Highlight}"
                                    Metric="{Binding Toolbar.Metric}"
                                    NoDataText="{loc:T Chart_NoData}"
                                    PartialText="{loc:T Chart_Partial}"
+                                   MarkerLabel="{loc:T History_AirImproved_Label}"
+                                   Markers="{Binding Markers}"
+                                   NightLabel="{loc:T History_Legend_Night}"
+                                   NightSpans="{Binding NightSpans}"
                                    Points="{Binding Points}"
                                    Style="{StaticResource History.Bars}"
                                    TodayLabel="{loc:T Chart_Today}"
+                                   TypicalHoverText="{loc:T History_Hover_Typical}"
+                                   TypicalPoints="{Binding TypicalPoints}"
                                    Unit="{Binding Stats.UnitText}"
                                    WeekendSpans="{Binding WeekendSpans}" />
 
@@ -170,10 +174,9 @@
                                   DataContext="{Binding TypicalDay}"
                                   Style="{StaticResource History.TypicalDay}"
                                   Subtitle="{Binding DataContext.ChartHeader.TypicalDaySubtitle, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" />
-          <history:SleepCard Grid.Row="2" DataContext="{Binding Sleep}" Style="{StaticResource History.Sleep}" />
         </Grid>
 
-        <history:StatsCard Grid.Column="2" VerticalAlignment="Top" DataContext="{Binding Stats}" />
+        <history:SummaryCard Grid.Column="2" VerticalAlignment="Top" />
       </Grid>
     </Grid>
 

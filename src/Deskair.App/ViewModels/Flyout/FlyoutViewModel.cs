@@ -11,6 +11,7 @@ using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
 using Deskair.Domain.Zones;
 using Deskair.Services.Alerts;
+using Deskair.Services.Platform;
 
 namespace Deskair.App.ViewModels.Flyout;
 
@@ -29,6 +30,7 @@ public sealed partial class FlyoutViewModel : ObservableObject
     private readonly IMainWindowController windows;
     private readonly SnoozeService snooze;
     private readonly FriendlyTime time;
+    private readonly IBluetoothRadio radio;
 
     [ObservableProperty]
     private Zone? zone;
@@ -75,6 +77,26 @@ public sealed partial class FlyoutViewModel : ObservableObject
     [ObservableProperty]
     private bool showNotConnected;
 
+    /// <summary>The likely reason under "Can't reach your Aranet4": Bluetooth off, or out of range or asleep.</summary>
+    [ObservableProperty]
+    private string reasonText = string.Empty;
+
+    /// <summary>The one recovery step: "Turn on Bluetooth" when the radio is off, otherwise waking the sensor.</summary>
+    [ObservableProperty]
+    private string stepText = string.Empty;
+
+    /// <summary>True when not connected but an earlier reading is known: it is shown faded.</summary>
+    [ObservableProperty]
+    private bool showLastReading;
+
+    /// <summary>The last known CO₂ value while not connected ("1160").</summary>
+    [ObservableProperty]
+    private string? lastValueText;
+
+    /// <summary>"ppm at 12:35": the unit and the time of the last known reading.</summary>
+    [ObservableProperty]
+    private string? lastDetailText;
+
     [ObservableProperty]
     private IReadOnlyList<ChartZoneSegment> ribbonSegments = [];
 
@@ -82,9 +104,9 @@ public sealed partial class FlyoutViewModel : ObservableObject
     [ObservableProperty]
     private DateTimeOffset? ribbonEnd;
 
-    /// <summary>Five times under the ribbon, from 24 hours ago to "Now".</summary>
+    /// <summary>The times under the ribbon at their true positions: the round hours that fall inside it, then "Now".</summary>
     [ObservableProperty]
-    private IReadOnlyList<string> ribbonLabels = [];
+    private IReadOnlyList<FlyoutRibbonLabel> ribbonLabels = [];
 
     /// <summary>The time in each zone over the last 24 hours, for the zones that occurred.</summary>
     [ObservableProperty]
@@ -111,8 +133,9 @@ public sealed partial class FlyoutViewModel : ObservableObject
     [ObservableProperty]
     private string resumeText = string.Empty;
 
-    public FlyoutViewModel(ILocalizer localizer, MetricFormatter formatter, LocalCalendar calendar, IMainWindowController windows, SnoozeService snooze, FriendlyTime time)
+    public FlyoutViewModel(ILocalizer localizer, MetricFormatter formatter, LocalCalendar calendar, IMainWindowController windows, SnoozeService snooze, FriendlyTime time, IBluetoothRadio radio)
     {
+        this.radio = radio;
         this.localizer = localizer;
         this.formatter = formatter;
         this.calendar = calendar;
@@ -136,7 +159,7 @@ public sealed partial class FlyoutViewModel : ObservableObject
     }
 
     /// <param name="reading">The latest reading, or null when the sensor is not connected.</param>
-    /// <param name="recent">The readings of the last 24 hours, in time order; the trend and the ribbon come from them.</param>
+    /// <param name="recent">The readings of the last 24 hours, in time order; the trend and the ribbon come from them. When not connected, the last of them is shown faded.</param>
     public void Update(Reading? reading, IReadOnlyList<Reading> recent, DateTimeOffset now, string? room)
     {
         RoomName = room;
@@ -144,7 +167,7 @@ public sealed partial class FlyoutViewModel : ObservableObject
 
         if (reading is not { } latest)
         {
-            ShowNoReading();
+            ShowNoReading(recent, now);
             return;
         }
 
@@ -163,12 +186,15 @@ public sealed partial class FlyoutViewModel : ObservableObject
         AdviceTitle = summary.AdviceTitle;
         AdviceText = summary.AdviceText;
         ShowNotConnected = false;
+        ShowLastReading = false;
+        LastValueText = null;
+        LastDetailText = null;
 
         var spans = RibbonCalculator.Build(recent, now);
 
         RibbonSegments = [.. spans.Select(span => new ChartZoneSegment(span.Start, span.End, span.Zone))];
         RibbonEnd = now;
-        RibbonLabels = Labels(now);
+        RibbonLabels = FlyoutRibbonLabels.Build(now, calendar.Zone, localizer.Culture, localizer.Get("Chart_Now"));
         ZoneTimes = ZoneTimesOf(spans);
         OtherReadings =
         [
@@ -211,21 +237,33 @@ public sealed partial class FlyoutViewModel : ObservableObject
         ResumeText = localizer.Get("Flyout_Resume");
     }
 
-    private void ShowNoReading()
+    private void ShowNoReading(IReadOnlyList<Reading> recent, DateTimeOffset now)
     {
+        var last = recent.Count > 0 ? recent[^1] : (Reading?)null;
+
         Zone = null;
         ZoneText = null;
         Co2Ppm = null;
         ValueText = null;
         UnitText = null;
-        UpdatedAt = null;
-        UpdatedText = null;
+        UpdatedAt = last?.Timestamp;
+        UpdatedText = last is { } seen ? localizer.Format("Flyout_LastSeen", ("ago", Duration(now - seen.Timestamp))) : null;
         Trend = TrendDirection.Steady;
         TrendText = null;
         TrendDetail = null;
         AdviceTitle = null;
         AdviceText = null;
         ShowNotConnected = true;
+
+        var bluetoothOff = !radio.IsOn;
+
+        ReasonText = localizer.Get(bluetoothOff ? "Offline_Text_BluetoothOff" : "Offline_Text");
+        StepText = localizer.Get(bluetoothOff ? "Offline_Bluetooth" : "Offline_Step_Wake");
+        ShowLastReading = last is not null;
+        LastValueText = last is { } shown ? formatter.Value(Metric.Co2, shown.Co2Ppm) : null;
+        LastDetailText = last is { } at
+            ? localizer.Format("Flyout_LastReadingAt", ("unit", formatter.Unit(Metric.Co2)), ("time", TimeZoneInfo.ConvertTime(at.Timestamp, calendar.Zone).ToString("HH:mm", localizer.Culture)))
+            : null;
         RibbonSegments = [];
         RibbonEnd = null;
         RibbonLabels = [];
@@ -238,13 +276,6 @@ public sealed partial class FlyoutViewModel : ObservableObject
         return age < TimeSpan.FromMinutes(1)
             ? localizer.Format("Flyout_Updated", ("sec", Math.Max(0, (int)age.TotalSeconds)))
             : localizer.Format("Flyout_UpdatedMinutes", ("min", (int)age.TotalMinutes));
-    }
-
-    private string[] Labels(DateTimeOffset now)
-    {
-        string At(int hoursAgo) => TimeZoneInfo.ConvertTime(now - TimeSpan.FromHours(hoursAgo), calendar.Zone).ToString("HH:mm", localizer.Culture);
-
-        return [At(24), At(18), At(12), At(6), localizer.Get("Chart_Now")];
     }
 
     private List<FlyoutZoneTime> ZoneTimesOf(IReadOnlyList<ZoneSpan> spans)
@@ -273,6 +304,6 @@ public sealed partial class FlyoutViewModel : ObservableObject
 
     private FlyoutReading Other(Metric metric, double stored)
     {
-        return new FlyoutReading(localizer.Get($"Metric_{metric}"), $"{formatter.Value(metric, stored)} {formatter.Unit(metric)}");
+        return new FlyoutReading(localizer.Get($"Metric_{metric}"), formatter.Value(metric, stored), formatter.Unit(metric));
     }
 }

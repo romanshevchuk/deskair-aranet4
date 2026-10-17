@@ -11,6 +11,7 @@
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/LogoRing/LogoRing.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/StatusDot/StatusDot.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/SegmentedControl/SegmentedControl.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/NavTabs/NavTabs.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/ToggleSwitch/ToggleSwitch.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/Gauge/Gauge.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/AdviceCard/AdviceCard.xaml" />
@@ -31,6 +32,8 @@
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/SettingsRow/SettingsRow.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/PrimaryButton/PrimaryButton.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/SecondaryButton/SecondaryButton.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/QuietButton/QuietButton.xaml" />
+    <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/ZoneIcon/ZoneIcon.xaml" />
     <ResourceDictionary Source="/Deskair.App;component/Ui/Controls/TextInput/TextInput.xaml" />
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

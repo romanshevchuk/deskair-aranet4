@@ -152,6 +152,7 @@ public static class ServiceRegistration
         services.AddSingleton<ChartHeaderViewModel>();
         services.AddSingleton<PeriodLabeler>();
         services.AddSingleton<HourGridBuilder>();
+        services.AddSingleton<DayChartBuilder>();
         services.AddSingleton<HistoryViewModel>();
         services.AddSingleton(provider => new ShellViewModel(provider.GetRequiredService<IMessenger>())
         {

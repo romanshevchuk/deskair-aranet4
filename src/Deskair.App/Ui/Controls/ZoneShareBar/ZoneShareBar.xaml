@@ -17,11 +17,23 @@
                 <ColumnDefinition x:Name="PART_High" Width="0*" />
                 <ColumnDefinition x:Name="PART_Rest" Width="1*" />
               </Grid.ColumnDefinitions>
-              <Border Grid.Column="0" Background="{DynamicResource Zone.Good.Segment.Brush}" />
-              <Border Grid.Column="1" Background="{DynamicResource Zone.Elevated.Segment.Brush}" />
-              <Border Grid.Column="2" Background="{DynamicResource Zone.High.Segment.Brush}" />
+              <Border x:Name="PART_FirstFill" Grid.Column="0" Background="{DynamicResource Zone.Good.Segment.Brush}" />
+              <Border x:Name="PART_SecondFill" Grid.Column="1" Background="{DynamicResource Zone.Elevated.Segment.Brush}" />
+              <Border x:Name="PART_ThirdFill" Grid.Column="2" Background="{DynamicResource Zone.High.Segment.Brush}" />
             </Grid>
           </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Palette" Value="Temperature">
+              <Setter TargetName="PART_FirstFill" Property="Background" Value="{DynamicResource Heat.Cool2.Brush}" />
+              <Setter TargetName="PART_SecondFill" Property="Background" Value="{DynamicResource Zone.Good.Segment.Brush}" />
+              <Setter TargetName="PART_ThirdFill" Property="Background" Value="{DynamicResource Heat.Warm2.Brush}" />
+            </Trigger>
+            <Trigger Property="Palette" Value="Humidity">
+              <Setter TargetName="PART_FirstFill" Property="Background" Value="{DynamicResource Heat.Dry2.Brush}" />
+              <Setter TargetName="PART_SecondFill" Property="Background" Value="{DynamicResource Zone.Good.Segment.Brush}" />
+              <Setter TargetName="PART_ThirdFill" Property="Background" Value="{DynamicResource Heat.Humid2.Brush}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

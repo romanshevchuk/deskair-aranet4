@@ -81,4 +81,59 @@ public class HourGridCalculatorTests
         Assert.Equal((new DateOnly(2026, 10, 8), new DateOnly(2026, 10, 9)), HourGridCalculator.Extremes(days));
         Assert.Equal((null, null), HourGridCalculator.Extremes(days.Take(2).ToList()));
     }
+
+    private static IEnumerable<Reading> ClimateDay(int day, double celsius)
+        => Enumerable.Range(0, 24).Select(hour => Samples.Climate(Samples.Utc(2026, 10, day, hour), celsius, 45, 1013));
+
+    [Fact]
+    public void A_temperature_day_has_a_comfort_share_and_no_zone_share()
+    {
+        var readings = ClimateDay(12, 22).Take(12).Concat(ClimateDay(12, 18).Skip(12).Take(6)).Concat(ClimateDay(12, 25).Skip(18));
+
+        var day = Assert.Single(HourGridCalculator.Build(readings, Metric.Temperature, Samples.Utc(2026, 10, 12), Samples.Utc(2026, 10, 13), utc));
+
+        Assert.Null(day.Share);
+        Assert.NotNull(day.Comfort);
+        Assert.Equal(0.25, day.Comfort.Low);
+        Assert.Equal(0.5, day.Comfort.Inside);
+        Assert.Equal(0.25, day.Comfort.High);
+    }
+
+    [Fact]
+    public void Co2_and_pressure_days_have_no_comfort_share()
+    {
+        var readings = ClimateDay(12, 22);
+
+        Assert.All(HourGridCalculator.Build(readings, Metric.Co2, Samples.Utc(2026, 10, 12), Samples.Utc(2026, 10, 13), utc), day => Assert.Null(day.Comfort));
+        Assert.All(HourGridCalculator.Build(readings, Metric.Pressure, Samples.Utc(2026, 10, 12), Samples.Utc(2026, 10, 13), utc), day => Assert.Null(day.Comfort));
+    }
+
+    [Fact]
+    public void Comfort_extremes_are_the_days_with_the_most_and_the_least_time_inside_the_range()
+    {
+        var readings = ClimateDay(10, 22).Concat(ClimateDay(11, 19)).Concat(ClimateDay(12, 22.5)).Concat(ClimateDay(13, 27));
+        var days = HourGridCalculator.Build(readings, Metric.Temperature, Samples.Utc(2026, 10, 10), Samples.Utc(2026, 10, 14), utc);
+
+        var (best, worst) = HourGridCalculator.ComfortExtremes(days);
+
+        Assert.Equal(new DateOnly(2026, 10, 10), best);
+        Assert.Equal(new DateOnly(2026, 10, 11), worst);
+    }
+
+    [Fact]
+    public void Comfort_extremes_need_three_days_with_enough_hours()
+    {
+        var days = HourGridCalculator.Build(ClimateDay(10, 22).Concat(ClimateDay(11, 19)), Metric.Temperature, Samples.Utc(2026, 10, 10), Samples.Utc(2026, 10, 12), utc);
+
+        Assert.Equal((null, null), HourGridCalculator.ComfortExtremes(days));
+    }
+
+    [Fact]
+    public void Comfort_extremes_are_empty_when_every_day_is_equally_comfortable()
+    {
+        var readings = ClimateDay(10, 22).Concat(ClimateDay(11, 22)).Concat(ClimateDay(12, 22.5));
+        var days = HourGridCalculator.Build(readings, Metric.Temperature, Samples.Utc(2026, 10, 10), Samples.Utc(2026, 10, 13), utc);
+
+        Assert.Equal((null, null), HourGridCalculator.ComfortExtremes(days));
+    }
 }

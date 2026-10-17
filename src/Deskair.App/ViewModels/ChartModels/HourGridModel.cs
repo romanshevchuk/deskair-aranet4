@@ -1,9 +1,18 @@
+using Deskair.Domain.Analytics.Comfort;
 using Deskair.Domain.Zones;
 
 namespace Deskair.App.ViewModels.ChartModels;
 
 /// <summary>One square of the History grid: its value in the unit shown (null = no data, drawn as an outline) and its tooltip ("Tue 13 Oct, 16:00–17:00 · 1234 ppm").</summary>
 public sealed record HourGridCell(double? Value, string Text);
+
+/// <summary>Which colour scale the grid uses: the CO₂ zones, or a comfort scale (design-tokens.md "Heat scale" and "Comfort scales").</summary>
+public enum HourGridPalette
+{
+    Zones,
+    Temperature,
+    Humidity
+}
 
 /// <summary>Whether a row is the best or the worst one of the period (behaviour-rules.md "Aggregation" rule 5).</summary>
 public enum HourGridTag
@@ -25,7 +34,8 @@ public sealed record HourGridRow(
     HourGridTag Tag = HourGridTag.None,
     bool LabelAlways = false,
     bool Emphasis = false,
-    string? CollapsedText = null)
+    string? CollapsedText = null,
+    ComfortShare? Comfort = null)
 {
     public bool IsCollapsed => CollapsedText is not null;
 }
@@ -60,14 +70,16 @@ public sealed record HourGridModel(
 
     public string WorstTagText { get; init; } = string.Empty;
 
-    public string GoodText { get; init; } = string.Empty;
+    public HourGridPalette Palette { get; init; }
 
-    public string ElevatedText { get; init; } = string.Empty;
-
-    public string HighText { get; init; } = string.Empty;
+    /// <summary>The names above the legend swatches: each covers <c>Count</c> swatches from <c>First</c> ("Good" over the first two, "Comfortable" over the third).</summary>
+    public IReadOnlyList<(string Name, int First, int Count)> LegendGroups { get; init; } = [];
 
     public string NoDataText { get; init; } = string.Empty;
 
     /// <summary>"Each square is one hour".</summary>
     public string UnitText { get; init; } = string.Empty;
+
+    /// <summary>True for the Year grid: the column labels are day numbers centred over their squares, not times at the left edge of theirs.</summary>
+    public bool CenterColumnLabels { get; init; }
 }

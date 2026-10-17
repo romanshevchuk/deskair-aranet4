@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Deskair.App.Localization;
-using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Time;
 
@@ -29,6 +28,26 @@ public sealed partial class ChartHeaderViewModel : ObservableObject
     [ObservableProperty]
     private bool showNoDataLegend;
 
+    /// <summary>The Day legend: the CO₂ line, the typical day (CO₂ only) and the night band.</summary>
+    [ObservableProperty]
+    private bool showDayLegend;
+
+    /// <summary>The CO₂ line and the typical day are in the Day legend; for the other metrics the legend has the night band only.</summary>
+    [ObservableProperty]
+    private bool showDayCo2Legend;
+
+    /// <summary>The Day legend shows the typical day line: CO₂, Temperature and Humidity.</summary>
+    [ObservableProperty]
+    private bool showDayTypicalLegend;
+
+    /// <summary>The Day legend shows the comfortable range swatch: Temperature and Humidity.</summary>
+    [ObservableProperty]
+    private bool showComfortLegend;
+
+    /// <summary>The metric of the Day chart, for the colour of the comfort range swatch.</summary>
+    [ObservableProperty]
+    private Metric legendMetric;
+
     /// <summary>"average by hour, last 7 days": the line next to the typical day title. The days are the ones the typical day is built from.</summary>
     [ObservableProperty]
     private string typicalDaySubtitle = string.Empty;
@@ -38,17 +57,24 @@ public sealed partial class ChartHeaderViewModel : ObservableObject
         this.localizer = localizer;
     }
 
-    /// <summary>The History grid (D-0018): "CO₂ · by hour"; the grid draws its own legend, so the header shows none.</summary>
-    public void UpdateForGrid(Metric metric)
+    /// <summary>The History grid (D-0018): "CO₂ · by hour", or "by day" for the Year grid; the grid draws its own legend, so the header shows none.</summary>
+    public void UpdateForGrid(Metric metric, bool byDay = false)
     {
         Title = localizer.Get($"Metric_{metric}");
-        Subtitle = localizer.Get("History_Chart_ByHour");
+        Subtitle = localizer.Get(byDay ? "History_Chart_ByDay" : "History_Chart_ByHour");
         ShowZoneLegend = false;
         LegendText = string.Empty;
         ShowNoDataLegend = false;
     }
 
-    public void Update(Metric metric, Period range, Period grouping, HoursFilterMode hours, bool hasGaps)
+    /// <summary>The Pressure line for Week, Month and Year: "Pressure · hourly averages", or "daily averages" for Year. Call after <see cref="Update"/>.</summary>
+    public void UpdateForLine(bool byDay)
+    {
+        Subtitle = localizer.Get(byDay ? "History_Chart_MeansByDay" : "History_Chart_MeansByHour");
+        LegendText = string.Empty;
+    }
+
+    public void Update(Metric metric, Period range, Period grouping, bool hasGaps)
     {
         var hourly = range == Period.Day;
         var what = localizer.Get(hourly ? "History_Chart_Hourly" : grouping switch
@@ -60,9 +86,13 @@ public sealed partial class ChartHeaderViewModel : ObservableObject
 
         Title = localizer.Get($"Metric_{metric}");
 
-        // The Day line always shows the last 24 hours (the night filter then belongs to the sleep card), so it never says "nights only".
-        Subtitle = hours == HoursFilterMode.Night && !hourly ? localizer.Format("History_Chart_NightsOnly", ("what", what)) : what;
-        ShowZoneLegend = metric == Metric.Co2;
+        Subtitle = what;
+        ShowDayLegend = hourly && metric != Metric.Pressure;
+        ShowDayCo2Legend = hourly && metric == Metric.Co2;
+        ShowDayTypicalLegend = hourly && metric is Metric.Co2 or Metric.Temperature or Metric.Humidity;
+        ShowComfortLegend = hourly && metric is Metric.Temperature or Metric.Humidity;
+        LegendMetric = metric;
+        ShowZoneLegend = metric == Metric.Co2 && !hourly;
         LegendText = metric == Metric.Co2 ? string.Empty : localizer.Get(hourly ? "History_Legend_Line" : "History_Legend_Bars");
         ShowNoDataLegend = hasGaps;
         TypicalDaySubtitle = localizer.Format("History_TypicalDay_Subtitle", ("period", localizer.Get(range switch

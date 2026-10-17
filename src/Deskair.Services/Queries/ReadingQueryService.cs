@@ -1,4 +1,5 @@
 using Deskair.Domain.Analytics.Aggregation;
+using Deskair.Domain.Analytics.Comfort;
 using Deskair.Domain.Analytics.HourGrid;
 using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Analytics.Sleep;
@@ -36,7 +37,7 @@ public sealed class ReadingQueryService
         this.settings = settings;
     }
 
-    /// <summary>The night hours from Settings → Sleep (22:00 to 07:00 without settings): the Night filter, the sleep card and the night band of the History grid.</summary>
+    /// <summary>The night hours from Settings → Sleep (22:00 to 07:00 without settings): the night band, the Last night section and the Nights of the summary of the History grid.</summary>
     public NightWindow Night => settings?.Current.Night ?? NightWindow.Default;
 
     private static readonly TimeSpan typicalDayBeforeADay = TimeSpan.FromDays(7);
@@ -76,14 +77,12 @@ public sealed class ReadingQueryService
         DateTimeOffset start,
         DateTimeOffset end,
         Period grouping,
-        HoursFilterMode filter,
         CancellationToken cancellationToken)
     {
         var inRange = await readings.ReadRangeAsync(device, start, end, cancellationToken);
-        var filtered = HoursFilterRule.Apply(inRange, filter, calendar, Night);
         var interval = devices.IntervalFor(device, end);
 
-        return BucketAggregator.Group(filtered, metric, start, end, grouping, calendar, interval, filter == HoursFilterMode.Night ? Night : null);
+        return BucketAggregator.Group(inRange, metric, start, end, grouping, calendar, interval);
     }
 
     /// <summary>The History grid for Week and Month (D-0018): one row per local day of the range, 24 hourly means each.</summary>
@@ -94,17 +93,42 @@ public sealed class ReadingQueryService
         return HourGridCalculator.Build(inRange, metric, start, end, calendar);
     }
 
-    /// <summary>How the CO₂ readings in the range spread over the zones, after the hours filter. Null when there are none.</summary>
+    /// <summary>The History grid for Year (D-0018): one row per local month of the range, one daily mean per day.</summary>
+    public async Task<IReadOnlyList<HourGridMonth>> GetMonthGridAsync(DeviceId device, Metric metric, DateTimeOffset start, DateTimeOffset end, CancellationToken cancellationToken)
+    {
+        var inRange = await readings.ReadRangeAsync(device, start, end, cancellationToken);
+
+        return HourGridCalculator.BuildMonths(inRange, metric, start, end, calendar);
+    }
+
+    /// <summary>How the readings of Temperature or Humidity in the range spread below, inside and above the comfortable range. Null for other metrics or without readings.</summary>
+    public async Task<ComfortShare?> GetComfortShareAsync(
+        DeviceId device,
+        Metric metric,
+        DateTimeOffset start,
+        DateTimeOffset end,
+        CancellationToken cancellationToken)
+    {
+        if (ComfortScale.For(metric) is not { } scale)
+        {
+            return null;
+        }
+
+        var inRange = await readings.ReadRangeAsync(device, start, end, cancellationToken);
+
+        return scale.Share(inRange.Select(reading => reading.ValueOf(metric)));
+    }
+
+    /// <summary>How the CO₂ readings in the range spread over the zones. Null when there are none.</summary>
     public async Task<ZoneShare?> GetZoneShareAsync(
         DeviceId device,
         DateTimeOffset start,
         DateTimeOffset end,
-        HoursFilterMode filter,
         CancellationToken cancellationToken)
     {
         var inRange = await readings.ReadRangeAsync(device, start, end, cancellationToken);
 
-        return ZoneShareCalculator.Calculate(HoursFilterRule.Apply(inRange, filter, calendar, Night));
+        return ZoneShareCalculator.Calculate(inRange);
     }
 
     /// <summary>
@@ -133,21 +157,38 @@ public sealed class ReadingQueryService
         return SleepCalculator.Summarise(inNight, metric, start, end, devices.IntervalFor(device, end), calendar, ZoneThresholds.Default);
     }
 
+    /// <summary>The nights that start inside the period, for the Nights section of the summary (Week, Month, Year). Null when there is no night window or no night counts.</summary>
+    public async Task<NightsSummary?> GetNightsAsync(DeviceId device, Metric metric, DateTimeOffset start, DateTimeOffset end, CancellationToken cancellationToken)
+    {
+        var night = Night;
+
+        if (night.IsEmpty)
+        {
+            return null;
+        }
+
+        // The last night of the period ends on the next morning.
+        var inNights = await readings.ReadRangeAsync(device, start, end + TimeSpan.FromDays(1), cancellationToken);
+
+        return NightsCalculator.Summarise(inNights, metric, start, end, devices.IntervalFor(device, end), night, calendar, ZoneThresholds.Default);
+    }
+
     /// <summary>
     /// The mean per hour of day (behaviour-rules.md "Aggregation" rule 7): over the shown period, except Day, which uses the 7 days before the shown day,
-    /// so a day is compared with the days before it and an earlier period with its own data.
+    /// so a day is compared with the days before it and an earlier period with its own data. CO₂ unless another metric is given.
     /// </summary>
     public async Task<IReadOnlyList<HourOfDayAverage>> GetTypicalDayAsync(
         DeviceId device,
         Period period,
         DateTimeOffset rangeStart,
         DateTimeOffset rangeEnd,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Metric metric = Metric.Co2)
     {
         var (start, end) = period == Period.Day ? (rangeStart - typicalDayBeforeADay, rangeStart) : (rangeStart, rangeEnd);
 
         var inRange = await readings.ReadRangeAsync(device, start, end, cancellationToken);
 
-        return TypicalDayCalculator.HourlyAverages(inRange, calendar);
+        return TypicalDayCalculator.HourlyAverages(inRange, calendar, metric);
     }
 }

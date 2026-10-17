@@ -18,6 +18,7 @@ public sealed class FlyoutViewModelTests : IDisposable
     private readonly FlyoutViewModel viewModel;
     private readonly FakeWindowController windows = new();
     private readonly FakeClock clock = new(now);
+    private readonly FakeBluetoothRadio radio = new();
     private readonly AlertEngine engine;
     private readonly SnoozeService snooze;
 
@@ -26,7 +27,7 @@ public sealed class FlyoutViewModelTests : IDisposable
         var localizer = new FakeLocalizer();
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         (engine, snooze) = TestSnooze.Create(clock, new StrongReferenceMessenger());
-        viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), calendar, windows, snooze, new FriendlyTime(localizer, calendar, clock));
+        viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), calendar, windows, snooze, new FriendlyTime(localizer, calendar, clock), radio);
     }
 
     public void Dispose()
@@ -80,6 +81,26 @@ public sealed class FlyoutViewModelTests : IDisposable
         Assert.Equal(hero.AdviceTitle, viewModel.AdviceTitle);
         Assert.Equal(hero.AdviceText, viewModel.AdviceText);
         Assert.Equal(hero.Zone, viewModel.Zone);
+    }
+
+    [Fact]
+    public void Not_connected_offers_to_wake_the_sensor_while_bluetooth_is_on()
+    {
+        viewModel.Update(null, [], now, "Office");
+
+        Assert.Equal("Offline_Text", viewModel.ReasonText);
+        Assert.Equal("Offline_Step_Wake", viewModel.StepText);
+    }
+
+    [Fact]
+    public void Not_connected_offers_to_turn_on_bluetooth_while_the_radio_is_off()
+    {
+        radio.IsOn = false;
+
+        viewModel.Update(null, [], now, "Office");
+
+        Assert.Equal("Offline_Text_BluetoothOff", viewModel.ReasonText);
+        Assert.Equal("Offline_Bluetooth", viewModel.StepText);
     }
 
     [Fact]
@@ -141,12 +162,12 @@ public sealed class FlyoutViewModelTests : IDisposable
         viewModel.Update(reading, [reading], now, "Office");
 
         Assert.Equal(
-            [("Metric_Temperature", "22.3 °C"), ("Metric_Humidity", "44 %"), ("Metric_Pressure", "975.3 hPa")],
-            viewModel.OtherReadings.Select(item => (item.Label, item.Value)));
+            [("Metric_Temperature", "22.3", "°C"), ("Metric_Humidity", "44", "%"), ("Metric_Pressure", "975.3", "hPa")],
+            viewModel.OtherReadings.Select(item => (item.Label, item.Value, item.Unit)));
     }
 
     [Fact]
-    public void The_ribbon_covers_the_last_24_hours_with_five_hour_labels()
+    public void The_ribbon_covers_the_last_24_hours_with_labels_at_round_hours()
     {
         var recent = History(700, 700);
 
@@ -154,7 +175,9 @@ public sealed class FlyoutViewModelTests : IDisposable
 
         Assert.Equal(now, viewModel.RibbonEnd);
         Assert.NotEmpty(viewModel.RibbonSegments);
-        Assert.Equal(["12:00", "18:00", "00:00", "06:00", "Chart_Now"], viewModel.RibbonLabels);
+        Assert.Equal(
+            [("18:00", 0.25), ("00:00", 0.5), ("06:00", 0.75), ("Chart_Now", 1.0)],
+            viewModel.RibbonLabels.Select(label => (label.Text, label.Position)));
     }
 
     [Fact]
@@ -210,6 +233,45 @@ public sealed class FlyoutViewModelTests : IDisposable
         Assert.Null(viewModel.UpdatedText);
         Assert.Null(viewModel.ZoneText);
         Assert.Null(viewModel.TrendText);
+    }
+
+    [Fact]
+    public void Not_connected_keeps_the_last_reading_of_the_day_and_when_it_was_seen()
+    {
+        var recent = History(1300, 1050);
+
+        viewModel.Update(null, recent, now.AddMinutes(25), "Office");
+
+        Assert.True(viewModel.ShowNotConnected);
+        Assert.True(viewModel.ShowLastReading);
+        Assert.Equal("1050", viewModel.LastValueText);
+        Assert.Equal("Flyout_LastReadingAt(unit=ppm, time=12:00)", viewModel.LastDetailText);
+        Assert.Equal("Flyout_LastSeen(ago=Duration_Minutes(min=25))", viewModel.UpdatedText);
+        Assert.Empty(viewModel.OtherReadings);
+        Assert.Empty(viewModel.RibbonLabels);
+    }
+
+    [Fact]
+    public void Not_connected_without_any_reading_shows_no_last_reading()
+    {
+        viewModel.Update(null, [], now, "Office");
+
+        Assert.False(viewModel.ShowLastReading);
+        Assert.Null(viewModel.LastValueText);
+        Assert.Null(viewModel.LastDetailText);
+        Assert.Null(viewModel.UpdatedText);
+    }
+
+    [Fact]
+    public void A_connected_flyout_has_no_last_reading_text()
+    {
+        viewModel.Update(null, History(1300, 1050), now, "Office");
+        var recent = History(700, 700);
+
+        viewModel.Update(recent[^1], recent, now, "Office");
+
+        Assert.False(viewModel.ShowLastReading);
+        Assert.Null(viewModel.LastValueText);
     }
 
     [Fact]

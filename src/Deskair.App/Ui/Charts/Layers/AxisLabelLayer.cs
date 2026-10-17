@@ -37,6 +37,9 @@ public sealed class AxisLabelLayer : IChartLayer
     /// <summary>False leaves out the time labels (the labels under day bars are drawn by <see cref="BarLabelLayer"/>); the y labels stay.</summary>
     public bool TimeLabels { get; set; } = true;
 
+    /// <summary>Y labels drawn bold in another brush, by value: the CO₂ limits in the colour of their zone. The key is a resource key of a solid brush.</summary>
+    public IReadOnlyDictionary<double, string>? TickBrushKeys { get; set; }
+
     public void Draw(DrawingContext context, ChartArea area)
     {
         var culture = Culture ?? CultureInfo.CurrentUICulture;
@@ -56,7 +59,9 @@ public sealed class AxisLabelLayer : IChartLayer
 
         foreach (var tick in ticks.Where(tick => tick >= area.YMin && tick <= area.YMax))
         {
-            var text = area.Text(tick.ToString(YFormat, culture), brush);
+            var text = TickBrushKeys is not null && TickBrushKeys.TryGetValue(tick, out var key)
+                ? area.Text(tick.ToString(YFormat, culture), area.Brush(key), bold: true)
+                : area.Text(tick.ToString(YFormat, culture), brush);
             var bounds = new Rect(area.Plot.Left - LabelGap - text.Width, area.Y(tick) - (text.Height / 2), text.Width, text.Height);
 
             if (drawn.Any(other => other.IntersectsWith(bounds)))

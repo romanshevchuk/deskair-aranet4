@@ -59,6 +59,11 @@ public sealed class ZoneRibbon : ChartBase
         set => SetValue(CaptionProperty, value);
     }
 
+    /// <summary>The space between segments; 0 draws them flush in one rounded track. See <see cref="RibbonLayer.SegmentGap"/>.</summary>
+    public double SegmentGap { get; set; }
+
+    public double SegmentRadius { get; set; }
+
     public TimeZoneInfo TimeZone { get; set; } = TimeZoneInfo.Local;
 
     private bool Labelled => !string.IsNullOrEmpty(Caption);
@@ -86,5 +91,6 @@ public sealed class ZoneRibbon : ChartBase
     }
 
     protected override IReadOnlyList<IChartLayer> CreateLayers()
-        => Labelled ? [new RibbonLayer { Segments = Segments }, new RibbonLabelLayer { Caption = Caption, TimeZone = TimeZone }] : [new RibbonLayer { Segments = Segments }];
+        => Labelled ? [new RibbonLayer { Segments = Segments }, new RibbonLabelLayer { Caption = Caption, TimeZone = TimeZone }]
+        : [new RibbonLayer { Segments = Segments, SegmentGap = SegmentGap, SegmentRadius = SegmentRadius }];
 }

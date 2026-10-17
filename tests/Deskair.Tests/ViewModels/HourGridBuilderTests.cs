@@ -1,5 +1,6 @@
 using Deskair.App.ViewModels.ChartModels;
 using Deskair.App.ViewModels.History;
+using Deskair.Domain.Analytics.Comfort;
 using Deskair.Domain.Analytics.HourGrid;
 using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Analytics.TypicalDay;
@@ -80,5 +81,87 @@ public class HourGridBuilderTests
         Assert.Equal("History_Grid_Worst(from=16:00, to=19:00)", model.WorstText);
         Assert.Equal("History_Grid_Typical", model.Typical!.Label);
         Assert.Equal((22, 7), model.Night);
+    }
+
+    private HourGridModel BuildTemperature(IReadOnlyList<HourOfDayAverage> typical, params HourGridDay[] days)
+        => builder.Build(days, typical, Metric.Temperature, Period.Week, NightWindow.Default, today);
+
+    private static HourGridDay ComfortDay(int date, double inside)
+        => new(new DateOnly(2026, 10, date), Enumerable.Repeat((double?)21, 24).ToArray(), 24, 21, null) { Comfort = new ComfortShare(1 - inside, inside, 0) };
+
+    [Fact]
+    public void Temperature_uses_its_comfort_palette_steps_and_legend_groups()
+    {
+        var model = BuildTemperature([], ComfortDay(8, 1));
+
+        Assert.Equal(HourGridPalette.Temperature, model.Palette);
+        Assert.Equal([18.0, 20, 24, 26], model.Steps.Select(step => step.Value));
+        Assert.Equal([("Comfort_Cool", 0, 2), ("Comfort_Comfortable", 2, 1), ("Comfort_Warm", 3, 2)], model.LegendGroups);
+    }
+
+    [Fact]
+    public void Humidity_uses_its_own_palette_and_legend_groups()
+    {
+        var model = builder.Build([ComfortDay(8, 1)], [], Metric.Humidity, Period.Week, NightWindow.Default, today);
+
+        Assert.Equal(HourGridPalette.Humidity, model.Palette);
+        Assert.Equal([25.0, 30, 50, 60], model.Steps.Select(step => step.Value));
+        Assert.Equal("Comfort_Dry", model.LegendGroups[0].Name);
+        Assert.Equal("Comfort_Humid", model.LegendGroups[2].Name);
+    }
+
+    [Fact]
+    public void Co2_keeps_the_zone_palette_and_legend()
+    {
+        var model = Build(Day(8, 900));
+
+        Assert.Equal(HourGridPalette.Zones, model.Palette);
+        Assert.Equal(5, model.Steps.Count);
+        Assert.Equal([("Zone_Good", 0, 2), ("Zone_Elevated", 2, 2), ("Zone_High", 4, 2)], model.LegendGroups);
+    }
+
+    [Fact]
+    public void A_comfort_row_carries_its_share_and_best_and_worst_follow_the_time_inside_the_range()
+    {
+        var model = BuildTemperature([], ComfortDay(8, 1), ComfortDay(9, 0.5), ComfortDay(10, 0.8));
+
+        Assert.All(model.Rows, row => Assert.NotNull(row.Comfort));
+        Assert.Equal(HourGridTag.Best, model.Rows[0].Tag);
+        Assert.Equal(HourGridTag.Worst, model.Rows[1].Tag);
+        Assert.Equal(HourGridTag.None, model.Rows[2].Tag);
+    }
+
+    [Fact]
+    public void The_typical_row_outlines_the_coolest_three_hours_and_names_them()
+    {
+        var typical = Enumerable.Range(0, 24).Select(hour => new HourOfDayAverage(hour, hour is >= 3 and <= 5 ? 17 : 21, 1)).ToList();
+
+        var model = BuildTemperature(typical, ComfortDay(8, 1));
+
+        Assert.Equal(3, model.WorstStart);
+        Assert.Equal("History_Grid_Coolest(from=03:00, to=06:00)", model.WorstText);
+    }
+
+    [Fact]
+    public void A_warm_afternoon_is_named_warmest_and_a_dry_night_driest()
+    {
+        var warm = Enumerable.Range(0, 24).Select(hour => new HourOfDayAverage(hour, hour is >= 14 and <= 16 ? 27 : 22, 1)).ToList();
+        var dry = Enumerable.Range(0, 24).Select(hour => new HourOfDayAverage(hour, hour is >= 1 and <= 3 ? 20 : 40, 1)).ToList();
+
+        Assert.Equal("History_Grid_Warmest(from=14:00, to=17:00)", BuildTemperature(warm, ComfortDay(8, 1)).WorstText);
+        Assert.Equal(
+            "History_Grid_Driest(from=01:00, to=04:00)",
+            builder.Build([ComfortDay(8, 1)], dry, Metric.Humidity, Period.Week, NightWindow.Default, today).WorstText);
+    }
+
+    [Fact]
+    public void A_comfortable_typical_day_outlines_nothing()
+    {
+        var typical = Enumerable.Range(0, 24).Select(hour => new HourOfDayAverage(hour, 22, 1)).ToList();
+
+        var model = BuildTemperature(typical, ComfortDay(8, 1));
+
+        Assert.Null(model.WorstStart);
+        Assert.Null(model.WorstText);
     }
 }

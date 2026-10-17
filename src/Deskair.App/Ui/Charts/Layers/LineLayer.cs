@@ -18,6 +18,9 @@ public sealed class LineLayer : IChartLayer
 
     public bool ShowEndMarker { get; set; }
 
+    /// <summary>The opacity of the line, 0 to 1 (a quiet reference line such as the typical day).</summary>
+    public double Opacity { get; set; } = 1;
+
     /// <summary>Draws the line as a monotone curve through the readings; off keeps straight segments.</summary>
     public bool Smooth { get; set; }
 
@@ -31,7 +34,9 @@ public sealed class LineLayer : IChartLayer
         var brush = area.Brush(BrushKey);
 
         context.PushClip(new RectangleGeometry(new Rect(area.Plot.Left - Thickness, area.Plot.Top - Thickness, area.Plot.Width + (2 * Thickness), area.Plot.Height + (2 * Thickness))));
+        context.PushOpacity(Opacity);
         context.DrawGeometry(null, ChartLines.RoundPen(brush, Thickness), ChartLines.Build(points, area, Smooth));
+        context.Pop();
         context.Pop();
 
         if (ShowEndMarker && ChartLines.LastValue(points) is { Value: { } value } last)

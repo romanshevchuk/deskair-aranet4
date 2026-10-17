@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Domain.Analytics.Aggregation;
-using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
@@ -51,7 +50,7 @@ public class ReadingQueryServiceTests
         var queries = await ServiceForFiveMinuteSensorAsync();
 
         var buckets = await queries.GetBucketsAsync(
-            device, Metric.Co2, firstDay, firstDay.AddDays(2), Period.Day, HoursFilterMode.AllDay, CancellationToken.None);
+            device, Metric.Co2, firstDay, firstDay.AddDays(2), Period.Day, CancellationToken.None);
 
         Assert.Equal(2, buckets.Count);
         Assert.Equal(288, buckets[0].ExpectedCount);
@@ -61,28 +60,13 @@ public class ReadingQueryServiceTests
     }
 
     [Fact]
-    public async Task Buckets_apply_the_hours_filter_before_grouping()
-    {
-        var day = Samples.Utc(2026, 10, 8);
-        store.Readings.AddRange([Samples.Co2(day.AddHours(12), 500), Samples.Co2(day.AddHours(23), 1200)]);
-        var queries = await ServiceForFiveMinuteSensorAsync();
-
-        var buckets = await queries.GetBucketsAsync(
-            device, Metric.Co2, day, day.AddDays(1), Period.Day, HoursFilterMode.Night, CancellationToken.None);
-
-        var bucket = Assert.Single(buckets);
-        Assert.Equal(1, bucket.ReadingCount);
-        Assert.Equal(1200, bucket.Average);
-    }
-
-    [Fact]
     public async Task Buckets_without_data_are_all_NoData()
     {
         var day = Samples.Utc(2026, 10, 6);
         var queries = await ServiceForFiveMinuteSensorAsync();
 
         var buckets = await queries.GetBucketsAsync(
-            device, Metric.Co2, day, day.AddDays(3), Period.Day, HoursFilterMode.AllDay, CancellationToken.None);
+            device, Metric.Co2, day, day.AddDays(3), Period.Day, CancellationToken.None);
 
         Assert.Equal(3, buckets.Count);
         Assert.All(buckets, bucket => Assert.Equal(BucketState.NoData, bucket.State));
@@ -187,28 +171,15 @@ public class ReadingQueryServiceTests
             Samples.Co2(now.AddDays(-9), 500)
         ]);
 
-        var share = await service.GetZoneShareAsync(device, now.AddDays(-1), now, HoursFilterMode.AllDay, CancellationToken.None);
+        var share = await service.GetZoneShareAsync(device, now.AddDays(-1), now, CancellationToken.None);
 
         Assert.Equal((1.0 / 3, 1.0 / 3, 1.0 / 3), (share!.Good, share.Elevated, share.High));
     }
 
     [Fact]
-    public async Task Zone_share_follows_the_hours_filter()
-    {
-        store.Readings.AddRange([
-            Samples.Co2(Samples.Utc(2026, 10, 8, 23), 1500),
-            Samples.Co2(Samples.Utc(2026, 10, 8, 12), 500)
-        ]);
-
-        var share = await service.GetZoneShareAsync(device, now.AddDays(-2), now, HoursFilterMode.Night, CancellationToken.None);
-
-        Assert.Equal(1, share!.High);
-    }
-
-    [Fact]
     public async Task Zone_share_is_null_without_readings()
     {
-        Assert.Null(await service.GetZoneShareAsync(device, now.AddDays(-1), now, HoursFilterMode.AllDay, CancellationToken.None));
+        Assert.Null(await service.GetZoneShareAsync(device, now.AddDays(-1), now, CancellationToken.None));
     }
 
     [Fact]
@@ -237,46 +208,7 @@ public class ReadingQueryServiceTests
         return new ReadingQueryService(store, registry, new FakeClock(now), new LocalCalendar(TimeZoneInfo.Utc), settings);
     }
 
-    [Fact]
-    public async Task The_night_filter_uses_the_hours_the_user_chose()
-    {
-        var day = Samples.Utc(2026, 10, 8);
-        store.Readings.AddRange([Samples.Co2(day.AddHours(12), 500), Samples.Co2(day.AddHours(23), 1200), Samples.Co2(day.AddHours(5), 900)]);
-        var queries = await ServiceWithNightAsync(new TimeOnly(0, 0), new TimeOnly(10, 0));
 
-        var buckets = await queries.GetBucketsAsync(device, Metric.Co2, day, day.AddDays(1), Period.Day, HoursFilterMode.Night, CancellationToken.None);
-
-        Assert.Equal(900, Assert.Single(buckets).Average);
-    }
-
-
-    [Fact]
-    public async Task With_the_night_filter_a_day_expects_readings_for_the_night_hours_only()
-    {
-        // The sensor reads every 5 minutes: the 9 night hours are 108 readings, not the 288 of a whole day.
-        var day = Samples.Utc(2026, 10, 8);
-        store.Readings.AddRange(Enumerable.Range(0, 84).Select(slot => Samples.Co2(day.AddMinutes(slot * 5), 700)));
-        store.Readings.AddRange(Enumerable.Range(0, 24).Select(slot => Samples.Co2(day.AddHours(22).AddMinutes(slot * 5), 700)));
-        var queries = await ServiceForFiveMinuteSensorAsync();
-
-        var bucket = Assert.Single(await queries.GetBucketsAsync(device, Metric.Co2, day, day.AddDays(1), Period.Day, HoursFilterMode.Night, CancellationToken.None));
-
-        Assert.Equal(108, bucket.ExpectedCount);
-        Assert.Equal(108, bucket.ReadingCount);
-        Assert.Equal(BucketState.Complete, bucket.State);
-    }
-
-    [Fact]
-    public async Task The_night_filter_expects_readings_for_the_hours_the_user_chose()
-    {
-        var day = Samples.Utc(2026, 10, 8);
-        var queries = await ServiceWithNightAsync(new TimeOnly(0, 0), new TimeOnly(10, 0));
-
-        var bucket = Assert.Single(await queries.GetBucketsAsync(device, Metric.Co2, day, day.AddDays(1), Period.Day, HoursFilterMode.Night, CancellationToken.None));
-
-        // The sensor of that helper reads every 30 minutes: ten hours are 20 readings.
-        Assert.Equal(20, bucket.ExpectedCount);
-    }
     [Fact]
     public async Task Last_night_is_the_night_that_ended_this_morning_in_the_default_hours()
     {
@@ -323,5 +255,37 @@ public class ReadingQueryServiceTests
         var queries = await ServiceWithNightAsync(new TimeOnly(7, 0), new TimeOnly(7, 0));
 
         Assert.Null(await queries.GetLastNightAsync(device, Metric.Co2, CancellationToken.None));
+    }
+
+    private static IEnumerable<Reading> NightOfReadings(DateTimeOffset eveningStart, double ppm)
+        => Enumerable.Range(0, 18).Select(slot => Samples.Co2(eveningStart.AddMinutes(slot * 30), ppm));
+
+    [Fact]
+    public async Task Nights_count_the_nights_that_start_in_the_period_and_give_the_best_and_worst()
+    {
+        // Two nights of 9 hours at 30-minute intervals. The 12:00 reading is outside every night and must not count.
+        store.Readings.AddRange(NightOfReadings(Samples.Utc(2026, 10, 7, 22), 800));
+        store.Readings.AddRange(NightOfReadings(Samples.Utc(2026, 10, 8, 22), 1200));
+        store.Readings.Add(Samples.Co2(Samples.Utc(2026, 10, 8, 12), 2000));
+        var queries = await ServiceWithNightAsync(new TimeOnly(22, 0), new TimeOnly(7, 0));
+
+        var nights = await queries.GetNightsAsync(
+            device, Metric.Co2, Samples.Utc(2026, 10, 7), Samples.Utc(2026, 10, 9), CancellationToken.None);
+
+        Assert.NotNull(nights);
+        Assert.Equal(2, nights.Count);
+        Assert.Equal(1000, nights.Average);
+        Assert.Equal(Samples.Utc(2026, 10, 7, 22), nights.Lowest!.Start);
+        Assert.Equal(Samples.Utc(2026, 10, 8, 22), nights.Highest!.Start);
+    }
+
+    [Fact]
+    public async Task An_empty_night_window_has_no_nights()
+    {
+        store.Readings.AddRange(NightOfReadings(Samples.Utc(2026, 10, 7, 22), 800));
+        var queries = await ServiceWithNightAsync(new TimeOnly(7, 0), new TimeOnly(7, 0));
+
+        Assert.Null(await queries.GetNightsAsync(
+            device, Metric.Co2, Samples.Utc(2026, 10, 7), Samples.Utc(2026, 10, 9), CancellationToken.None));
     }
 }

@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.Messaging;
+using Deskair.App.ViewModels.ChartModels;
 using Deskair.App.ViewModels.History;
 using Deskair.Domain.Analytics.Aggregation;
-using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
@@ -44,7 +44,7 @@ public class HistoryViewModelTests
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(readingStore ?? store, registry, clock, calendar);
 
-        return new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), NullLogger<HistoryViewModel>.Instance);
+        return new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), NullLogger<HistoryViewModel>.Instance);
     }
 
     private async Task SelectDeviceAsync()
@@ -95,16 +95,184 @@ public class HistoryViewModelTests
     }
 
     [Fact]
-    public async Task Month_uses_the_selected_grouping()
+    public async Task Year_for_co2_is_a_grid_of_months_and_days_named_by_day()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 5), 800);
+        var viewModel = Create();
+        toolbar.Range = Period.Year;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(viewModel.Grid);
+        Assert.Equal(31, viewModel.Grid.Columns);
+        Assert.Null(viewModel.Grid.Typical);
+        Assert.True(viewModel.ShowGrid);
+        Assert.StartsWith("History_Grid_NameDay(", viewModel.GridName, StringComparison.Ordinal);
+        Assert.Equal("Oct 2026", viewModel.Grid.Rows[^1].Label);
+        Assert.Equal(800, viewModel.Grid.Rows[^1].Cells[4]!.Value);
+    }
+
+    [Fact]
+    public async Task Day_for_co2_adds_the_night_band_the_typical_line_and_the_air_improved_markers()
+    {
+        await SelectDeviceAsync();
+        AddDay(now.AddHours(-30), 700);
+        store.Readings.Add(Samples.Co2(now.AddHours(-3), 1500));
+        store.Readings.Add(Samples.Co2(now.AddHours(-3).AddMinutes(2), 1380));
+        store.Readings.Add(Samples.Co2(now.AddHours(-3).AddMinutes(4), 1200));
+        store.Readings.Add(Samples.Co2(now.AddHours(-3).AddMinutes(6), 1190));
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.NotEmpty(viewModel.NightSpans!);
+        Assert.NotEmpty(viewModel.TypicalPoints!);
+        var marker = Assert.Single(viewModel.Markers!);
+        Assert.Equal(now.AddHours(-3), marker.Time);
+        Assert.Null(viewModel.Bars);
+    }
+
+    [Fact]
+    public async Task Day_for_humidity_has_the_night_band_the_typical_line_and_the_comfort_band_but_no_markers()
+    {
+        await SelectDeviceAsync();
+        AddDay(now.AddHours(-30), 700);
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+        toolbar.Metric = Metric.Humidity;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.NotEmpty(viewModel.NightSpans!);
+        Assert.NotEmpty(viewModel.TypicalPoints!);
+        Assert.Equal(45, viewModel.TypicalPoints![0].Value);
+        Assert.NotNull(viewModel.ComfortBand);
+        Assert.Equal((30, 50), (viewModel.ComfortBand.Low, viewModel.ComfortBand.High));
+        Assert.Null(viewModel.Markers);
+    }
+
+    [Fact]
+    public async Task Day_for_pressure_has_no_night_band_typical_line_comfort_band_or_markers()
+    {
+        await SelectDeviceAsync();
+        AddDay(now.AddHours(-30), 700);
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+        toolbar.Metric = Metric.Pressure;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.Null(viewModel.NightSpans);
+        Assert.Null(viewModel.TypicalPoints);
+        Assert.Null(viewModel.ComfortBand);
+        Assert.Null(viewModel.Markers);
+    }
+
+    [Theory]
+    [InlineData(Metric.Temperature)]
+    [InlineData(Metric.Humidity)]
+    [InlineData(Metric.Pressure)]
+    public async Task The_typical_day_card_is_only_for_co2(Metric metric)
+    {
+        await SelectDeviceAsync();
+        AddDay(now.AddHours(-30), 700);
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+        toolbar.Metric = metric;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.False(viewModel.ShowTypicalDay);
+    }
+
+    [Fact]
+    public async Task The_typical_day_card_is_shown_for_co2_on_day()
+    {
+        await SelectDeviceAsync();
+        AddDay(now.AddHours(-30), 700);
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.True(viewModel.ShowTypicalDay);
+    }
+
+    [Fact]
+    public async Task Week_has_no_day_chart_extras()
+    {
+        await SelectDeviceAsync();
+        AddDay(now.AddHours(-30), 700);
+        var viewModel = Create();
+        toolbar.Range = Period.Week;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.Null(viewModel.NightSpans);
+        Assert.Null(viewModel.TypicalPoints);
+        Assert.Null(viewModel.Markers);
+    }
+
+    [Theory]
+    [InlineData(Period.Week, Metric.Humidity)]
+    [InlineData(Period.Month, Metric.Humidity)]
+    [InlineData(Period.Month, Metric.Temperature)]
+    public async Task The_grid_header_names_the_hour_and_has_no_bar_legend(Period range, Metric metric)
+    {
+        await SelectDeviceAsync();
+        AddDay(now.AddHours(-30), 700);
+        var viewModel = Create();
+        toolbar.Range = range;
+        toolbar.Metric = metric;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(viewModel.Grid);
+        Assert.Equal("History_Chart_ByHour", viewModel.ChartHeader.Subtitle);
+        Assert.Equal(string.Empty, viewModel.ChartHeader.LegendText);
+    }
+
+    [Fact]
+    public async Task Year_for_pressure_keeps_the_bars()
+    {
+        await SelectDeviceAsync();
+        var viewModel = Create();
+        toolbar.Range = Period.Year;
+        toolbar.Metric = Metric.Pressure;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.Null(viewModel.Grid);
+    }
+
+    [Theory]
+    [InlineData(Metric.Temperature, HourGridPalette.Temperature)]
+    [InlineData(Metric.Humidity, HourGridPalette.Humidity)]
+    public async Task Year_for_temperature_and_humidity_is_a_grid_in_the_comfort_palette(Metric metric, HourGridPalette palette)
+    {
+        await SelectDeviceAsync();
+        var viewModel = Create();
+        toolbar.Range = Period.Year;
+        toolbar.Metric = metric;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(viewModel.Grid);
+        Assert.Equal(palette, viewModel.Grid.Palette);
+    }
+
+    [Fact]
+    public async Task Month_is_grouped_by_day()
     {
         await SelectDeviceAsync();
         var viewModel = Create();
         toolbar.Range = Period.Month;
-        toolbar.Grouping = Period.Week;
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
-        Assert.Equal(5, viewModel.Bars!.Count);
+        Assert.Equal(30, viewModel.Bars!.Count);
     }
 
     [Fact]
@@ -218,19 +386,15 @@ public class HistoryViewModelTests
     }
 
     [Fact]
-    public async Task A_month_by_day_has_four_weekends_and_by_week_none()
+    public async Task A_month_has_four_weekends()
     {
         await SelectDeviceAsync();
         var viewModel = Create();
         toolbar.Range = Period.Month;
-        toolbar.Grouping = Period.Day;
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
         Assert.Equal(4, viewModel.WeekendSpans!.Count);
-
-        toolbar.Grouping = Period.Week;
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-        Assert.Null(viewModel.WeekendSpans);
     }
 
     [Fact]
@@ -286,9 +450,8 @@ public class HistoryViewModelTests
         await Wait.Until(() => viewModel.Bars is { Count: 7 });
 
         toolbar.Range = Period.Month;
-        toolbar.Grouping = Period.Week;
 
-        await Wait.Until(() => viewModel.Bars is { Count: 5 });
+        await Wait.Until(() => viewModel.Bars is { Count: 30 });
     }
 
     [Theory]
@@ -345,7 +508,7 @@ public class HistoryViewModelTests
     }
 
     [Fact]
-    public async Task Zone_share_is_loaded_for_CO2_and_left_out_for_other_metrics()
+    public async Task The_share_is_zones_for_CO2_the_comfort_range_for_temperature_and_left_out_for_pressure()
     {
         await SelectDeviceAsync();
         AddDay(Samples.Utc(2026, 10, 10), 800);
@@ -357,6 +520,12 @@ public class HistoryViewModelTests
         Assert.Equal(1, stats.ZoneGood);
 
         toolbar.Metric = Metric.Temperature;
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+        Assert.True(stats.HasZoneShare);
+        Assert.Equal(HourGridPalette.Temperature, stats.SharePalette);
+        Assert.Equal(1, stats.ZoneElevated);
+
+        toolbar.Metric = Metric.Pressure;
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
         Assert.False(stats.HasZoneShare);
     }
@@ -403,13 +572,12 @@ public class HistoryViewModelTests
 
 
     [Fact]
-    public async Task Day_with_the_night_filter_shows_the_sleep_card_for_last_night()
+    public async Task Day_shows_last_night_in_the_summary()
     {
         await SelectDeviceAsync();
         AddDay(Samples.Utc(2026, 10, 11, 22), 700, hours: 9);
         var viewModel = Create();
         toolbar.Range = Period.Day;
-        toolbar.Hours = HoursFilterMode.Night;
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
@@ -426,7 +594,6 @@ public class HistoryViewModelTests
         AddDay(Samples.Utc(2026, 10, 10), 700, hours: 8);
         var viewModel = Create();
         toolbar.Range = Period.Day;
-        toolbar.Hours = HoursFilterMode.Night;
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
@@ -436,16 +603,31 @@ public class HistoryViewModelTests
     }
 
     [Theory]
-    [InlineData(Period.Day, HoursFilterMode.AllDay)]
-    [InlineData(Period.Week, HoursFilterMode.Night)]
-    [InlineData(Period.Month, HoursFilterMode.Night)]
-    public async Task The_sleep_card_is_only_for_the_day_with_the_night_filter(Period range, HoursFilterMode hours)
+    [InlineData(Period.Week)]
+    [InlineData(Period.Month)]
+    [InlineData(Period.Year)]
+    public async Task The_last_night_section_is_only_for_the_day(Period range)
     {
         await SelectDeviceAsync();
         AddDay(Samples.Utc(2026, 10, 11, 22), 700, hours: 9);
         var viewModel = Create();
         toolbar.Range = range;
-        toolbar.Hours = hours;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.False(viewModel.ShowSleep);
+        Assert.False(sleep.HasData);
+    }
+
+
+    [Fact]
+    public async Task Pressure_has_no_last_night_section_on_day()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 11, 22), 700, hours: 9);
+        var viewModel = Create();
+        toolbar.Range = Period.Day;
+        toolbar.Metric = Metric.Pressure;
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
@@ -454,21 +636,19 @@ public class HistoryViewModelTests
     }
 
     [Fact]
-    public async Task Leaving_the_night_filter_takes_the_card_away_again()
+    public async Task Co2_keeps_the_last_night_section_on_day()
     {
         await SelectDeviceAsync();
         AddDay(Samples.Utc(2026, 10, 11, 22), 700, hours: 9);
         var viewModel = Create();
         toolbar.Range = Period.Day;
-        toolbar.Hours = HoursFilterMode.Night;
+        toolbar.Metric = Metric.Co2;
+
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
-        toolbar.Hours = HoursFilterMode.AllDay;
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        Assert.False(viewModel.ShowSleep);
+        Assert.True(viewModel.ShowSleep);
+        Assert.True(sleep.HasData);
     }
-
 
     [Fact]
     public async Task With_no_night_hours_to_show_the_typical_day_stays()
@@ -480,9 +660,8 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(store, registry, clock, calendar, settings);
-        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), NullLogger<HistoryViewModel>.Instance);
+        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), NullLogger<HistoryViewModel>.Instance);
         toolbar.Range = Period.Day;
-        toolbar.Hours = HoursFilterMode.Night;
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
@@ -516,7 +695,6 @@ public class HistoryViewModelTests
     {
         var viewModel = Create();
         toolbar.Range = Period.Day;
-        toolbar.Hours = HoursFilterMode.Night;
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
@@ -530,7 +708,7 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(new ThrowingReadingStore(), registry, clock, calendar);
-        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), logger);
+        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), logger);
 
         viewModel.Refresh();
 

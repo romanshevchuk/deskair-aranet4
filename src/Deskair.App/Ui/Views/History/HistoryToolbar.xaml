@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
-             xmlns:analytics="clr-namespace:Deskair.Domain.Analytics.HoursFilter;assembly=Deskair.Domain"
-             xmlns:metrics="clr-namespace:Deskair.Domain.Metrics;assembly=Deskair.Domain"
+              xmlns:metrics="clr-namespace:Deskair.Domain.Metrics;assembly=Deskair.Domain"
              xmlns:time="clr-namespace:Deskair.Domain.Time;assembly=Deskair.Domain">
   <!-- DataContext: HistoryToolbarViewModel. Metric on the left; the period (‹ title ›), hours, range and Export on the right. There is no Group by (D-0019): Month shows days and Year weeks.
        Export saves every stored reading of the room as CSV (ExportCommand comes from the screen). -->
@@ -68,18 +67,6 @@
                              ToolTip="{loc:T History_Period_Next}" />
       </StackPanel>
 
-      <controls:SegmentedControl AutomationProperties.Name="{loc:T Toolbar_Hours}"
-                                 SelectedValue="{Binding Hours, Mode=TwoWay}"
-                                 SelectedValuePath="Tag">
-        <ListBoxItem Content="{loc:T Hours_AllDay}" Tag="{x:Static analytics:HoursFilterMode.AllDay}" />
-        <ListBoxItem Tag="{x:Static analytics:HoursFilterMode.Night}" ToolTip="{loc:T Hours_NightHint}">
-          <StackPanel Orientation="Horizontal">
-            <TextBlock Margin="0,0,6,0" VerticalAlignment="Center" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Text="&#xE708;" />
-            <TextBlock Text="{loc:T Hours_Night}" />
-          </StackPanel>
-        </ListBoxItem>
-      </controls:SegmentedControl>
-
       <controls:SegmentedControl Margin="{StaticResource Space.Inline}"
                                  AutomationProperties.Name="{loc:T Toolbar_Range}"
                                  SelectedValue="{Binding Range, Mode=TwoWay}"
@@ -106,12 +93,11 @@
         </TextBlock.Style>
       </TextBlock>
 
-      <controls:SecondaryButton Margin="{StaticResource Space.Inline}"
-                                AutomationProperties.Name="{loc:T Action_Export}"
-                                Command="{Binding ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                ToolTip="{loc:T Action_Export}">
-        <TextBlock FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Text="&#xE896;" />
-      </controls:SecondaryButton>
+      <controls:IconButton Margin="{StaticResource Space.Inline}"
+                           AutomationProperties.Name="{loc:T Action_Export}"
+                           Command="{Binding ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                           Glyph="&#xE896;"
+                           ToolTip="{loc:T Action_Export}" />
     </StackPanel>
   </Grid>
 </UserControl>

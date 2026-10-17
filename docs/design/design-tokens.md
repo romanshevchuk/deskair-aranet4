@@ -1,6 +1,6 @@
 # Design tokens
 
-*Last reviewed: 2026-10-14*
+*Last reviewed: 2026-10-15*
 
 Design size is 1200 × 728 px at 100 % scale. Implement every value as a named resource in a light and a dark `ResourceDictionary`. The visual target is `design/polish/deskair-polish-concept.html` (POL-00); where it and this file differ, this file wins.
 
@@ -62,7 +62,25 @@ CO₂ in six steps, lighter to darker as the level rises, two per zone (D-0018).
 | heat.h2 | 2000 | #C23B2B | #F08A7C |
 | heat.none.line | no data | #29141C24 | #29FFFFFF |
 
-No data: an empty square with a 1 px `heat.none.line` outline. Other metrics: a single-hue scale per metric (POL-11 follow-up; not designed yet).
+No data: an empty square with a 1 px `heat.none.line` outline. Pressure has no grid.
+
+### Comfort scales (Temperature and Humidity)
+
+A comfort range gives colour a meaning here, so the grid uses a diverging scale of five steps around a neutral `heat.comfort` grey: two steps on the low side, comfortable, two on the high side (POL-18). The limits are fixed in v1 (no setting) and stored in °C; the legend shows them in the unit chosen.
+
+| Token | Temperature | Humidity | Light | Dark |
+|---|---|---|---|---|
+| heat.cool2 | below 18 °C | | #4F86D1 | #5C93DE |
+| heat.cool1 | 18 to 20 °C | | #B5CDEE | #2D4567 |
+| heat.dry2 | | below 25 % | #B9844A | #C99456 |
+| heat.dry1 | | 25 to 30 % | #E8CFAA | #5A4734 |
+| heat.comfort | 20 to 24 °C | 30 to 50 % | #E6EAED | #262D34 |
+| heat.warm1 | 24 to 26 °C | | #F4C29A | #6A4A33 |
+| heat.warm2 | 26 °C and above | | #DE7A31 | #E0813A |
+| heat.humid1 | | 50 to 60 % | #A9D3E9 | #2C5466 |
+| heat.humid2 | | 60 % and above | #3B8CC4 | #52A9DF |
+
+A value on a limit belongs to the step above it (20.0 °C is comfortable, 24.0 °C is warm1). The row-end bar uses `heat.cool2` or `heat.dry2` for the low share, the Good segment colour for the comfortable share and `heat.warm2` or `heat.humid2` for the high share. Blue means cool on the Temperature tab and humid on the Humidity tab: the legend always names the steps, so the colour is never the only cue.
 
 ## Metric colours
 
@@ -84,7 +102,7 @@ Segoe UI Variable Text, falling back to Segoe UI; display sizes use Segoe UI Var
 | Role | Size / weight | Figures |
 |---|---|---|
 | Hero value | 104 px, 300, Display | Proportional |
-| Flyout value | 56 px, 300, Display | Proportional |
+| Flyout value | 58 px, 300, Display | Proportional |
 | History average | 48 px, 300, Display | Proportional |
 | Mini card value | 32 px, 500, Display | Proportional |
 | Hero stat values | 20 px, 600 | Proportional |

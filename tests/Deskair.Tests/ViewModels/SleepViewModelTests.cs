@@ -171,4 +171,46 @@ public class SleepViewModelTests
         Assert.Equal("Sleep_Title(from=01:00, to=10:00)", viewModel.Title);
         Assert.Equal("Sleep_Peak(time=04:30)", viewModel.PeakLabel);
     }
+
+    [Fact]
+    public void Nights_show_the_average_and_for_co2_the_best_and_worst_with_their_dates()
+    {
+        var viewModel = Create();
+        var best = new NightResult(Samples.Utc(2026, 10, 8, 22), Samples.Utc(2026, 10, 9, 7), 700);
+        var worst = new NightResult(Samples.Utc(2026, 9, 30, 22), Samples.Utc(2026, 10, 1, 7), 1300);
+
+        viewModel.UpdateNights(new NightsSummary(Metric.Co2, 5, 1000, best, worst));
+
+        Assert.True(viewModel.HasNights);
+        Assert.True(viewModel.HasNightExtremes);
+        Assert.Equal("Nights_Title(count=5)", viewModel.NightsTitle);
+        Assert.Equal("1000 ppm", viewModel.NightsAverage);
+        Assert.Equal("700 ppm", viewModel.LowestNightValue);
+        Assert.Equal("8–9 Oct", viewModel.LowestNightWhen);
+        Assert.Equal("1300 ppm", viewModel.HighestNightValue);
+        Assert.Equal("30 Sep–1 Oct", viewModel.HighestNightWhen);
+    }
+
+    [Fact]
+    public void Other_metrics_show_the_average_night_only()
+    {
+        var viewModel = Create();
+
+        viewModel.UpdateNights(new NightsSummary(Metric.Humidity, 3, 45, null, null));
+
+        Assert.True(viewModel.HasNights);
+        Assert.False(viewModel.HasNightExtremes);
+    }
+
+    [Fact]
+    public void No_nights_hides_the_section()
+    {
+        var viewModel = Create();
+        viewModel.UpdateNights(new NightsSummary(Metric.Co2, 1, 900, null, null));
+
+        viewModel.UpdateNights(null);
+
+        Assert.False(viewModel.HasNights);
+        Assert.Equal(string.Empty, viewModel.NightsTitle);
+    }
 }

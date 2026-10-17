@@ -67,16 +67,13 @@ public sealed class FooterViewModelTests : IDisposable
     }
 
     [Fact]
-    public async Task A_renamed_room_shows_its_new_name_in_the_footer()
+    public async Task The_hardware_id_is_in_the_tooltip_and_the_room_name_is_not_repeated()
     {
         await StartAsync();
-        Assert.StartsWith("Office", viewModel.DetailText, StringComparison.Ordinal);
-        deviceStore.Devices[0] = deviceStore.Devices[0] with { RoomName = "Study" };
-        await registry.LoadAsync(TestContext.Current.CancellationToken);
 
-        messenger.Send(new DeviceRenamed(device));
-
-        Assert.StartsWith("Study", viewModel.DetailText, StringComparison.Ordinal);
+        Assert.Equal("0A0B3", viewModel.DetailTooltip);
+        Assert.DoesNotContain("0A0B3", viewModel.DetailText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Office", viewModel.DetailText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -87,6 +84,7 @@ public sealed class FooterViewModelTests : IDisposable
         Assert.Equal("Footer_NoSensor", viewModel.StatusText);
         Assert.Null(viewModel.DotZone);
         Assert.Null(viewModel.DetailText);
+        Assert.Null(viewModel.DetailTooltip);
         Assert.Null(viewModel.BatteryPercent);
     }
 
@@ -142,40 +140,26 @@ public sealed class FooterViewModelTests : IDisposable
     }
 
     [Fact]
-    public async Task Room_sensor_id_and_signal_are_shown_once_the_sensor_has_reported()
+    public async Task Sensor_model_and_battery_are_shown_once_the_sensor_has_reported()
     {
         await StartAsync();
 
         messenger.Send(new SensorStatusUpdated(device, new SensorStatus(TimeSpan.FromMinutes(2), 65, -70)));
 
-        Assert.Equal("Office · 0A0B3 · Footer_Signal_Fair", viewModel.DetailText);
+        Assert.Equal("Sensor_Aranet4_Name", viewModel.DetailText);
+        Assert.Equal("0A0B3", viewModel.DetailTooltip);
         Assert.Equal(65, viewModel.BatteryPercent);
         Assert.Equal("65%", viewModel.BatteryText);
     }
 
-    [Theory]
-    [InlineData(-45, "Footer_Signal_Good")]
-    [InlineData(-60, "Footer_Signal_Good")]
-    [InlineData(-61, "Footer_Signal_Fair")]
-    [InlineData(-75, "Footer_Signal_Fair")]
-    [InlineData(-76, "Footer_Signal_Weak")]
-    public async Task Signal_strength_is_good_fair_or_weak(int dbm, string expected)
-    {
-        await StartAsync();
-
-        messenger.Send(new SensorStatusUpdated(device, new SensorStatus(TimeSpan.FromMinutes(2), 50, dbm)));
-
-        Assert.EndsWith(expected, viewModel.DetailText);
-    }
-
     [Fact]
-    public async Task Without_signal_or_battery_only_the_room_and_id_are_shown()
+    public async Task Without_a_battery_level_only_the_sensor_model_is_shown()
     {
         await StartAsync();
 
         messenger.Send(new SensorStatusUpdated(device, new SensorStatus(TimeSpan.FromMinutes(2), null, null)));
 
-        Assert.Equal("Office · 0A0B3", viewModel.DetailText);
+        Assert.Equal("Sensor_Aranet4_Name", viewModel.DetailText);
         Assert.Null(viewModel.BatteryPercent);
         Assert.Null(viewModel.BatteryText);
     }
@@ -202,7 +186,7 @@ public sealed class FooterViewModelTests : IDisposable
         messenger.Send(new DeviceSelected(device));
 
         Assert.Null(viewModel.BatteryPercent);
-        Assert.Equal("Office · 0A0B3", viewModel.DetailText);
+        Assert.Equal("Sensor_Aranet4_Name", viewModel.DetailText);
     }
 
     [Fact]

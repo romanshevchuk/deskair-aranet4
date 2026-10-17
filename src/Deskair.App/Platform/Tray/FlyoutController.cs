@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Interop;
 using Deskair.App.Ui.Views.Flyout;
 using Deskair.App.ViewModels.Flyout;
+using Deskair.Domain.Readings;
 using Deskair.Services.Connection;
 using Deskair.Services.Devices;
 using Deskair.Services.Queries;
@@ -106,7 +107,7 @@ public sealed class FlyoutController
         var selected = devices.Selected;
         var room = selected is { } id ? devices.Info(id)?.RoomName : null;
 
-        if (selected is not { } device || connection.Current is ConnectionState.NotConnected or ConnectionState.FirstRun)
+        if (selected is not { } device || connection.Current is ConnectionState.FirstRun)
         {
             viewModel.Update(null, [], now, room);
             return;
@@ -116,7 +117,10 @@ public sealed class FlyoutController
         {
             var recent = await query.GetRecentAsync(device, ribbonLength, CancellationToken.None);
 
-            viewModel.Update(recent.Count > 0 ? recent[^1] : null, recent, now, room);
+            // Not connected: no current reading, but the last of the day is shown faded.
+            Reading? current = connection.Current is ConnectionState.NotConnected || recent.Count == 0 ? null : recent[^1];
+
+            viewModel.Update(current, recent, now, room);
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
         {

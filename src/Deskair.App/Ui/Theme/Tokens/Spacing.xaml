@@ -11,6 +11,11 @@
   <!-- Header bar on the window with the system caption buttons: the chip keeps clear of the three buttons (3 x 46 = 138) with 12 to spare, so the navigation stays centred in the window. -->
   <Thickness x:Key="Space.Header.Padding">24,0,0,0</Thickness>
   <Thickness x:Key="Space.Header.Chip">0,0,150,0</Thickness>
+  <!-- Nav tabs: 13 px each side puts 26 px between tabs; the underline is 18 x 3, 9 px above the header bottom (design-tokens.md "Header nav"). -->
+  <Thickness x:Key="Space.NavTab.Margin">13,0,13,0</Thickness>
+  <Thickness x:Key="Space.NavUnderline">0,0,0,9</Thickness>
+  <sys:Double x:Key="Size.NavUnderline.Width">18</sys:Double>
+  <sys:Double x:Key="Size.NavUnderline.Height">3</sys:Double>
   <Thickness x:Key="Space.Window.ResizeBorder">6</Thickness>
   <Thickness x:Key="Space.Inline">8,0,0,0</Thickness>
   <Thickness x:Key="Space.Inline.Wide">24,0,0,0</Thickness>
@@ -28,16 +33,27 @@
   <sys:Double x:Key="Size.History.Stats.Width">360</sys:Double>
   <sys:Double x:Key="Size.History.Export.StatusWidth">280</sys:Double>
   <sys:Double x:Key="Size.Flyout.Width">360</sys:Double>
-  <!-- Flyout content (prototype: padding 14, gap 12, zone card 14 16, value 52, ribbon 22 high at its own size). -->
-  <Thickness x:Key="Space.Flyout.Padding">14</Thickness>
-  <Thickness x:Key="Space.Flyout.Gap">0,12,0,0</Thickness>
-  <Thickness x:Key="Space.Flyout.Zone">16,14,16,14</Thickness>
+  <!-- Flyout (concept page): sections have 16 px at the sides, the footer band runs edge to edge (padding 10 / 12), the ribbon is 8 px high. -->
+  <Thickness x:Key="Space.Flyout.Section">16,0,16,0</Thickness>
+  <Thickness x:Key="Space.Flyout.Head">16,14,16,0</Thickness>
+  <Thickness x:Key="Space.Flyout.Main">16,14,16,0</Thickness>
+  <Thickness x:Key="Space.Flyout.Ribbon">16,18,16,0</Thickness>
+  <Thickness x:Key="Space.Flyout.Readings">16,16,16,0</Thickness>
+  <Thickness x:Key="Space.Flyout.Advice">0,12,0,0</Thickness>
   <Thickness x:Key="Space.Flyout.Legend">0,0,12,0</Thickness>
-  <Thickness x:Key="Space.Flyout.Footer">0,12,0,0</Thickness>
-  <sys:Double x:Key="Size.Flyout.Ribbon.Height">22</sys:Double>
+  <Thickness x:Key="Space.Flyout.Footer">12,10,12,10</Thickness>
+  <Thickness x:Key="Space.Flyout.FooterTop">0,16,0,0</Thickness>
+  <Thickness x:Key="Space.Flyout.Step">0,14,0,0</Thickness>
+  <Thickness x:Key="Space.Flyout.StepPadding">12,10,12,10</Thickness>
+  <sys:Double x:Key="Size.Flyout.Ribbon.Height">8</sys:Double>
+  <sys:Double x:Key="Size.Flyout.Value.Last">40</sys:Double>
+  <sys:Double x:Key="Size.Flyout.Button.Height">32</sys:Double>
+  <sys:Double x:Key="Opacity.Flyout.LastReading">0.55</sys:Double>
   <sys:Double x:Key="Size.Toast.Edge">4</sys:Double>
   <!-- Icon button (History ‹ ›, export, flyout Settings). -->
   <sys:Double x:Key="Size.IconButton">32</sys:Double>
+  <Thickness x:Key="Space.QuietButton.Padding">10,0,10,0</Thickness>
+  <sys:Double x:Key="Size.ZoneIcon">20</sys:Double>
   <sys:Double x:Key="Size.Toggle.Width">38</sys:Double>
   <sys:Double x:Key="Size.Toggle.Height">22</sys:Double>
   <!-- Not in the token table: taken from design/prototype/index.html. -->
@@ -110,7 +126,10 @@
 
   <!-- Settings card and row (CTRL-14, CTRL-15): prototype values (card padding 12 22 2, row min height 40, gap 16). -->
   <Thickness x:Key="Space.SettingsCard.Padding">22,12,22,2</Thickness>
-  <Thickness x:Key="Space.SettingsCard.Header">0,0,0,2</Thickness>
+  <!-- The section title sits above the card, outside it (design-tokens.md "Settings"). -->
+  <Thickness x:Key="Space.SettingsCard.Header">0,0,0,8</Thickness>
+  <sys:Double x:Key="Size.TimeField.Width">88</sys:Double>
+  <sys:Double x:Key="Size.Settings.MaxWidth">720</sys:Double>
   <Thickness x:Key="Space.SettingsRow.Label">0,0,16,0</Thickness>
   <Thickness x:Key="Space.SettingsRow.Padding">0,4,0,4</Thickness>
   <sys:Double x:Key="Size.SettingsRow.MinHeight">40</sys:Double>

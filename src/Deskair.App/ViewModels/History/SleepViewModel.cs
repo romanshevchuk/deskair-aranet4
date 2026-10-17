@@ -58,6 +58,39 @@ public sealed partial class SleepViewModel : ObservableObject
     [ObservableProperty]
     private string? partialNote;
 
+    /// <summary>The Nights section (Week, Month, Year) is shown.</summary>
+    [ObservableProperty]
+    private bool hasNights;
+
+    [ObservableProperty]
+    private string nightsTitle = string.Empty;
+
+    [ObservableProperty]
+    private string nightsAverage = string.Empty;
+
+    /// <summary>The lowest and highest night (best and worst for CO₂, coolest and warmest, driest and most humid) are shown for CO₂, Temperature and Humidity; Pressure has no nights.</summary>
+    [ObservableProperty]
+    private bool hasNightExtremes;
+
+    [ObservableProperty]
+    private string lowestNightLabel = string.Empty;
+
+    [ObservableProperty]
+    private string highestNightLabel = string.Empty;
+
+    [ObservableProperty]
+    private string lowestNightValue = string.Empty;
+
+    /// <summary>"12–13 Oct": the evening the best night started on and the morning it ended.</summary>
+    [ObservableProperty]
+    private string lowestNightWhen = string.Empty;
+
+    [ObservableProperty]
+    private string highestNightValue = string.Empty;
+
+    [ObservableProperty]
+    private string highestNightWhen = string.Empty;
+
     public SleepViewModel(ILocalizer localizer, MetricFormatter formatter, LocalCalendar calendar)
     {
         this.localizer = localizer;
@@ -119,6 +152,52 @@ public sealed partial class SleepViewModel : ObservableObject
         PartialNote = summary.IsPartial
             ? localizer.Format("Sleep_Partial", ("recorded", Hours(summary.Recorded)), ("total", Hours(summary.Expected)))
             : null;
+    }
+
+    /// <summary>Shows the nights of a Week, Month or Year, or hides the section when none counts.</summary>
+    public void UpdateNights(NightsSummary? summary)
+    {
+        HasNights = summary is not null;
+
+        if (summary is null)
+        {
+            NightsTitle = string.Empty;
+            NightsAverage = string.Empty;
+            HasNightExtremes = false;
+            LowestNightValue = LowestNightWhen = HighestNightValue = HighestNightWhen = string.Empty;
+            return;
+        }
+
+        NightsTitle = localizer.Format("Nights_Title", ("count", summary.Count));
+        NightsAverage = Value(summary.Metric, summary.Average);
+        HasNightExtremes = summary is { Lowest: not null, Highest: not null };
+        (LowestNightLabel, HighestNightLabel) = NightLabels(summary.Metric);
+        LowestNightValue = Value(summary.Metric, summary.Lowest?.Average);
+        LowestNightWhen = summary.Lowest is { } best ? NightDates(best) : string.Empty;
+        HighestNightValue = Value(summary.Metric, summary.Highest?.Average);
+        HighestNightWhen = summary.Highest is { } worst ? NightDates(worst) : string.Empty;
+    }
+
+    private (string Lowest, string Highest) NightLabels(Metric metric) => metric switch
+    {
+        Metric.Temperature => (localizer.Get("Nights_Coolest"), localizer.Get("Nights_Warmest")),
+        Metric.Humidity => (localizer.Get("Nights_Driest"), localizer.Get("Nights_MostHumid")),
+        _ => (localizer.Get("Nights_Best"), localizer.Get("Nights_Worst"))
+    };
+
+    private string NightDates(NightResult night)
+    {
+        var from = TimeZoneInfo.ConvertTime(night.Start, calendar.Zone);
+        var to = TimeZoneInfo.ConvertTime(night.End, calendar.Zone);
+
+        if (from.Date == to.Date)
+        {
+            return from.ToString("d MMM", localizer.Culture);
+        }
+
+        return from.Month == to.Month
+            ? $"{from.Day}–{to.ToString("d MMM", localizer.Culture)}"
+            : $"{from.ToString("d MMM", localizer.Culture)}–{to.ToString("d MMM", localizer.Culture)}";
     }
 
     private void Clear()

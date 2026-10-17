@@ -9,7 +9,6 @@ namespace Deskair.App.Ui.Charts.Layers;
 /// </summary>
 public sealed class HourGridLegendLayer : IChartLayer
 {
-    private static readonly string[] heatKeys = ["Heat.G1.Brush", "Heat.G2.Brush", "Heat.E1.Brush", "Heat.E2.Brush", "Heat.H1.Brush", "Heat.H2.Brush"];
     private const double Swatch = 46;
     private const double SwatchHeight = 8;
     private const double SwatchGap = 2;
@@ -29,17 +28,19 @@ public sealed class HourGridLegendLayer : IChartLayer
         var step = Swatch + SwatchGap;
         var small = area with { FontSize = Math.Min(area.FontSize, 11) };
 
-        if (model.Steps.Count == heatKeys.Length - 1)
+        var heatKeys = HourGridLayer.HeatKeys(model.Palette);
+
+        if (model.Steps.Count == heatKeys.Count - 1)
         {
-            for (var index = 0; index < heatKeys.Length; index++)
+            for (var index = 0; index < heatKeys.Count; index++)
             {
                 context.DrawRoundedRectangle(area.Brush(heatKeys[index]), null, new Rect(left + (index * step), top, Swatch, SwatchHeight), 2, 2);
             }
 
-            foreach (var (name, pair) in new[] { (model.GoodText, 0), (model.ElevatedText, 1), (model.HighText, 2) })
+            foreach (var (name, first, count) in model.LegendGroups)
             {
                 var formatted = area.Text(name, area.Brush("Text.Secondary.Brush"));
-                context.DrawText(formatted, new Point(left + (pair * 2 * step) + Swatch - (formatted.Width / 2), top - 3 - formatted.Height));
+                context.DrawText(formatted, new Point(left + (first * step) + (((count * step) - SwatchGap) / 2) - (formatted.Width / 2), top - 3 - formatted.Height));
             }
 
             for (var index = 0; index < model.Steps.Count; index++)
@@ -48,7 +49,7 @@ public sealed class HourGridLegendLayer : IChartLayer
                 context.DrawText(formatted, new Point(left + ((index + 1) * step) - 1 - (formatted.Width / 2), top + SwatchHeight + 2));
             }
 
-            left += (heatKeys.Length * step) + 20;
+            left += (heatKeys.Count * step) + 20;
         }
 
         context.DrawRoundedRectangle(null, new Pen(area.Brush("Heat.None.Line.Brush"), 1), new Rect(left + 0.5, top + 0.5, 14, SwatchHeight - 1), 2, 2);

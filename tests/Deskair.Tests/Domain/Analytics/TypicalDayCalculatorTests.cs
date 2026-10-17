@@ -1,4 +1,6 @@
+using Deskair.Domain.Analytics.Comfort;
 using Deskair.Domain.Analytics.TypicalDay;
+using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
 using Deskair.Tests.Fakes;
@@ -87,5 +89,41 @@ public class TypicalDayCalculatorTests
     public void No_worst_window_means_no_average_either()
     {
         Assert.Null(TypicalDayCalculator.WorstWindow(Day((8, 900))));
+    }
+
+    [Fact]
+    public void Hourly_averages_can_be_of_another_metric()
+    {
+        var readings = new List<Reading>
+        {
+            Samples.Climate(Samples.Utc(2026, 10, 8, 3), 18, 40, 1010),
+            Samples.Climate(Samples.Utc(2026, 10, 9, 3), 20, 50, 1020)
+        };
+
+        var temperature = TypicalDayCalculator.HourlyAverages(readings, utc, Metric.Temperature);
+        var humidity = TypicalDayCalculator.HourlyAverages(readings, utc, Metric.Humidity);
+
+        Assert.Equal(19, temperature[3].Average);
+        Assert.Equal(45, humidity[3].Average);
+        Assert.Null(temperature[4].Average);
+    }
+
+    [Fact]
+    public void The_furthest_outside_window_is_the_coolest_for_a_cold_night_and_names_its_start()
+    {
+        var hours = Day((1, 18), (2, 17), (3, 17), (4, 18), (5, 19), (12, 22));
+
+        var window = TypicalDayCalculator.FurthestOutsideWindow(hours, ComfortScale.Temperature);
+
+        Assert.NotNull(window);
+        Assert.Equal(1, window.StartHour);
+        Assert.Equal(ComfortSide.Low, ComfortScale.Temperature.Side(window.Average));
+    }
+
+    [Fact]
+    public void The_furthest_outside_window_is_null_when_everything_is_comfortable_or_nothing_has_three_hours()
+    {
+        Assert.Null(TypicalDayCalculator.FurthestOutsideWindow(Day((8, 21), (9, 22), (10, 23)), ComfortScale.Temperature));
+        Assert.Null(TypicalDayCalculator.FurthestOutsideWindow(Day((8, 15), (10, 15)), ComfortScale.Temperature));
     }
 }

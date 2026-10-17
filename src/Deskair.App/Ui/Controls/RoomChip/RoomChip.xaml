@@ -2,9 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
   <Style TargetType="{x:Type local:RoomChip}">
-    <Setter Property="Background" Value="{DynamicResource Surface.Brush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource Border.Brush}" />
-    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
     <Setter Property="Foreground" Value="{DynamicResource Text.Secondary.Brush}" />
     <Setter Property="FontSize" Value="{DynamicResource Font.Size.Secondary}" />
     <Setter Property="Padding" Value="{DynamicResource Space.Chip.Padding}" />
@@ -15,8 +14,6 @@
         <ControlTemplate TargetType="{x:Type local:RoomChip}">
           <Border x:Name="Frame"
                   Background="{TemplateBinding Background}"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}"
                   CornerRadius="{DynamicResource Radius.Segment}"
                   Padding="{TemplateBinding Padding}"
                   ToolTip="{TemplateBinding RoomName}">
@@ -49,10 +46,10 @@
               <Setter TargetName="Value" Property="Visibility" Value="Collapsed" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Text.Tertiary.Brush}" />
+              <Setter TargetName="Frame" Property="Background" Value="{DynamicResource Segment.Bg.Brush}" />
             </Trigger>
             <Trigger Property="IsOpen" Value="True">
-              <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Text.Primary.Brush}" />
+              <Setter TargetName="Frame" Property="Background" Value="{DynamicResource Segment.Bg.Brush}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

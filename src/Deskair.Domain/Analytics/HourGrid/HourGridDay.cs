@@ -1,3 +1,4 @@
+using Deskair.Domain.Analytics.Comfort;
 using Deskair.Domain.Zones;
 
 namespace Deskair.Domain.Analytics.HourGrid;
@@ -8,6 +9,9 @@ namespace Deskair.Domain.Analytics.HourGrid;
 /// </summary>
 public sealed record HourGridDay(DateOnly Date, IReadOnlyList<double?> Hours, int HoursShown, double? Average, ZoneShare? Share)
 {
+    /// <summary>How the readings spread below, inside and above the comfortable range (Temperature and Humidity); null for other metrics or without readings.</summary>
+    public ComfortShare? Comfort { get; init; }
+
     /// <summary>How many of the hours have readings.</summary>
     public int HoursWithReadings => Hours.Count(hour => hour is not null);
 

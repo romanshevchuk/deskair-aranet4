@@ -8,7 +8,6 @@ using Deskair.App.Ui.Views.Shell;
 using Deskair.App.ViewModels.Connection;
 using Deskair.App.ViewModels.History;
 using Deskair.App.ViewModels.Shell;
-using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
@@ -32,23 +31,27 @@ public class HistoryRenderTests
     private static readonly DeviceId device = new("simulated", "SIM-0001");
 
     [Theory]
-    [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Co2, TemperatureUnit.Celsius, HoursFilterMode.AllDay)]
-    [InlineData(ThemeChoice.Dark, "en-US", Period.Month, Metric.Co2, TemperatureUnit.Celsius, HoursFilterMode.AllDay)]
-    [InlineData(ThemeChoice.Light, "uk-UA", Period.Year, Metric.Co2, TemperatureUnit.Celsius, HoursFilterMode.AllDay)]
-    [InlineData(ThemeChoice.Light, "en-US", Period.Day, Metric.Co2, TemperatureUnit.Celsius, HoursFilterMode.AllDay)]
-    [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Temperature, TemperatureUnit.Fahrenheit, HoursFilterMode.AllDay)]
-    [InlineData(ThemeChoice.Light, "en-US", Period.Day, Metric.Humidity, TemperatureUnit.Celsius, HoursFilterMode.AllDay)]
-    [InlineData(ThemeChoice.Light, "en-US", Period.Day, Metric.Co2, TemperatureUnit.Celsius, HoursFilterMode.Night)]
-    [InlineData(ThemeChoice.Dark, "uk-UA", Period.Day, Metric.Co2, TemperatureUnit.Celsius, HoursFilterMode.Night)]
-    [InlineData(ThemeChoice.Light, "en-US", Period.Day, Metric.Temperature, TemperatureUnit.Fahrenheit, HoursFilterMode.Night)]
-    public async Task Render_the_history_screen(ThemeChoice theme, string culture, Period range, Metric metric, TemperatureUnit unit, HoursFilterMode hours)
+    [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Co2, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Dark, "en-US", Period.Month, Metric.Co2, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Light, "uk-UA", Period.Year, Metric.Co2, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Dark, "en-US", Period.Year, Metric.Co2, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Light, "en-US", Period.Day, Metric.Co2, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Temperature, TemperatureUnit.Fahrenheit)]
+    [InlineData(ThemeChoice.Light, "en-US", Period.Day, Metric.Humidity, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Dark, "en-US", Period.Month, Metric.Humidity, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Light, "en-US", Period.Year, Metric.Temperature, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Dark, "en-US", Period.Month, Metric.Temperature, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Pressure, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Dark, "en-US", Period.Year, Metric.Pressure, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Light, "en-US", Period.Day, Metric.Pressure, TemperatureUnit.Celsius)]
+    public async Task Render_the_history_screen(ThemeChoice theme, string culture, Period range, Metric metric, TemperatureUnit unit)
     {
         RenderOutput.Require();
 
         UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo(culture));
-        var shell = await BuildShellAsync(range, metric, unit, hours);
+        var shell = await BuildShellAsync(range, metric, unit);
 
-        Write(theme, culture, shell, $"{range.ToString().ToLowerInvariant()}-{metric.ToString().ToLowerInvariant()}{(hours == HoursFilterMode.Night ? "-night" : string.Empty)}");
+        Write(theme, culture, shell, $"{range.ToString().ToLowerInvariant()}-{metric.ToString().ToLowerInvariant()}");
     }
 
     [Theory]
@@ -83,7 +86,7 @@ public class HistoryRenderTests
         RenderOutput.Save($"history-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{name}.png", png);
     }
 
-    private static async Task<ShellViewModel> BuildShellAsync(Period range, Metric metric, TemperatureUnit unit, HoursFilterMode hours = HoursFilterMode.AllDay, bool withReadings = true)
+    private static async Task<ShellViewModel> BuildShellAsync(Period range, Metric metric, TemperatureUnit unit, bool withReadings = true)
     {
         var messenger = new StrongReferenceMessenger();
         var dispatcher = new FakeUiDispatcher();
@@ -115,7 +118,7 @@ public class HistoryRenderTests
         await settings.LoadAsync(CancellationToken.None);
         var formatter = new MetricFormatter(localizer, settings);
 
-        var toolbar = new HistoryToolbarViewModel { Range = range, Metric = metric, Hours = hours };
+        var toolbar = new HistoryToolbarViewModel { Range = range, Metric = metric };
         var stats = new StatsViewModel(formatter, localizer, calendar);
         var history = new HistoryViewModel(
             toolbar,
@@ -132,6 +135,7 @@ public class HistoryRenderTests
             formatter,
             new PeriodLabeler(localizer, calendar),
             new HourGridBuilder(localizer, formatter),
+            new DayChartBuilder(localizer, formatter, calendar),
             NullLogger<HistoryViewModel>.Instance);
         await history.RefreshAsync(CancellationToken.None);
 

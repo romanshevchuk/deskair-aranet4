@@ -9,4 +9,6 @@ public sealed record Bucket(
     double? Maximum,
     int ReadingCount,
     int ExpectedCount,
-    BucketState State);
+    BucketState State,
+    DateTimeOffset? MinimumAt = null,
+    DateTimeOffset? MaximumAt = null);

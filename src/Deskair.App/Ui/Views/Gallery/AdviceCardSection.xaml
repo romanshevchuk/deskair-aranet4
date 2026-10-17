@@ -17,6 +17,11 @@
                            Title="{loc:T Advice_High_Title}" Text="{loc:T Advice_High_Text_Rising}" />
       <controls:AdviceCard Width="340" Margin="{StaticResource Space.Item}"
                            Title="{loc:T Chart_NoData}" Text="{loc:T Footer_NoSensor}" />
+      <StackPanel Margin="{StaticResource Space.Item}" Orientation="Horizontal">
+        <controls:ZoneIcon Margin="0,0,12,0" Zone="{x:Static zones:Zone.Good}" />
+        <controls:ZoneIcon Margin="0,0,12,0" Zone="{x:Static zones:Zone.Elevated}" />
+        <controls:ZoneIcon Zone="{x:Static zones:Zone.High}" />
+      </StackPanel>
     </WrapPanel>
   </StackPanel>
 </UserControl>

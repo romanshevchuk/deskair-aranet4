@@ -1,6 +1,6 @@
 # Screens and states
 
-*Last reviewed: 2026-10-14*
+*Last reviewed: 2026-10-15*
 
 Visual target: `design/polish/deskair-polish-concept.html` (POL-00). Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 
@@ -42,8 +42,8 @@ Each condition combines with the three zones and both themes.
 
 | State | Content, top to bottom |
 |---|---|
-| Connected | Room with zone dot, "updated 2 min ago". "CO₂" with the zone pill. The value (56 px) with "ppm" and the trend. The advice title as one line with the zone's advice icon. The 24 h ribbon (8 px) with labels at 00:00, 06:00, 12:00 and 18:00 at their true positions (none within 2 hours of either end) and "Now" at the right end, and the time in each zone below it. Temperature, humidity and pressure in three columns (value 16 px 600, unit grey, label below). Footer band: Snooze ▾ (1 h, until tomorrow, Resume; "Snoozed until 14:30" while snoozed) and a Settings icon button on the left, a compact filled "Open Deskair" on the right |
-| Not connected | Room with grey dot, "last seen 25 min ago". "Can't reach your Aranet4" and the reason (out of range or asleep, or Bluetooth off). The last reading faded, with its time ("1160 ppm at 12:35"). One recovery step ("Press the button on the Aranet4 to wake it", or "Turn on Bluetooth"). No ribbon or readings. The same footer band |
+| Connected | Room with zone dot, "updated 2 min ago". "CO₂" with the zone pill. The value (58 px, as the concept page) with "ppm" and the trend. The advice title as one line with the zone's advice icon. The 24 h ribbon (8 px) with labels at 00:00, 06:00, 12:00 and 18:00 at their true positions (none within 2 hours of either end) and "Now" at the right end, and the time in each zone below it. Temperature, humidity and pressure in three columns (value 16 px 600, unit grey, label below). Footer band: Snooze ▾ (1 h, until tomorrow, Resume; "Snoozed until 14:30" while snoozed) and a Settings icon button on the left, a compact filled "Open Deskair" on the right |
+| Not connected | Room with grey dot, "last seen 25 min ago". "Can't reach your Aranet4" and the reason (out of range or asleep, or Bluetooth off). The last reading faded, with its time ("1160 ppm at 12:35"). One recovery step ("Press the button on the Aranet4 to wake it", or "Turn on Bluetooth" when the radio is off; Q48). No ribbon or readings. The same footer band |
 
 The zone glow (grey when not connected) covers the top of the flyout. Clicking the value opens the app, as "Open Deskair" does.
 
@@ -65,8 +65,20 @@ There is no Hours filter and no Group by. The night hours show as a band and in 
 | Day | Line of the readings, coloured by zone, with a light area fill; the typical day of the 7 days before as a grey line; the night hours as a band labelled "Night"; threshold lines at 1000 and 1400 with coloured axis labels; "air improved" markers; crosshair with the time, the value and the typical value. Legend: CO₂, Typical (previous 7 days), Night |
 | Week, Month | Days × hours grid: one row per day (oldest at the top, "Today" last), one square per hour in the heat scale. Above: "Night · 22:00–07:00" bracket and hour labels every 3 hours. Each row ends with its average, a zone bar and a "best" / "worst" tag. Last row: "Typical", with the worst three hours outlined and named ("Worst 17:00–20:00"). Legend at the bottom: the six steps with Good / Elevated / High and their limits, "No data", "Each square is one hour" |
 
+**Built (POL-13):** the Day line for CO₂ has the area fill, the typical line (hourly means of the 7 days before, laid over the window by clock hour), the night band with its label, dashed limit lines with coloured y labels (the axis tops out at 1600, 2000 or 2600), the "air improved" rings and the legend. The other metrics get the night band only (the typical day and the markers are CO₂ rules). The average line is gone from Day.
+
 **Built so far (POL-11):** the grid is drawn for CO₂ with All day. Other metrics keep the floating bars until their single-hue scales are designed, and the Night filter keeps the bars until it goes (POL-10).
-| Year | Months × days grid: one row per month ("Nov 2025" … "Oct 2026"), one square per day (daily average); day numbers 1, 5, 10 … 31 above. Rows end as in Week. No typical row. Legend as Week, "Each square is one day" |
+
+**History per metric (POL-18):** each metric gets the chart that shows its patterns.
+
+| Metric | Week, Month, Year | Day | Summary card |
+|---|---|---|---|
+| CO₂ | The zones grid, as above | As above | As above |
+| Temperature, Humidity | The same grid in the comfort scale (design-tokens.md "Comfort scales"). Row end: average, a below / inside / above bar and a "best" / "worst" tag (most and least time inside the range). The typical row outlines the three hours furthest outside the range ("Coolest 03:00–06:00") | Line in the metric colour, the comfort range as a soft band, the typical line and the night band; no area fill | Average with a comfort pill, time in the comfort range, nights, highest and lowest, one tip |
+| Pressure | One line (hourly means; daily means for Year), fitted axis, the biggest 24 hour change shaded and labelled | Line, fitted axis, no night band, no typical line | Average, change as neutral text, biggest change in 24 hours, the range, "Pressure follows the weather, not the room" |
+
+**Built (POL-18):** the comfort tokens and rules (design-tokens.md, behaviour-rules.md rules 10 to 12); the Temperature and Humidity hour grid with the comfort share and the "coolest/driest hours" tip; the Day comfort band; the Pressure line with the shaded biggest 24 hour change; and the Pressure summary card (average, change, highest and lowest, biggest change in 24 hours with its start, range of the period, one line about the weather). CO₂ typical day and sleep no longer show on the other metrics.
+| Year | Months × days grid: one row per month ("Nov 2025" … "Oct 2026"), one square per day (daily average); day numbers 1, 5, 10 … 31 above. A day needs readings in at least 6 different hours for a value, otherwise its square is outlined; days after today are not drawn. Two or more months in a row without readings fold into one row (as in Week). Rows end as in Week. No typical row. Legend as Week, "Each square is one day" |
 
 | Grid state | Rule | Rendering |
 |---|---|---|
@@ -87,6 +99,8 @@ Hover or keyboard focus on a square shows "Tue 13 Oct, 16:00–17:00 · 1234 ppm
 | Nights | Week, Month, Year: average of the nights, best and worst night with dates. Day: "Last night" with the verdict pill and the numbers from behaviour-rules.md "Sleep" |
 | Extremes | Highest and lowest reading with day and time |
 | Tip | The worst-hours tip (behaviour-rules.md "Aggregation" rule 9), in the advice colours of its zone |
+
+**Built (POL-14):** `SummaryCard` replaces `StatsCard` and `SleepCard`: average, change, coverage as one line of text ("Based on 82% of expected readings"), time in each zone, "Last night" (Day), highest and lowest with day and time (`Bucket.MaximumAt` and `MinimumAt`), and the tip. Best and worst day are no longer in the card. The tip says "while you sleep" and suggests leaving a window slightly open when at least 2 of the 3 worst hours are night hours. **Built (Q49):** the Nights section for Week, Month and Year (average night; for CO₂ the best and worst night with dates; nights with at least 6 recorded hours). The typical day is a CO₂ rule and is hidden for the other metrics; Pressure has no sleep section.
 
 ## History empty states
 

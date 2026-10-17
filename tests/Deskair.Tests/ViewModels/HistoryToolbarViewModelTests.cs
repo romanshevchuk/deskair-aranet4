@@ -1,53 +1,43 @@
 using Deskair.App.ViewModels.History;
+using Deskair.Domain.Metrics;
 using Deskair.Domain.Time;
 
 namespace Deskair.Tests.ViewModels;
 
 public class HistoryToolbarViewModelTests
 {
+    [Fact]
+    public void Changing_the_range_returns_to_the_latest_period()
+    {
+        var viewModel = new HistoryToolbarViewModel { Range = Period.Week, MaxOffset = 5, Offset = 3 };
+
+        viewModel.Range = Period.Month;
+
+        Assert.Equal(0, viewModel.Offset);
+        Assert.True(viewModel.IsLatest);
+    }
+
     [Theory]
-    [InlineData(Period.Day)]
-    [InlineData(Period.Week)]
-    public void Day_and_week_have_no_groupings(Period range)
-    {
-        var viewModel = new HistoryToolbarViewModel { Range = range };
-
-        Assert.Empty(viewModel.GroupingOptions());
-    }
-
-    [Fact]
-    public void Month_groups_by_day_or_week()
-    {
-        var viewModel = new HistoryToolbarViewModel { Range = Period.Month };
-
-        Assert.Equal([Period.Day, Period.Week], viewModel.GroupingOptions());
-    }
+    [InlineData(nameof(HistoryToolbarViewModel.Metric), true)]
+    [InlineData(nameof(HistoryToolbarViewModel.Range), true)]
+    [InlineData(nameof(HistoryToolbarViewModel.Offset), true)]
+    [InlineData(nameof(HistoryToolbarViewModel.PeriodLabel), false)]
+    [InlineData(nameof(HistoryToolbarViewModel.MaxOffset), false)]
+    public void Only_the_choices_ask_for_different_data(string property, bool expected)
+        => Assert.Equal(expected, HistoryToolbarViewModel.IsChoice(property));
 
     [Fact]
-    public void Year_groups_by_week_or_month()
+    public void The_arrows_stay_inside_the_first_reading_and_today()
     {
-        var viewModel = new HistoryToolbarViewModel { Range = Period.Year };
+        var viewModel = new HistoryToolbarViewModel { Metric = Metric.Co2, Range = Period.Week, MaxOffset = 1 };
 
-        Assert.Equal([Period.Week, Period.Month], viewModel.GroupingOptions());
-    }
+        Assert.False(viewModel.NextPeriodCommand.CanExecute(null));
+        Assert.True(viewModel.PreviousPeriodCommand.CanExecute(null));
 
-    [Fact]
-    public void Range_change_keeps_an_allowed_grouping()
-    {
-        var viewModel = new HistoryToolbarViewModel { Range = Period.Month, Grouping = Period.Week };
+        viewModel.PreviousPeriodCommand.Execute(null);
 
-        viewModel.Range = Period.Year;
-
-        Assert.Equal(Period.Week, viewModel.Grouping);
-    }
-
-    [Fact]
-    public void Range_change_picks_the_first_allowed_grouping_when_current_is_not_allowed()
-    {
-        var viewModel = new HistoryToolbarViewModel { Range = Period.Month, Grouping = Period.Day };
-
-        viewModel.Range = Period.Year;
-
-        Assert.Equal(Period.Week, viewModel.Grouping);
+        Assert.Equal(1, viewModel.Offset);
+        Assert.False(viewModel.PreviousPeriodCommand.CanExecute(null));
+        Assert.True(viewModel.NextPeriodCommand.CanExecute(null));
     }
 }

@@ -1,6 +1,6 @@
 # Backlog
 
-*Last reviewed: 2026-10-14*
+*Last reviewed: 2026-10-17*
 
 Status: `todo`, `doing`, `done`. Update this file in the same change as the work.
 
@@ -63,18 +63,19 @@ Plan, specs and model per item: [`polish-implementation.md`](polish-implementati
 | POL-00 | Design docs updated to the new direction; decisions recorded | done |
 | POL-01 | Surfaces and accent (zone glow, no zone borders, ink accent, gauge knob, flyout corners) | done |
 | POL-02 | Numbers and units (ppm without separator, proportional hero figures, percent and time formats) | done |
-| POL-03 | Shell chrome (text nav, plain room chip, footer) | todo |
+| POL-03 | Shell chrome (text nav, plain room chip, footer) | done |
 | POL-04 | Live chart (fitted axis, threshold line, area fill, smoothing) | done |
-| POL-05 | Sparklines (minimum range, area fill) | todo |
+| POL-05 | Sparklines (minimum range, area fill) | done |
 | POL-06 | Metric selection by hero and mini cards; tabs removed | done |
-| POL-07 | Flyout rework | todo |
+| POL-07 | Flyout rework (Q48 follow-up done: Bluetooth step) | done |
 | POL-08 | Spike: acrylic flyout (optional) | todo |
 | POL-09 | History period model and ‹ › navigator | done |
-| POL-10 | History toolbar: metric and range only | todo |
+| POL-10 | History toolbar: metric and range only | done |
 | POL-11 | HourGridChart for Week and Month | done |
-| POL-12 | Year as a months × days grid | todo |
-| POL-13 | Day chart with typical line and aired markers | todo |
-| POL-14 | History summary card (stats and sleep merged) | todo |
-| POL-15 | Settings layout | todo |
+| POL-12 | Year as a months × days grid | done |
+| POL-13 | Day chart with typical line and aired markers | done |
+| POL-14 | History summary card (stats and sleep merged; Q49 follow-up done: Nights section) | done |
+| POL-15 | Settings layout | done |
 | POL-16 | Motion | todo |
 | POL-17 | Final review against the concept | todo |
+| POL-18 | History per metric: comfort grids for temperature and humidity, a weather line for pressure; no CO₂ typical day or sleep on other tabs | done |

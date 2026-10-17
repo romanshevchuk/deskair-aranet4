@@ -1,0 +1,199 @@
+<UserControl x:Class="Deskair.App.Ui.Views.History.SummaryCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
+             xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
+  <!-- DataContext: HistoryViewModel. One card, top to bottom (screens-and-states.md "History summary card"): the average with its change and the coverage as a line of text, the time in each zone,
+       last night (Day only), the highest and lowest reading with their day and time, and the tip in the colours of the zone of the average. A part without numbers is hidden. -->
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    <Style x:Key="Summary.Coverage" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Secondary}">
+      <Setter Property="Margin" Value="{StaticResource Space.Stats.Change}" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding CoverageText}" Value="{x:Null}">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+  </UserControl.Resources>
+
+  <controls:Card Padding="{StaticResource Space.Stats.Card}">
+    <StackPanel>
+      <!-- Average: the value, its change against the period before and the coverage. -->
+      <StackPanel DataContext="{Binding Stats}">
+        <TextBlock Style="{StaticResource Text.SectionLabel}" Text="{Binding HeaderText}" TextTrimming="CharacterEllipsis" />
+
+        <StackPanel Margin="{StaticResource Space.Stats.Number}" Orientation="Horizontal">
+          <TextBlock Style="{StaticResource Text.HistoryAverage}" Text="{Binding AverageNumber}" />
+          <TextBlock Margin="{StaticResource Space.Stats.Unit}"
+                     VerticalAlignment="Bottom"
+                     FontSize="{StaticResource Font.Size.Title}"
+                     Foreground="{DynamicResource Text.Secondary.Brush}"
+                     Text="{Binding UnitText}" />
+          <controls:Pill Margin="{StaticResource Space.Inline}"
+                         VerticalAlignment="Bottom"
+                         Content="{Binding ComfortText}"
+                         Visibility="{Binding HasComfort, Converter={StaticResource BoolToVisibility}}"
+                         Zone="{Binding ComfortZone}" />
+        </StackPanel>
+
+        <StackPanel Margin="{StaticResource Space.Stats.Change}"
+                    Orientation="Horizontal"
+                    Visibility="{Binding HasChange, Converter={StaticResource BoolToVisibility}}">
+          <controls:Pill VerticalAlignment="Center" Content="{Binding ChangeText}" Zone="{Binding ChangeZone}" />
+          <TextBlock Margin="{StaticResource Space.Inline}"
+                     VerticalAlignment="Center"
+                     Style="{StaticResource Text.Secondary}"
+                     Text="{Binding ChangeCaption}" />
+        </StackPanel>
+
+        <TextBlock Style="{StaticResource Summary.Coverage}" Text="{Binding CoverageText}" TextWrapping="Wrap" />
+
+        <!-- Time in each zone (CO₂), or in the comfort range (Temperature and Humidity). -->
+        <StackPanel Margin="{StaticResource Space.Stats.Block}" Visibility="{Binding HasZoneShare, Converter={StaticResource BoolToVisibility}}">
+          <StackPanel Margin="{StaticResource Space.SectionLabel}" Orientation="Horizontal">
+            <TextBlock FontWeight="{DynamicResource Font.Weight.SemiBold}" Style="{StaticResource Text.Body}" Text="{Binding ShareTitle}" />
+            <TextBlock Margin="{StaticResource Space.Inline}" Style="{StaticResource Text.Secondary}" Text="{Binding ShareRange}" />
+          </StackPanel>
+          <controls:ZoneShareBar Elevated="{Binding ZoneElevated}" Good="{Binding ZoneGood}" High="{Binding ZoneHigh}" Palette="{Binding SharePalette}" />
+          <Grid Margin="{StaticResource Space.Chart.Caption}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal">
+              <TextBlock FontWeight="{DynamicResource Font.Weight.SemiBold}" Foreground="{DynamicResource Text.Primary.Brush}" Style="{StaticResource Text.Caption}" Text="{Binding ZoneGoodText}" />
+              <TextBlock Margin="{StaticResource Space.Inline.Tight}" Style="{StaticResource Text.Caption}" Text="{Binding ShareFirstLabel}" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+              <TextBlock FontWeight="{DynamicResource Font.Weight.SemiBold}" Foreground="{DynamicResource Text.Primary.Brush}" Style="{StaticResource Text.Caption}" Text="{Binding ZoneElevatedText}" />
+              <TextBlock Margin="{StaticResource Space.Inline.Tight}" Style="{StaticResource Text.Caption}" Text="{Binding ShareSecondLabel}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
+              <TextBlock FontWeight="{DynamicResource Font.Weight.SemiBold}" Foreground="{DynamicResource Text.Primary.Brush}" Style="{StaticResource Text.Caption}" Text="{Binding ZoneHighText}" />
+              <TextBlock Margin="{StaticResource Space.Inline.Tight}" Style="{StaticResource Text.Caption}" Text="{Binding ShareThirdLabel}" />
+            </StackPanel>
+          </Grid>
+        </StackPanel>
+      </StackPanel>
+
+      <!-- Last night (Day): the verdict pill (CO₂ only), three numbers and a short tip; a night only partly recorded says so. -->
+      <StackPanel Margin="{StaticResource Space.Stats.Block}"
+                  DataContext="{Binding Sleep}"
+                  Visibility="{Binding DataContext.ShowSleep, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Converter={StaticResource BoolToVisibility}}">
+        <StackPanel Orientation="Horizontal">
+          <TextBlock VerticalAlignment="Center"
+                     FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                     Style="{StaticResource Text.SectionLabel}"
+                     Text="&#xE708;" />
+          <TextBlock Margin="{StaticResource Space.Inline}"
+                     VerticalAlignment="Center"
+                     Style="{StaticResource Text.SectionLabel}"
+                     Text="{Binding Title}" />
+          <controls:Pill Margin="{StaticResource Space.Inline}"
+                         VerticalAlignment="Center"
+                         Content="{Binding VerdictText}"
+                         Visibility="{Binding HasVerdict, Converter={StaticResource BoolToVisibility}}"
+                         Zone="{Binding VerdictZone}" />
+        </StackPanel>
+
+        <Grid Margin="{StaticResource Space.Stats.Block}" Visibility="{Binding HasData, Converter={StaticResource BoolToVisibility}}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <controls:KeyValueCell Grid.Column="0" Label="{Binding FirstLabel}" Value="{Binding FirstValue}" />
+          <controls:KeyValueCell Grid.Column="1" Label="{Binding PeakLabel}" Value="{Binding PeakValue}" />
+          <controls:KeyValueCell Grid.Column="2" Label="{Binding DeepLabel}" Value="{Binding DeepValue}" />
+        </Grid>
+
+        <TextBlock Margin="{StaticResource Space.Stats.Block}"
+                   Style="{StaticResource Text.Secondary}"
+                   Text="{Binding Tip}"
+                   TextWrapping="Wrap" />
+
+        <TextBlock Margin="{StaticResource Space.Chart.Caption}"
+                   FontWeight="SemiBold"
+                   Style="{StaticResource Text.Secondary}"
+                   Text="{Binding PartialNote}"
+                   TextWrapping="Wrap"
+                   Visibility="{Binding ShowPartialNote, Converter={StaticResource BoolToVisibility}}" />
+      </StackPanel>
+
+      <!-- Nights (Week, Month, Year): the average night, and for CO₂ the best and worst night with their dates. -->
+      <StackPanel Margin="{StaticResource Space.Stats.Block}"
+                  DataContext="{Binding Sleep}"
+                  Visibility="{Binding HasNights, Converter={StaticResource BoolToVisibility}}">
+        <StackPanel Orientation="Horizontal">
+          <TextBlock VerticalAlignment="Center"
+                     FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                     Style="{StaticResource Text.SectionLabel}"
+                     Text="&#xE708;" />
+          <TextBlock Margin="{StaticResource Space.Inline}"
+                     VerticalAlignment="Center"
+                     Style="{StaticResource Text.SectionLabel}"
+                     Text="{Binding NightsTitle}" />
+        </StackPanel>
+
+        <Grid Margin="{StaticResource Space.Stats.Block}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <controls:KeyValueCell Grid.Column="0" Label="{loc:T Nights_Average}" Value="{Binding NightsAverage}" />
+          <StackPanel Grid.Column="1" Visibility="{Binding HasNightExtremes, Converter={StaticResource BoolToVisibility}}">
+            <controls:KeyValueCell Label="{Binding LowestNightLabel}" Value="{Binding LowestNightValue}" />
+            <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding LowestNightWhen}" />
+          </StackPanel>
+          <StackPanel Grid.Column="2" Visibility="{Binding HasNightExtremes, Converter={StaticResource BoolToVisibility}}">
+            <controls:KeyValueCell Label="{Binding HighestNightLabel}" Value="{Binding HighestNightValue}" />
+            <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding HighestNightWhen}" />
+          </StackPanel>
+        </Grid>
+
+        <TextBlock Margin="{StaticResource Space.Chart.Caption}" Style="{StaticResource Text.Caption}" Text="{loc:T Nights_Hint}" TextWrapping="Wrap" />
+      </StackPanel>
+
+      <StackPanel DataContext="{Binding Stats}">
+        <!-- Highest and lowest reading with their day and time. -->
+        <Border Margin="{StaticResource Space.Stats.Block}"
+                BorderBrush="{DynamicResource Divider.Brush}"
+                BorderThickness="0,1,0,1"
+                Padding="{StaticResource Space.Stats.Cells}">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+              <controls:KeyValueCell Label="{loc:T Stats_Highest}" Value="{Binding HighestText}" />
+              <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding HighestWhen}" />
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+              <controls:KeyValueCell Label="{loc:T Stats_Lowest}" Value="{Binding LowestText}" />
+              <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding LowestWhen}" />
+            </StackPanel>
+          </Grid>
+        </Border>
+
+        <!-- Pressure only: the biggest change in 24 hours and the range of the period. -->
+        <Grid Margin="{StaticResource Space.Stats.Block}" Visibility="{Binding HasBiggestChange, Converter={StaticResource BoolToVisibility}}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0">
+            <controls:KeyValueCell Label="{loc:T Stats_BiggestChange}" Value="{Binding BiggestChangeText}" />
+            <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding BiggestChangeWhen}" />
+          </StackPanel>
+          <controls:KeyValueCell Grid.Column="1" Label="{loc:T Stats_PressureRange}" Value="{Binding PressureRangeText}" />
+        </Grid>
+
+        <controls:InsightBox Margin="{StaticResource Space.Stats.Block}" Content="{Binding InsightText}" Zone="{Binding InsightZone}" />
+      </StackPanel>
+    </StackPanel>
+  </controls:Card>
+</UserControl>

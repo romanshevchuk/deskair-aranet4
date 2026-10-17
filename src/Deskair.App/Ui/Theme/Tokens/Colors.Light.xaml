@@ -9,6 +9,9 @@
   <SolidColorBrush x:Key="Border.Brush" Color="{StaticResource Border.Color}" />
   <Color x:Key="Divider.Color">#E6EAED</Color>
   <SolidColorBrush x:Key="Divider.Brush" Color="{StaticResource Divider.Color}" />
+  <!-- Flyout footer band: 3.5 % ink over the flyout (design-tokens.md "flyout.band"). -->
+  <Color x:Key="Flyout.Band.Color">#09141C24</Color>
+  <SolidColorBrush x:Key="Flyout.Band.Brush" Color="{StaticResource Flyout.Band.Color}" />
   <Color x:Key="Grid.Color">#E3E8EB</Color>
   <SolidColorBrush x:Key="Grid.Brush" Color="{StaticResource Grid.Color}" />
   <Color x:Key="Segment.Bg.Color">#E4E9EC</Color>

@@ -1,6 +1,6 @@
 # Polish rework: implementation plan
 
-*Last reviewed: 2026-10-14*
+*Last reviewed: 2026-10-15*
 
 How to build the changes in [`ui-polish-plan.md`](ui-polish-plan.md) (what and why) to the look in [`design/polish/deskair-polish-concept.html`](../../design/polish/deskair-polish-concept.html) (the visual target, like `design/prototype/index.html` was for v1). Backlog IDs are `POL-00` to `POL-17` in [`backlog.md`](backlog.md); run each with `/implement-feature POL-xx`.
 
@@ -88,7 +88,7 @@ POL-07 spec: the concept page's flyout section is the layout; strings `Offline_L
 
 POL-12 spec: a Domain function like `HourGridCalculator.Build` that returns month rows of up to 31 daily means (a day needs readings in at least 6 hours); `HourGridBuilder` gets a Year path that sets `Columns = 31`, day-number column labels (1, 5, 10 … 31; centre them, a small change in `HourGridLayer.DrawTop`), no night bracket and no typical row, best / worst month tags (`MinimumHoursForTag` becomes a parameter: 240 hours for a month), and `UnitText` "Each square is one day". `HistoryViewModel` sets `wantGrid` for Year too.
 | POL-13 | Day chart: typical line (previous 7 days), night shading, "air improved" markers from a Domain function with tests, hover with the typical value | H7 | POL-09 | M | Sonnet |
-| POL-14 | Summary card: merge `StatsCard` and `SleepCard`; change as text; coverage as a line; Nights section; highest and lowest with time; one tip with night-aware wording | H8, H9 | POL-11 | M | Sonnet |
+| POL-14 | Summary card: merge `StatsCard` and `SleepCard`; change as text; coverage as a line; Nights section (built, Q49); highest and lowest with time; one tip with night-aware wording | H8, H9 | POL-11 | M | Sonnet |
 
 POL-09 notes: a Domain type (for example `HistoryPeriod`) with tests across the spring and autumn clock changes and the first-reading limit; the query service already serves arbitrary ranges for export.
 
@@ -96,7 +96,7 @@ POL-11 notes: Opus builds the control, its chart model and the hourly-per-day qu
 
 POL-13 spec: marker rule from behaviour-rules.md "Air improved" (detection and 60-minute spacing); the typical line is the hourly mean of the 7 days before the shown day; night shading uses `NightWindow`.
 
-POL-14 spec: the time of the highest and lowest reading needs timestamps in the buckets (Q47 "Not built"); add them to the query result first, with tests. Best and worst day are no longer in the card (they are tags in the grid). The stats card still shows best and worst day; remove them there now that the grid tags the rows.
+POL-14 spec: the time of the highest and lowest reading needs timestamps in the buckets (Q47 "Not built"); add them to the query result first, with tests. Best and worst day are no longer in the card (they are tags in the grid). The stats card still shows best and worst day; remove them there now that the grid tags the rows. **Built:** the Nights section for Week, Month and Year (Q49): `NightsCalculator`, `ReadingQueryService.GetNightsAsync` with tests for the count, the average, the best and worst start times and the empty window, and `SummaryCard` between the zones and "Highest reading".
 
 ### Phase 5: the rest
 
@@ -129,3 +129,20 @@ After POL-01 is merged, the Live, Flyout and History streams touch different fil
 | Removing the Night filter loses a feature people use | The Nights section and the night band keep the information; recorded as a decision in POL-00, revisit after a week of use. |
 | `HourGridChart` gets slow with many rows | At most 31 rows × 24 squares (744 rectangles); draw in one `DrawingVisual` like the other charts, hit-test by row and column arithmetic. |
 | Ukrainian labels overflow in the summary card and grid | Check the Ukrainian renders in every item; I18N-02 native review after POL-17. |
+
+### Phase 4b: History per metric (added after POL-11 to POL-14)
+
+| ID | Item | Plan refs | Depends | Size | Model |
+|---|---|---|---|---|---|
+| POL-18 | Each metric gets the History chart that fits it (concept page, History, note 9) | H3, H7, H8 | POL-11 to POL-14 | M | Opus for the docs and tokens, then Sonnet |
+
+**Bugs first (S): done.** On the Temperature, Humidity and Pressure tabs, the Typical day card shows CO₂ data (1000 / 1400 axis, "worst 17–20h"), and Pressure shows a sleep section ("Deep sleep avg 990.6 hPa"). Neither belongs there.
+
+| Metric | Week, Month, Year | Day | Summary card |
+|---|---|---|---|
+| CO₂ | As built (zones grid) | As built | As built |
+| Temperature | The hour grid with a diverging comfort scale: two cool steps (below 18, 18–20 °C), a neutral grey for comfortable (20–24), two warm steps (24–26, 26 and above). Row end: average and a cool / comfortable / warm bar (comfortable in the Good segment colour); best and worst = most and least time comfortable. Typical row outlines the three hours furthest outside the range and names them ("Coolest 03:00–06:00") | Line in the metric colour, the comfort range as a soft band (metric colour 9 %, "comfort 20–24 °C"), typical line, night band; no area fill | Average with a comfort pill (Comfortable in Good colours; "A bit cool / Too cool", "A bit warm / Too warm" in Elevated colours); change as neutral text ("warmer / cooler than…"); Time in comfort range; Nights (average, coolest, warmest); highest and lowest; tip names the coolest or warmest hours, or "Comfortable around the clock" |
+| Humidity | As temperature, with dry (below 25, 25–30 %) and humid (50–60, 60 and above) steps; "Driest" / "Most humid" | As temperature, "comfort 30–50 %" | As temperature; the humid tip suggests airing after cooking or a shower; the dry one says it is usual in heated rooms in winter |
+| Pressure | No grid and no typical day: one line of hourly means (daily means for Year) with a fitted axis and the biggest 24-hour change shaded and labelled ("+14.8 hPa in 24 h") | Line, fitted axis, no night band, no typical line | Average, change as neutral text, Biggest change in 24 hours with its start, the range of the period, and one line: "Pressure follows the weather, not the room" |
+
+New tokens: `Heat.Cool2`, `Heat.Cool1`, `Heat.Comfort`, `Heat.Warm1`, `Heat.Warm2`, `Heat.Dry2`, `Heat.Dry1`, `Heat.Humid1`, `Heat.Humid2` (values in the concept page's `--hm-c*`, `--hm-ok`, `--hm-w*`, `--hm-d*`, `--hm-m*`, light and dark). `HourGridModel.Steps` already carries the limits; the bins and the end-bar keys need to come from the metric. Update design-tokens.md "Heat scale", screens-and-states.md "History views" and behaviour-rules.md (comfort steps, "furthest outside the range" for the typical row) before building.

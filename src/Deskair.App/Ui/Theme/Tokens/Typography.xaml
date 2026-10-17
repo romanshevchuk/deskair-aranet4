@@ -14,7 +14,7 @@
   <sys:Double x:Key="Font.Size.StatValue">17</sys:Double>
   <sys:Double x:Key="Font.Size.MiniLabel">13.5</sys:Double>
   <sys:Double x:Key="Font.Size.Welcome">22</sys:Double>
-  <sys:Double x:Key="Font.Size.Flyout.Value">52</sys:Double>
+  <sys:Double x:Key="Font.Size.Flyout.Value">58</sys:Double>
   <sys:Double x:Key="Font.Size.Body">14</sys:Double>
   <sys:Double x:Key="Font.Size.Secondary">13</sys:Double>
   <sys:Double x:Key="Font.Size.Caption">12</sys:Double>

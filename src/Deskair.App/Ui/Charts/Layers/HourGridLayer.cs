@@ -11,7 +11,9 @@ namespace Deskair.App.Ui.Charts.Layers;
 /// </summary>
 public sealed class HourGridLayer : IChartLayer
 {
-    private static readonly string[] heatKeys = ["Heat.G1.Brush", "Heat.G2.Brush", "Heat.E1.Brush", "Heat.E2.Brush", "Heat.H1.Brush", "Heat.H2.Brush"];
+    private static readonly string[] zoneKeys = ["Heat.G1.Brush", "Heat.G2.Brush", "Heat.E1.Brush", "Heat.E2.Brush", "Heat.H1.Brush", "Heat.H2.Brush"];
+    private static readonly string[] temperatureKeys = ["Heat.Cool2.Brush", "Heat.Cool1.Brush", "Heat.Comfort.Brush", "Heat.Warm1.Brush", "Heat.Warm2.Brush"];
+    private static readonly string[] humidityKeys = ["Heat.Dry2.Brush", "Heat.Dry1.Brush", "Heat.Comfort.Brush", "Heat.Humid1.Brush", "Heat.Humid2.Brush"];
     private const double AverageRight = 46;
     private const double BarLeft = 56;
     private const double BarWidth = 60;
@@ -26,7 +28,15 @@ public sealed class HourGridLayer : IChartLayer
     /// <summary>The ring is the blue focus ring for the keyboard and the ink accent for the mouse.</summary>
     public bool KeyboardFocus { get; set; }
 
-    /// <summary>The heat step (0 to 5) of a value, from the model's step limits.</summary>
+    /// <summary>The brush keys of a palette, from the lowest step to the highest.</summary>
+    public static IReadOnlyList<string> HeatKeys(HourGridPalette palette) => palette switch
+    {
+        HourGridPalette.Temperature => temperatureKeys,
+        HourGridPalette.Humidity => humidityKeys,
+        _ => zoneKeys
+    };
+
+    /// <summary>The heat step (0 to the number of limits) of a value, from the model's step limits.</summary>
     public static int Step(double value, IReadOnlyList<(double Value, string Text)> steps)
     {
         ArgumentNullException.ThrowIfNull(steps);
@@ -37,7 +47,7 @@ public sealed class HourGridLayer : IChartLayer
             step++;
         }
 
-        return Math.Min(step, heatKeys.Length - 1);
+        return step;
     }
 
     public void Draw(DrawingContext context, ChartArea area)
@@ -102,7 +112,11 @@ public sealed class HourGridLayer : IChartLayer
         foreach (var (column, label) in model.ColumnLabels)
         {
             var formatted = area.Text(label, area.Brush("Text.Tertiary.Brush"));
-            context.DrawText(formatted, new Point(layout.GridLeft + (column * layout.CellWidth) + 1, layout.Top - 6 - formatted.Height));
+            var left = model.CenterColumnLabels
+                ? layout.GridLeft + (column * layout.CellWidth) + ((layout.CellWidth - formatted.Width) / 2)
+                : layout.GridLeft + (column * layout.CellWidth) + 1;
+
+            context.DrawText(formatted, new Point(left, layout.Top - 6 - formatted.Height));
         }
     }
 
@@ -120,6 +134,7 @@ public sealed class HourGridLayer : IChartLayer
     {
         var radius = Math.Min(4, layout.RowHeight / 4);
         var outline = new Pen(area.Brush("Heat.None.Line.Brush"), 1);
+        var keys = HeatKeys(layout.Model.Palette);
 
         for (var column = 0; column < row.Cells.Count && column < layout.Model.Columns; column++)
         {
@@ -132,7 +147,7 @@ public sealed class HourGridLayer : IChartLayer
 
             if (cell.Value is { } value)
             {
-                context.DrawRoundedRectangle(area.Brush(heatKeys[Step(value, layout.Model.Steps)]), null, rect, radius, radius);
+                context.DrawRoundedRectangle(area.Brush(keys[Math.Min(Step(value, layout.Model.Steps), keys.Count - 1)]), null, rect, radius, radius);
             }
             else
             {
@@ -152,17 +167,19 @@ public sealed class HourGridLayer : IChartLayer
             context.DrawText(formatted, new Point(layout.GridRight + AverageRight - formatted.Width, middle - (formatted.Height / 2)));
         }
 
-        if (row.Share is { } share)
+        var bar = BarParts(layout.Model.Palette, row);
+
+        if (bar.Count > 0)
         {
             var height = Math.Clamp(layout.RowHeight - 6, 3, 6);
             var x = layout.GridRight + BarLeft;
 
-            foreach (var (part, zone) in new[] { (share.Good, "Good"), (share.Elevated, "Elevated"), (share.High, "High") })
+            foreach (var (part, key) in bar)
             {
                 var width = BarWidth * part;
                 if (width >= 1)
                 {
-                    context.DrawRoundedRectangle(text.Brush($"Zone.{zone}.Segment.Brush"), null, new Rect(x, middle - (height / 2), Math.Max(0.5, width - 1.5), height), Math.Min(2, height / 2), Math.Min(2, height / 2));
+                    context.DrawRoundedRectangle(text.Brush(key), null, new Rect(x, middle - (height / 2), Math.Max(0.5, width - 1.5), height), Math.Min(2, height / 2), Math.Min(2, height / 2));
                 }
 
                 x += width;
@@ -176,6 +193,24 @@ public sealed class HourGridLayer : IChartLayer
             var formatted = text.Text(label, brush, bold: true);
             context.DrawText(formatted, new Point(layout.GridRight + TagLeft, middle - (formatted.Height / 2)));
         }
+    }
+
+    /// <summary>The row-end bar: the share of each part with its brush, left to right. Zones for CO₂; below, inside and above the comfortable range otherwise.</summary>
+    private static IReadOnlyList<(double Part, string Key)> BarParts(HourGridPalette palette, HourGridRow row)
+    {
+        if (row.Share is { } share)
+        {
+            return [(share.Good, "Zone.Good.Segment.Brush"), (share.Elevated, "Zone.Elevated.Segment.Brush"), (share.High, "Zone.High.Segment.Brush")];
+        }
+
+        if (row.Comfort is not { } comfort)
+        {
+            return [];
+        }
+
+        var keys = HeatKeys(palette);
+
+        return [(comfort.Low, keys[0]), (comfort.Inside, "Zone.Good.Segment.Brush"), (comfort.High, keys[^1])];
     }
 
     private static void DrawCollapsed(DrawingContext context, ChartArea area, HourGridLayout layout, int index, HourGridRow row)

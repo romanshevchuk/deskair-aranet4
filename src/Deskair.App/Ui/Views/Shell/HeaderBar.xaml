@@ -25,19 +25,16 @@
                  Text="Deskair" />
     </StackPanel>
 
-    <controls:SegmentedControl Grid.Column="1"
-                               Margin="20,0,0,0"
-                               Background="Transparent"
-                               Padding="0"
-                               VerticalAlignment="Center"
-                               WindowChrome.IsHitTestVisibleInChrome="True"
-                               AutomationProperties.Name="{loc:T Nav_Main}"
-                               SelectedValuePath="Tag"
-                               SelectedValue="{Binding Section, Mode=TwoWay}">
+    <controls:NavTabs Grid.Column="1"
+                       Margin="7,0,0,0"
+                       WindowChrome.IsHitTestVisibleInChrome="True"
+                       AutomationProperties.Name="{loc:T Nav_Main}"
+                       SelectedValuePath="Tag"
+                       SelectedValue="{Binding Section, Mode=TwoWay}">
       <ListBoxItem Content="{loc:T Nav_Live}" Tag="{x:Static vm:ShellSection.Live}" />
       <ListBoxItem Content="{loc:T Nav_History}" Tag="{x:Static vm:ShellSection.History}" />
       <ListBoxItem Content="{loc:T Nav_Settings}" Tag="{x:Static vm:ShellSection.Settings}" />
-    </controls:SegmentedControl>
+    </controls:NavTabs>
 
     <!-- No rooms yet (first run): no chip. -->
     <StackPanel Grid.Column="3"

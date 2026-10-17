@@ -1,6 +1,6 @@
 # Behaviour rules
 
-*Last reviewed: 2026-10-14*
+*Last reviewed: 2026-10-15*
 
 ## CO₂ zones
 
@@ -52,11 +52,14 @@ CSV exports are unchanged. Display values use proportional figures (design-token
 2. Calendar days and months use the user's local time. Today and the current month are counted only up to now, so they are not "partial" just because they are not over.
 3. Comparison with the previous period uses the same length: for the last 24 hours, the 24 hours before; otherwise the period ‹ would show (`HistoryPeriod.Before`). If the previous period has under 50 % of its expected readings, say "No earlier data to compare".
 4. **Grid squares:** an hour square (Week, Month) shows the mean of the readings in that hour, or "no data" if there are none. A day square (Year) shows the day's mean if at least 6 of its hours have readings, else "no data". Hours after now are not drawn. Two or more consecutive days without readings collapse into one row, "No readings · 15 Sep – 5 Oct"; a single empty day stays as empty squares. Nothing is interpolated.
-5. **Row end:** each row shows its average, its time in each zone, and a tag on the best (lowest average) and worst (highest average) row, among rows with readings in at least 12 hours (days) or 10 days (months), and only when at least 3 rows qualify.
+5. **Row end:** each row shows its average, its time in each zone, and a tag on the best (lowest average) and worst (highest average) row, among rows with readings in at least 12 hours (days) or 240 hours (months, ten days' worth), and only when at least 3 rows qualify.
 6. **Coverage** is shown as one line under the average, "Based on N % of expected readings", and hidden at 98 % or more with no empty days.
 7. **Typical day:** the mean per hour of day over the shown period; for Day, over the 7 days before the shown day; for Year, over the whole year. Week and Month show it as the grid's last row, with the worst three-hour window outlined. Day shows it as a grey line.
 8. **Nights:** the night hours from Settings → Sleep (22:00 to 07:00 by default; any start and end; the night may cross midnight; the start must differ from the end). A night belongs to the evening it starts on and is labelled "12–13 Oct". A night counts if at least 6 of its hours have readings. History shows the night hours as a band (grid header, Day chart) and in the summary: the average of the nights, the best and the worst night (Week, Month, Year), or last night (Day; see "Sleep"). There is no Night filter (D-0019) and no Work filter in v1.
 9. **Worst-hours tip:** names the worst three-hour window of the typical day and its average. If at least 2 of its 3 hours are night hours, it says "…, while you sleep" and suggests leaving a window slightly open at night; otherwise it suggests opening a window shortly before.
+10. **Comfort scales (Temperature, Humidity; POL-18):** the comfortable range is 20 to 24 °C and 30 to 50 % relative humidity, fixed in v1 and held in °C. Steps: Temperature below 18, 18 to 20, 20 to 24, 24 to 26, 26 and above; Humidity below 25, 25 to 30, 30 to 50, 50 to 60, 60 and above. A value on a limit belongs to the step above it. The grid colours squares by step; the row end shows the average and the share of readings below, inside and above the range; the tags go to the rows with the most and the least time inside the range, under the same row and count rules as rule 5.
+11. **Furthest outside the range:** in the typical row, the outlined three hours are the consecutive three-hour window (00 to 21) whose mean is furthest outside the comfortable range, named by its side: "Coolest" or "Warmest" (Temperature), "Driest" or "Most humid" (Humidity). When every window is inside the range nothing is outlined.
+12. **Pressure (POL-18):** no grid, no typical day and no night section. Pressure follows the weather, not the room or the hour, so History shows one line.
 
 ## Semantics
 
@@ -104,7 +107,7 @@ When several apply, the first of this list wins: First run, Not connected, Stale
 
 ## Air improved (markers)
 
-- **Detection:** CO₂ at or above 1,000 and a drop of 150 ppm within 10 minutes starts an "air improved" event. It ends when below 1,000, when it flattens (under 10 ppm per 5 min), or after 45 minutes. Call it "air improved", not "window opened".
+- **Detection:** CO₂ at or above 1,000 and a drop of 150 ppm within 10 minutes starts an "air improved" event. It ends when below 1,000, when it flattens (under 10 ppm per 5 min), or after 45 minutes. Call it "air improved", not "window opened". Built as `AirImprovedDetector` (Domain): the event runs from its start through the reading that reached the 150 ppm drop, then on until the first reading that is below 1,000, falls by under 10 ppm per 5 minutes, or is more than 45 minutes after the start; the drop and the duration in the hover are measured to that last reading. A later event starts only after the previous one has ended.
 - **Markers (POL-13):** the History Day chart marks the start of each event with a small ring labelled "air improved"; markers are at least 60 minutes apart (a later start inside that hour is not marked). Hover gives the time and the drop ("Air improved at 14:16 · −934 ppm in 12 min").
 - **Later (AIR-01):** feedback toasts, markers on the Live ribbon and a typical time to clear per room.
 

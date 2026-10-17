@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Deskair.App.ViewModels.ChartModels;
 
 namespace Deskair.App.Ui.Controls;
 
@@ -28,6 +29,12 @@ public class ZoneShareBar : Control
         typeof(ZoneShareBar),
         new PropertyMetadata(default(double), OnShareChanged));
 
+    public static readonly DependencyProperty PaletteProperty = DependencyProperty.Register(
+        nameof(Palette),
+        typeof(HourGridPalette),
+        typeof(ZoneShareBar),
+        new PropertyMetadata(HourGridPalette.Zones));
+
     private ColumnDefinition? goodColumn;
     private ColumnDefinition? elevatedColumn;
     private ColumnDefinition? highColumn;
@@ -37,6 +44,13 @@ public class ZoneShareBar : Control
     static ZoneShareBar()
     {
         DefaultStyleKeyProperty.OverrideMetadata(typeof(ZoneShareBar), new FrameworkPropertyMetadata(typeof(ZoneShareBar)));
+    }
+
+    /// <summary>The colours of the three parts: the zones, or a comfort scale (below the range, inside it, above it).</summary>
+    public HourGridPalette Palette
+    {
+        get => (HourGridPalette)GetValue(PaletteProperty);
+        set => SetValue(PaletteProperty, value);
     }
 
     public double Good

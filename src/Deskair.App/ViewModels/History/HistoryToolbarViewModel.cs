@@ -1,13 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Time;
 
 namespace Deskair.App.ViewModels.History;
 
 /// <summary>
-/// The History choices: metric, range, hours, grouping, and which period of the range (‹ and ›, D-0019). The screen supplies how far back ‹ may go
+/// The History choices: metric, range, and which period of the range (‹ and ›, D-0019). The screen supplies how far back ‹ may go
 /// and the period's title; changing the range returns to the latest period (behaviour-rules.md "History periods").
 /// </summary>
 public sealed partial class HistoryToolbarViewModel : ObservableObject
@@ -17,12 +16,6 @@ public sealed partial class HistoryToolbarViewModel : ObservableObject
 
     [ObservableProperty]
     private Period range;
-
-    [ObservableProperty]
-    private HoursFilterMode hours;
-
-    [ObservableProperty]
-    private Period grouping;
 
     /// <summary>How many periods back from the latest; 0 is the latest.</summary>
     [ObservableProperty]
@@ -42,19 +35,9 @@ public sealed partial class HistoryToolbarViewModel : ObservableObject
 
     public bool IsLatest => Offset == 0;
 
-    public IReadOnlyList<Period> GroupingOptions()
-    {
-        return Range switch
-        {
-            Period.Month => [Period.Day, Period.Week],
-            Period.Year => [Period.Week, Period.Month],
-            _ => []
-        };
-    }
-
     /// <summary>Whether a change of this property asks for different data (the period's title and limit are results, not choices).</summary>
     public static bool IsChoice(string? propertyName)
-        => propertyName is nameof(Metric) or nameof(Range) or nameof(Hours) or nameof(Grouping) or nameof(Offset);
+        => propertyName is nameof(Metric) or nameof(Range) or nameof(Offset);
 
     [RelayCommand(CanExecute = nameof(CanGoBack))]
     private void PreviousPeriod() => Offset++;
@@ -73,11 +56,5 @@ public sealed partial class HistoryToolbarViewModel : ObservableObject
     partial void OnRangeChanged(Period value)
     {
         Offset = 0;
-
-        var options = GroupingOptions();
-        if (options.Count > 0 && !options.Contains(Grouping))
-        {
-            Grouping = options[0];
-        }
     }
 }

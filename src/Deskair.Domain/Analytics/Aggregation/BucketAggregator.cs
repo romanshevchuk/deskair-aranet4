@@ -23,10 +23,11 @@ public static class BucketAggregator
         DateTimeOffset end,
         int expected)
     {
-        var values = readings
+        var inBucket = readings
             .Where(reading => reading.Timestamp >= start && reading.Timestamp < end)
-            .Select(reading => reading.ValueOf(metric))
+            .OrderBy(reading => reading.Timestamp)
             .ToList();
+        var values = inBucket.Select(reading => reading.ValueOf(metric)).ToList();
         var state = BucketStateClassifier.Classify(values.Count, expected);
 
         if (values.Count == 0)
@@ -34,7 +35,10 @@ public static class BucketAggregator
             return new Bucket(start, end, null, null, null, 0, expected, state);
         }
 
-        return new Bucket(start, end, values.Average(), values.Min(), values.Max(), values.Count, expected, state);
+        var lowest = inBucket.MinBy(reading => reading.ValueOf(metric));
+        var highest = inBucket.MaxBy(reading => reading.ValueOf(metric));
+
+        return new Bucket(start, end, values.Average(), values.Min(), values.Max(), values.Count, expected, state, lowest.Timestamp, highest.Timestamp);
     }
 
     /// <summary>

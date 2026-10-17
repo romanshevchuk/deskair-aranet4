@@ -45,7 +45,7 @@ public class FlyoutRenderTests
                 snooze.ForOneHour();
             }
 
-            var viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), calendar, new FakeWindowController(), snooze, new FriendlyTime(localizer, calendar, clock));
+            var viewModel = new FlyoutViewModel(localizer, TestFormatter.Create(localizer), calendar, new FakeWindowController(), snooze, new FriendlyTime(localizer, calendar, clock), new FakeBluetoothRadio());
             var recent = new List<Reading>();
 
             for (var time = now.AddHours(-24); time <= now; time += TimeSpan.FromMinutes(2))
@@ -53,7 +53,7 @@ public class FlyoutRenderTests
                 recent.Add(SimulatedSensor.ReadingAt(time));
             }
 
-            viewModel.Update(notConnected ? null : recent[^1], notConnected ? [] : recent, now, "Office");
+            viewModel.Update(notConnected ? null : recent[^1], recent, now.AddMinutes(25), "Office");
 
             var view = new FlyoutView { DataContext = viewModel };
 

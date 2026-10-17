@@ -27,7 +27,7 @@
       </controls:SettingsRow>
       <StackPanel Visibility="{Binding QuietHoursEnabled, Converter={StaticResource BoolToVisibility}}">
         <controls:SettingsRow Header="{loc:T Settings_QuietHours_From}">
-          <controls:TextInput Width="72"
+          <controls:TextInput Width="{StaticResource Size.TimeField.Width}" MinWidth="0" Padding="4,3" HorizontalContentAlignment="Center"
                               AutomationProperties.Name="{loc:T Settings_QuietHours_From}"
                               Text="{Binding QuietHoursStart.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </controls:SettingsRow>
@@ -35,7 +35,7 @@
                    Text="{loc:T Settings_QuietHours_Invalid}"
                    Visibility="{Binding QuietHoursStart.IsInvalid, Converter={StaticResource BoolToVisibility}}" />
         <controls:SettingsRow Header="{loc:T Settings_QuietHours_To}">
-          <controls:TextInput Width="72"
+          <controls:TextInput Width="{StaticResource Size.TimeField.Width}" MinWidth="0" Padding="4,3" HorizontalContentAlignment="Center"
                               AutomationProperties.Name="{loc:T Settings_QuietHours_To}"
                               Text="{Binding QuietHoursEnd.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </controls:SettingsRow>

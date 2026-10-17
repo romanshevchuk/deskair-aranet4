@@ -1,5 +1,7 @@
 using Deskair.Domain.Analytics.Aggregation;
+using Deskair.Domain.Analytics.Comfort;
 using Deskair.Domain.Analytics.HoursFilter;
+using Deskair.Domain.Analytics.Pressure;
 using Deskair.Domain.Analytics.TypicalDay;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Time;
@@ -22,10 +24,16 @@ public sealed record StatsInput(IReadOnlyList<Bucket> Buckets)
     /// <summary>The buckets of the period before the one shown, for the change. Null or empty when there is nothing earlier.</summary>
     public IReadOnlyList<Bucket>? Previous { get; init; }
 
-    /// <summary>The hours filter of the toolbar. "Night average" heads the card with the night filter.</summary>
-    public HoursFilterMode Hours { get; init; } = HoursFilterMode.AllDay;
-
     public ZoneShare? ZoneShare { get; init; }
 
+    /// <summary>How the readings of Temperature or Humidity spread below, inside and above the comfortable range. Null for other metrics.</summary>
+    public ComfortShare? Comfort { get; init; }
+
+    /// <summary>The biggest change in pressure over 24 hours in the period (Pressure only). Null for none.</summary>
+    public PressureChange? PressureChange { get; init; }
+
     public IReadOnlyList<HourOfDayAverage>? TypicalDay { get; init; }
+
+    /// <summary>The night hours from Settings. A worst window that falls mostly in them gets the "while you sleep" tip.</summary>
+    public NightWindow? Night { get; init; }
 }

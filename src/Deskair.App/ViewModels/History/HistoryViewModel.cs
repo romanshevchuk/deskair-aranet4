@@ -5,7 +5,7 @@ using Deskair.App.Localization;
 using Deskair.App.ViewModels.ChartModels;
 using Deskair.App.ViewModels.Data;
 using Deskair.Domain.Analytics.Aggregation;
-using Deskair.Domain.Analytics.HoursFilter;
+using Deskair.Domain.Analytics.AirImproved;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
 using Deskair.Domain.Time;
@@ -32,6 +32,7 @@ public sealed partial class HistoryViewModel : ObservableObject
     private readonly MetricFormatter formatter;
     private readonly PeriodLabeler labeler;
     private readonly HourGridBuilder gridBuilder;
+    private readonly DayChartBuilder dayChart;
     private CancellationTokenSource? current;
     private bool following;
 
@@ -44,6 +45,26 @@ public sealed partial class HistoryViewModel : ObservableObject
     [ObservableProperty]
     private IReadOnlyList<ChartGap>? gaps;
 
+    /// <summary>The typical day (the 7 days before) laid over the Day window, in the unit shown. Null outside Day or for other metrics than CO₂.</summary>
+    [ObservableProperty]
+    private IReadOnlyList<ChartPoint>? typicalPoints;
+
+    /// <summary>The night hours inside the Day window, drawn as a band. Null outside Day.</summary>
+    [ObservableProperty]
+    private IReadOnlyList<ChartGap>? nightSpans;
+
+    /// <summary>The comfortable range behind the Day line (Temperature, Humidity). Null otherwise.</summary>
+    [ObservableProperty]
+    private ChartBand? comfortBand;
+
+    /// <summary>The biggest 24 hour change shaded on the Pressure line, with its label. Null otherwise.</summary>
+    [ObservableProperty]
+    private ChartHighlight? highlight;
+
+    /// <summary>The "air improved" rings on the Day chart (CO₂ only). Null outside Day.</summary>
+    [ObservableProperty]
+    private IReadOnlyList<ChartMarker>? markers;
+
     /// <summary>Saturdays and Sundays inside the range, shaded behind bars that stand for single days. Null otherwise.</summary>
     [ObservableProperty]
     private IReadOnlyList<ChartGap>? weekendSpans;
@@ -52,9 +73,13 @@ public sealed partial class HistoryViewModel : ObservableObject
     [ObservableProperty]
     private bool isEmpty;
 
-    /// <summary>The sleep card (last night) takes the place of the typical day while the range is Day and the hours filter is Night.</summary>
+    /// <summary>The sleep card (last night) takes the place of the typical day while the range is Day and the hours filter is Night. Not shown for Pressure.</summary>
     [ObservableProperty]
     private bool showSleep;
+
+    /// <summary>The typical day card is a CO₂ rule, so it is shown for CO₂ only.</summary>
+    [ObservableProperty]
+    private bool showTypicalDay;
 
     /// <summary>The days × hours grid in place of the bars (D-0018): CO₂ on Week and Month over all hours. Null otherwise.</summary>
     [ObservableProperty]
@@ -98,6 +123,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         MetricFormatter formatter,
         PeriodLabeler labeler,
         HourGridBuilder gridBuilder,
+        DayChartBuilder dayChart,
         ILogger<HistoryViewModel> logger)
     {
         this.toolbar = toolbar;
@@ -115,6 +141,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         this.formatter = formatter;
         this.labeler = labeler;
         this.gridBuilder = gridBuilder;
+        this.dayChart = dayChart;
     }
 
     public HistoryToolbarViewModel Toolbar => toolbar;
@@ -232,26 +259,32 @@ public sealed partial class HistoryViewModel : ObservableObject
         var before = period.Before(now, calendar);
         var (start, end) = (period.Start, period.End);
         var metric = toolbar.Metric;
-        var grouping = range == Period.Week ? Period.Day : toolbar.Grouping;
+        var grouping = range == Period.Year ? Period.Week : Period.Day;
         var interval = devices.IntervalFor(device, end);
 
         var buckets = await Task.Run(
-            () => query.GetBucketsAsync(device, metric, start, end, grouping, toolbar.Hours, token),
+            () => query.GetBucketsAsync(device, metric, start, end, grouping, token),
             token);
-        var hours = await Task.Run(() => query.GetTypicalDayAsync(device, range, start, end, token), token);
+        var hours = metric == Metric.Pressure ? [] : await Task.Run(() => query.GetTypicalDayAsync(device, range, start, end, token, metric), token);
         var previous = await Task.Run(
-            () => query.GetBucketsAsync(device, metric, before.Start, before.End, grouping, toolbar.Hours, token),
+            () => query.GetBucketsAsync(device, metric, before.Start, before.End, grouping, token),
             token);
-        var zoneShare = metric == Metric.Co2 ? await query.GetZoneShareAsync(device, start, end, toolbar.Hours, token) : null;
+        var zoneShare = metric == Metric.Co2 ? await query.GetZoneShareAsync(device, start, end, token) : null;
+        var comfort = await query.GetComfortShareAsync(device, metric, start, end, token);
         var recent = range == Period.Day ? await query.GetRangeAsync(device, start, end, token) : null;
-        var wantSleep = range == Period.Day && toolbar.Hours == HoursFilterMode.Night;
+        var wantSleep = range == Period.Day;
 
         // The latest Day's night is last night; a calendar day's is the night that ended that morning (behaviour-rules.md "Sleep" rule 2).
-        var lastNight = wantSleep ? await query.GetLastNightAsync(device, metric, period.IsRolling ? now : end, token) : null;
+        var lastNight = wantSleep && metric != Metric.Pressure ? await query.GetLastNightAsync(device, metric, period.IsRolling ? now : end, token) : null;
+        var nights = wantSleep || metric == Metric.Pressure ? null : await query.GetNightsAsync(device, metric, start, end, token);
 
-        // D-0018: CO₂ on Week and Month is a grid of days and hours. With the Night filter it stays bars until the filter goes (POL-10).
-        var wantGrid = metric == Metric.Co2 && (range is Period.Week or Period.Month) && toolbar.Hours == HoursFilterMode.AllDay;
-        var gridDays = wantGrid ? await query.GetHourGridAsync(device, metric, start, end, token) : null;
+        // D-0018, POL-18: CO₂, Temperature and Humidity on Week and Month are a grid of days and hours, on Year of months and days. Pressure keeps its line.
+        var wantGrid = metric is Metric.Co2 or Metric.Temperature or Metric.Humidity;
+        // Pressure follows the weather, not the hour: Week and Month are one line of hourly means, Year of daily means.
+        var wantLine = metric == Metric.Pressure && range != Period.Day;
+        var gridDays = (wantGrid || wantLine) && range is Period.Week or Period.Month ? await query.GetHourGridAsync(device, metric, start, end, token) : null;
+        var gridMonths = (wantGrid || wantLine) && range == Period.Year ? await query.GetMonthGridAsync(device, metric, start, end, token) : null;
+        var pressure = !wantLine ? null : gridMonths is not null ? dayChart.PressureLine(gridMonths) : dayChart.PressureLine(gridDays ?? []);
 
         token.ThrowIfCancellationRequested();
 
@@ -268,28 +301,47 @@ public sealed partial class HistoryViewModel : ObservableObject
             Grouping = grouping,
             Previous = previous,
             ZoneShare = zoneShare,
-            Hours = toolbar.Hours,
-            TypicalDay = hours
+            Comfort = comfort,
+            PressureChange = pressure?.Change,
+            TypicalDay = hours,
+            Night = query.Night
         });
         typicalDay.Update(hours);
         AverageLine = Display(metric, stats.Average);
 
+        ShowTypicalDay = metric == Metric.Co2;
         ShowSleep = lastNight is not null;
         sleep.Update(lastNight);
+        sleep.UpdateNights(nights);
 
         if (recent is null)
         {
+            if (pressure is not null)
+            {
+                ShowPressureLine(pressure, metric, range, grouping);
+                return;
+            }
+
             Bars = buckets.Select(bucket => ToBar(bucket, interval, metric)).ToList();
             WeekendSpans = grouping == Period.Day ? Weekends(start, end) : null;
             Points = null;
+            TypicalPoints = null;
+            ComfortBand = null;
+            Highlight = null;
+            NightSpans = null;
+            Markers = null;
             Gaps = EmptyRuns(buckets);
-            chartHeader.Update(metric, range, grouping, toolbar.Hours, Gaps.Count > 0);
-            Grid = gridDays is null ? null : gridBuilder.Build(gridDays, hours, metric, range, query.Night, calendar.LocalDateOf(now));
-            GridName = Grid is null ? null : labeler.GridName(metric, toolbar.PeriodLabel);
+            chartHeader.Update(metric, range, grouping, Gaps.Count > 0);
+            var today = calendar.LocalDateOf(now);
+
+            Grid = gridMonths is not null
+                ? gridBuilder.BuildYear(gridMonths, metric, today)
+                : gridDays is null ? null : gridBuilder.Build(gridDays, hours, metric, range, query.Night, today);
+            GridName = Grid is null ? null : labeler.GridName(metric, toolbar.PeriodLabel, byDay: gridMonths is not null);
 
             if (Grid is not null)
             {
-                chartHeader.UpdateForGrid(metric);
+                chartHeader.UpdateForGrid(metric, byDay: gridMonths is not null);
             }
 
             return;
@@ -300,8 +352,30 @@ public sealed partial class HistoryViewModel : ObservableObject
         WeekendSpans = null;
         Bars = null;
         Points = recent.Select(reading => new ChartPoint(reading.Timestamp, formatter.ToDisplay(metric, reading.ValueOf(metric)))).ToList();
+        NightSpans = metric == Metric.Pressure ? null : dayChart.NightSpans(query.Night, start, end);
+        Highlight = null;
+        TypicalPoints = metric == Metric.Pressure ? null : dayChart.TypicalLine(hours, start, end, metric);
+        ComfortBand = dayChart.ComfortBand(metric);
+        Markers = metric == Metric.Co2 ? dayChart.Markers(AirImprovedDetector.Detect([.. recent.OrderBy(reading => reading.Timestamp)])) : null;
         Gaps = MissingStretches(recent.Select(reading => reading.Timestamp).ToList(), interval);
-        chartHeader.Update(metric, range, grouping, toolbar.Hours, Gaps.Count > 0);
+        chartHeader.Update(metric, range, grouping, Gaps.Count > 0);
+    }
+
+    private void ShowPressureLine(PressureSeries pressure, Metric metric, Period range, Period grouping)
+    {
+        Bars = null;
+        WeekendSpans = null;
+        Grid = null;
+        GridName = null;
+        Points = pressure.Points;
+        TypicalPoints = null;
+        ComfortBand = null;
+        NightSpans = null;
+        Markers = null;
+        Highlight = dayChart.ChangeHighlight(pressure.Change);
+        Gaps = MissingStretches([.. pressure.Points.Select(point => point.Time)], pressure.Interval);
+        chartHeader.Update(metric, range, grouping, Gaps.Count > 0);
+        chartHeader.UpdateForLine(byDay: range == Period.Year);
     }
 
     private void Clear()
@@ -314,16 +388,19 @@ public sealed partial class HistoryViewModel : ObservableObject
         PeriodEmptyText = null;
         toolbar.MaxOffset = 0;
         toolbar.PeriodLabel = labeler.Label(HistoryPeriod.For(toolbar.Range, 0, timeProvider.GetUtcNow(), calendar));
+        Highlight = null;
         WeekendSpans = null;
         Bars = [];
         Points = [];
         Gaps = [];
         stats.Update([]);
         typicalDay.Update([]);
+        ShowTypicalDay = false;
         ShowSleep = false;
         AverageLine = null;
         sleep.Update(null);
-        chartHeader.Update(toolbar.Metric, toolbar.Range, toolbar.Grouping, toolbar.Hours, hasGaps: false);
+        sleep.UpdateNights(null);
+        chartHeader.Update(toolbar.Metric, toolbar.Range, toolbar.Range == Period.Year ? Period.Week : Period.Day, hasGaps: false);
     }
 
     private List<ChartGap> Weekends(DateTimeOffset start, DateTimeOffset end)

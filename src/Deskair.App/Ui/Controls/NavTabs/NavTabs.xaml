@@ -1,0 +1,75 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
+  <!-- Text tabs 14 px, 26 px apart (13 px of margin each side of a tab); the current tab has a 18 x 3 accent underline 9 px above the bottom edge (design-tokens.md "Header nav").
+       The control is as tall as its parent so the underline sits relative to the header, not to the text. -->
+  <Style TargetType="{x:Type local:NavTabs}">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="SelectionMode" Value="Single" />
+    <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="Cycle" />
+    <Setter Property="KeyboardNavigation.TabNavigation" Value="Once" />
+    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+    <!-- The item style is embedded: a style kept under a key in this dictionary cannot be found at run time. -->
+    <Setter Property="ItemContainerStyle">
+      <Setter.Value>
+        <Style TargetType="{x:Type ListBoxItem}">
+          <Setter Property="Foreground" Value="{DynamicResource Text.Secondary.Brush}" />
+          <Setter Property="FontSize" Value="{DynamicResource Font.Size.Body}" />
+          <Setter Property="Margin" Value="{DynamicResource Space.NavTab.Margin}" />
+          <Setter Property="Cursor" Value="Hand" />
+          <Setter Property="FocusVisualStyle" Value="{DynamicResource Focus.Ring.Segment}" />
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                <Grid Background="Transparent">
+                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                  <Border x:Name="Underline"
+                          Width="{DynamicResource Size.NavUnderline.Width}"
+                          Height="{DynamicResource Size.NavUnderline.Height}"
+                          Margin="{DynamicResource Space.NavUnderline}"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Bottom"
+                          Background="{DynamicResource Accent.Brush}"
+                          CornerRadius="2"
+                          Visibility="Collapsed" />
+                </Grid>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource Text.Primary.Brush}" />
+                  </Trigger>
+                  <Trigger Property="IsSelected" Value="True">
+                    <Setter TargetName="Underline" Property="Visibility" Value="Visible" />
+                    <Setter Property="FontWeight" Value="{DynamicResource Font.Weight.SemiBold}" />
+                    <Setter Property="Foreground" Value="{DynamicResource Text.Primary.Brush}" />
+                  </Trigger>
+                  <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Style>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="ItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:NavTabs}">
+          <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+            <ItemsPresenter />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

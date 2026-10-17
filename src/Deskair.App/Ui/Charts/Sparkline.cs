@@ -5,10 +5,18 @@ using Deskair.Domain.Metrics;
 
 namespace Deskair.App.Ui.Charts;
 
-/// <summary>A small line in the metric colour with no axes, for the metric cards. Fewer than two values draw nothing.</summary>
+/// <summary>
+/// A small smoothed line in the metric colour with an area fill and an end dot, no axes, for the metric cards. The value range is at least a minimum span per metric (<see cref="SparklineRange"/>).
+/// Fewer than two values draw nothing.
+/// </summary>
 public sealed class Sparkline : ChartBase
 {
-    private const double VerticalPadding = 3;
+    private const double VerticalPadding = 4;
+
+    // Room for the end dot at the right edge (radius 2.75).
+    private const double HorizontalPadding = 3;
+    private const double LineThickness = 1.75;
+    private const double AreaOpacity = 0.18;
 
     public static readonly DependencyProperty PointsProperty = DependencyProperty.Register(
         nameof(Points),
@@ -34,7 +42,7 @@ public sealed class Sparkline : ChartBase
         set => SetValue(MetricProperty, value);
     }
 
-    protected override Thickness PlotMargin => new(0, VerticalPadding, 0, VerticalPadding);
+    protected override Thickness PlotMargin => new(HorizontalPadding, VerticalPadding, HorizontalPadding, VerticalPadding);
 
     protected override ChartRanges GetDataRanges()
     {
@@ -45,17 +53,27 @@ public sealed class Sparkline : ChartBase
             return new ChartRanges(0, 1, 0, 1);
         }
 
-        return new ChartRanges(
-            points.Min(point => point.Time.UtcTicks),
-            points.Max(point => point.Time.UtcTicks),
-            points.Min(point => point.Value!.Value),
-            points.Max(point => point.Value!.Value));
+        var (low, high) = SparklineRange.Fit(Metric, points.Min(point => point.Value!.Value), points.Max(point => point.Value!.Value));
+
+        return new ChartRanges(points.Min(point => point.Time.UtcTicks), points.Max(point => point.Time.UtcTicks), low, high);
     }
 
     protected override IReadOnlyList<IChartLayer> CreateLayers()
     {
         var enough = Points?.Count(point => point.Value is not null) >= 2;
 
-        return enough ? [new LineLayer { Points = Points, BrushKey = $"Metric.{Metric}.Brush" }] : [];
+        if (!enough)
+        {
+            return [];
+        }
+
+        var brushKey = $"Metric.{Metric}.Brush";
+
+        return
+        [
+            new AreaLayer { Points = Points, BrushKey = brushKey, TopOpacity = AreaOpacity, Smooth = true },
+            new LineLayer { Points = Points, BrushKey = brushKey, Thickness = LineThickness, Smooth = true },
+            new EndDotLayer { Points = Points, BrushKey = brushKey }
+        ];
     }
 }

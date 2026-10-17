@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- DataContext: ShellViewModel; the footer view model is its Footer. Status on the left; room, sensor id, signal and battery on the right. -->
+  <!-- DataContext: ShellViewModel; the footer view model is its Footer. Status on the left; sensor model (hardware ID in its tooltip) and battery on the right. -->
   <Border Background="Transparent"
           BorderBrush="{DynamicResource Border.Brush}"
           BorderThickness="0,1,0,0"
@@ -50,7 +50,8 @@
         </StackPanel.Style>
         <TextBlock VerticalAlignment="Center"
                    Style="{StaticResource Text.Secondary}"
-                   Text="{Binding DetailText}" />
+                   Text="{Binding DetailText}"
+                   ToolTip="{Binding DetailTooltip}" />
         <controls:BatteryIcon Margin="{StaticResource Space.Inline}" Percent="{Binding BatteryPercent}" VerticalAlignment="Center" />
         <TextBlock Margin="{StaticResource Space.Inline}"
                    VerticalAlignment="Center"

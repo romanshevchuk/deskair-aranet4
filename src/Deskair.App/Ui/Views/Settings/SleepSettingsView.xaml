@@ -10,7 +10,7 @@
   <controls:SettingsCard Header="{loc:T Settings_Sleep}">
     <StackPanel>
       <controls:SettingsRow Header="{loc:T Settings_Sleep_Start}" Description="{loc:T Settings_Sleep_Hint}">
-        <controls:TextInput Width="72"
+        <controls:TextInput Width="{StaticResource Size.TimeField.Width}" MinWidth="0" Padding="4,3" HorizontalContentAlignment="Center"
                             AutomationProperties.Name="{loc:T Settings_Sleep_Start}"
                             Text="{Binding NightStart.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
       </controls:SettingsRow>
@@ -18,7 +18,7 @@
                  Text="{loc:T Settings_QuietHours_Invalid}"
                  Visibility="{Binding NightStart.IsInvalid, Converter={StaticResource BoolToVisibility}}" />
       <controls:SettingsRow Header="{loc:T Settings_Sleep_End}">
-        <controls:TextInput Width="72"
+        <controls:TextInput Width="{StaticResource Size.TimeField.Width}" MinWidth="0" Padding="4,3" HorizontalContentAlignment="Center"
                             AutomationProperties.Name="{loc:T Settings_Sleep_End}"
                             Text="{Binding NightEnd.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
       </controls:SettingsRow>
