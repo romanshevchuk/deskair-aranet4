@@ -59,7 +59,7 @@ public class SettingsRenderTests
         RenderOutput.Save($"settings-{theme.ToString().ToLowerInvariant()}-{culture[..2]}{suffix}.png", png);
     }
 
-    private static ShellViewModel BuildShell(ThemeChoice theme, string culture)
+    internal static ShellViewModel BuildShell(ThemeChoice theme, string culture)
     {
         var messenger = new StrongReferenceMessenger();
         var dispatcher = new FakeUiDispatcher();

@@ -52,7 +52,9 @@
           </Style.Triggers>
         </Style>
       </StackPanel.Style>
-      <controls:RoomChip IsOpen="{Binding IsOpen, Mode=TwoWay}"
+      <controls:RoomChip AutomationProperties.HelpText="{loc:T Room_Chip_Help}"
+                         AutomationProperties.Name="{Binding SelectedRoom.Name}"
+                         IsOpen="{Binding IsOpen, Mode=TwoWay}"
                          RoomName="{Binding SelectedRoom.Name}"
                          Zone="{Binding DataContext.HeaderZone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
       <controls:RoomMenu IsOpen="{Binding IsOpen, Mode=TwoWay}"

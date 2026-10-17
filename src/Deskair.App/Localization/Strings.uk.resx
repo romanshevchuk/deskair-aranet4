@@ -7,6 +7,7 @@
   <!-- Every Ukrainian string is a draft and needs native review (docs/plans/questions.md, Q17). -->
   <data name="Nav_Live" xml:space="preserve"><value>Наживо</value><comment>Draft: needs native review.</comment></data>
   <data name="Nav_History" xml:space="preserve"><value>Історія</value><comment>Draft: needs native review.</comment></data>
+  <data name="Room_Chip_Help" xml:space="preserve"><value>Обрати кімнату</value><comment>Draft: needs native review.</comment></data>
   <data name="Nav_Settings" xml:space="preserve"><value>Налаштування</value><comment>Draft: needs native review.</comment></data>
   <data name="Metric_Co2" xml:space="preserve"><value>CO₂</value><comment>Draft: needs native review.</comment></data>
   <data name="Metric_Temperature" xml:space="preserve"><value>Температура</value><comment>Draft: needs native review.</comment></data>

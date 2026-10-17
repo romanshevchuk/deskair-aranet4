@@ -10,3 +10,16 @@
 - **Motion:** the toggle slide, and from POL-16 the sliding segment highlight, the nav underline, the hero value fade, the gauge glide, the flyout open fade, the High pill dot pulse. All of them stop when Windows "Animation effects" is off (`SystemParameters.ClientAreaAnimation`).
 - **Scaling:** test 100, 125, 150 and 200 % and the minimum window size.
 - **Language:** test Ukrainian for text overflow (see `localization.md`), especially the History toolbar, the summary card and the grid's end column.
+
+## Manual check (about 10 minutes, Windows 11)
+
+The tests cover names (`AutomationAuditTests`), contrast and the High Contrast palette. They cannot say what Narrator reads or whether the focus order feels right, so run this before a release. Scope: Live, Settings and the flyout; History only for the period buttons.
+
+1. **Keyboard only** (no mouse). Tab through the main window: the header nav, the room button, then the page. Every stop shows the blue focus ring; nothing is skipped; Esc closes the room menu and the flyout. Enter or Space activates buttons and toggles; arrow keys move inside Live / History / Settings and the segmented controls.
+2. **Live with Narrator** (Win+Ctrl+Enter). Tab to the hero ("CO₂, 1076 ppm, Elevated, selected"), to each mini card, to the 1h / 6h / 24h selector ("Time span"). Hear the chart read as "CO₂, last hour: low…, average…, high…". When the air changes zone, the zone word is announced.
+3. **Settings with Narrator.** Each toggle, segmented control and time field is read with its label and state ("Alerts, on").
+4. **Flyout.** Open it from the tray (Win+B, arrows, Enter on the icon). Narrator reads the room, the value, the advice, the three readings, Snooze, Settings and Open Deskair; focus lands inside it; Esc closes it and returns to the taskbar.
+5. **Scale.** Set Windows display scaling to 150 % and 200 %, and text size to 150 %: no text is cut off on Live or Settings, and the window can still be used at its minimum size.
+6. **High Contrast** (Alt+Left Shift+PrintScreen). Live and Settings stay readable; focus is visible.
+
+Write down anything that failed: what you pressed, what Narrator said, and what you expected.

@@ -6,6 +6,7 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Nav_Live" xml:space="preserve"><value>Live</value></data>
   <data name="Nav_History" xml:space="preserve"><value>History</value></data>
+  <data name="Room_Chip_Help" xml:space="preserve"><value>Choose the room to show</value><comment>Help text of the room button in the header; its name is the room.</comment></data>
   <data name="Nav_Settings" xml:space="preserve"><value>Settings</value></data>
   <data name="Metric_Co2" xml:space="preserve"><value>CO₂</value></data>
   <data name="Metric_Temperature" xml:space="preserve"><value>Temperature</value></data>

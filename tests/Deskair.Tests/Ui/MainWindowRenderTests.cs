@@ -137,7 +137,7 @@ public class MainWindowRenderTests
         RenderOutput.Save($"live-{theme.ToString().ToLowerInvariant()}-en-{(co2Shift < 0 ? "good" : "high")}.png", png);
     }
 
-    private static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit, bool bluetoothOff = false, double co2Shift = 0)
+    internal static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit, bool bluetoothOff = false, double co2Shift = 0)
     {
         var messenger = new StrongReferenceMessenger();
         var dispatcher = new FakeUiDispatcher();

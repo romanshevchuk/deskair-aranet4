@@ -38,7 +38,7 @@ Status: `todo`, `doing`, `done`. Update this file in the same change as the work
 | SET-01 | Settings screen | M5 | done |
 | FIRST-01 | First-run onboarding with import | M5 | done |
 | STATE-01 | Stale, low battery, not connected | M5 | done |
-| A11Y-01 | Accessibility pass | M6 | todo |
+| A11Y-01 | Accessibility pass: tests for names, contrast and High Contrast are done; the manual check in accessibility.md (Narrator, keyboard, scaling) is the owner's part | doing |
 | REL-01 | Store packaging; winget and GitHub later | M6 | todo |
 
 ## Later
