@@ -33,6 +33,7 @@ Area rules live in `.claude/rules/` (one file per project or folder). Claude Cod
 | Run the app on a simulated sensor (temp data folder, no hardware) | `dotnet run --project src/Deskair.App -- --simulated` |
 | Run the app on one real sensor (own temp data folder) | `dotnet run --project src/Deskair.App -- --sensor C3DEC8FCC7C6` |
 | Try the first-run screen with real Bluetooth (empty temp data folder, wiped at every start) | `dotnet run --project src/Deskair.App -- --first-run` |
+| Show one test toast at start, to try its Snooze and Open buttons | `dotnet run --project src/Deskair.App -- --simulated --test-toast` |
 | Render gallery images (light, dark, English, Ukrainian) to `artifacts/visual/` | `$env:DESKAIR_RENDER=1; dotnet test tests/Deskair.Tests --filter "FullyQualifiedName~GalleryRenderTests"` |
 
 WPF cannot be built or run on Linux or macOS. If a command here is wrong, fix it in this file.

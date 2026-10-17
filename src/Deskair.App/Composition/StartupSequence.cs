@@ -9,6 +9,8 @@ using Deskair.App.Platform.Tray;
 using Deskair.App.Ui.Theme;
 using Deskair.App.Ui.Views.Gallery;
 using Deskair.App.Ui.Views.Shell;
+using Deskair.Domain.Readings;
+using Deskair.Domain.Zones;
 using Deskair.Services.Alerts;
 using Deskair.Services.Live;
 using Deskair.Services.Settings;
@@ -77,6 +79,30 @@ public sealed class StartupSequence : IDisposable
         running = new CancellationTokenSource();
         services.GetRequiredService<AlertFeed>().Start(running.Token);
         await services.GetRequiredService<AppServicesStarter>().StartAsync(running.Token);
+
+        if (options.TestToast)
+        {
+            await ShowTestToastAsync();
+        }
+    }
+
+    /// <summary>For <c>--test-toast</c>: one High CO₂ toast through the real notifier, so Snooze and Open can be tried at once.</summary>
+    private async Task ShowTestToastAsync()
+    {
+        var logger = services.GetRequiredService<ILogger<StartupSequence>>();
+
+        try
+        {
+            var toast = new AlertNotification(new DeviceId("test", "TEST"), "Test toast", Zone.High, 1500, TimeProvider.System.GetUtcNow());
+            await services.GetRequiredService<INotifier>().NotifyAsync(toast, CancellationToken.None);
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            if (logger.IsEnabled(LogLevel.Warning))
+            {
+                logger.LogWarning(exception, "The test toast failed.");
+            }
+        }
     }
 
     /// <summary>

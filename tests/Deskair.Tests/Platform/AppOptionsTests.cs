@@ -14,6 +14,7 @@ public class AppOptionsTests
         Assert.False(options.FirstRun);
         Assert.Null(options.Sensor);
     }
+    [Fact] public void The_test_toast_switch_is_off_unless_asked_for() { Assert.False(AppOptions.Parse([]).TestToast); Assert.True(AppOptions.Parse(["--simulated", "--TEST-TOAST"]).TestToast); }
 
     [Theory]
     [InlineData("--gallery")]
