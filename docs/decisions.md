@@ -1,6 +1,6 @@
 # Decisions
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-17*
 
 A short, append-only log. Each entry: context, decision, consequences. Do not delete entries; mark them superseded. Review the statuses once a quarter so nothing stays "proposed" after it shipped. If this file grows past about 15 entries or an entry needs long reasoning, move that entry to its own file in `docs/decisions.md`.
 
@@ -150,6 +150,8 @@ The prototype said "Should drop below 1,000 ppm in about 9 min". The fall rate d
 **Decision:** the advice text depends only on the zone and the CO₂ trend (`Advice_<Zone>_Text_<Falling|Steady|Rising>`). The observed change ("254 ppm over 32 min", `Trend_Detail`) stays, because it is a measurement. Mini cards show the trend (the same `Trend_*` words as the hero, with no "this hour", because CO₂ is measured over 30 minutes and the others over 1 hour); temperature and humidity show a label with the ideal range (`Mini_Temperature_*`, `Mini_Humidity_*`) only when the value is outside 20 to 24 °C or 30 to 50 %. Pressure has no health range, so it shows no comfort label.
 
 **Consequences:** no forecasting code. A later feature could show an observed drop ("dropped 180 ppm in 30 min").
+
+**Clarification (POL-28, Oct 2026):** the rule forbids estimating how long the air will take to improve. A suggested action may carry a duration ("Open a window for about 10 minutes"): it tells the user what to do, not what will happen, and the toast and the hero use the same words.
 
 ## D-0016 Writing to a sensor through `IBleConnection`; history is returned only when complete
 

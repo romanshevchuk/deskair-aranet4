@@ -1,6 +1,6 @@
 # Screens and states
 
-*Last reviewed: 2026-10-15*
+*Last reviewed: 2026-10-17*
 
 Visual target: `design/polish/deskair-polish-concept.html` (POL-00). Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 
@@ -62,7 +62,7 @@ There is no Hours filter and no Group by. The night hours show as a band and in 
 
 | Range | Main view |
 |---|---|
-| Day | Line of the readings, coloured by zone, with a light area fill; the typical day of the 7 days before as a grey line; the night hours as a band labelled "Night"; threshold lines at 1000 and 1400 with coloured axis labels; "air improved" markers; crosshair with the time, the value and the typical value. Legend: CO₂, Typical (previous 7 days), Night |
+| Day | Line of the readings, coloured by zone (every metric draws its line as a monotone curve, as on the Live chart), with a light area fill; the typical day of the 7 days before as a grey line; the night hours as a band labelled "Night"; threshold lines at 1000 and 1400 with coloured axis labels; "air improved" markers; crosshair with the time, the value and the typical value. Legend: CO₂, Typical (previous 7 days), Night |
 | Week, Month | Days × hours grid: one row per day (oldest at the top, "Today" last), one square per hour in the heat scale. Above: "Night · 22:00–07:00" bracket and hour labels every 3 hours. Each row ends with its average, a zone bar and a "best" / "worst" tag. Last row: "Typical", with the worst three hours outlined and named ("Worst 17:00–20:00"). Legend at the bottom: the six steps with Good / Elevated / High and their limits, "No data", "Each square is one hour" |
 
 **Built (POL-13):** the Day line for CO₂ has the area fill, the typical line (hourly means of the 7 days before, laid over the window by clock hour), the night band with its label, dashed limit lines with coloured y labels (the axis tops out at 1600, 2000 or 2600), the "air improved" rings and the legend. The other metrics get the night band only (the typical day and the markers are CO₂ rules). The average line is gone from Day.

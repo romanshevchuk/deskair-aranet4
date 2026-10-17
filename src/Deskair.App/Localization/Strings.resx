@@ -57,7 +57,7 @@
   <data name="Stats_BiggestChange" xml:space="preserve"><value>Biggest change in 24 hours</value></data>
   <data name="Stats_BiggestChange_From" xml:space="preserve"><value>from {when}</value></data>
   <data name="Stats_PressureRange" xml:space="preserve"><value>Range of the period</value></data>
-  <data name="Insight_Pressure" xml:space="preserve"><value>**Pressure follows the weather, not the room.** A fast fall often means rain on the way.</value></data>
+  <data name="Insight_Pressure" xml:space="preserve"><value>**Pressure follows the weather, not the room.**</value></data>
   <data name="Stats_Highest" xml:space="preserve"><value>Highest reading</value></data>
   <data name="Stats_Lowest" xml:space="preserve"><value>Lowest reading</value></data>
   <data name="Stats_ZoneShare" xml:space="preserve"><value>Time in each zone</value></data>

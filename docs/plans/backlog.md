@@ -87,8 +87,9 @@ Plan, specs and model per item: [`polish-implementation.md`](polish-implementati
 | POL-24 | Review fix: Live ribbon labels as "00:00 / 06:00 / 12:00 / 18:00"; Live chart title "CO₂ · last hour" | done |
 | POL-25 | Review, partly done (tests now run one at a time, so English renders stay English; three stale Night-filter renders deleted). Still open: fixtures outside the comfort range, Live Good and High, dark states, flyout Bluetooth-off, Settings below the fold; stale fixture says "0 min", flyout says "25 min" next to a live reading | todo |
 | POL-26 | Review: style the scrollbar (light and dark; Settings shows the native one) and add its tokens | todo |
-| POL-27 | Review, owner decision: Pressure tip. Docs say one line ("Pressure follows the weather, not the room"); the concept page says no tip; the code adds "A fast fall often means rain on the way." | todo |
-| POL-28 | Review, owner decision: advice "Open a window for about 10 minutes" against D-0015 "no time estimates" | todo |
-| POL-29 | Review, owner decision: the CO₂ Day line is smoothed, the Temperature, Humidity and Pressure Day lines are stair-stepped | todo |
+| POL-27 | Review decision: the Pressure tip is the documented line only; the extra sentence is gone | done |
+| POL-28 | Review decision: "Open a window for about 10 minutes" stays; D-0015 and the behaviour rule now say they forbid recovery-time estimates, not a suggested duration | done |
+| POL-29 | Review decision: every metric draws its History Day line as a monotone curve (done; the stairs on Humidity and Pressure remain, see POL-32) | done |
 | POL-30 | Review, small: Day summary title "Sleep" vs "Last night"; first-run hint says "title bar"; Ukrainian lacks `_Other` plurals for 3 keys; flyout "ppm" baseline; type scale in design-tokens.md (15, 58, 32 px); Settings and first-run cards sit 2 px from the bottom edge | todo |
 | POL-31 | Review: docs housekeeping in screens-and-states.md (stale POL-11 paragraph, Year row outside its table) | todo |
+| POL-32 | Review, owner decision: the Day lines of Temperature, Humidity and Pressure still look like stairs because the readings are quantised (whole percent, 0.1 hPa) every 2 minutes and smoothing cannot hide that. Options: draw a short moving average (for example 15 minutes) and label it, keep the raw readings as they are, or show hourly means as the Week view does | todo |

@@ -368,7 +368,7 @@ public sealed class HistoryChart : ChartBase
         else
         {
             layers.Add(new LineLayer { Points = TypicalPoints, BrushKey = "Text.Tertiary.Brush", Opacity = TypicalOpacity, Smooth = true });
-            layers.Add(new LineLayer { Points = Points, BrushKey = $"Metric.{Metric}.Brush" });
+            layers.Add(new LineLayer { Points = Points, BrushKey = $"Metric.{Metric}.Brush", Smooth = true });
         }
 
         layers.Add(new GapHatchLayer { Gaps = Gaps });
