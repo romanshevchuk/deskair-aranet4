@@ -125,13 +125,29 @@ public class TokenDictionaryTests
     }
 
     [Fact]
+    public void Every_font_size_is_a_size_of_the_type_scale()
+    {
+        double[] scale = [12, 13, 14, 16, 20, 32, 48, 58, 104];
+
+        UiHost.Run(() =>
+        {
+            var sizes = Application.Current.Resources.MergedDictionaries
+                .SelectMany(dictionary => dictionary.Keys.Cast<object>().Select(key => (Key: key as string, Value: dictionary[key])))
+                .Where(entry => entry.Key is not null && entry.Key.StartsWith("Font.Size.", StringComparison.Ordinal) && entry.Value is double)
+                .ToList();
+
+            Assert.NotEmpty(sizes);
+            Assert.All(sizes, entry => Assert.Contains((double)entry.Value, scale));
+        });
+    }
+    [Fact]
     public void Typography_spacing_and_radius_tokens_exist()
     {
         UiHost.Run(() =>
         {
             var resources = Application.Current.Resources;
 
-            Assert.Equal(80.0, resources["Font.Size.Hero"]);
+            Assert.Equal(104.0, resources["Font.Size.Hero"]);
             Assert.Equal(12.0, resources["Font.Size.Caption"]);
             Assert.Equal(52.0, resources["Size.Header.Height"]);
             Assert.Equal(40.0, resources["Size.Footer.Height"]);

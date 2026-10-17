@@ -95,7 +95,7 @@ Non-CO₂ Live charts: plot area filled with the metric colour at 7 % opacity, i
 
 ## Typography
 
-Segoe UI Variable Text, falling back to Segoe UI; display sizes use Segoe UI Variable Display. Minimum size 12 px. Text sizes 12 / 13 / 14 / 16 / 20, display sizes 32 / 48 / 56 / 104; nothing in between.
+Segoe UI Variable Text, falling back to Segoe UI; display sizes use Segoe UI Variable Display. Minimum size 12 px. Text sizes 12 / 13 / 14 / 16 / 20, display sizes 32 / 48 / 58 / 104; nothing in between.
 
 **Figures (D-0020):** standalone display and stat values use proportional figures (tabular figures give each "1" a full digit width and open gaps, as in "1151"). Numbers that line up in columns (grid row averages, chart summaries) and axis labels use tabular figures.
 
@@ -130,7 +130,7 @@ Segoe UI Variable Text, falling back to Segoe UI; display sizes use Segoe UI Var
 | Gauge marker | 20 px, `surface` fill, 3 px `text.primary` ring, soft shadow 0 2 6 at 18 % black |
 | Settings | One column, at most 720 px wide, centred. Section titles 14 px 600 above their cards. Card padding 12 / 22 / 2 px; row at least 40 px tall with 4 px above and below, 16 px between label and control, a 1 px divider above every row but the first. Time fields 88 px wide |
 | Live grid | 3 equal columns; rows 1 fr and 132 px |
-| History | Toolbar 40 px: metric segmented control, period navigator (title 15 px 600, at least 176 px wide, 32 px arrow buttons), range segmented control, 34 px export icon button. Main card padding 18 / 22 / 12. Summary card 330 px wide, padding 20 / 22, full height |
+| History | Toolbar 40 px: metric segmented control, period navigator (title 16 px 600, at least 176 px wide, 32 px arrow buttons), range segmented control, 34 px export icon button. Main card padding 18 / 22 / 12. Summary card 330 px wide, padding 20 / 22, full height |
 | History grid | Label column 84 px; end column 160 px (row average right-aligned 46 px in, zone bar 60 px wide and up to 6 px high at 56 px, tag at 124 px); 2 px between squares; square radius 4 px or a quarter of its height if smaller; row height 9 to 44 px from the space available; a collapsed run is one 28 px row; the typical row follows a 16 px separator; legend band 50 px; the night bracket above the hour labels |
 | Flyout | 360 px wide, radius 8 px (as the Windows flyouts), 1 px `card.border` outline, shadow 0 16 40 at 30 % black (WPF: blur 32, depth 10, opacity 0.28). Content padding 16 px at the sides. Footer band in `flyout.band`, padding 10 / 12, a 1 px `divider` above it. Ribbon 8 px high, segments radius 3 px, 2 px apart |
 | Toast | drawn by Windows (card, fonts, corners); Deskair supplies the zone-coloured ring (96 px image, the same ring as the tray icon) and the texts; no left edge, no custom colours |

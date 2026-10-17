@@ -5,7 +5,7 @@ using System.Windows.Media;
 namespace Deskair.App.Ui.Controls;
 
 /// <summary>The StatTriple panel: equal columns side by side with a 1 px divider between them. Every column but the first starts <see cref="Gap"/> after its divider,
-/// and every column but the last stops half a gap before the next one, so the values never touch a line (design-tokens.md "divider").</summary>
+/// and every column but the last stops a quarter of a gap before the next one, so the values never touch a line (design-tokens.md "divider").</summary>
 public class StatTriplePanel : Panel
 {
     public static readonly DependencyProperty DividerBrushProperty = DependencyProperty.Register(
@@ -32,9 +32,11 @@ public class StatTriplePanel : Panel
         set => SetValue(GapProperty, value);
     }
 
+    private double[] columns = [];
+
     private List<UIElement> Visible() => InternalChildren.Cast<UIElement>().Where(child => child.Visibility != Visibility.Collapsed).ToList();
 
-    private (double Left, double Right) Insets(int index, int count) => (index > 0 ? Gap : 0, index < count - 1 ? Gap / 2 : 0);
+    private (double Left, double Right) Insets(int index, int count) => (index > 0 ? Gap : 0, index < count - 1 ? Gap / 4 : 0);
 
     protected override Size MeasureOverride(Size availableSize)
     {
@@ -44,36 +46,96 @@ public class StatTriplePanel : Panel
             return default;
         }
 
-        var column = double.IsInfinity(availableSize.Width) ? double.PositiveInfinity : availableSize.Width / children.Count;
-        double widest = 0, tallest = 0;
+        var desired = new double[children.Count];
 
         for (var index = 0; index < children.Count; index++)
         {
             var (left, right) = Insets(index, children.Count);
-            children[index].Measure(new Size(Math.Max(0, column - left - right), availableSize.Height));
-            widest = Math.Max(widest, children[index].DesiredSize.Width + left + right);
+            children[index].Measure(new Size(double.PositiveInfinity, availableSize.Height));
+            desired[index] = Math.Ceiling(children[index].DesiredSize.Width) + 1 + left + right;
+        }
+
+        if (double.IsInfinity(availableSize.Width))
+        {
+            return new Size(desired.Max() * children.Count, children.Max(child => child.DesiredSize.Height));
+        }
+
+        columns = Allocate(availableSize.Width, desired);
+        double tallest = 0;
+
+        for (var index = 0; index < children.Count; index++)
+        {
+            var (left, right) = Insets(index, children.Count);
+            children[index].Measure(new Size(Math.Max(0, columns[index] - left - right), availableSize.Height));
             tallest = Math.Max(tallest, children[index].DesiredSize.Height);
         }
 
-        var width = double.IsInfinity(availableSize.Width) ? widest * children.Count : availableSize.Width;
-
-        return new Size(width, tallest);
+        return new Size(availableSize.Width, tallest);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
         var children = Visible();
-        var column = children.Count == 0 ? 0 : finalSize.Width / children.Count;
+        var widths = columns.Length == children.Count ? columns : Allocate(finalSize.Width, new double[children.Count]);
+        var x = 0.0;
 
         for (var index = 0; index < children.Count; index++)
         {
             var (left, right) = Insets(index, children.Count);
-            children[index].Arrange(new Rect((index * column) + left, 0, Math.Max(0, column - left - right), finalSize.Height));
+            children[index].Arrange(new Rect(x + left, 0, Math.Max(0, widths[index] - left - right), finalSize.Height));
+            x += widths[index];
         }
 
         return finalSize;
     }
 
+    /// <summary>
+    /// The width of each column: equal, unless a value needs more than its equal share (a long "1522 ppm" at 20 px), in which case it gets what it needs and the others
+    /// share the rest equally. When the values cannot all fit, the columns are equal and the text wraps.
+    /// </summary>
+    public static double[] Allocate(double width, IReadOnlyList<double> desired)
+    {
+        var count = desired.Count;
+        var result = new double[count];
+        var fixedColumn = new bool[count];
+        var remaining = width;
+        var free = count;
+        var changed = true;
+
+        while (changed && free > 0)
+        {
+            changed = false;
+            var share = remaining / free;
+
+            for (var index = 0; index < count; index++)
+            {
+                if (!fixedColumn[index] && desired[index] > share + 0.01)
+                {
+                    fixedColumn[index] = true;
+                    result[index] = desired[index];
+                    remaining -= desired[index];
+                    free--;
+                    changed = true;
+                    break;
+                }
+            }
+        }
+
+        if (remaining < 0 || (free == 0 && remaining > 0.01))
+        {
+            return [.. Enumerable.Repeat(count == 0 ? 0 : width / count, count)];
+        }
+
+        for (var index = 0; index < count; index++)
+        {
+            if (!fixedColumn[index])
+            {
+                result[index] = remaining / free;
+            }
+        }
+
+        return result;
+    }
     protected override void OnRender(DrawingContext dc)
     {
         base.OnRender(dc);
@@ -86,12 +148,15 @@ public class StatTriplePanel : Panel
 
         var pen = new Pen(DividerBrush, 1);
         pen.Freeze();
-        var column = ActualWidth / count;
+        var widths = columns.Length == count ? columns : [.. Enumerable.Repeat(ActualWidth / count, count)];
+        var edge = 0.0;
 
         for (var index = 1; index < count; index++)
         {
+            edge += widths[index - 1];
+
             // Half a pixel in, so a 1 px line covers one device pixel at 100 % instead of blurring over two.
-            var x = Math.Round(index * column) + 0.5;
+            var x = Math.Round(edge) + 0.5;
             dc.DrawLine(pen, new Point(x, 0), new Point(x, ActualHeight));
         }
     }

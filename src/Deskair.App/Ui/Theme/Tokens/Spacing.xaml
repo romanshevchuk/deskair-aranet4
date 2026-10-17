@@ -138,7 +138,7 @@
   <!-- History stats card (prototype: zone share bar 10 px high, insight box padding 9 12). -->
   <sys:Double x:Key="Size.ZoneShare.Height">10</sys:Double>
   <Thickness x:Key="Space.Insight.Padding">12,9,12,9</Thickness>
-  <Thickness x:Key="Space.Stats.Block">0,12,0,0</Thickness>
+  <Thickness x:Key="Space.Stats.Block">0,9,0,0</Thickness>
   <Thickness x:Key="Space.Stats.Change">0,10,0,0</Thickness>
   <Thickness x:Key="Space.Stats.Number">0,6,0,0</Thickness>
   <Thickness x:Key="Space.Stats.Unit">8,0,0,6</Thickness>

@@ -6,14 +6,14 @@
   <!-- The big numbers (hero value, mini card value, History average, flyout value) use the display optical size, as the prototype's .disp class does: Text has heavier strokes at 32 px and above. -->
   <FontFamily x:Key="Font.Family.Display">Segoe UI Variable Display, Segoe UI Variable Text, Segoe UI</FontFamily>
 
-  <sys:Double x:Key="Font.Size.Hero">80</sys:Double>
-  <sys:Double x:Key="Font.Size.HistoryAverage">44</sys:Double>
+  <sys:Double x:Key="Font.Size.Hero">104</sys:Double>
+  <sys:Double x:Key="Font.Size.HistoryAverage">48</sys:Double>
   <sys:Double x:Key="Font.Size.MiniValue">32</sys:Double>
   <sys:Double x:Key="Font.Size.Title">16</sys:Double>
-  <sys:Double x:Key="Font.Size.HeroTitle">15</sys:Double>
-  <sys:Double x:Key="Font.Size.StatValue">17</sys:Double>
-  <sys:Double x:Key="Font.Size.MiniLabel">13.5</sys:Double>
-  <sys:Double x:Key="Font.Size.Welcome">22</sys:Double>
+  <sys:Double x:Key="Font.Size.HeroTitle">14</sys:Double>
+  <sys:Double x:Key="Font.Size.StatValue">20</sys:Double>
+  <sys:Double x:Key="Font.Size.MiniLabel">13</sys:Double>
+  <sys:Double x:Key="Font.Size.Welcome">20</sys:Double>
   <sys:Double x:Key="Font.Size.Flyout.Value">58</sys:Double>
   <sys:Double x:Key="Font.Size.Body">14</sys:Double>
   <sys:Double x:Key="Font.Size.Secondary">13</sys:Double>

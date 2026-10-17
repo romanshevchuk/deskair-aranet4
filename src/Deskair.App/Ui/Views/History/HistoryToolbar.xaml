@@ -56,7 +56,7 @@
                    VerticalAlignment="Center"
                    AutomationProperties.LiveSetting="Polite"
                    FontFamily="{DynamicResource Font.Family.Display}"
-                   FontSize="{DynamicResource Font.Size.HeroTitle}"
+                   FontSize="{DynamicResource Font.Size.Title}"
                    FontWeight="{DynamicResource Font.Weight.SemiBold}"
                    Foreground="{DynamicResource Text.Primary.Brush}"
                    Text="{Binding PeriodLabel}"

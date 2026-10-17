@@ -1,57 +1,44 @@
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Deskair.App.Ui.Controls;
 
 namespace Deskair.Tests.Ui;
 
+/// <summary>How the hero's three stats share their width: equal when they fit, more room for a long value, equal again when nothing fits.</summary>
 public class StatTriplePanelTests
 {
-    private static List<Rect> Arrange(int count, double width)
+    [Fact]
+    public void Columns_are_equal_when_every_value_fits_its_share()
     {
-        var children = Enumerable.Range(0, count).Select(_ => new Border { Height = 30 }).ToList();
-        var panel = new StatTriplePanel { Gap = 16 };
-        children.ForEach(child => panel.Children.Add(child));
+        var widths = StatTriplePanel.Allocate(324, [70, 90, 100]);
 
-        panel.Measure(new Size(width, 100));
-        panel.Arrange(new Rect(0, 0, width, 100));
-
-        return children.Select(child => LayoutInformation.GetLayoutSlot(child)).ToList();
+        Assert.All(widths, width => Assert.Equal(108, width, 0.01));
     }
 
     [Fact]
-    public void Three_stats_get_equal_columns_with_room_beside_each_divider()
+    public void A_value_that_needs_more_than_its_share_takes_what_it_needs_and_the_others_share_the_rest()
     {
-        var slots = UiHost.Run(() => Arrange(3, 300));
+        var widths = StatTriplePanel.Allocate(324, [60, 90, 130]);
 
-        // Columns of 100: the first ends 8 before the first divider, the others start 16 after their divider; the last runs to the edge.
-        Assert.Equal(new Rect(0, 0, 92, 100), slots[0]);
-        Assert.Equal(new Rect(116, 0, 76, 100), slots[1]);
-        Assert.Equal(new Rect(216, 0, 84, 100), slots[2]);
+        Assert.Equal(130, widths[2], 0.01);
+        Assert.Equal(97, widths[0], 0.01);
+        Assert.Equal(97, widths[1], 0.01);
+        Assert.Equal(324, widths.Sum(), 0.01);
     }
 
     [Fact]
-    public void Two_stats_split_the_width_in_two()
+    public void Two_long_values_can_both_take_more_than_an_equal_share()
     {
-        var slots = UiHost.Run(() => Arrange(2, 200));
+        var widths = StatTriplePanel.Allocate(324, [60, 120, 130]);
 
-        Assert.Equal(new Rect(0, 0, 92, 100), slots[0]);
-        Assert.Equal(new Rect(116, 0, 84, 100), slots[1]);
+        Assert.Equal(120, widths[1], 0.01);
+        Assert.Equal(130, widths[2], 0.01);
+        Assert.Equal(74, widths[0], 0.01);
     }
 
     [Fact]
-    public void The_panel_is_as_tall_as_its_tallest_stat()
+    public void When_the_values_cannot_all_fit_the_columns_are_equal()
     {
-        var height = UiHost.Run(() =>
-        {
-            var panel = new StatTriplePanel();
-            panel.Children.Add(new Border { Height = 20 });
-            panel.Children.Add(new Border { Height = 34 });
-            panel.Measure(new Size(300, double.PositiveInfinity));
+        var widths = StatTriplePanel.Allocate(300, [150, 150, 150]);
 
-            return panel.DesiredSize.Height;
-        });
-
-        Assert.Equal(34, height);
+        Assert.All(widths, width => Assert.Equal(100, width, 0.01));
     }
 }
