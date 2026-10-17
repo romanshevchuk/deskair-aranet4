@@ -48,10 +48,6 @@ public sealed partial class ChartHeaderViewModel : ObservableObject
     [ObservableProperty]
     private Metric legendMetric;
 
-    /// <summary>"average by hour, last 7 days": the line next to the typical day title. The days are the ones the typical day is built from.</summary>
-    [ObservableProperty]
-    private string typicalDaySubtitle = string.Empty;
-
     public ChartHeaderViewModel(ILocalizer localizer)
     {
         this.localizer = localizer;
@@ -93,14 +89,7 @@ public sealed partial class ChartHeaderViewModel : ObservableObject
         ShowComfortLegend = hourly && metric is Metric.Temperature or Metric.Humidity;
         LegendMetric = metric;
         ShowZoneLegend = metric == Metric.Co2 && !hourly;
-        LegendText = metric == Metric.Co2 ? string.Empty : localizer.Get(hourly ? "History_Legend_Line" : "History_Legend_Bars");
+        LegendText = hourly && metric != Metric.Co2 ? localizer.Get("History_Legend_Line") : string.Empty;
         ShowNoDataLegend = hasGaps;
-        TypicalDaySubtitle = localizer.Format("History_TypicalDay_Subtitle", ("period", localizer.Get(range switch
-        {
-            Period.Day => "History_TypicalDay_Before7",
-            Period.Week => "History_TypicalDay_These7",
-            Period.Month => "History_TypicalDay_These30",
-            _ => "History_TypicalDay_These12Months"
-        })));
     }
 }

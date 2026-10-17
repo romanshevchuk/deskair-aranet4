@@ -24,13 +24,13 @@
   <data name="Advice_Good_Text" xml:space="preserve"><value>Нижче 1 000 ppm, тож концентрація та якість сну не страждають.</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_Elevated_Title" xml:space="preserve"><value>Відчиніть вікно приблизно на 10 хвилин</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_High_Title" xml:space="preserve"><value>Провітріть зараз: відчиніть вікна навстіж</value><comment>Draft: needs native review.</comment></data>
-  <data name="Advice_Elevated_Text_Falling" xml:space="preserve"><value>Вище за ідеальний рівень, але знижується.</value><comment>Draft: needs native review.</comment></data>
-  <data name="Advice_Elevated_Text_Steady" xml:space="preserve"><value>Вище за ідеальний рівень. Провітрювання допоможе.</value><comment>Draft: needs native review.</comment></data>
-  <data name="Advice_Elevated_Text_Rising" xml:space="preserve"><value>Вище за ідеальний рівень і ще зростає. Провітріть незабаром.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Elevated_Text_Falling" xml:space="preserve"><value>Вище бажаного рівня, але знижується.</value></data>
+  <data name="Advice_Elevated_Text_Steady" xml:space="preserve"><value>Вище бажаного рівня. Провітрювання допоможе.</value></data>
+  <data name="Advice_Elevated_Text_Rising" xml:space="preserve"><value>Вище бажаного рівня і ще зростає. Провітріть незабаром.</value></data>
   <data name="Advice_High_Text_Falling" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон. Зараз знижується.</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_High_Text_Steady" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон.</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_High_Text_Rising" xml:space="preserve"><value>Понад 1 400 ppm і ще зростає. Страждають концентрація і сон.</value><comment>Draft: needs native review.</comment></data>
-  <data name="Mini_Temperature_Low" xml:space="preserve"><value>Занадто прохолодно · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
+  <data name="Mini_Temperature_Low" xml:space="preserve"><value>Прохолодно · ідеально {min}–{max} {unit}</value></data>
   <data name="Mini_Temperature_High" xml:space="preserve"><value>Занадто тепло · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Mini_Humidity_Low" xml:space="preserve"><value>Занадто сухо · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Mini_Humidity_High" xml:space="preserve"><value>Занадто волого · ідеально {min}–{max} {unit}</value><comment>Draft: needs native review.</comment></data>
@@ -48,17 +48,10 @@
   <data name="History_Chart_Daily" xml:space="preserve"><value>діапазон і середнє за день</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Chart_Weekly" xml:space="preserve"><value>діапазон і середнє за тиждень</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Chart_Monthly" xml:space="preserve"><value>діапазон і середнє за місяць</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_Legend_Bars" xml:space="preserve"><value>Стовпчик = мін–макс · риска = середнє</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Legend_Line" xml:space="preserve"><value>Лінія = виміри</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Legend_NoData" xml:space="preserve"><value>Немає даних</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_TypicalDay_Subtitle" xml:space="preserve"><value>середнє за годину, {period}</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_TypicalDay_Before7" xml:space="preserve"><value>7 днів перед цим</value><comment>Draft: needs native review. Day: the 7 days before the shown day.</comment></data>
-  <data name="History_TypicalDay_These7" xml:space="preserve"><value>ці 7 днів</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_TypicalDay_These30" xml:space="preserve"><value>ці 30 днів</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_TypicalDay_These12Months" xml:space="preserve"><value>ці 12 місяців</value><comment>Draft: needs native review.</comment></data>
-  <data name="History_TypicalDay_Worst" xml:space="preserve"><value>найгірше {from}–{to} год</value><comment>Draft: needs native review.</comment></data>
+  <data name="Chart_Today" xml:space="preserve"><value>Сьогодні</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_NoData" xml:space="preserve"><value>Немає даних</value><comment>Draft: needs native review.</comment></data>
-  <data name="Chart_TypicalDay" xml:space="preserve"><value>Типова доба</value><comment>Draft: needs native review.</comment></data>
   <data name="Stats_Average" xml:space="preserve"><value>Середнє</value><comment>Draft: needs native review.</comment></data>
   <data name="Stats_BiggestChange" xml:space="preserve"><value>Найбільша зміна за 24 години</value><comment>Draft: needs native review.</comment></data>
   <data name="Stats_BiggestChange_From" xml:space="preserve"><value>з {when}</value><comment>Draft: needs native review.</comment></data>
@@ -150,7 +143,6 @@
   <data name="Action_Add" xml:space="preserve"><value>Додати</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Cancel" xml:space="preserve"><value>Скасувати</value><comment>Draft: needs native review.</comment></data>
   <data name="Unit_Ppm" xml:space="preserve"><value>ppm</value></data>
-  <data name="Chart_Partial" xml:space="preserve"><value>записано лише {recorded} з {expected} год</value><comment>Draft: needs native review.</comment></data>
   <data name="Toolbar_Metric" xml:space="preserve"><value>Показник</value><comment>Draft: needs native review.</comment></data>
   <data name="Toolbar_Range" xml:space="preserve"><value>Період</value><comment>Draft: needs native review.</comment></data>
   <data name="Coverage_Chip" xml:space="preserve"><value>На основі {percent} очікуваних вимірювань</value><comment>Draft: needs native review.</comment></data>
@@ -195,8 +187,6 @@
   <data name="Ribbon_Name" xml:space="preserve"><value>Останні 24 години за зонами якості повітря</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Live_AccessibleName" xml:space="preserve"><value>{metric}, {span}: мін. {low}, сер. {avg}, макс. {high} {unit}</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Live_AccessibleName_Empty" xml:space="preserve"><value>{metric}, {span}: немає вимірювань</value><comment>Draft: needs native review.</comment></data>
-  <data name="Chart_Today" xml:space="preserve"><value>Сьогодні</value><comment>Draft: needs native review.</comment></data>
-  <data name="Chart_Avg" xml:space="preserve"><value>сер.</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ідеально 20–24</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_IdealHumidity" xml:space="preserve"><value>ідеально 30–50</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_PeakNow" xml:space="preserve"><value>Пік зараз</value><comment>Draft: needs native review.</comment></data>

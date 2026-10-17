@@ -24,41 +24,6 @@ public class ChartLayerTests
     private static int PixelY(ChartArea area, double value) => (int)Math.Round(area.Y(value));
 
     [Fact]
-    public void Band_draws_a_different_tint_for_each_zone_inside_the_plot_only()
-    {
-        UiHost.Run(() =>
-        {
-            var area = LayerRenderer.Area();
-            var bitmap = LayerRenderer.Render(new BandLayer(), area);
-
-            var good = LayerRenderer.Pixel(bitmap, 100, PixelY(area, 700));
-            var elevated = LayerRenderer.Pixel(bitmap, 100, PixelY(area, 1200));
-            var high = LayerRenderer.Pixel(bitmap, 100, PixelY(area, 1700));
-
-            Assert.True(good.A > 0 && elevated.A > 0 && high.A > 0);
-            Assert.NotEqual(good, elevated);
-            Assert.NotEqual(elevated, high);
-            Assert.True(good.G > good.R, "the good band is green");
-            Assert.True(high.R > high.G, "the high band is red");
-            Assert.Equal(0, LayerRenderer.Pixel(bitmap, 5, PixelY(area, 700)).A);
-            Assert.Equal(0, LayerRenderer.Pixel(bitmap, 100, 190).A);
-        });
-    }
-
-    [Fact]
-    public void Band_with_limits_outside_the_range_draws_only_the_visible_part()
-    {
-        UiHost.Run(() =>
-        {
-            var area = LayerRenderer.Area(yMin: 400, yMax: 900);
-            var bitmap = LayerRenderer.Render(new BandLayer(), area);
-
-            Assert.True(LayerRenderer.Pixel(bitmap, 100, 100).A > 0);
-            Assert.All(new[] { 15, 90, 160 }, y => Assert.True(LayerRenderer.Pixel(bitmap, 100, y).G > LayerRenderer.Pixel(bitmap, 100, y).R));
-        });
-    }
-
-    [Fact]
     public void Grid_draws_one_line_per_tick_and_nothing_for_zero_ticks()
     {
         UiHost.Run(() =>

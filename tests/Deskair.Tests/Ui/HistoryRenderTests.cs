@@ -150,7 +150,6 @@ public class HistoryRenderTests
         var history = new HistoryViewModel(
             toolbar,
             stats,
-            new TypicalDayViewModel(localizer),
             new SleepViewModel(localizer, formatter, calendar),
             new ChartHeaderViewModel(localizer),
             TestExport.Create(store, registry),

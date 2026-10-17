@@ -26,7 +26,6 @@ public class HistoryViewModelTests
     private readonly DeviceRegistry registry;
     private readonly HistoryToolbarViewModel toolbar = new();
     private readonly StatsViewModel stats;
-    private readonly TypicalDayViewModel typicalDay = new();
     private readonly SleepViewModel sleep;
     private readonly StrongReferenceMessenger messenger = new();
 
@@ -44,7 +43,7 @@ public class HistoryViewModelTests
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(readingStore ?? store, registry, clock, calendar);
 
-        return new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), NullLogger<HistoryViewModel>.Instance);
+        return new HistoryViewModel(toolbar, stats, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), NullLogger<HistoryViewModel>.Instance);
     }
 
     private async Task SelectDeviceAsync()
@@ -69,29 +68,11 @@ public class HistoryViewModelTests
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
-        Assert.Empty(viewModel.Bars!);
+        Assert.Null(viewModel.Grid);
         Assert.Empty(viewModel.Points!);
         Assert.Empty(viewModel.Gaps!);
         Assert.Null(stats.Average);
         Assert.True(viewModel.IsEmpty);
-    }
-
-    [Fact]
-    public async Task Week_gives_one_bar_per_local_day_ending_today()
-    {
-        await SelectDeviceAsync();
-        AddDay(Samples.Utc(2026, 10, 10), 800);
-        AddDay(Samples.Utc(2026, 10, 11), 1200);
-        var viewModel = Create();
-        toolbar.Range = Period.Week;
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        Assert.Equal(7, viewModel.Bars!.Count);
-        Assert.Equal(Samples.Utc(2026, 10, 6), viewModel.Bars[0].Start);
-        Assert.Equal(now, viewModel.Bars[^1].End);
-        Assert.Equal(1200, viewModel.Bars[5].Average);
-        Assert.Null(viewModel.Points);
     }
 
     [Fact]
@@ -146,7 +127,6 @@ public class HistoryViewModelTests
         Assert.NotEmpty(viewModel.TypicalPoints!);
         var marker = Assert.Single(viewModel.Markers!);
         Assert.Equal(now.AddHours(-3), marker.Time);
-        Assert.Null(viewModel.Bars);
     }
 
     [Fact]
@@ -183,36 +163,6 @@ public class HistoryViewModelTests
         Assert.Null(viewModel.TypicalPoints);
         Assert.Null(viewModel.ComfortBand);
         Assert.Null(viewModel.Markers);
-    }
-
-    [Theory]
-    [InlineData(Metric.Temperature)]
-    [InlineData(Metric.Humidity)]
-    [InlineData(Metric.Pressure)]
-    public async Task The_typical_day_card_is_only_for_co2(Metric metric)
-    {
-        await SelectDeviceAsync();
-        AddDay(now.AddHours(-30), 700);
-        var viewModel = Create();
-        toolbar.Range = Period.Day;
-        toolbar.Metric = metric;
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        Assert.False(viewModel.ShowTypicalDay);
-    }
-
-    [Fact]
-    public async Task The_typical_day_card_is_shown_for_co2_on_day()
-    {
-        await SelectDeviceAsync();
-        AddDay(now.AddHours(-30), 700);
-        var viewModel = Create();
-        toolbar.Range = Period.Day;
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        Assert.True(viewModel.ShowTypicalDay);
     }
 
     [Fact]
@@ -279,18 +229,6 @@ public class HistoryViewModelTests
     }
 
     [Fact]
-    public async Task Month_is_grouped_by_day()
-    {
-        await SelectDeviceAsync();
-        var viewModel = Create();
-        toolbar.Range = Period.Month;
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        Assert.Equal(30, viewModel.Bars!.Count);
-    }
-
-    [Fact]
     public async Task Day_gives_a_line_of_the_selected_metric_and_no_bars()
     {
         await SelectDeviceAsync();
@@ -303,7 +241,6 @@ public class HistoryViewModelTests
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal([21.5, 22.5], viewModel.Points!.Select(point => point.Value));
-        Assert.Null(viewModel.Bars);
     }
 
     [Fact]
@@ -341,7 +278,7 @@ public class HistoryViewModelTests
     }
 
     [Fact]
-    public async Task Refresh_fills_the_stats_and_the_typical_day()
+    public async Task Refresh_fills_the_stats()
     {
         await SelectDeviceAsync();
         AddDay(Samples.Utc(2026, 10, 11), 1000);
@@ -351,8 +288,6 @@ public class HistoryViewModelTests
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(1000, stats.Average);
-        Assert.Equal(24, typicalDay.Bars.Count);
-        Assert.Equal(1000, typicalDay.Bars[3].Average);
     }
 
     [Fact]
@@ -369,7 +304,7 @@ public class HistoryViewModelTests
 
         await first.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
         Assert.True(first.IsCompletedSuccessfully);
-        Assert.Equal(7, viewModel.Bars!.Count);
+        Assert.True(viewModel.ShowGrid);
     }
 
     [Fact]
@@ -387,59 +322,6 @@ public class HistoryViewModelTests
     }
 
     [Fact]
-    public async Task Bars_for_single_days_get_the_weekend_spans_behind_them()
-    {
-        await SelectDeviceAsync();
-        var viewModel = Create();
-        toolbar.Range = Period.Week;
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        // 12 Oct 2026 is a Monday, so the week of 6 to 12 Oct has one weekend: Saturday 10 to Monday 12.
-        var weekend = Assert.Single(viewModel.WeekendSpans!);
-        Assert.Equal((Samples.Utc(2026, 10, 10), Samples.Utc(2026, 10, 12)), (weekend.Start, weekend.End));
-    }
-
-    [Fact]
-    public async Task A_month_has_four_weekends()
-    {
-        await SelectDeviceAsync();
-        var viewModel = Create();
-        toolbar.Range = Period.Month;
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        Assert.Equal(4, viewModel.WeekendSpans!.Count);
-    }
-
-    [Fact]
-    public async Task The_day_line_has_no_weekend_spans()
-    {
-        await SelectDeviceAsync();
-        var viewModel = Create();
-        toolbar.Range = Period.Day;
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        Assert.Null(viewModel.WeekendSpans);
-    }
-
-    [Fact]
-    public async Task A_bar_knows_how_many_hours_were_recorded_of_how_many_expected()
-    {
-        await SelectDeviceAsync();
-        AddDay(Samples.Utc(2026, 10, 11), 800, hours: 6);
-        var viewModel = Create();
-        toolbar.Range = Period.Week;
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        var bar = viewModel.Bars![5];
-        Assert.Equal(6, bar.RecordedHours, 3);
-        Assert.Equal(24, bar.ExpectedHours, 3);
-    }
-
-    [Fact]
     public async Task Refresh_loads_the_screen_in_the_background()
     {
         await SelectDeviceAsync();
@@ -449,10 +331,9 @@ public class HistoryViewModelTests
 
         viewModel.Refresh();
 
-        await Wait.Until(() => viewModel.Bars is { Count: 7 });
+        await Wait.Until(() => viewModel.ShowGrid);
         Assert.Same(toolbar, viewModel.Toolbar);
         Assert.Same(stats, viewModel.Stats);
-        Assert.Same(typicalDay, viewModel.TypicalDay);
     }
 
     [Fact]
@@ -462,11 +343,11 @@ public class HistoryViewModelTests
         var viewModel = Create();
         toolbar.Range = Period.Week;
         viewModel.Refresh();
-        await Wait.Until(() => viewModel.Bars is { Count: 7 });
+        await Wait.Until(() => viewModel.ShowGrid);
 
         toolbar.Range = Period.Month;
 
-        await Wait.Until(() => viewModel.Bars is { Count: 30 });
+        await Wait.Until(() => stats.HeaderText is { } header && header.Contains("13 Sep", StringComparison.Ordinal));
     }
 
     [Theory]
@@ -478,7 +359,7 @@ public class HistoryViewModelTests
         var viewModel = Create();
         toolbar.Range = Period.Week;
         viewModel.Refresh();
-        await Wait.Until(() => viewModel.Bars is { Count: 7 });
+        await Wait.Until(() => viewModel.ShowGrid);
         AddDay(Samples.Utc(2026, 10, 11), 1500);
 
         if (imported)
@@ -490,7 +371,7 @@ public class HistoryViewModelTests
             messenger.Send(new SyncCompleted(device, 100));
         }
 
-        await Wait.Until(() => viewModel.Bars![5].Average == 1500);
+        await Wait.Until(() => stats.Average == 1500);
     }
 
     [Fact]
@@ -675,7 +556,7 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(store, registry, clock, calendar, settings);
-        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), NullLogger<HistoryViewModel>.Instance);
+        var viewModel = new HistoryViewModel(toolbar, stats, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), NullLogger<HistoryViewModel>.Instance);
         toolbar.Range = Period.Day;
 
         await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
@@ -683,28 +564,6 @@ public class HistoryViewModelTests
         Assert.False(viewModel.ShowSleep);
     }
 
-    [Fact]
-    public async Task The_average_line_is_the_average_of_the_period()
-    {
-        await SelectDeviceAsync();
-        AddDay(Samples.Utc(2026, 10, 11), 1000);
-        var viewModel = Create();
-        toolbar.Range = Period.Week;
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        Assert.Equal(1000, viewModel.AverageLine);
-    }
-
-    [Fact]
-    public async Task Without_a_device_there_is_no_average_line()
-    {
-        var viewModel = Create();
-
-        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
-
-        Assert.Null(viewModel.AverageLine);
-    }
     [Fact]
     public async Task Without_a_selected_device_there_is_no_sleep_card()
     {
@@ -723,7 +582,7 @@ public class HistoryViewModelTests
         var calendar = new LocalCalendar(TimeZoneInfo.Utc);
         var clock = new FakeClock(now);
         var query = new ReadingQueryService(new ThrowingReadingStore(), registry, clock, calendar);
-        var viewModel = new HistoryViewModel(toolbar, stats, typicalDay, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), logger);
+        var viewModel = new HistoryViewModel(toolbar, stats, sleep, new ChartHeaderViewModel(new FakeLocalizer()), TestExport.Create(), query, registry, calendar, clock, messenger, TestFormatter.Create(new FakeLocalizer()), new PeriodLabeler(new FakeLocalizer(), calendar), new HourGridBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer())), new DayChartBuilder(new FakeLocalizer(), TestFormatter.Create(new FakeLocalizer()), calendar), logger);
 
         viewModel.Refresh();
 

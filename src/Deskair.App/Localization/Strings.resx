@@ -47,17 +47,10 @@
   <data name="History_Chart_Daily" xml:space="preserve"><value>daily range &amp; average</value></data>
   <data name="History_Chart_Weekly" xml:space="preserve"><value>weekly range &amp; average</value></data>
   <data name="History_Chart_Monthly" xml:space="preserve"><value>monthly range &amp; average</value></data>
-  <data name="History_Legend_Bars" xml:space="preserve"><value>Bar = min–max · tick = average</value></data>
   <data name="History_Legend_Line" xml:space="preserve"><value>Line = readings</value></data>
   <data name="History_Legend_NoData" xml:space="preserve"><value>No data</value></data>
-  <data name="History_TypicalDay_Subtitle" xml:space="preserve"><value>average by hour, {period}</value></data>
-  <data name="History_TypicalDay_Before7" xml:space="preserve"><value>the 7 days before</value><comment>Day: the typical day is the 7 days before the shown day.</comment></data>
-  <data name="History_TypicalDay_These7" xml:space="preserve"><value>these 7 days</value></data>
-  <data name="History_TypicalDay_These30" xml:space="preserve"><value>these 30 days</value></data>
-  <data name="History_TypicalDay_These12Months" xml:space="preserve"><value>these 12 months</value></data>
-  <data name="History_TypicalDay_Worst" xml:space="preserve"><value>worst {from}–{to}h</value></data>
+  <data name="Chart_Today" xml:space="preserve"><value>Today</value></data>
   <data name="Chart_NoData" xml:space="preserve"><value>No data</value></data>
-  <data name="Chart_TypicalDay" xml:space="preserve"><value>Typical day</value></data>
   <data name="Stats_Average" xml:space="preserve"><value>Average</value></data>
   <data name="Stats_BiggestChange" xml:space="preserve"><value>Biggest change in 24 hours</value></data>
   <data name="Stats_BiggestChange_From" xml:space="preserve"><value>from {when}</value></data>
@@ -149,7 +142,6 @@
   <data name="Action_Add" xml:space="preserve"><value>Add</value></data>
   <data name="Action_Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="Unit_Ppm" xml:space="preserve"><value>ppm</value></data>
-  <data name="Chart_Partial" xml:space="preserve"><value>only {recorded} of {expected} h recorded</value></data>
   <data name="Toolbar_Metric" xml:space="preserve"><value>Metric</value></data>
   <data name="Toolbar_Range" xml:space="preserve"><value>Range</value></data>
   <data name="Coverage_Chip" xml:space="preserve"><value>Based on {percent} of expected readings</value></data>
@@ -194,8 +186,6 @@
   <data name="Ribbon_Name" xml:space="preserve"><value>Last 24 hours by air quality zone</value><comment>Accessible name of the 24 h ribbon.</comment></data>
   <data name="Chart_Live_AccessibleName" xml:space="preserve"><value>{metric}, {span}: low {low}, average {avg}, high {high} {unit}</value><comment>Accessible name of the Live chart.</comment></data>
   <data name="Chart_Live_AccessibleName_Empty" xml:space="preserve"><value>{metric}, {span}: no readings</value></data>
-  <data name="Chart_Today" xml:space="preserve"><value>Today</value></data>
-  <data name="Chart_Avg" xml:space="preserve"><value>avg</value></data>
   <data name="Gallery_Sample_IdealTemperature" xml:space="preserve"><value>ideal 20–24</value></data>
   <data name="Gallery_Sample_IdealHumidity" xml:space="preserve"><value>ideal 30–50</value></data>
   <data name="Stat_PeakNow" xml:space="preserve"><value>Peak right now</value></data>

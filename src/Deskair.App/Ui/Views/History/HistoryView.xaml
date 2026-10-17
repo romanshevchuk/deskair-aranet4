@@ -16,22 +16,7 @@
         </DataTrigger>
       </Style.Triggers>
     </Style>
-    <Style x:Key="History.TypicalDay" TargetType="{x:Type history:TypicalDayCard}">
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding DataContext.ShowSleep, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="True">
-          <Setter Property="Visibility" Value="Collapsed" />
-        </DataTrigger>
-        <!-- The typical day is a CO₂ rule: other metrics have no card. -->
-        <DataTrigger Binding="{Binding DataContext.ShowTypicalDay, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="False">
-          <Setter Property="Visibility" Value="Collapsed" />
-        </DataTrigger>
-        <!-- The grid has the typical day as its last row. -->
-        <DataTrigger Binding="{Binding DataContext.ShowGrid, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" Value="True">
-          <Setter Property="Visibility" Value="Collapsed" />
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
-    <Style x:Key="History.Bars" TargetType="{x:Type charts:HistoryChart}">
+    <Style x:Key="History.Chart" TargetType="{x:Type charts:HistoryChart}">
       <Style.Triggers>
         <DataTrigger Binding="{Binding ShowGrid}" Value="True">
           <Setter Property="Visibility" Value="Collapsed" />
@@ -117,8 +102,6 @@
         <Grid Grid.Column="0">
           <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="{StaticResource Grid.Card.Gap}" />
-            <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
 
           <controls:Card Grid.Row="0" Padding="{StaticResource Space.History.Chart.Card}">
@@ -134,26 +117,20 @@
               <charts:HistoryChart x:Name="Chart"
                                    AutomationProperties.Name="{Binding ChartName}"
                                    Grid.Row="1"
-                                   AverageLabel="{loc:T Chart_Avg}"
-                                   AverageValue="{Binding AverageLine}"
-                                   Bars="{Binding Bars}"
                                    ComfortBand="{Binding ComfortBand}"
                                    Gaps="{Binding Gaps}"
                                    Highlight="{Binding Highlight}"
                                    Metric="{Binding Toolbar.Metric}"
                                    NoDataText="{loc:T Chart_NoData}"
-                                   PartialText="{loc:T Chart_Partial}"
                                    MarkerLabel="{loc:T History_AirImproved_Label}"
                                    Markers="{Binding Markers}"
                                    NightLabel="{loc:T History_Legend_Night}"
                                    NightSpans="{Binding NightSpans}"
                                    Points="{Binding Points}"
-                                   Style="{StaticResource History.Bars}"
-                                   TodayLabel="{loc:T Chart_Today}"
+                                   Style="{StaticResource History.Chart}"
                                    TypicalHoverText="{loc:T History_Hover_Typical}"
                                    TypicalPoints="{Binding TypicalPoints}"
-                                   Unit="{Binding Stats.UnitText}"
-                                   WeekendSpans="{Binding WeekendSpans}" />
+                                   Unit="{Binding Stats.UnitText}" />
 
               <!-- D-0018: CO₂ on Week and Month is the days × hours grid; it takes the bars' place. -->
               <charts:HourGridChart x:Name="HourGrid"
@@ -171,10 +148,6 @@
             </Grid>
           </controls:Card>
 
-          <history:TypicalDayCard Grid.Row="2"
-                                  DataContext="{Binding TypicalDay}"
-                                  Style="{StaticResource History.TypicalDay}"
-                                  Subtitle="{Binding DataContext.ChartHeader.TypicalDaySubtitle, RelativeSource={RelativeSource AncestorType={x:Type history:HistoryView}}}" />
         </Grid>
 
         <history:SummaryCard Grid.Column="2" VerticalAlignment="Top" />

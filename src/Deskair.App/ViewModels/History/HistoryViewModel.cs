@@ -20,7 +20,6 @@ public sealed partial class HistoryViewModel : ObservableObject
 {
     private readonly HistoryToolbarViewModel toolbar;
     private readonly StatsViewModel stats;
-    private readonly TypicalDayViewModel typicalDay;
     private readonly SleepViewModel sleep;
     private readonly ChartHeaderViewModel chartHeader;
     private readonly ReadingQueryService query;
@@ -35,9 +34,6 @@ public sealed partial class HistoryViewModel : ObservableObject
     private readonly DayChartBuilder dayChart;
     private CancellationTokenSource? current;
     private bool following;
-
-    [ObservableProperty]
-    private IReadOnlyList<ChartBar>? bars;
 
     [ObservableProperty]
     private IReadOnlyList<ChartPoint>? points;
@@ -65,23 +61,15 @@ public sealed partial class HistoryViewModel : ObservableObject
     [ObservableProperty]
     private IReadOnlyList<ChartMarker>? markers;
 
-    /// <summary>Saturdays and Sundays inside the range, shaded behind bars that stand for single days. Null otherwise.</summary>
-    [ObservableProperty]
-    private IReadOnlyList<ChartGap>? weekendSpans;
-
     /// <summary>Nothing is stored for the selected room yet, or there is no room: the screen shows "collecting your first data" instead of charts.</summary>
     [ObservableProperty]
     private bool isEmpty;
 
-    /// <summary>The sleep card (last night) takes the place of the typical day while the range is Day and the hours filter is Night. Not shown for Pressure.</summary>
+    /// <summary>The "Last night" section of the summary card (Day only). Not shown for Pressure.</summary>
     [ObservableProperty]
     private bool showSleep;
 
-    /// <summary>The typical day card is a CO₂ rule, so it is shown for CO₂ only.</summary>
-    [ObservableProperty]
-    private bool showTypicalDay;
-
-    /// <summary>The days × hours grid in place of the bars (D-0018): CO₂ on Week and Month over all hours. Null otherwise.</summary>
+    /// <summary>The days × hours grid (D-0018): CO₂, Temperature and Humidity on Week, Month and Year. Null for Day and Pressure.</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowGrid))]
     private HourGridModel? grid;
@@ -108,14 +96,9 @@ public sealed partial class HistoryViewModel : ObservableObject
     [ObservableProperty]
     private string? periodEmptyText;
 
-    /// <summary>The average of the whole period in the unit shown, for the dashed line across the main chart. Null when there is none.</summary>
-    [ObservableProperty]
-    private double? averageLine;
-
     public HistoryViewModel(
         HistoryToolbarViewModel toolbar,
         StatsViewModel stats,
-        TypicalDayViewModel typicalDay,
         SleepViewModel sleep,
         ChartHeaderViewModel chartHeader,
         ExportViewModel export,
@@ -132,7 +115,6 @@ public sealed partial class HistoryViewModel : ObservableObject
     {
         this.toolbar = toolbar;
         this.stats = stats;
-        this.typicalDay = typicalDay;
         this.sleep = sleep;
         this.chartHeader = chartHeader;
         Export = export;
@@ -151,8 +133,6 @@ public sealed partial class HistoryViewModel : ObservableObject
     public HistoryToolbarViewModel Toolbar => toolbar;
 
     public StatsViewModel Stats => stats;
-
-    public TypicalDayViewModel TypicalDay => typicalDay;
 
     public SleepViewModel Sleep => sleep;
 
@@ -310,10 +290,7 @@ public sealed partial class HistoryViewModel : ObservableObject
             TypicalDay = hours,
             Night = query.Night
         });
-        typicalDay.Update(hours);
-        AverageLine = Display(metric, stats.Average);
 
-        ShowTypicalDay = metric == Metric.Co2;
         ShowSleep = lastNight is not null;
         sleep.Update(lastNight);
         sleep.UpdateNights(nights);
@@ -326,8 +303,6 @@ public sealed partial class HistoryViewModel : ObservableObject
                 return;
             }
 
-            Bars = buckets.Select(bucket => ToBar(bucket, interval, metric)).ToList();
-            WeekendSpans = grouping == Period.Day ? Weekends(start, end) : null;
             Points = null;
             TypicalPoints = null;
             ComfortBand = null;
@@ -355,8 +330,6 @@ public sealed partial class HistoryViewModel : ObservableObject
         Grid = null;
         GridName = null;
         ChartName = labeler.ChartName(metric, toolbar.PeriodLabel ?? string.Empty);
-        WeekendSpans = null;
-        Bars = null;
         Points = recent.Select(reading => new ChartPoint(reading.Timestamp, formatter.ToDisplay(metric, reading.ValueOf(metric)))).ToList();
         NightSpans = metric == Metric.Pressure ? null : dayChart.NightSpans(query.Night, start, end);
         Highlight = null;
@@ -369,8 +342,6 @@ public sealed partial class HistoryViewModel : ObservableObject
 
     private void ShowPressureLine(PressureSeries pressure, Metric metric, Period range, Period grouping)
     {
-        Bars = null;
-        WeekendSpans = null;
         Grid = null;
         GridName = null;
         ChartName = labeler.ChartName(metric, toolbar.PeriodLabel ?? string.Empty);
@@ -397,39 +368,14 @@ public sealed partial class HistoryViewModel : ObservableObject
         toolbar.MaxOffset = 0;
         toolbar.PeriodLabel = labeler.Label(HistoryPeriod.For(toolbar.Range, 0, timeProvider.GetUtcNow(), calendar));
         Highlight = null;
-        WeekendSpans = null;
-        Bars = [];
         Points = [];
         Gaps = [];
         stats.Update([]);
-        typicalDay.Update([]);
-        ShowTypicalDay = false;
         ShowSleep = false;
-        AverageLine = null;
         sleep.Update(null);
         sleep.UpdateNights(null);
         chartHeader.Update(toolbar.Metric, toolbar.Range, toolbar.Range == Period.Year ? Period.Week : Period.Day, hasGaps: false);
     }
-
-    private List<ChartGap> Weekends(DateTimeOffset start, DateTimeOffset end)
-    {
-        var spans = new List<ChartGap>();
-
-        for (var date = calendar.LocalDateOf(start); calendar.StartOfLocalDay(date) < end; date = date.AddDays(1))
-        {
-            if (date.DayOfWeek == DayOfWeek.Saturday)
-            {
-                spans.Add(new ChartGap(calendar.StartOfLocalDay(date), calendar.StartOfLocalDay(date.AddDays(2))));
-            }
-        }
-
-        return spans;
-    }
-
-    private double? Display(Metric metric, double? stored) => stored is { } value ? formatter.ToDisplay(metric, value) : null;
-
-    private ChartBar ToBar(Bucket bucket, TimeSpan interval, Metric metric)
-        => new(bucket.Start, bucket.End, Display(metric, bucket.Minimum), Display(metric, bucket.Maximum), Display(metric, bucket.Average), bucket.State, bucket.ReadingCount * interval.TotalHours, bucket.ExpectedCount * interval.TotalHours);
 
     private static List<ChartGap> EmptyRuns(IReadOnlyList<Bucket> buckets)
     {

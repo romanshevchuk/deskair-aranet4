@@ -42,8 +42,7 @@ public class ChartHeaderViewModelTests
     }
 
     [Theory]
-    [InlineData(Period.Week, "History_Legend_Bars")]
-    [InlineData(Period.Month, "History_Legend_Bars")]
+    [InlineData(Period.Week, "")]
     [InlineData(Period.Day, "History_Legend_Line")]
     public void Other_metrics_explain_how_to_read_the_chart(Period range, string expected)
     {
@@ -63,15 +62,4 @@ public class ChartHeaderViewModelTests
         Assert.False(viewModel.ShowNoDataLegend);
     }
 
-    [Theory]
-    [InlineData(Period.Day, "History_TypicalDay_Before7")]
-    [InlineData(Period.Week, "History_TypicalDay_These7")]
-    [InlineData(Period.Month, "History_TypicalDay_These30")]
-    [InlineData(Period.Year, "History_TypicalDay_These12Months")]
-    public void The_typical_day_says_how_many_days_it_is_built_from(Period range, string days)
-    {
-        viewModel.Update(Metric.Co2, range, Period.Day, hasGaps: false);
-
-        Assert.Equal($"History_TypicalDay_Subtitle(period={days})", viewModel.TypicalDaySubtitle);
-    }
 }

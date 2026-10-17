@@ -22,7 +22,6 @@
   <Thickness x:Key="Space.Item">0,0,16,16</Thickness>
   <Thickness x:Key="Space.SectionLabel">0,0,0,8</Thickness>
   <Thickness x:Key="Space.Card.Padding">16</Thickness>
-  <sys:Double x:Key="Space.Card.Gap">16</sys:Double>
   <!-- Confirmed by the prototype: top 22, sides 24, bottom 20. -->
   <Thickness x:Key="Space.Hero.Padding">24,22,24,20</Thickness>
   <sys:Double x:Key="Size.Live.MiniRow.Height">132</sys:Double>
@@ -30,11 +29,9 @@
   <!-- History period navigator: ‹ title ›, the title at least 176 px so the arrows do not jump between periods. -->
   <sys:Double x:Key="Size.History.Navigator.Title">176</sys:Double>
   <Thickness x:Key="Space.History.Navigator">0,0,16,0</Thickness>
-  <sys:Double x:Key="Size.History.Stats.Width">360</sys:Double>
   <sys:Double x:Key="Size.History.Export.StatusWidth">280</sys:Double>
   <sys:Double x:Key="Size.Flyout.Width">360</sys:Double>
   <!-- Flyout (concept page): sections have 16 px at the sides, the footer band runs edge to edge (padding 10 / 12), the ribbon is 8 px high. -->
-  <Thickness x:Key="Space.Flyout.Section">16,0,16,0</Thickness>
   <Thickness x:Key="Space.Flyout.Head">16,14,16,0</Thickness>
   <Thickness x:Key="Space.Flyout.Main">16,14,16,0</Thickness>
   <Thickness x:Key="Space.Flyout.Ribbon">16,18,16,0</Thickness>
@@ -78,7 +75,6 @@
   <!-- Advice card, stats, chips, battery (prototype values). -->
   <sys:Double x:Key="Size.Advice.Badge">30</sys:Double>
   <sys:Double x:Key="Size.Advice.Icon">18</sys:Double>
-  <sys:Double x:Key="Size.Advice.IconStroke">1.6</sys:Double>
   <Thickness x:Key="Space.Advice.Padding">14,12,16,12</Thickness>
   <Thickness x:Key="Space.Advice.Badge">0,0,12,0</Thickness>
   <!-- Hero stats: a divider between columns, the next value 16 px after it (StatTriplePanel). -->
@@ -109,7 +105,6 @@
   <Thickness x:Key="Space.Chart.Card">24,20,24,16</Thickness>
   <!-- History cards (prototype): the main chart 22 / 16 / 22 / 8, the typical day 22 / 14 / 22 / 6, the stats card 20 / 16. -->
   <Thickness x:Key="Space.History.Chart.Card">22,16,22,8</Thickness>
-  <Thickness x:Key="Space.TypicalDay.Card">22,14,22,6</Thickness>
   <Thickness x:Key="Space.Stats.Card">20,16,20,16</Thickness>
   <Thickness x:Key="Space.Chart.Caption">0,10,0,0</Thickness>
   <Thickness x:Key="Space.Chart.Ribbon">0,8,0,0</Thickness>
@@ -143,12 +138,9 @@
   <Thickness x:Key="Space.Stats.Number">0,6,0,0</Thickness>
   <Thickness x:Key="Space.Stats.Unit">8,0,0,6</Thickness>
   <Thickness x:Key="Space.Stats.Cells">0,10,0,10</Thickness>
-  <Thickness x:Key="Space.Stats.Cells.Next">0,12,0,0</Thickness>
   <Thickness x:Key="Space.Coverage.Padding">12,9,12,9</Thickness>
-  <Thickness x:Key="Space.Stats.Legend">0,0,16,0</Thickness>
   <Thickness x:Key="Space.Inline.Tight">4,0,0,0</Thickness>
   <GridLength x:Key="Grid.History.Stats.Width">360</GridLength>
-  <sys:Double x:Key="Size.TypicalDay.Chart.Height">112</sys:Double>
   <sys:Double x:Key="Size.Chart.Readout.Height">20</sys:Double>
   <Thickness x:Key="Space.Input.Padding">14,6,14,6</Thickness>
   <sys:Double x:Key="Size.Input.MinWidth">200</sys:Double>

@@ -147,7 +147,6 @@ public static class ServiceRegistration
         services.AddSingleton<SettingsViewModel>();
         services.AddSingleton<HistoryToolbarViewModel>();
         services.AddSingleton<StatsViewModel>();
-        services.AddSingleton<TypicalDayViewModel>();
         services.AddSingleton<SleepViewModel>();
         services.AddSingleton<ChartHeaderViewModel>();
         services.AddSingleton<PeriodLabeler>();

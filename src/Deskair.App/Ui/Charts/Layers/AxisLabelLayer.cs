@@ -34,9 +34,6 @@ public sealed class AxisLabelLayer : IChartLayer
     /// <summary>Label the time axis with dates ("12 Oct") at local midnights, for charts that span days; otherwise with clock times.</summary>
     public bool DateLabels { get; set; }
 
-    /// <summary>False leaves out the time labels (the labels under day bars are drawn by <see cref="BarLabelLayer"/>); the y labels stay.</summary>
-    public bool TimeLabels { get; set; } = true;
-
     /// <summary>Y labels drawn bold in another brush, by value: the CO₂ limits in the colour of their zone. The key is a resource key of a solid brush.</summary>
     public IReadOnlyDictionary<double, string>? TickBrushKeys { get; set; }
 
@@ -46,10 +43,7 @@ public sealed class AxisLabelLayer : IChartLayer
         var brush = area.Brush("Text.Tertiary.Brush");
 
         DrawYLabels(context, area, brush, culture);
-        if (TimeLabels)
-        {
-            DrawTimeLabels(context, area, brush, culture);
-        }
+        DrawTimeLabels(context, area, brush, culture);
     }
 
     private void DrawYLabels(DrawingContext context, ChartArea area, Brush brush, CultureInfo culture)

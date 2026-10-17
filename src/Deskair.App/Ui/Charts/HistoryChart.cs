@@ -3,14 +3,14 @@ using System.Windows;
 using Deskair.App.Localization;
 using Deskair.App.Ui.Charts.Layers;
 using Deskair.App.ViewModels.ChartModels;
-using Deskair.Domain.Analytics.Aggregation;
 using Deskair.Domain.Metrics;
 
 namespace Deskair.App.Ui.Charts;
 
 /// <summary>
-/// The History chart. With <see cref="Bars"/> (Week, Month, Year) it draws floating min to max bars with an average tick, weekend shading, dashed partial bars and hatched gaps.
-/// Without bars it draws the hourly line of <see cref="Points"/> (Day). CO₂ gets the zone bands and lines like the Live chart. Values are already in the unit shown.
+/// The History line chart: the readings of <see cref="Points"/> (Day), or the Pressure line for a longer range. CO₂ gets the limit lines and the zone-coloured line like the
+/// Live chart; the other metrics a line in their own colour. Behind the line: the typical day, the night band, the comfort range and the biggest pressure change.
+/// Values are already in the unit shown. The days × hours grids are drawn by <see cref="HourGridChart"/>.
 /// </summary>
 public sealed class HistoryChart : ChartBase
 {
@@ -18,8 +18,6 @@ public sealed class HistoryChart : ChartBase
     private const double Co2Maximum = 2000;
     private const double ElevatedFrom = 1000;
     private const double HighAbove = 1400;
-    private const int MaximumDayBars = 14;
-    private const double AverageRowHeight = 20;
     private const double NightBandRoom = 22;
     private const double TypicalOpacity = 0.6;
     private const double AreaOpacity = 0.06;
@@ -33,20 +31,8 @@ public sealed class HistoryChart : ChartBase
         typeof(HistoryChart),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
 
-    public static readonly DependencyProperty BarsProperty = DependencyProperty.Register(
-        nameof(Bars),
-        typeof(IReadOnlyList<ChartBar>),
-        typeof(HistoryChart),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
-
     public static readonly DependencyProperty GapsProperty = DependencyProperty.Register(
         nameof(Gaps),
-        typeof(IReadOnlyList<ChartGap>),
-        typeof(HistoryChart),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
-
-    public static readonly DependencyProperty WeekendSpansProperty = DependencyProperty.Register(
-        nameof(WeekendSpans),
         typeof(IReadOnlyList<ChartGap>),
         typeof(HistoryChart),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
@@ -65,30 +51,6 @@ public sealed class HistoryChart : ChartBase
 
     public static readonly DependencyProperty NoDataTextProperty = DependencyProperty.Register(
         nameof(NoDataText),
-        typeof(string),
-        typeof(HistoryChart),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
-
-    public static readonly DependencyProperty PartialTextProperty = DependencyProperty.Register(
-        nameof(PartialText),
-        typeof(string),
-        typeof(HistoryChart),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
-
-    public static readonly DependencyProperty AverageValueProperty = DependencyProperty.Register(
-        nameof(AverageValue),
-        typeof(double?),
-        typeof(HistoryChart),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
-
-    public static readonly DependencyProperty AverageLabelProperty = DependencyProperty.Register(
-        nameof(AverageLabel),
-        typeof(string),
-        typeof(HistoryChart),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
-
-    public static readonly DependencyProperty TodayLabelProperty = DependencyProperty.Register(
-        nameof(TodayLabel),
         typeof(string),
         typeof(HistoryChart),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
@@ -141,7 +103,7 @@ public sealed class HistoryChart : ChartBase
         typeof(HistoryChart),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
 
-    /// <summary>The typical day (the 7 days before) as points in the middle of each hour of the window, in the unit shown. Drawn as a quiet line behind the readings (Day, CO₂).</summary>
+    /// <summary>The typical day (the 7 days before) as points in the middle of each hour of the window, in the unit shown. Drawn as a quiet line behind the readings (Day).</summary>
     public IReadOnlyList<ChartPoint>? TypicalPoints
     {
         get => (IReadOnlyList<ChartPoint>?)GetValue(TypicalPointsProperty);
@@ -197,49 +159,16 @@ public sealed class HistoryChart : ChartBase
         set => SetValue(TypicalHoverTextProperty, value);
     }
 
-    /// <summary>The average of the whole period, drawn as a dashed line with its label. Null draws none.</summary>
-    public double? AverageValue
-    {
-        get => (double?)GetValue(AverageValueProperty);
-        set => SetValue(AverageValueProperty, value);
-    }
-
-    /// <summary>The word before the average ("avg") on the line and in the row under the bars. Already localized.</summary>
-    public string? AverageLabel
-    {
-        get => (string?)GetValue(AverageLabelProperty);
-        set => SetValue(AverageLabelProperty, value);
-    }
-
-    /// <summary>The label of the last day bar ("Today"). Already localized.</summary>
-    public string? TodayLabel
-    {
-        get => (string?)GetValue(TodayLabelProperty);
-        set => SetValue(TodayLabelProperty, value);
-    }
-
     public IReadOnlyList<ChartPoint>? Points
     {
         get => (IReadOnlyList<ChartPoint>?)GetValue(PointsProperty);
         set => SetValue(PointsProperty, value);
     }
 
-    public IReadOnlyList<ChartBar>? Bars
-    {
-        get => (IReadOnlyList<ChartBar>?)GetValue(BarsProperty);
-        set => SetValue(BarsProperty, value);
-    }
-
     public IReadOnlyList<ChartGap>? Gaps
     {
         get => (IReadOnlyList<ChartGap>?)GetValue(GapsProperty);
         set => SetValue(GapsProperty, value);
-    }
-
-    public IReadOnlyList<ChartGap>? WeekendSpans
-    {
-        get => (IReadOnlyList<ChartGap>?)GetValue(WeekendSpansProperty);
-        set => SetValue(WeekendSpansProperty, value);
     }
 
     public Metric Metric
@@ -262,30 +191,11 @@ public sealed class HistoryChart : ChartBase
         set => SetValue(NoDataTextProperty, value);
     }
 
-    /// <summary>The hover text of a partial bar, with {recorded} and {expected} (hours): "only {recorded} of {expected} h recorded". Already localized.</summary>
-    public string? PartialText
-    {
-        get => (string?)GetValue(PartialTextProperty);
-        set => SetValue(PartialTextProperty, value);
-    }
-
     public TimeZoneInfo TimeZone { get; set; } = TimeZoneInfo.Local;
 
-    private bool BarMode => Bars is not null;
-
-    private bool HasData => BarMode
-        ? Bars!.Any(bar => bar.State != BucketState.NoData && bar.Maximum is not null)
-        : Points?.Any(point => point.Value is not null) == true;
+    private bool HasData => Points?.Any(point => point.Value is not null) == true;
 
     private string ValueFormat => NumberFormat.FormatFor(Metric);
-
-    /// <summary>
-    /// True when every bar stands for one day and there are few enough to name them (a week): the labels are weekdays with "Today", and a row of averages sits under them.
-    /// Longer ranges keep the date labels along the axis.
-    /// </summary>
-    private bool DayBars => BarMode && Bars!.Count is > 0 and <= MaximumDayBars && Bars.All(IsOneDay);
-
-    private static bool IsOneDay(ChartBar bar) => bar.End - bar.Start <= TimeSpan.FromHours(25);
 
     protected override Thickness PlotMargin
     {
@@ -294,12 +204,7 @@ public sealed class HistoryChart : ChartBase
             var margin = base.PlotMargin;
 
             // The word "Night" sits on the band above the plot.
-            if (!BarMode && NightSpans is { Count: > 0 })
-            {
-                margin = new Thickness(margin.Left, Math.Max(margin.Top, NightBandRoom), margin.Right, margin.Bottom);
-            }
-
-            return DayBars && !string.IsNullOrEmpty(AverageLabel) ? new Thickness(margin.Left, margin.Top, margin.Right, margin.Bottom + AverageRowHeight) : margin;
+            return NightSpans is { Count: > 0 } ? new Thickness(margin.Left, Math.Max(margin.Top, NightBandRoom), margin.Right, margin.Bottom) : margin;
         }
     }
 
@@ -316,106 +221,60 @@ public sealed class HistoryChart : ChartBase
         var layers = new List<IChartLayer>();
         var (low, high) = ValueRange();
         var (start, end) = TimeRange();
-        var ticks = Metric == Metric.Co2 ? Co2Ticks(high) : ChartTicks.Nice(low, high, 5);
-        var dayCo2 = !BarMode && Metric == Metric.Co2;
-        var axis = new AxisLabelLayer
-        {
-            Culture = CultureInfo.CurrentUICulture,
-            TimeZone = TimeZone,
-            YTicks = ticks,
-            YFormat = ValueFormat,
-            TickBrushKeys = dayCo2 ? limitBrushes : null,
-            DateLabels = TimeSpan.FromTicks((long)(end - start)) > clockLabelLimit
-        };
+        var co2 = Metric == Metric.Co2;
+        var ticks = co2 ? Co2Ticks(high) : ChartTicks.Nice(low, high, 5);
 
-        if (BarMode)
-        {
-            layers.Add(new WeekendShadingLayer { WeekendSpans = WeekendSpans });
-        }
-        else
-        {
-            layers.Add(new NightBandLayer { Spans = NightSpans, Label = NightLabel });
-            layers.Add(new ComfortBandLayer { Band = ComfortBand, BrushKey = $"Metric.{Metric}.Brush" });
-            layers.Add(new HighlightLayer { Highlight = Highlight, BrushKey = $"Metric.{Metric}.Brush" });
-        }
+        layers.Add(new NightBandLayer { Spans = NightSpans, Label = NightLabel });
+        layers.Add(new ComfortBandLayer { Band = ComfortBand, BrushKey = $"Metric.{Metric}.Brush" });
+        layers.Add(new HighlightLayer { Highlight = Highlight, BrushKey = $"Metric.{Metric}.Brush" });
 
-        if (Metric == Metric.Co2 && BarMode)
-        {
-            layers.Add(new BandLayer());
-        }
+        // The CO₂ line shows the two limits as dashed lines in their zone colours, so the grid leaves those values out.
+        layers.Add(new GridLayer { YTicks = co2 ? [.. ticks.Where(tick => tick is not ElevatedFrom and not HighAbove)] : ticks });
 
-        // The Day line shows the two limits as dashed lines in their zone colours, so the grid leaves those values out.
-        layers.Add(new GridLayer { YTicks = dayCo2 ? [.. ticks.Where(tick => tick is not ElevatedFrom and not HighAbove)] : ticks });
-
-        if (dayCo2)
+        if (co2)
         {
             layers.Add(new ThresholdLayer { ElevatedFrom = ElevatedFrom, HighAbove = HighAbove });
-            layers.Add(new LineLayer { Points = TypicalPoints, BrushKey = "Text.Tertiary.Brush", Opacity = TypicalOpacity, Smooth = true });
+        }
+
+        layers.Add(new LineLayer { Points = TypicalPoints, BrushKey = "Text.Tertiary.Brush", Opacity = TypicalOpacity, Smooth = true });
+
+        if (co2)
+        {
             layers.Add(new AreaLayer { Points = Points, BrushKey = "Text.Primary.Brush", TopOpacity = AreaOpacity, Smooth = true });
-        }
-
-        if (BarMode)
-        {
-            var zoneColoured = Metric == Metric.Co2;
-
-            layers.Add(new RangeBarLayer { Bars = Bars, BrushKey = $"Metric.{Metric}.Brush", ZoneColoured = zoneColoured });
-            layers.Add(new AverageLineLayer { Bars = Bars, BrushKey = $"Metric.{Metric}.Brush", ZoneColoured = zoneColoured });
-        }
-        else if (Metric == Metric.Co2)
-        {
             layers.Add(new ZoneLineLayer { Points = Points, Smooth = true });
         }
         else
         {
-            layers.Add(new LineLayer { Points = TypicalPoints, BrushKey = "Text.Tertiary.Brush", Opacity = TypicalOpacity, Smooth = true });
             layers.Add(new LineLayer { Points = Points, BrushKey = $"Metric.{Metric}.Brush", Smooth = true });
         }
 
         layers.Add(new GapHatchLayer { Gaps = Gaps });
 
-        if (dayCo2)
+        if (co2)
         {
             layers.Add(new MarkerLayer { Markers = Markers, Label = MarkerLabel });
         }
 
-        if (HasData)
-        {
-            if (BarMode)
-            {
-                layers.Add(new OverallAverageLayer { Value = AverageValue, Label = AverageLabel, Format = ValueFormat, Culture = CultureInfo.CurrentUICulture });
-            }
-        }
-        else
+        if (!HasData)
         {
             layers.Add(new NoDataLayer { Text = NoDataText });
         }
 
         layers.Add(new CrosshairLayer { Hover = Hover });
-        layers.Add(axis);
-
-        if (DayBars)
+        layers.Add(new AxisLabelLayer
         {
-            axis.TimeLabels = false;
-            layers.Add(new BarLabelLayer
-            {
-                Bars = Bars,
-                Culture = CultureInfo.CurrentUICulture,
-                TimeZone = TimeZone,
-                TodayLabel = TodayLabel,
-                RowLabel = AverageLabel,
-                Format = ValueFormat
-            });
-        }
+            Culture = CultureInfo.CurrentUICulture,
+            TimeZone = TimeZone,
+            YTicks = ticks,
+            YFormat = ValueFormat,
+            TickBrushKeys = co2 ? limitBrushes : null,
+            DateLabels = TimeSpan.FromTicks((long)(end - start)) > clockLabelLimit
+        });
 
         return layers;
     }
 
     protected override ChartHover? HitTest(Point position, ChartArea area)
-    {
-        return BarMode ? BarHover(position, area) : PointHover(position, area);
-    }
-
-    private ChartHover? PointHover(Point position, ChartArea area)
     {
         if (MarkerHover(position, area) is { } marker)
         {
@@ -466,48 +325,8 @@ public sealed class HistoryChart : ChartBase
         return nearest is not null && Math.Abs((nearest.Time - time).TotalMinutes) <= 30 ? nearest.Value : null;
     }
 
-    private ChartHover? BarHover(Point position, ChartArea area)
-    {
-        if (!area.ContainsX(position.X))
-        {
-            return null;
-        }
-
-        var time = area.TimeAt(position.X);
-        var bar = Bars!.FirstOrDefault(candidate => candidate.Start <= time && time < candidate.End);
-
-        if (bar is null)
-        {
-            return null;
-        }
-
-        var middle = bar.Start + ((bar.End - bar.Start) / 2);
-
-        if (bar.State == BucketState.NoData || bar.Average is not { } average)
-        {
-            return new ChartHover(middle, null, area.X(middle), null, NoDataText);
-        }
-
-        var culture = CultureInfo.CurrentUICulture;
-        var date = TimeZoneInfo.ConvertTime(bar.Start, TimeZone).ToString("d MMM", culture);
-        var range = $"{bar.Minimum?.ToString(ValueFormat, culture)}–{bar.Maximum?.ToString(ValueFormat, culture)}";
-        var text = $"{date} · {average.ToString(ValueFormat, culture)} {Unit} ({range})";
-
-        if (bar.State == BucketState.Partial && PartialText is { } partial)
-        {
-            text += $" · {partial.Replace("{recorded}", bar.RecordedHours.ToString("0.#", culture), StringComparison.Ordinal).Replace("{expected}", bar.ExpectedHours.ToString("0.#", culture), StringComparison.Ordinal)}";
-        }
-
-        return new ChartHover(middle, average, area.X(middle), area.Y(average), text);
-    }
-
     private (double Start, double End) TimeRange()
     {
-        if (BarMode && Bars!.Count > 0)
-        {
-            return (Bars.Min(bar => bar.Start.UtcTicks), Bars.Max(bar => bar.End.UtcTicks));
-        }
-
         var times = Points?.Select(point => point.Time.UtcTicks).ToList() ?? [];
 
         return times.Count > 0
@@ -516,11 +335,11 @@ public sealed class HistoryChart : ChartBase
     }
 
     /// <summary>The y labels of the CO₂ axis: the bottom, the two limits and the top (and 2000 when the top is 2600).</summary>
-    private IReadOnlyList<double> Co2Ticks(double high)
-        => !BarMode && high > Co2Maximum ? [Co2Minimum, ElevatedFrom, HighAbove, Co2Maximum, high] : [Co2Minimum, ElevatedFrom, HighAbove, high];
+    private static double[] Co2Ticks(double high)
+        => high > Co2Maximum ? [Co2Minimum, ElevatedFrom, HighAbove, Co2Maximum, high] : [Co2Minimum, ElevatedFrom, HighAbove, high];
 
-    /// <summary>The top of the Day CO₂ axis: 1600, 2000 or 2600 by how high the readings and the typical line go.</summary>
-    private (double Low, double High) DayCo2Range()
+    /// <summary>The top of the CO₂ axis: 1600, 2000 or 2600 by how high the readings and the typical line go.</summary>
+    private (double Low, double High) Co2Range()
     {
         var highest = (Points ?? []).Concat(TypicalPoints ?? []).Where(point => point.Value is not null).Select(point => point.Value!.Value).DefaultIfEmpty(0).Max();
 
@@ -529,21 +348,12 @@ public sealed class HistoryChart : ChartBase
 
     private (double Low, double High) ValueRange()
     {
-        var values = BarMode
-            ? Bars!.Where(bar => bar.State != BucketState.NoData).SelectMany(bar => new[] { bar.Minimum, bar.Maximum }).Where(value => value is not null).Select(value => value!.Value).ToList()
-            : (Points ?? []).Concat(TypicalPoints ?? []).Where(point => point.Value is not null).Select(point => point.Value!.Value).ToList();
-
         if (Metric == Metric.Co2)
         {
-            if (!BarMode)
-            {
-                return DayCo2Range();
-            }
-
-            var top = values.Count > 0 ? Math.Ceiling(values.Max() / 100) * 100 : Co2Maximum;
-
-            return (Co2Minimum, Math.Max(Co2Maximum, top));
+            return Co2Range();
         }
+
+        var values = (Points ?? []).Concat(TypicalPoints ?? []).Where(point => point.Value is not null).Select(point => point.Value!.Value).ToList();
 
         if (values.Count == 0)
         {
