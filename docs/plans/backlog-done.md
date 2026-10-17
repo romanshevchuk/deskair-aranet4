@@ -80,3 +80,4 @@ Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.
 | OWN-01 | Quiet hours and night hours typed by hand, checked by the owner 2026-10-17 (quiet hours hold the toast; night band follows) | done |
 | OWN-02 | Toast buttons (Open, Snooze, a press with the app not running) and Do Not Disturb with the "paused by Windows" row, checked by the owner 2026-10-17 (`--test-toast` added for it) | done |
 | OWN-04 | Flyout and tray at 125 % and 150 % checked by the owner 2026-10-17. Second monitor and other taskbar edges closed without a manual test: `FlyoutPositionerTests` cover all four taskbar edges, corners, a work area not at zero and the overflow popup | done |
+| OWN-03 | Tray: left click, click-away, Esc, the Snooze menu, the value on the tray icon, and the flyout no longer blinks (a new flyout window for each opening), checked by the owner 2026-10-17 | done |

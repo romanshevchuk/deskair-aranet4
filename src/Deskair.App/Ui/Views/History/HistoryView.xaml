@@ -110,6 +110,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
 
               <history:ChartHeader Grid.Row="0" Margin="0,0,0,6" DataContext="{Binding ChartHeader}" />
@@ -144,6 +145,12 @@
                          MinHeight="{StaticResource Size.Chart.Readout.Height}"
                          AutomationProperties.LiveSetting="Polite"
                          Style="{StaticResource History.Readout}" />
+
+              <!-- The worst hours (CO₂) or the comfort advice, from the typical day: it is about the hours the chart shows, so it sits under the chart. -->
+              <controls:InsightBox Grid.Row="3"
+                                   Margin="0,6,0,0"
+                                   Content="{Binding Stats.InsightText}"
+                                   Zone="{Binding Stats.InsightZone}" />
             </Grid>
           </controls:Card>
 

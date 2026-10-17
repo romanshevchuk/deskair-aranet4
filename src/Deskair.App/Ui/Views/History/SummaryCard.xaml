@@ -4,8 +4,8 @@
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
   <!-- DataContext: HistoryViewModel. Two cards, top to bottom (screens-and-states.md "History summary card"):
-       the period: the average with its change and the coverage as a line of text, the time in each zone, the highest and lowest reading with their day and time, and the tip in the colours
-       of the zone of the average; and the night: "Last night" on Day, the nights of the period on Week, Month and Year. A part without numbers is hidden. -->
+       the period: the average with its change and the coverage as a line of text, the time in each zone and the highest and lowest reading with their day and time (the tip in the colours
+       of the zone of the average now sits under the chart); and the night: "Last night" on Day, the nights of the period on Week, Month and Year. A part without numbers is hidden. -->
   <UserControl.Resources>
     <Style x:Key="Summary.Coverage" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Text.Secondary}">
       <Setter Property="Margin" Value="{StaticResource Space.Stats.Change}" />
@@ -120,13 +120,11 @@
           </StackPanel>
           <controls:KeyValueCell Grid.Column="1" Label="{loc:T Stats_PressureRange}" Value="{Binding PressureRangeText}" />
         </Grid>
-
-        <controls:InsightBox Margin="{StaticResource Space.Stats.Block}" Content="{Binding InsightText}" Zone="{Binding InsightZone}" />
       </StackPanel>
     </controls:Card>
 
     <!-- Last night (Day): the verdict pill (CO₂ only), the numbers as rows and a short tip; a night only partly recorded says so. -->
-    <controls:Card Margin="0,16,0,0"
+    <controls:Card Margin="0,12,0,0"
                    Padding="{StaticResource Space.Stats.Card}"
                    Visibility="{Binding ShowSleep, Converter={StaticResource BoolToVisibility}}">
       <StackPanel DataContext="{Binding Sleep}">
@@ -179,7 +177,7 @@
     </controls:Card>
 
     <!-- Nights (Week, Month, Year): the average night, and for CO₂ the best and worst night with their dates. -->
-    <controls:Card Margin="0,16,0,0"
+    <controls:Card Margin="0,12,0,0"
                    Padding="{StaticResource Space.Stats.Card}"
                    Visibility="{Binding Sleep.HasNights, Converter={StaticResource BoolToVisibility}}">
       <StackPanel DataContext="{Binding Sleep}">
