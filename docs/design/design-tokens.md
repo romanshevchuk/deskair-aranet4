@@ -80,7 +80,7 @@ A comfort range gives colour a meaning here, so the grid uses a diverging scale 
 | heat.humid1 | | 50 to 60 % | #A9D3E9 | #2C5466 |
 | heat.humid2 | | 60 % and above | #3B8CC4 | #52A9DF |
 
-A value on a limit belongs to the step above it (20.0 °C is comfortable, 24.0 °C is warm1). The row-end bar uses `heat.cool2` or `heat.dry2` for the low share, the Good segment colour for the comfortable share and `heat.warm2` or `heat.humid2` for the high share. Blue means cool on the Temperature tab and humid on the Humidity tab: the legend always names the steps, so the colour is never the only cue.
+The comfortable range includes both of its limits (20.0 and 24.0 °C are comfortable; 30 and 50 % too); a value exactly on any other limit belongs to the step nearer the range (18.0 °C is cool1, 26.0 °C is warm1). One rule in code: `ComfortScale`; the mini cards, the summary pill, the tips and the grid all use it. The row-end bar uses `heat.cool2` or `heat.dry2` for the low share, the Good segment colour for the comfortable share and `heat.warm2` or `heat.humid2` for the high share. Blue means cool on the Temperature tab and humid on the Humidity tab: the legend always names the steps, so the colour is never the only cue.
 
 ## Metric colours
 

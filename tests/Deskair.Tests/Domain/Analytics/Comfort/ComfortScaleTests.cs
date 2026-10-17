@@ -11,10 +11,12 @@ public class ComfortScaleTests
     [InlineData(19.9, 1)]
     [InlineData(20.0, 2)]
     [InlineData(23.9, 2)]
-    [InlineData(24.0, 3)]
+    [InlineData(24.0, 2)]
+    [InlineData(24.1, 3)]
     [InlineData(25.9, 3)]
-    [InlineData(26.0, 4)]
-    public void Temperature_steps_put_a_value_on_a_limit_in_the_step_above(double celsius, int step)
+    [InlineData(26.0, 3)]
+    [InlineData(26.1, 4)]
+    public void Temperature_steps_put_a_value_on_a_limit_in_the_step_nearer_the_comfortable_range(double celsius, int step)
         => Assert.Equal(step, ComfortScale.Temperature.Step(celsius));
 
     [Theory]
@@ -22,8 +24,10 @@ public class ComfortScaleTests
     [InlineData(25, 1)]
     [InlineData(30, 2)]
     [InlineData(49, 2)]
-    [InlineData(50, 3)]
-    [InlineData(60, 4)]
+    [InlineData(50, 2)]
+    [InlineData(51, 3)]
+    [InlineData(60, 3)]
+    [InlineData(61, 4)]
     public void Humidity_steps_follow_the_limits(double percent, int step)
         => Assert.Equal(step, ComfortScale.Humidity.Step(percent));
 
@@ -44,10 +48,12 @@ public class ComfortScaleTests
         Assert.Equal(ComfortSide.Low, scale.Side(19.9));
         Assert.Equal(ComfortSide.Inside, scale.Side(20));
         Assert.Equal(ComfortSide.Inside, scale.Side(23.9));
-        Assert.Equal(ComfortSide.High, scale.Side(24));
+        Assert.Equal(ComfortSide.Inside, scale.Side(24));
+        Assert.Equal(ComfortSide.High, scale.Side(24.1));
         Assert.Equal(1.5, scale.Outside(18.5));
         Assert.Equal(0, scale.Outside(22));
         Assert.Equal(2, scale.Outside(26));
+        Assert.Equal(0, scale.Outside(24));
     }
 
     [Fact]

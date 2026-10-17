@@ -27,13 +27,13 @@ public sealed record ComfortScale
     /// <summary>The lowest comfortable value.</summary>
     public double Low { get; }
 
-    /// <summary>The first value above the comfortable range: the range is <see cref="Low"/> up to but not including this.</summary>
+    /// <summary>The highest comfortable value: the range is <see cref="Low"/> to this, both included.</summary>
     public double High { get; }
 
     /// <summary>An average this far or further outside the range is "too cool", "too warm", "too dry" or "too humid" rather than "a bit".</summary>
     public double FarOutside { get; }
 
-    /// <summary>The lower bounds of steps 2 to 5; a value below the first is step 1.</summary>
+    /// <summary>The four limits between the five steps, lowest first; the middle two are <see cref="Low"/> and <see cref="High"/>.</summary>
     public IReadOnlyList<double> Steps { get; }
 
     /// <summary>The scale of the metric, or null when the metric has none.</summary>
@@ -44,12 +44,12 @@ public sealed record ComfortScale
         _ => null
     };
 
-    /// <summary>The step of a value, from 0 (furthest below) to 4 (furthest above); 2 is comfortable.</summary>
+    /// <summary>The step of a value, from 0 (furthest below) to 4 (furthest above); 2 is comfortable. A value exactly on a limit is in the step nearer the comfortable range.</summary>
     public int Step(double value)
     {
         var step = 0;
 
-        while (step < Steps.Count && value >= Steps[step])
+        while (step < Steps.Count && (Steps[step] <= Low ? value >= Steps[step] : value > Steps[step]))
         {
             step++;
         }
@@ -57,10 +57,10 @@ public sealed record ComfortScale
         return step;
     }
 
-    public ComfortSide Side(double value) => value < Low ? ComfortSide.Low : value >= High ? ComfortSide.High : ComfortSide.Inside;
+    public ComfortSide Side(double value) => value < Low ? ComfortSide.Low : value > High ? ComfortSide.High : ComfortSide.Inside;
 
     /// <summary>How far a value is outside the comfortable range; 0 inside it.</summary>
-    public double Outside(double value) => value < Low ? Low - value : value >= High ? value - High : 0;
+    public double Outside(double value) => value < Low ? Low - value : value > High ? value - High : 0;
 
     public bool IsFarOutside(double value) => Outside(value) > FarOutside;
 

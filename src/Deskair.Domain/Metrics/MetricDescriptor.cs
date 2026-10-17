@@ -1,7 +1,9 @@
+using Deskair.Domain.Analytics.Comfort;
+
 namespace Deskair.Domain.Metrics;
 
 /// <summary>
-/// Everything a view needs to know about a metric, so views have no per-metric switch.
+/// Everything a view needs to know about a metric, so views have no per-metric switch. The ideal range of Temperature and Humidity is the comfortable range of their <see cref="ComfortScale"/>.
 /// <see cref="NameKey"/> is a resource key; <see cref="ColorToken"/> is the token name prefix
 /// (for example "Metric.Temperature").
 /// </summary>
@@ -17,7 +19,7 @@ public sealed record MetricDescriptor(
     [
         new(Metric.Co2, "Metric_Co2", "ppm", null, null, "Metric.Co2"),
         new(Metric.Temperature, "Metric_Temperature", "°C", 20, 24, "Metric.Temperature"),
-        new(Metric.Humidity, "Metric_Humidity", "%", 30, 50, "Metric.Humidity"),
+        new(Metric.Humidity, "Metric_Humidity", "%", ComfortScale.Humidity.Low, ComfortScale.Humidity.High, "Metric.Humidity"),
         new(Metric.Pressure, "Metric_Pressure", "hPa", null, null, "Metric.Pressure")
     ];
 

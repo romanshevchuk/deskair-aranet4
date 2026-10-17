@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Deskair.App.Localization;
 using Deskair.App.ViewModels.ChartModels;
+using Deskair.Domain.Analytics.Comfort;
 using Deskair.Domain.Analytics.Trend;
 using Deskair.Domain.Metrics;
 using Deskair.Domain.Readings;
@@ -9,8 +10,6 @@ namespace Deskair.App.ViewModels.Live;
 
 public sealed partial class MiniCardsViewModel : ObservableObject
 {
-    private const double SlightHumidityMargin = 5;
-
     private readonly ILocalizer localizer;
     private readonly MetricFormatter formatter;
 
@@ -57,22 +56,22 @@ public sealed partial class MiniCardsViewModel : ObservableObject
 
     private string Subtitle(MetricDescriptor descriptor, double latest, IReadOnlyList<Reading> recent, DateTimeOffset now)
     {
-        if (descriptor is { IdealMin: { } min, IdealMax: { } max })
+        if (ComfortScale.For(descriptor.Metric) is { } scale)
         {
             // Judge the value as the card shows it: a reading of 19.96 Â°C is shown as 20.0 and must not be called too cool.
             var shown = Math.Round(latest, descriptor.Metric == Metric.Humidity ? 0 : 1, MidpointRounding.AwayFromZero);
 
-            if (shown < min || shown > max)
+            if (scale.Side(shown) != ComfortSide.Inside)
             {
-                var side = shown < min ? "Low" : "High";
+                var side = scale.Side(shown) == ComfortSide.Low ? "Low" : "High";
 
-                // Humidity is "a bit" off within 5 points of the range and "too" off beyond that (D-0021).
-                var slight = descriptor.Metric == Metric.Humidity && shown >= min - SlightHumidityMargin && shown <= max + SlightHumidityMargin ? "ABit" : string.Empty;
+                // Humidity is "a bit" off up to the scale's far-outside distance and "too" off beyond it (D-0021); temperature is always "too".
+                var slight = descriptor.Metric == Metric.Humidity && !scale.IsFarOutside(shown) ? "ABit" : string.Empty;
 
                 return localizer.Format(
                     $"Mini_{descriptor.Metric}_{slight}{side}",
-                    ("min", Math.Round(formatter.ToDisplay(descriptor.Metric, min))),
-                    ("max", Math.Round(formatter.ToDisplay(descriptor.Metric, max))),
+                    ("min", Math.Round(formatter.ToDisplay(descriptor.Metric, scale.Low))),
+                    ("max", Math.Round(formatter.ToDisplay(descriptor.Metric, scale.High))),
                     ("unit", formatter.Unit(descriptor.Metric)));
             }
         }
