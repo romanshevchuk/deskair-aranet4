@@ -1,4 +1,4 @@
-# Handoff (updated 2026-10-14)
+# Handoff (updated 2026-10-17)
 
 *Last reviewed: 2026-10-17*
 
@@ -26,7 +26,7 @@ dotnet test tests/Deskair.Tests
 dotnet format Deskair.sln --verify-no-changes
 ```
 
-State now (2026-10-14): build 0 warnings and 0 errors; **1436 tests, 0 failed** (40 skipped: the opt-in image-render tests, `DESKAIR_RENDER=1`); format clean. No TODO cards are left in the code. Everything on the v1 list in `backlog.md` is built except the accessibility pass (A11Y-01), the native Ukrainian review (I18N-02) and Store packaging (REL-01). The latest work is two passes aligning the look with the prototype (Q47).
+State now: see "Session of 2026-10-17" below (build clean, 1676 tests passing). The paragraph that stood here described 2026-10-14 and is out of date.
 
 ## How to see what you built (important)
 
@@ -56,7 +56,37 @@ The owner's sensor is an Aranet4 `0A0B3`, address `C3DEC8FCC7C6`, Bluetooth is o
 
 The per-feature rules and what was and was not verified are in the decided Q entries of `docs/plans/questions.md` (tray Q37, flyout Q38, single instance Q39, resume Q40, toasts Q41, snooze Q42, Do Not Disturb Q43, reconnect Q44, try again Q45, sleep Q46, prototype alignment Q47, title bar Q14, offline Q31, stats Q36). The spike notes (`spike-s1` to `spike-s5`, `research-do-not-disturb.md`) record how the Windows parts were found out. The Aranet4 history download is documented in `spike-s1-ble-history.md` (5040 readings every 120 s; a real capture is `tests/Deskair.Tests/TestData/aranet4-history-capture.txt`).
 
-**Next: the "Left before release" lists in `backlog.md` (start with R3 for agents).** The UI/UX review (`ui-review-brief.md`) is done (POL-17).
+### Session of 2026-10-17 (read this first)
+
+**Start with [`backlog.md`](backlog.md).** It was reorganised: only open work is there, in four lists (R1 owner checks, R2 owner decisions, R3 agent code work, R4 release). Finished items are in [`backlog-done.md`](backlog-done.md) (an archive; read it only for history).
+
+State: everything is committed on `main` (the owner asks for commits; no Claude or Co-Authored-By trailer). Release build and format are clean; **1676 tests, 0 failed** (66 skipped: the opt-in render tests). The owner has since looked at Settings, the tray, toasts, History Day and Week and Month, the import and the export in the real app, all fine.
+
+What changed that you should know about:
+
+- **Settings:** `SettingsSectionViewModel` is the base for the sections that save at once (a change saves only its own field). Equal-width segmented controls, quiet hours on one row, status lines as captions. `BoolToVisibility` is declared once in `App.xaml`; the test host (`UiHost.cs`) registers it too, because it does not load `App.xaml`.
+- **Onboarding:** the scan logic is `SensorSearch` (a replaced search cannot change the state); the view model only shows its state on the UI thread through `IUiDispatcher`.
+- **History:** `HistoryViewModel` refreshes through the dispatcher and `LoadAsync` is split into `ReadAsync` (into a `HistoryLoad`), `ShowSummary` and `ShowChart`. `ChartHeaderViewModel` has three methods (`UpdateForDay`, `UpdateForGrid`, `UpdateForLine`). `StatsInsight` holds the insight text. The right column is two cards (the period; the night) and the worst-hours tip sits under the chart. The CO₂ line colours blend over 30 ppm at each limit (`ChartLines.ZoneBlend`); the typical line is thin and light; "air improved" is a ring plus a legend entry.
+- **Window:** minimum size 1100 × 700 (tokens `Size.Window.MinWidth` and `MinHeight`), chosen by rendering Live and History at smaller sizes.
+- **Flyout:** a new `FlyoutWindow` for each opening (reusing one made a transparent window blink on re-show).
+- **Removed:** `IBleConnection.SubscribeAsync` and the notification code (unused, never verified), the bar-era chart header branches and strings.
+- **New dev switch:** `--test-toast` (use with `--simulated`) shows one High CO₂ toast at start, to try its Snooze and Open buttons.
+- **Sleep verdict pill colours:** Good green, Fair neutral, Poor amber (red is kept for the air being High now).
+- **Measured, not changed:** a Year refresh over a year of 2-minute readings is fast (POL-35), so the query layer was left alone.
+
+What is left for you, in order (details in `backlog.md`):
+
+1. **Agent work:** REL-01 (Store packaging: plan first; the listing needs the owner's P1 answers), REL-02 (two small items; one needs a real sensor), REL-05 (final pass before a tag).
+2. **Owner work, not yours:** OWN-05 (sensor out of range, PC sleep and wake), OWN-06 (one more look at History), OWN-08 (Windows 10), the accessibility check, the native Ukrainian review, Q27 and P1 to P3. Do not mark these done.
+
+How the owner likes to work (from this session): be efficient, make real progress toward the release, do not over-engineer; plan first when a change is large and wait for a yes, otherwise just do it; give a plain, honest opinion when asked about design; say what is verified and what is not; the owner is watching token use, so do not review or translate Ukrainian beyond what a change needs, and do not start subagents unless asked.
+
+Tooling notes from this session:
+
+- `dotnet test` can report zero tests; run the exe directly: `tests\Deskair.Tests\bin\Release\net10.0-windows10.0.19041.0\Deskair.Tests.exe` (add `-class "Deskair.Tests.Ui.SettingsRenderTests"` for one class). Build in Release (the running app can lock Debug output). Renders: set `DESKAIR_RENDER=1` and run the exe; images go to `artifacts\visual`.
+- There is no Python on this machine. In the shell tool, a heredoc or `sed` text with an apostrophe can break parsing; write files with the Write tool and keep `sed` edits short. Check every splice afterwards.
+- `AGENTS.md` mentions `.github/instructions/csharp.instructions.md`; it does not exist. The C# style guide is `docs/engineering/csharp-instructions.md`.
+
 
 ### What is left
 
