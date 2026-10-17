@@ -71,8 +71,9 @@
       <RowDefinition Height="{StaticResource Grid.Footer.Height}" />
     </Grid.RowDefinitions>
 
-    <shell:HeaderBar Grid.Row="0" />
-    <ContentControl Grid.Row="1"
+    <shell:HeaderBar x:Name="Header" Grid.Row="0" />
+    <ContentControl x:Name="Page"
+                    Grid.Row="1"
                     Margin="{StaticResource Space.Page.Padding}"
                     Content="{Binding}"
                     Style="{StaticResource Shell.Content}" />
