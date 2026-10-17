@@ -95,6 +95,20 @@ public class HistoryViewModelTests
     }
 
     [Fact]
+    public async Task The_line_chart_is_named_by_metric_and_period_and_the_grid_has_no_chart_name()
+    {
+        await SelectDeviceAsync();
+        AddDay(Samples.Utc(2026, 10, 5), 1010);
+        var viewModel = Create();
+        toolbar.Metric = Metric.Pressure;
+        toolbar.Range = Period.Week;
+
+        await viewModel.RefreshAsync(TestContext.Current.CancellationToken);
+
+        Assert.StartsWith("History_Chart_Name(metric=Metric_Pressure", viewModel.ChartName, StringComparison.Ordinal);
+        Assert.Null(viewModel.GridName);
+    }
+    [Fact]
     public async Task Year_for_co2_is_a_grid_of_months_and_days_named_by_day()
     {
         await SelectDeviceAsync();
@@ -109,6 +123,7 @@ public class HistoryViewModelTests
         Assert.Null(viewModel.Grid.Typical);
         Assert.True(viewModel.ShowGrid);
         Assert.StartsWith("History_Grid_NameDay(", viewModel.GridName, StringComparison.Ordinal);
+        Assert.Null(viewModel.ChartName);
         Assert.Equal("Oct 2026", viewModel.Grid.Rows[^1].Label);
         Assert.Equal(800, viewModel.Grid.Rows[^1].Cells[4]!.Value);
     }

@@ -132,6 +132,7 @@
               <history:ChartHeader Grid.Row="0" Margin="0,0,0,6" DataContext="{Binding ChartHeader}" />
 
               <charts:HistoryChart x:Name="Chart"
+                                   AutomationProperties.Name="{Binding ChartName}"
                                    Grid.Row="1"
                                    AverageLabel="{loc:T Chart_Avg}"
                                    AverageValue="{Binding AverageLine}"

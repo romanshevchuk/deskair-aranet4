@@ -42,6 +42,10 @@ public sealed class PeriodLabeler(ILocalizer localizer, LocalCalendar calendar)
     public string GridName(Metric metric, string period, bool byDay = false)
         => localizer.Format(byDay ? "History_Grid_NameDay" : "History_Grid_Name", ("metric", localizer.Get($"Metric_{metric}")), ("period", period));
 
+    /// <summary>What Narrator reads for a History line chart: "Pressure, last 24 hours".</summary>
+    public string ChartName(Metric metric, string period)
+        => localizer.Format("History_Chart_Name", ("metric", localizer.Get($"Metric_{metric}")), ("period", period));
+
     private string Span(string from, string to) => localizer.Format("History_Period_Span", ("from", from), ("to", to));
 
     private static string From(DateOnly first, DateOnly last, CultureInfo culture)

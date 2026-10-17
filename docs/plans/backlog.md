@@ -80,7 +80,7 @@ Plan, specs and model per item: [`polish-implementation.md`](polish-implementati
 | POL-17 | Final review against the concept (done 2026-10-17; findings are POL-19 to POL-31) | done |
 | POL-18 | History per metric: comfort grids for temperature and humidity, a weather line for pressure; no CO₂ typical day or sleep on other tabs | done |
 | POL-19 | Review fix: Not connected turns the header logo ring and the room chip dot grey | done |
-| POL-20 | Review fix, partly done (Live chart, Live ribbon and the 1h / 6h / 24h selector are named). Still open: accessible names on the sparklines, the History Day and Pressure lines and the flyout ribbon; announce zone changes (live region) | todo |
+| POL-20 | Review fix: charts expose a Narrator peer (`ChartAutomationPeer`); names on the Live chart, both ribbons and the History line charts; the 1h / 6h / 24h selector has its own name; the hero zone text is a polite live region. Sparklines stay hidden (the card has the name) | done |
 | POL-21 | Review: High Contrast support (system colours; heat steps as stepped opacities; accessibility.md) | todo |
 | POL-22 | Review: `heat.comfort` (and `heat.none.line`) too close to the surface in both themes, about 1.2:1; needs a colour decision, then tokens and the contrast exception in design-tokens.md | todo |
 | POL-23 | Review fix: Year summary header names both years ("1 Nov 2025 – 12 Oct 2026") | done |

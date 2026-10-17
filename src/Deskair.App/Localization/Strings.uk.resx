@@ -325,6 +325,7 @@
   <data name="History_Period_Empty_Title" xml:space="preserve"><value>Немає вимірювань за {period}</value><comment>Draft: needs native review. {period} is a date or a date range.</comment></data>
   <data name="History_Period_Empty_Text" xml:space="preserve"><value>Deskair має вимірювання з {date}.</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Period_Latest" xml:space="preserve"><value>До останнього</value><comment>Draft: needs native review. Button: go back to the latest period.</comment></data>
+  <data name="History_Chart_Name" xml:space="preserve"><value>{metric}, {period}</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Chart_ByHour" xml:space="preserve"><value>за годинами</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Chart_MeansByHour" xml:space="preserve"><value>середнє за годину</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Chart_MeansByDay" xml:space="preserve"><value>середнє за день</value><comment>Draft: needs native review.</comment></data>

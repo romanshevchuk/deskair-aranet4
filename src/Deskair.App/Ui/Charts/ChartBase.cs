@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -54,6 +55,8 @@ public abstract class ChartBase : FrameworkElement
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip
         };
     }
+
+    protected override AutomationPeer OnCreateAutomationPeer() => new ChartAutomationPeer(this);
 
     protected override void OnRender(DrawingContext drawingContext)
     {

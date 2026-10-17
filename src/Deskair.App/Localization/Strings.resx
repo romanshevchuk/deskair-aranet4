@@ -322,6 +322,7 @@
   <data name="History_Period_Empty_Title" xml:space="preserve"><value>No readings for {period}</value></data>
   <data name="History_Period_Empty_Text" xml:space="preserve"><value>Deskair has readings from {date}.</value></data>
   <data name="History_Period_Latest" xml:space="preserve"><value>Go to the latest</value></data>
+  <data name="History_Chart_Name" xml:space="preserve"><value>{metric}, {period}</value><comment>Accessible name of a History line chart.</comment></data>
   <data name="History_Chart_ByHour" xml:space="preserve"><value>by hour</value><comment>Subtitle of the History grid (Week, Month).</comment></data>
   <data name="History_Chart_MeansByHour" xml:space="preserve"><value>hourly averages</value><comment>Subtitle of the Pressure line (Week, Month).</comment></data>
   <data name="History_Chart_MeansByDay" xml:space="preserve"><value>daily averages</value><comment>Subtitle of the Pressure line (Year).</comment></data>

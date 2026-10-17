@@ -31,7 +31,7 @@
         <controls:Pill HorizontalAlignment="Right" Zone="{Binding Zone}">
           <StackPanel Orientation="Horizontal">
             <controls:StatusDot Pulses="True" Zone="{Binding Zone}" VerticalAlignment="Center" />
-            <TextBlock Margin="{StaticResource Space.Inline}" Text="{Binding ZoneText}" />
+            <TextBlock Margin="{StaticResource Space.Inline}" AutomationProperties.LiveSetting="Polite" Text="{Binding ZoneText}" />
           </StackPanel>
         </controls:Pill>
       </Grid>

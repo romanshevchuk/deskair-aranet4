@@ -90,6 +90,10 @@ public sealed partial class HistoryViewModel : ObservableObject
     [ObservableProperty]
     private string? gridName;
 
+    /// <summary>What Narrator reads for the line chart (Day, and the Pressure line): "Pressure, last 24 hours". Null while the grid is shown.</summary>
+    [ObservableProperty]
+    private string? chartName;
+
     public bool ShowGrid => Grid is not null;
 
     /// <summary>The room has readings, but none in the chosen period (before the first reading): the screen shows "No readings for …" and "Go to the latest".</summary>
@@ -338,6 +342,7 @@ public sealed partial class HistoryViewModel : ObservableObject
                 ? gridBuilder.BuildYear(gridMonths, metric, today)
                 : gridDays is null ? null : gridBuilder.Build(gridDays, hours, metric, range, query.Night, today);
             GridName = Grid is null ? null : labeler.GridName(metric, toolbar.PeriodLabel, byDay: gridMonths is not null);
+            ChartName = null;
 
             if (Grid is not null)
             {
@@ -349,6 +354,7 @@ public sealed partial class HistoryViewModel : ObservableObject
 
         Grid = null;
         GridName = null;
+        ChartName = labeler.ChartName(metric, toolbar.PeriodLabel ?? string.Empty);
         WeekendSpans = null;
         Bars = null;
         Points = recent.Select(reading => new ChartPoint(reading.Timestamp, formatter.ToDisplay(metric, reading.ValueOf(metric)))).ToList();
@@ -367,6 +373,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         WeekendSpans = null;
         Grid = null;
         GridName = null;
+        ChartName = labeler.ChartName(metric, toolbar.PeriodLabel ?? string.Empty);
         Points = pressure.Points;
         TypicalPoints = null;
         ComfortBand = null;
@@ -383,6 +390,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         IsEmpty = true;
         Grid = null;
         GridName = null;
+        ChartName = null;
         IsPeriodEmpty = false;
         PeriodEmptyTitle = null;
         PeriodEmptyText = null;

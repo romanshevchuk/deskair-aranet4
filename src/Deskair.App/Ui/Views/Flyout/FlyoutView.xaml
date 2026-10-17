@@ -217,7 +217,8 @@
         </StackPanel>
 
         <StackPanel Margin="{StaticResource Space.Flyout.Ribbon}" Style="{StaticResource Flyout.WhenConnected}">
-          <charts:ZoneRibbon Height="{StaticResource Size.Flyout.Ribbon.Height}"
+          <charts:ZoneRibbon AutomationProperties.Name="{loc:T Ribbon_Name}"
+                             Height="{StaticResource Size.Flyout.Ribbon.Height}"
                              EndTime="{Binding RibbonEnd}"
                              SegmentGap="2"
                              SegmentRadius="3"
