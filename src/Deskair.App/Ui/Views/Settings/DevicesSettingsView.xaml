@@ -10,7 +10,7 @@
         <ItemsControl.ItemTemplate>
           <DataTemplate>
             <controls:SettingsRow Header="{loc:T Settings_Devices_RoomName}" Description="{Binding Address}">
-              <controls:TextInput AutomationProperties.Name="{loc:T Settings_Devices_RoomName}" Text="{Binding Name, UpdateSourceTrigger=LostFocus}" />
+              <controls:TextInput Padding="8,3" AutomationProperties.Name="{loc:T Settings_Devices_RoomName}" Text="{Binding Name, UpdateSourceTrigger=LostFocus}" />
             </controls:SettingsRow>
           </DataTemplate>
         </ItemsControl.ItemTemplate>

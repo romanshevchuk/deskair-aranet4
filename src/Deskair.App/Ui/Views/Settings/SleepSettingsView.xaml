@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- DataContext: SleepSettingsViewModel. The night hours, typed as HH:mm and saved as soon as they read as a time. The Night filter in History and the sleep card use them. -->
+  <!-- DataContext: SleepSettingsViewModel. The night hours, typed as HH:mm and saved as soon as they read as a time. The night band and the Nights and Last night sections in History use them. -->
   <UserControl.Resources>
     <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
   </UserControl.Resources>

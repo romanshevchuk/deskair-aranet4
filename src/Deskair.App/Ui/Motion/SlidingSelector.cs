@@ -31,17 +31,24 @@ public abstract class SlidingSelector : ListBox
         indicator = GetTemplateChild("PART_Indicator") as FrameworkElement;
         shift = new TranslateTransform();
         placed = false;
+        lastItem = Rect.Empty;
 
         if (indicator is not null)
         {
             indicator.RenderTransform = shift;
+
+            // A template can be applied more than once (a style that arrives late, a theme change); the new indicator has to be placed again.
+            InvalidateArrange();
         }
     }
 
     protected override void OnSelectionChanged(SelectionChangedEventArgs e)
     {
         base.OnSelectionChanged(e);
-        Place();
+
+        // The control is arranged before its items (an arrange request does not travel up the tree), so the item that was just selected may still be waiting for its own
+        // arrange. Its last position is good enough: ask for an arrange so ArrangeOverride places the indicator even when the control keeps its size.
+        InvalidateArrange();
     }
 
     protected override Size ArrangeOverride(Size arrangeBounds)
@@ -60,7 +67,7 @@ public abstract class SlidingSelector : ListBox
             return;
         }
 
-        if (SelectedIndex < 0 || ItemContainerGenerator.ContainerFromIndex(SelectedIndex) is not FrameworkElement item || !item.IsArrangeValid)
+        if (SelectedIndex < 0 || ItemContainerGenerator.ContainerFromIndex(SelectedIndex) is not FrameworkElement { ActualWidth: > 0 } item)
         {
             indicator.Visibility = Visibility.Collapsed;
             placed = false;

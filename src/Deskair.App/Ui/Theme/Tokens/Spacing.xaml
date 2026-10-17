@@ -121,8 +121,8 @@
   <sys:Double x:Key="Size.Battery.Width">26</sys:Double>
   <sys:Double x:Key="Size.Battery.Height">12</sys:Double>
 
-  <!-- Settings card and row (CTRL-14, CTRL-15): prototype values (card padding 12 22 2, row min height 40, gap 16). -->
-  <Thickness x:Key="Space.SettingsCard.Padding">22,12,22,2</Thickness>
+  <!-- Settings card and row (CTRL-14, CTRL-15): prototype values (card padding 12 22 8, row min height 40, gap 16). -->
+  <Thickness x:Key="Space.SettingsCard.Padding">22,12,22,8</Thickness>
   <!-- The section title sits above the card, outside it (design-tokens.md "Settings"). -->
   <Thickness x:Key="Space.SettingsCard.Header">0,0,0,8</Thickness>
   <sys:Double x:Key="Size.TimeField.Width">88</sys:Double>
