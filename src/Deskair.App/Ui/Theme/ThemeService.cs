@@ -13,18 +13,28 @@ public sealed class ThemeService
     private static readonly string[] themedDictionaries = ["Colors", "Zones", "Metrics"];
 
     private readonly ISystemTheme systemTheme;
+    private readonly Func<HighContrastColors?> highContrast;
     private readonly List<ResourceDictionary> active = new();
     private ThemeChoice choice = ThemeChoice.System;
 
-    public ThemeService(ISystemTheme systemTheme)
+    /// <param name="systemTheme">Tells whether Windows is dark.</param>
+    /// <param name="highContrast">The High Contrast colours while Windows High Contrast is on, otherwise null. Defaults to the system's own.</param>
+    public ThemeService(ISystemTheme systemTheme, Func<HighContrastColors?>? highContrast = null)
     {
         this.systemTheme = systemTheme;
+        this.highContrast = highContrast ?? SystemHighContrast;
         this.systemTheme.Changed += OnSystemThemeChanged;
+        SystemParameters.StaticPropertyChanged += OnSystemParameterChanged;
     }
 
     public event EventHandler? ThemeChanged;
 
     public bool IsDark { get; private set; }
+
+    /// <summary>True while the tokens are the Windows High Contrast colours.</summary>
+    public bool IsHighContrast { get; private set; }
+
+    private static HighContrastColors? SystemHighContrast() => SystemParameters.HighContrast ? HighContrastColors.FromSystem() : null;
 
     public void Apply(ThemeChoice newChoice)
     {
@@ -60,6 +70,26 @@ public sealed class ThemeService
 
             merged.Add(dictionary);
             active.Add(dictionary);
+        }
+
+        var colors = highContrast();
+
+        IsHighContrast = colors is not null;
+
+        if (colors is { } contrast)
+        {
+            var overlay = HighContrastPalette.Create(active.ToList(), contrast);
+
+            merged.Add(overlay);
+            active.Add(overlay);
+        }
+    }
+
+    private void OnSystemParameterChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(SystemParameters.HighContrast) && Application.Current is { } application)
+        {
+            application.Dispatcher.Invoke(() => Apply(choice));
         }
     }
 

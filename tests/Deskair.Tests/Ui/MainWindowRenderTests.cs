@@ -2,8 +2,10 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
+using Deskair.App.Ui.Theme;
 using Deskair.App.Ui.Views.Shell;
 using Deskair.App.ViewModels.Connection;
 using Deskair.App.ViewModels.Live;
@@ -67,6 +69,46 @@ public class MainWindowRenderTests
         RenderOutput.Save($"live-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{state.ToString().ToLowerInvariant()}-{unit.ToString().ToLowerInvariant()}.png", png);
     }
 
+    // Windows "High contrast black": the palette is laid over the dark tokens the way ThemeService does it.
+    [Fact]
+    public void Render_the_live_screen_in_high_contrast()
+    {
+        RenderOutput.Require();
+
+        var png = UiHost.Run(ThemeChoice.Dark, () =>
+        {
+            UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo("en-US"));
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+
+            var merged = Application.Current.Resources.MergedDictionaries;
+            var tokens = merged.Where(dictionary => dictionary.Source?.OriginalString.Contains("/Tokens/Colors.", StringComparison.Ordinal) is true
+                || dictionary.Source?.OriginalString.Contains("/Tokens/Zones.", StringComparison.Ordinal) is true
+                || dictionary.Source?.OriginalString.Contains("/Tokens/Metrics.", StringComparison.Ordinal) is true).ToList();
+            var overlay = HighContrastPalette.Create(
+                tokens,
+                new HighContrastColors(Colors.Black, Colors.White, Color.FromRgb(26, 235, 255), Colors.Black, Color.FromRgb(63, 242, 63), Colors.Yellow));
+
+            merged.Add(overlay);
+
+            try
+            {
+                var shell = BuildShell(ConnectionState.Normal, TemperatureUnit.Celsius);
+                var window = new MainWindow(shell);
+                var content = (FrameworkElement)window.Content;
+
+                content.DataContext = shell;
+                window.Content = null;
+
+                return ControlRenderer.ToPng(content, 1200, 700);
+            }
+            finally
+            {
+                merged.Remove(overlay);
+            }
+        });
+
+        RenderOutput.Save("live-highcontrast-en-normal.png", png);
+    }
     // The simulated room is Elevated; shifting the CO2 down gives Good air and up gives High, so each zone and theme can be looked at.
     [Theory]
     [InlineData(ThemeChoice.Light, -450)]

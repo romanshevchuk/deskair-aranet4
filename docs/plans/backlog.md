@@ -81,7 +81,7 @@ Plan, specs and model per item: [`polish-implementation.md`](polish-implementati
 | POL-18 | History per metric: comfort grids for temperature and humidity, a weather line for pressure; no CO₂ typical day or sleep on other tabs | done |
 | POL-19 | Review fix: Not connected turns the header logo ring and the room chip dot grey | done |
 | POL-20 | Review fix: charts expose a Narrator peer (`ChartAutomationPeer`); names on the Live chart, both ribbons and the History line charts; the 1h / 6h / 24h selector has its own name; the hero zone text is a polite live region. Sparklines stay hidden (the card has the name) | done |
-| POL-21 | Review: High Contrast support (system colours; heat steps as stepped opacities; accessibility.md) | todo |
+| POL-21 | Review fix: High Contrast: `HighContrastPalette` laid over the tokens by `ThemeService` while Windows High Contrast is on (surfaces, text and outlines in system colours; zones, metrics and heat steps as stepped opacities); render test and palette tests; documented in accessibility.md | done |
 | POL-22 | Review decision: `heat.comfort` is a slightly stronger grey (light #D5DBE0, dark #3A444E, about 1.4:1 and 1.8:1) and joins the contrast exception in design-tokens.md | done |
 | POL-23 | Review fix: Year summary header names both years ("1 Nov 2025 – 12 Oct 2026") | done |
 | POL-24 | Review fix: Live ribbon labels as "00:00 / 06:00 / 12:00 / 18:00"; Live chart title "CO₂ · last hour" | done |
