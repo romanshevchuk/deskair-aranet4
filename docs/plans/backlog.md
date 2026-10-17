@@ -12,13 +12,10 @@ Order of work: 1. Owner checks (R1) and decisions (R2), which can start now. 2. 
 
 | ID | What to check | Who | Status |
 |---|---|---|---|
-| OWN-01 | Quiet-hours and night-hours times typed by hand in Settings (Settings was reworked 2026-10-17: one "Active between" row, captions under fields) | owner | todo |
-| OWN-02 | Toast buttons: Open, Snooze and a press with the app not running were checked by the owner 2026-10-17 (all fine; use `--simulated --test-toast`). Still to check: Do Not Disturb and the "paused by Windows" row | owner | doing |
-| OWN-03 | Tray: menu items, value icon, flyout closes on click-away and Esc, the Snooze menu inside the flyout stays open | owner | todo |
-| OWN-04 | Flyout and tray on other taskbar edges, other DPI scales, a second monitor (spike S2) | owner | todo |
+| OWN-03 | Tray: all checked by the owner 2026-10-17 except one thing: the flyout blinked when it opened with Windows animations on (fix made: the window starts see-through before it is shown); the owner confirms it is gone | owner | doing |
 | OWN-05 | "Try again" and the 30 s read timeout with the sensor out of range; PC sleep and wake with the real sensor | owner | todo |
-| OWN-06 | Sleep card, History Night view and Stats card on real data | owner | todo |
-| OWN-07 | Real open and save dialogs, Open folder, importing the phone export through the UI. (Pair, Add, Cancel and Bluetooth off then on were checked by the owner 2026-10-17: fine.) | owner | todo |
+| OWN-06 | Sleep card, History Night view and Stats card on real data: the Day view was looked at 2026-10-17 (design remarks pending); Week and Month and the Night filter still to look at | owner | doing |
+| OWN-07 | Open folder, Export and Choose file (preview) were checked by the owner 2026-10-17. Still to check: press Import on a real phone export and read the result line | owner | doing |
 | OWN-08 | Windows 10 (never tried): solid backdrop, title bar, toasts, Do Not Disturb | owner | todo |
 | A11Y-01 | Manual accessibility check in `accessibility.md` (Narrator, keyboard, scaling); the automated part is done | owner | doing |
 | I18N-02 | Native Ukrainian review of every string marked "Draft: needs native review" (`ukrainian.md`) | owner | todo |

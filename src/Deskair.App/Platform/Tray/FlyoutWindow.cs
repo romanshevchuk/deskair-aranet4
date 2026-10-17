@@ -46,15 +46,30 @@ public sealed class FlyoutWindow : Window
     /// <summary>The room around the card that the shadow needs. The card, not the window, is what has to fit the work area.</summary>
     public static Thickness ShadowMargin => (Thickness)Application.Current.FindResource("Space.Menu.Shadow");
 
+    /// <summary>Call before <see cref="Window.Show"/>: while animations are on, the window starts see-through so its first frame is never the finished card (that showed as a blink); otherwise it starts opaque.</summary>
+    public void PrepareToShow()
+    {
+        BeginAnimation(OpacityProperty, null);
+        Opacity = MotionPolicy.Of("Motion.FlyoutOpen").TimeSpan > TimeSpan.Zero ? 0 : 1;
+    }
+
     /// <summary>A short fade when the flyout opens (<c>Motion.FlyoutOpen</c>); none while animations are off.</summary>
     private void FadeIn()
     {
         var duration = MotionPolicy.Of("Motion.FlyoutOpen");
 
-        if (duration.TimeSpan > TimeSpan.Zero)
+        if (duration.TimeSpan <= TimeSpan.Zero)
         {
-            BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, duration) { FillBehavior = FillBehavior.Stop });
+            return;
         }
+
+        var fade = new DoubleAnimation(0, 1, duration);
+        fade.Completed += (_, _) =>
+        {
+            BeginAnimation(OpacityProperty, null);
+            Opacity = 1;
+        };
+        BeginAnimation(OpacityProperty, fade);
     }
 
     private void Dismiss()

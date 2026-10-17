@@ -77,3 +77,6 @@ Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.
 | POL-38 | `HighContrastPalette`: a test now fails when a colour token is neither mapped nor listed as kept on purpose (Tray, Caption.CloseHover). The Gallery stays reachable with `--gallery` in every build by design (ARCH-03; it only shows the controls with sample data). `StatTriplePanel` left as it is | done |
 | REL-03 | Stats card: highest and lowest reading with their time, and the partial note (already there when checked) | done |
 | REL-04 | The redundant `BoolToVisibility` copies are gone; `IBleConnection.SubscribeAsync` and the notification code behind it were removed (unused, never verified on hardware) | done |
+| OWN-01 | Quiet hours and night hours typed by hand, checked by the owner 2026-10-17 (quiet hours hold the toast; night band follows) | done |
+| OWN-02 | Toast buttons (Open, Snooze, a press with the app not running) and Do Not Disturb with the "paused by Windows" row, checked by the owner 2026-10-17 (`--test-toast` added for it) | done |
+| OWN-04 | Flyout and tray at 125 % and 150 % checked by the owner 2026-10-17. Second monitor and other taskbar edges closed without a manual test: `FlyoutPositionerTests` cover all four taskbar edges, corners, a work area not at zero and the overflow popup | done |

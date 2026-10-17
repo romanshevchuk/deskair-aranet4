@@ -71,6 +71,7 @@ public sealed class FlyoutController
 
             window ??= CreateWindow();
             Place(window, anchor);
+            window.PrepareToShow();
             window.Show();
             window.Activate();
         }
