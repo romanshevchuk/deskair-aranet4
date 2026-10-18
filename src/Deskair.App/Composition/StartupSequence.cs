@@ -13,6 +13,7 @@ using Deskair.Domain.Readings;
 using Deskair.Domain.Zones;
 using Deskair.Services.Alerts;
 using Deskair.Services.Live;
+using Deskair.Services.Platform;
 using Deskair.Services.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -132,6 +133,22 @@ public sealed class StartupSequence : IDisposable
     {
         var logger = services.GetRequiredService<ILogger<StartupSequence>>();
 
+        // A packaged build has its identity from the manifest; writing the registry entries would only add a second, unused one.
+        if (!services.GetRequiredService<IPackageIdentity>().IsPackaged)
+        {
+            RegisterToastIdentity(logger);
+        }
+
+        var server = services.GetRequiredService<ToastActivationServer>();
+
+        if (server.Start())
+        {
+            server.Attach(services.GetRequiredService<ToastActionHandler>().Handle);
+        }
+    }
+
+    private static void RegisterToastIdentity(ILogger<StartupSequence> logger)
+    {
         try
         {
             ToastIdentity.Register(Environment.ProcessPath ?? string.Empty);
@@ -142,13 +159,6 @@ public sealed class StartupSequence : IDisposable
             {
                 logger.LogWarning(exception, "Registering the toast identity failed.");
             }
-        }
-
-        var server = services.GetRequiredService<ToastActivationServer>();
-
-        if (server.Start())
-        {
-            server.Attach(services.GetRequiredService<ToastActionHandler>().Handle);
         }
     }
 

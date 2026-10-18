@@ -55,6 +55,24 @@ public sealed class ServiceRegistrationTests : IDisposable
     }
 
     [Fact]
+    public void An_app_without_a_package_starts_with_Windows_through_the_Run_key()
+    {
+        Assert.IsType<Deskair.App.Platform.Startup.StartupRegistration>(provider.GetRequiredService<Deskair.Services.Platform.IStartupRegistration>());
+    }
+
+    [Fact]
+    public void A_packaged_app_starts_with_Windows_through_its_startup_task()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddDeskair(new AppOptions(false, Simulated: true));
+        services.AddSingleton<Deskair.Services.Platform.IPackageIdentity>(new Fakes.FakePackageIdentity(isPackaged: true));
+        using var packaged = services.BuildServiceProvider();
+
+        Assert.IsType<Deskair.App.Platform.Startup.PackagedStartupRegistration>(packaged.GetRequiredService<Deskair.Services.Platform.IStartupRegistration>());
+    }
+
+    [Fact]
     public void The_simulated_app_has_a_radio_that_is_on()
     {
         Assert.True(provider.GetRequiredService<Deskair.Services.Platform.IBluetoothRadio>().IsOn);

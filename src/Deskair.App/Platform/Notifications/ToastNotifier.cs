@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using Deskair.Services.Alerts;
+using Deskair.Services.Platform;
 using Microsoft.Extensions.Logging;
 using Windows.Data.Xml.Dom;
 using WindowsToasts = Windows.UI.Notifications;
@@ -17,10 +18,12 @@ public sealed class ToastNotifier : INotifier
 
     private readonly ToastTextBuilder texts;
     private readonly ToastLogos logos;
+    private readonly IPackageIdentity packageIdentity;
     private readonly ILogger<ToastNotifier> logger;
 
-    public ToastNotifier(ToastTextBuilder texts, ToastLogos logos, ILogger<ToastNotifier> logger)
+    public ToastNotifier(ToastTextBuilder texts, ToastLogos logos, IPackageIdentity packageIdentity, ILogger<ToastNotifier> logger)
     {
+        this.packageIdentity = packageIdentity;
         this.texts = texts;
         this.logos = logos;
         this.logger = logger;
@@ -35,7 +38,10 @@ public sealed class ToastNotifier : INotifier
         document.LoadXml(ToastXmlBuilder.Build(texts.Build(notification), logo, tag));
 
         var toast = new WindowsToasts.ToastNotification(document) { Tag = tag, Group = Group };
-        var notifier = WindowsToasts.ToastNotificationManager.CreateToastNotifier(ToastIdentity.AppUserModelId);
+        // A packaged app is known to Windows by its package, so it names no identity of its own.
+        var notifier = packageIdentity.IsPackaged
+            ? WindowsToasts.ToastNotificationManager.CreateToastNotifier()
+            : WindowsToasts.ToastNotificationManager.CreateToastNotifier(ToastIdentity.AppUserModelId);
 
         LogIfDisabled(notifier);
         notifier.Show(toast);
