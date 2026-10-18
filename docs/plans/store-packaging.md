@@ -19,10 +19,11 @@ Backlog item: REL-01. Status: **plan, waiting for the owner's decisions** (secti
 |---|---|---|
 | 1 | Where does packaging live, and do we use a `.wapproj`? | A folder `packaging/` at the repo root, **outside** `Deskair.sln`, and **no `.wapproj`** (see 3). |
 | 2 | Account type | Individual (free). A company account costs a one-time $99 and is not needed. |
-| 3 | Publisher display name | Your own name, or a short pseudonym you are happy to show. It is public on the listing. |
+| 3 | Publisher display name | See section 9: a handle you also use on GitHub, or your name. Public, decide once. |
 | 4 | App name | "Deskair" alone (see 6 for why nothing more goes in the title). |
 | 5 | Privacy policy page | A `PRIVACY.md` in the GitHub repo, linked by URL. One honest paragraph: nothing leaves the PC. |
 | 6 | Courtesy mail to the sensor maker | Optional, see 6. |
+| 7 | `LICENSE` file (none yet) | MIT, before the listing says "open source". |
 
 ## 3. Where the packaging files go (the folder question)
 
@@ -180,6 +181,26 @@ Also keep in mind: the community library for the Aranet4 notes that "Smart Home 
 | Do toasts and Bluetooth work for the packaged app? | Phase 3. |
 | Verification time for the account, certification time | Only the real process tells. |
 | Is "Aranet4" acceptable as a search term? | Certification result; start without it. |
+
+## 9. Answers to the owner's questions (2026-10-18) and status
+
+A later agent: start here, then read sections 3, 5 and 6. Nothing in this section needs to be researched again.
+
+| Topic | Answer |
+|---|---|
+| Status | Plan written. The owner has not yet registered a Partner Center account or reserved the name. Windows SDK was **not** installed on 2026-10-18 (`C:\Program Files (x86)\Windows Kits\10\bin` missing); the owner is installing it through the Visual Studio 2026 installer (`C:\Program Files\Microsoft Visual Studio\18\Community`). Nothing of phases 1 to 5 is built. |
+| Which Windows SDK | **Windows 11 SDK (10.0.26100.x)**. It matches the owner's Windows 11 25H2 (build 26200), is the current stable one, and contains `makeappx.exe` and `signtool.exe`. The 22621 one is older and 28000 is newer than needed. The app targets 10.0.19041, which is independent of this choice. After installing, check `C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.*\x64\makeappx.exe`. |
+| "Search terms" | A Partner Center field with up to seven words or phrases that help Store search find the app, separate from the title and description. The Store also reads the description, so `Aranet4` in the first line of the description is indexed anyway (how much weight it gets is **unverified**). Google finds the listing page by its text and the GitHub repository by name, description, topics and README; the repository matters more for Google than the Store page. |
+| Repository | Yes, update it when the app is published: description "Unofficial Windows monitor for the Aranet4 CO₂ sensor", topics `aranet4`, `co2`, `air-quality`, `bluetooth-le`, `wpf`, `windows`, a short "unofficial, not affiliated" line at the top of `README.md`, and a link to the Store listing. The repository is `romanshevchuk/deskair-aranet4`; the name is fine. **There is no `LICENSE` file yet:** an open-source release needs one (owner decision, MIT is the usual simple choice) before the listing says "open source". A `PRIVACY.md` is also needed (phase 4). |
+| Account and publisher name | See below. |
+
+**Account and publisher name.** The legal name used for the identity check (ID and selfie) is private to Microsoft. The *publisher display name* is the public one on the listing. It must be unique in the Store and must not mislead; whether an individual account may use a name other than the legal name is **unverified** (check in the registration form). Options, best first:
+
+1. A short developer handle that you also use on GitHub (for example the GitHub account name), so the Store, the repository and any later winget package point to one identity.
+2. "Roman Shevchuk" as is: honest and simple, but common, so the name may already be taken or confusable.
+3. A form with a distinguishing word, such as "Roman Shevchuk (Deskair)" or "R. Shevchuk".
+
+The publisher name can be changed later only with effort (it is tied to the reserved name and the package identity), so decide once, before reserving "Deskair". A pseudonym is fine for a free hobby app; a company-style name is not needed.
 
 ## Sources
 

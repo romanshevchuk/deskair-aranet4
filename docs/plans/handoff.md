@@ -58,6 +58,8 @@ The per-feature rules and what was and was not verified are in the decided Q ent
 
 ### Session of 2026-10-17 (read this first)
 
+**Packaging (REL-01):** read [`store-packaging.md`](store-packaging.md) first, section 9 has the status; the research is done, do not repeat it.
+
 **Start with [`backlog.md`](backlog.md).** It was reorganised: only open work is there, in four lists (R1 owner checks, R2 owner decisions, R3 agent code work, R4 release). Finished items are in [`backlog-done.md`](backlog-done.md) (an archive; read it only for history).
 
 State: everything is committed on `main` (the owner asks for commits; no Claude or Co-Authored-By trailer). Release build and format are clean; **1676 tests, 0 failed** (66 skipped: the opt-in render tests). The owner has since looked at Settings, the tray, toasts, History Day and Week and Month, the import and the export in the real app, all fine.
