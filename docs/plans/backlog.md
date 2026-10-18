@@ -40,7 +40,7 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 
 | ID | Item | Who | Status |
 |---|---|---|---|
-| REL-01 | Store packaging; winget and GitHub later. Needs P1 from the owner for the listing; the packaging itself is agent work | both | todo |
+| REL-01 | Store packaging; winget and GitHub later. Plan and owner decisions: [`store-packaging.md`](store-packaging.md). Needs P1 from the owner for the listing; the packaging itself is agent work | both | todo |
 | REL-05 | Final pass: build, tests, format clean, renders in light and dark (EN), soak test, then tag | both | todo |
 
 ## Later (not v1)

@@ -2,7 +2,7 @@
 
 *Last reviewed: 2026-10*
 
-1. **Microsoft Store first** (MSIX). Declare Bluetooth and full-trust capabilities, listing languages en-US and uk-UA, a privacy statement (no data leaves the PC), screenshots in both languages.
+1. **Microsoft Store first** (MSIX; the step-by-step plan is `docs/plans/store-packaging.md`). Declare Bluetooth and full-trust capabilities, listing languages en-US and uk-UA, a privacy statement (no data leaves the PC), screenshots in both languages.
 2. **GitHub releases** and **winget** later, with the same data folder (`Documents\Deskair`).
 3. Versioning: SemVer. Keep a `CHANGELOG.md`.
 4. Code signing is needed for the non-Store builds.
