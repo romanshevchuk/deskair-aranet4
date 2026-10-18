@@ -1,12 +1,14 @@
 # Sync and import
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-18*
 
 ## Sensor sync
 
 - Run on launch and on every reconnect. The current reading is shown as soon as the sensor connects, before the history download, because the first download of a whole week takes about 25 seconds.
 - The Aranet4 stores up to about 7 days. The user should open the app at least weekly.
 - Sync fills missing slots only (see merge rule in `data-model.md`). Timestamps are computed from the sync time and each reading's age, so allow a few seconds of error and snap to the interval grid.
+- A sync starts after the newest stored reading, or at the stored reading before the first hole (a gap of more than one and a half intervals) in the last 7 days, so a skipped slot is filled later (Q51). Merging only fills empty slots, so downloading more than is missing is harmless. A hole the sensor itself never recorded (it was off) cannot be filled and makes each sync download from there.
+- Live polling counts from the sensor's own measurement time: the next poll is due one interval after the last value was measured, plus 6 seconds. Counting from the end of the previous poll drifted past the sensor's schedule and, about every few hours, skipped one reading (a hole of one slot in the chart).
 - After sync, Live must have the last 24 h.
 - The protocol and the comparison with a phone export are in `docs/plans/spike-s1-ble-history.md`.
 

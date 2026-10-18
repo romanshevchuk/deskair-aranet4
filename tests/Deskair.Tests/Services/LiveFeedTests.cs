@@ -98,11 +98,11 @@ public sealed class LiveFeedTests : IDisposable
         await Wait.Until(() => received.Count == 1);
         await Wait.Until(() => clock.PendingTimers == 1);
 
-        clock.Advance(TimeSpan.FromMinutes(1));
+        clock.Advance(interval);
         await Wait.Quiet();
         Assert.Equal(1, sensor.ReadCurrentCalls);
 
-        clock.Advance(TimeSpan.FromMinutes(1));
+        clock.Advance(LiveFeed.PollMargin);
         await Wait.Until(() => received.Count == 2);
 
         await stop.CancelAsync();
@@ -156,7 +156,7 @@ public sealed class LiveFeedTests : IDisposable
         await Wait.Until(() => received.Count == 1);
         await Wait.Until(() => clock.PendingTimers >= 1);
 
-        clock.Advance(interval);
+        clock.Advance(interval + LiveFeed.PollMargin);
 
         await Assert.ThrowsAsync<IOException>(() => running);
         Assert.Equal(800, received.Single().Reading.Co2Ppm);
@@ -198,7 +198,7 @@ public sealed class LiveFeedTests : IDisposable
         await Wait.Until(() => clock.PendingTimers >= 1);
 
         store.FailMerges = null;
-        clock.Advance(interval);
+        clock.Advance(interval + LiveFeed.PollMargin);
 
         await Wait.Until(() => received.Count == 1);
         Assert.False(running.IsCompleted);
@@ -238,7 +238,7 @@ public sealed class LiveFeedTests : IDisposable
         {
             await Wait.Until(() => received.Count == poll);
             await Wait.Until(() => clock.PendingTimers >= 1);
-            clock.Advance(interval);
+            clock.Advance(interval + LiveFeed.PollMargin);
         }
 
         await Wait.Until(() => received.Count == 5);
@@ -246,6 +246,61 @@ public sealed class LiveFeedTests : IDisposable
         await running;
 
         Assert.Equal(1, sensor.MaxConcurrentReads);
+    }
+
+    [Fact]
+    public async Task The_next_poll_counts_from_the_measurement_not_from_the_end_of_the_poll()
+    {
+        sensor.OnReadCurrent = _ => Samples.Co2(clock.GetUtcNow() - TimeSpan.FromSeconds(30), 800);
+        var running = Start();
+        await Wait.Until(() => received.Count == 1);
+        await Wait.Until(() => clock.PendingTimers == 1);
+
+        // Measured 30 s ago: the next value is due in 90 s, and the poll waits the margin after that.
+        clock.Advance(TimeSpan.FromSeconds(90));
+        await Wait.Quiet();
+        Assert.Equal(1, sensor.ReadCurrentCalls);
+
+        clock.Advance(LiveFeed.PollMargin);
+        await Wait.Until(() => received.Count == 2);
+
+        await stop.CancelAsync();
+        await running;
+    }
+
+    [Fact]
+    public async Task A_poll_that_still_got_the_old_value_is_repeated_after_the_margin_so_no_slot_is_skipped()
+    {
+        sensor.OnReadCurrent = _ => Samples.Co2(clock.GetUtcNow() - interval, 800);
+        var running = Start();
+        await Wait.Until(() => received.Count == 1);
+        await Wait.Until(() => clock.PendingTimers == 1);
+
+        clock.Advance(LiveFeed.PollMargin);
+
+        await Wait.Until(() => received.Count == 2);
+
+        await stop.CancelAsync();
+        await running;
+    }
+
+    [Fact]
+    public async Task A_reading_far_in_the_past_falls_back_to_one_interval()
+    {
+        sensor.OnReadCurrent = _ => Samples.Co2(clock.GetUtcNow() - TimeSpan.FromHours(3), 800);
+        var running = Start();
+        await Wait.Until(() => received.Count == 1);
+        await Wait.Until(() => clock.PendingTimers == 1);
+
+        clock.Advance(interval - TimeSpan.FromSeconds(1));
+        await Wait.Quiet();
+        Assert.Equal(1, sensor.ReadCurrentCalls);
+
+        clock.Advance(TimeSpan.FromSeconds(1));
+        await Wait.Until(() => received.Count == 2);
+
+        await stop.CancelAsync();
+        await running;
     }
 
     [Fact]

@@ -48,7 +48,7 @@ public sealed class SyncService
 
         try
         {
-            var since = await readings.GetLastReadingTimeAsync(device, cancellationToken) ?? now - sensorMemory;
+            var since = await SinceAsync(device, interval, now, cancellationToken);
             var downloaded = await DownloadAsync(sensor, device, since, progress, cancellationToken);
 
             if (downloaded is null)
@@ -68,6 +68,41 @@ public sealed class SyncService
         {
             return new SyncResult(false, 0);
         }
+    }
+
+    /// <summary>
+    /// Where the history download starts: after the newest stored reading, or earlier when the last week has a hole in it (a slot the live polling skipped, or time the app was closed
+    /// but the sensor kept measuring). Merging only fills empty slots, so asking for more than is missing is harmless.
+    /// </summary>
+    private async Task<DateTimeOffset> SinceAsync(DeviceId device, TimeSpan interval, DateTimeOffset now, CancellationToken cancellationToken)
+    {
+        var last = await readings.GetLastReadingTimeAsync(device, cancellationToken);
+
+        if (last is not { } newest)
+        {
+            return now - sensorMemory;
+        }
+
+        var stored = await readings.ReadRangeAsync(device, now - sensorMemory, newest, cancellationToken);
+        var hole = FirstHole(stored, interval);
+
+        return hole ?? newest;
+    }
+
+    /// <summary>The time of the stored reading just before the first hole (a distance of more than one and a half intervals), or null when there is none.</summary>
+    private static DateTimeOffset? FirstHole(IReadOnlyList<Reading> stored, TimeSpan interval)
+    {
+        var ordered = stored.Select(reading => reading.Timestamp).Order().ToList();
+
+        for (var index = 1; index < ordered.Count; index++)
+        {
+            if (ordered[index] - ordered[index - 1] > interval * 1.5)
+            {
+                return ordered[index - 1];
+            }
+        }
+
+        return null;
     }
 
     private async Task<List<Reading>?> DownloadAsync(

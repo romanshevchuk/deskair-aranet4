@@ -13,6 +13,12 @@ public sealed class LiveFeed
     /// <summary>How long one current reading may take. A sensor that left range can stay "connected" for Windows and never answer; after this the read counts as a lost connection.</summary>
     public static readonly TimeSpan ReadTimeout = TimeSpan.FromSeconds(30);
 
+    /// <summary>
+    /// How long after a measurement is due the next poll waits. A poll that lands right at the moment the sensor stores its new value still gets the old one, and the next poll
+    /// then jumps over a slot (a gap of one reading in the data). Polling a few seconds after the sensor's own schedule never does.
+    /// </summary>
+    public static readonly TimeSpan PollMargin = TimeSpan.FromSeconds(6);
+
     private readonly IReadingStore readings;
     private readonly IMessenger messenger;
     private readonly TimeProvider timeProvider;
@@ -52,6 +58,7 @@ public sealed class LiveFeed
         bool pollFirst = true)
     {
         var skip = !pollFirst;
+        Reading? last = null;
 
         try
         {
@@ -59,17 +66,34 @@ public sealed class LiveFeed
             {
                 if (!skip)
                 {
-                    await PollAsync(sensor, device, interval, store: true, rethrowConnectionFailure: true, cancellationToken);
+                    last = await PollAsync(sensor, device, interval, store: true, rethrowConnectionFailure: true, cancellationToken);
                 }
 
                 skip = false;
-                await Task.Delay(interval, timeProvider, cancellationToken);
+                await Task.Delay(NextDelay(last, interval), timeProvider, cancellationToken);
             }
         }
         catch (OperationCanceledException)
         {
             // Cancelling is how the loop is stopped; it is not an error.
         }
+    }
+
+    /// <summary>
+    /// The wait until the next poll: the sensor measures every <paramref name="interval"/>, so the next value is due one interval after the last one was measured, plus <see cref="PollMargin"/>.
+    /// Counting from the measurement, not from the end of this poll, keeps the polls in step with the sensor instead of drifting past it. Falls back to one interval when the last poll failed
+    /// or the reading says nothing useful (a clock far off, a sensor that keeps giving an old value).
+    /// </summary>
+    private TimeSpan NextDelay(Reading? last, TimeSpan interval)
+    {
+        if (last is not { } reading)
+        {
+            return interval;
+        }
+
+        var wait = reading.Timestamp + interval + PollMargin - timeProvider.GetUtcNow();
+
+        return wait > TimeSpan.Zero && wait <= interval + PollMargin ? wait : interval;
     }
 
     private async Task<Reading> ReadWithTimeoutAsync(ISensor sensor, CancellationToken cancellationToken)
@@ -87,7 +111,7 @@ public sealed class LiveFeed
         }
     }
 
-    private async Task PollAsync(ISensor sensor, DeviceId device, TimeSpan interval, bool store, bool rethrowConnectionFailure, CancellationToken cancellationToken)
+    private async Task<Reading?> PollAsync(ISensor sensor, DeviceId device, TimeSpan interval, bool store, bool rethrowConnectionFailure, CancellationToken cancellationToken)
     {
         Reading reading;
 
@@ -104,7 +128,7 @@ public sealed class LiveFeed
                 throw;
             }
 
-            return;
+            return null;
         }
 
         // A failure to store is not a lost connection, so it never reaches the session: the reading is lost, the connection is fine.
@@ -126,5 +150,7 @@ public sealed class LiveFeed
         {
             logger.LogWarning(exception, "Storing the live reading of {Provider} {Address} failed; trying again in {Interval}.", device.ProviderId, device.Address, interval);
         }
+
+        return reading;
     }
 }

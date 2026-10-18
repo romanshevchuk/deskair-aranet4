@@ -70,6 +70,29 @@ public sealed class SyncServiceTests : IAsyncDisposable
     }
 
     [Fact]
+    public async Task Sync_goes_back_to_a_hole_in_the_stored_readings_and_fills_it()
+    {
+        readings.Readings.AddRange([At(10), At(8), At(4), At(2)]);
+        sensor.History.AddRange([At(8), At(6), At(4), At(2)]);
+
+        var result = await service.SyncAsync(sensor, device, interval, CancellationToken.None);
+
+        Assert.Equal(now.AddMinutes(-8), sensor.HistorySince);
+        Assert.Equal(new SyncResult(true, 1), result);
+        Assert.Contains(readings.Readings, reading => reading.Timestamp == now.AddMinutes(-6));
+    }
+
+    [Fact]
+    public async Task Sync_does_not_go_back_when_the_stored_readings_have_no_hole()
+    {
+        readings.Readings.AddRange([At(10), At(8), At(6), At(4)]);
+
+        await service.SyncAsync(sensor, device, interval, CancellationToken.None);
+
+        Assert.Equal(now.AddMinutes(-4), sensor.HistorySince);
+    }
+
+    [Fact]
     public async Task Sync_asks_for_history_since_the_last_stored_reading()
     {
         readings.Readings.Add(At(30));
