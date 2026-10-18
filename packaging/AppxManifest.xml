@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The manifest of the Store package (docs/plans/store-packaging.md, phase 2).
+  Identity Name, Publisher and PublisherDisplayName are the values Partner Center gave for the reserved name "Deskair".
+  Version is replaced by build-msix.ps1 (-Version). The toast class id and the startup task id must match the code:
+  ToastIdentity.ActivatorClassId and PackagedStartupRegistration.TaskId.
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap uap5 desktop com rescap">
+
+  <Identity Name="RomanShevchuk.Deskair"
+            Publisher="CN=C6F2FCB9-D5F4-41BE-9616-7B99EB94EFA1"
+            Version="0.1.0.0"
+            ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>Deskair</DisplayName>
+    <PublisherDisplayName>Roman Shevchuk</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-US" />
+    <Resource Language="uk-UA" />
+  </Resources>
+
+  <Applications>
+    <Application Id="App" Executable="Deskair.App.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="Deskair"
+                          Description="Unofficial desktop monitor for the Aranet4 CO2 sensor."
+                          BackgroundColor="transparent"
+                          Square150x150Logo="Assets\Square150x150Logo.png"
+                          Square44x44Logo="Assets\Square44x44Logo.png" />
+      <Extensions>
+        <!-- A press on a toast button starts the program through this class (the same id the code registers while running). -->
+        <desktop:Extension Category="windows.toastNotificationActivation">
+          <desktop:ToastNotificationActivation ToastActivatorCLSID="E4C1D5A2-7B3F-4B8E-9D2A-6F0C8A1B5E37" />
+        </desktop:Extension>
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:ExeServer Executable="Deskair.App.exe" Arguments="-ToastActivated" DisplayName="Deskair toast activator">
+              <com:Class Id="E4C1D5A2-7B3F-4B8E-9D2A-6F0C8A1B5E37" DisplayName="Deskair toast activator" />
+            </com:ExeServer>
+          </com:ComServer>
+        </com:Extension>
+        <!-- Start with Windows. Off until the user turns it on in Settings; they can also switch it off in Windows Settings. -->
+        <uap5:Extension Category="windows.startupTask">
+          <uap5:StartupTask TaskId="DeskairStartup" Enabled="false" DisplayName="Deskair" />
+        </uap5:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <DeviceCapability Name="bluetooth" />
+  </Capabilities>
+</Package>
