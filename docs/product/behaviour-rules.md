@@ -22,6 +22,7 @@ Docs may write "1,000"; the app follows this table.
 | Percent | Whole number | 59% | 59 % (narrow no-break space, U+202F) |
 | Temperature, humidity, pressure | One decimal for °C and hPa, none for %; decimal mark of the language; no group separator either (pressure is often above 1000) | 21.1 °C, 1013.2 hPa | 21,1 °C, 1013,2 hPa |
 | Time | 24-hour, two-digit hour | 16:00 | 16:00 |
+| Duration | Whole minutes, hours and minutes, no zero padding; an exact hour has no minutes | 38 min, 1 h, 1 h 7 min | 38 хв, 1 год, 1 год 7 хв |
 | Time range | En dash, no spaces | 16:00–19:00 | 16:00–19:00 |
 | Axis hour labels | Full time | 18:00 | 18:00 |
 

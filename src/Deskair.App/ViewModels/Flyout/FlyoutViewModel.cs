@@ -286,21 +286,7 @@ public sealed partial class FlyoutViewModel : ObservableObject
             .Select(group => new FlyoutZoneTime(group.Key, Duration(TimeSpan.FromTicks(group.Sum(span => (span.End - span.Start).Ticks)))))];
     }
 
-    private string Duration(TimeSpan time)
-    {
-        var minutes = (int)Math.Round(time.TotalMinutes);
-        var hours = minutes / 60;
-        var rest = minutes % 60;
-
-        if (hours == 0)
-        {
-            return localizer.Format("Duration_Minutes", ("min", rest));
-        }
-
-        return rest == 0
-            ? localizer.Format("Duration_Hours", ("h", hours))
-            : localizer.Format("Duration_HoursMinutes", ("h", hours), ("min", rest));
-    }
+    private string Duration(TimeSpan time) => localizer.Duration((int)Math.Round(time.TotalMinutes));
 
     private FlyoutReading Other(Metric metric, double stored)
     {

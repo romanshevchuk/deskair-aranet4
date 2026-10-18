@@ -63,8 +63,8 @@ public class HeroStatsBuilderTests
     [Theory]
     [InlineData(38, "Duration_Minutes(min=38)")]
     [InlineData(59, "Duration_Minutes(min=59)")]
-    [InlineData(60, "Duration_HoursMinutes(h=1, min=00)")]
-    [InlineData(125, "Duration_HoursMinutes(h=2, min=05)")]
+    [InlineData(60, "Duration_Hours(h=1)")]
+    [InlineData(125, "Duration_HoursMinutes(h=2, min=5)")]
     public void Time_in_the_zone_is_minutes_or_hours_and_minutes(int minutes, string expected)
     {
         var readings = At((minutes + 30, 500), (minutes, 1200), (0, 1300));

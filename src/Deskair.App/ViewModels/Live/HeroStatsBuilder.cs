@@ -54,9 +54,7 @@ public sealed class HeroStatsBuilder
         var duration = LiveStatsCalculator.TimeInCurrentZone(readings, now) ?? TimeSpan.Zero;
         var zone = ZoneClassifier.Classify(readings[^1].Co2Ppm);
         var minutes = (int)Math.Floor(duration.TotalMinutes);
-        var text = minutes < 60
-            ? localizer.Format("Duration_Minutes", ("min", minutes))
-            : localizer.Format("Duration_HoursMinutes", ("h", minutes / 60), ("min", (minutes % 60).ToString("00", localizer.Culture)));
+        var text = localizer.Duration(minutes);
 
         return new StatItem(text, localizer.Get($"Stat_InZone_{zone}"));
     }
