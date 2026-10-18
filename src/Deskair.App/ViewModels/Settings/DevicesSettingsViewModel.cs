@@ -48,7 +48,14 @@ public sealed partial class DevicesSettingsViewModel : ObservableObject
         }
 
         Items = await devices.LoadAsync(cancellationToken);
-        Rows = [.. Items.Select(item => new DeviceRowViewModel(item.Id, item.RoomName, (id, name) => enrollment.RenameAsync(id, name, CancellationToken.None), logger))];
+        Rows = [.. Items.Select(RowFor)];
+    }
+
+    // A row that is already shown stays, so a room switch does not throw away a name being typed.
+    private DeviceRowViewModel RowFor(DeviceInfo item)
+    {
+        return Rows.FirstOrDefault(row => row.Id == item.Id)
+            ?? new DeviceRowViewModel(item.Id, item.RoomName, (id, name) => enrollment.RenameAsync(id, name, CancellationToken.None), logger);
     }
 
     [RelayCommand]

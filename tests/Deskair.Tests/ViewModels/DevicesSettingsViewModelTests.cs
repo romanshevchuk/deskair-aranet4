@@ -126,4 +126,31 @@ public sealed class DevicesSettingsViewModelTests : IDisposable
 
         await Wait.Until(() => viewModel.Rows.Count == 1);
     }
+
+    [Fact]
+    public async Task A_room_switch_keeps_the_rows_so_a_name_being_typed_is_not_lost()
+    {
+        AddTwo();
+        await viewModel.LoadAsync(stop.Token);
+        var first = viewModel.Rows[0];
+
+        store.Devices.Add(new DeviceInfo(new DeviceId("test", "C3"), "Kitchen", null, [], null));
+        messenger.Send(new DeviceSelected(bedroom));
+
+        await Wait.Until(() => viewModel.Rows.Count == 3);
+        Assert.Same(first, viewModel.Rows[0]);
+    }
+
+    [Fact]
+    public async Task A_removed_sensor_leaves_the_list()
+    {
+        AddTwo();
+        await viewModel.LoadAsync(stop.Token);
+
+        store.Devices.RemoveAll(device => device.Id == bedroom);
+        messenger.Send(new DeviceSelected(office));
+
+        await Wait.Until(() => viewModel.Rows.Count == 1);
+        Assert.Equal(office, viewModel.Rows[0].Id);
+    }
 }

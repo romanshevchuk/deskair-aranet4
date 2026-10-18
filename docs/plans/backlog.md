@@ -34,7 +34,7 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 
 | ID | Item | Who | Status |
 |---|---|---|---|
-| REL-02 | Known gaps still open (the rest of the old list was checked 2026-10-17: the grey header ring and the dark Settings scrollbar were already fixed; History now refreshes on the UI thread; the main window has a minimum size, 1100 × 700; Devices follows new rooms again after leaving and re-entering Settings): (1) a room switch rebuilds the Devices rows while a name is being edited and drops the typed text (small); (2) `WindowsBleConnection` opens a new `GattDeviceService` for each characteristic lookup in an already-opened service (freed on dispose) and attaches its disconnect handler after the pairing checks (needs a real sensor to test) | both | todo |
+| REL-02 | Known gaps still open (the rest of the old list was checked 2026-10-17: the grey header ring and the dark Settings scrollbar were already fixed; History now refreshes on the UI thread; the main window has a minimum size, 1100 × 700; Devices follows new rooms again after leaving and re-entering Settings): (1) fixed 2026-10-18: a room switch keeps the Devices rows; (2) `WindowsBleConnection` opens a new `GattDeviceService` for each characteristic lookup in an already-opened service (freed on dispose) and attaches its disconnect handler after the pairing checks (needs a real sensor to test) | both | todo |
 
 ## R4. Release
 
