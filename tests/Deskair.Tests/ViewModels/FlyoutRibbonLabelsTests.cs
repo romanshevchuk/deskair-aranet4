@@ -36,11 +36,19 @@ public class FlyoutRibbonLabelsTests
     }
 
     [Fact]
-    public void Exactly_two_hours_from_an_end_still_counts()
+    public void Exactly_two_hours_from_the_start_and_four_from_now_still_count()
     {
-        var labels = Build(Samples.Utc(2026, 10, 14, 14), TimeZoneInfo.Utc);
+        var labels = Build(Samples.Utc(2026, 10, 14, 16), TimeZoneInfo.Utc);
 
         Assert.Equal(["18:00", "00:00", "06:00", "12:00", "Now"], labels.Select(label => label.Text));
+    }
+
+    [Fact]
+    public void A_round_hour_less_than_four_hours_before_now_is_left_out_so_it_does_not_touch_Now()
+    {
+        var labels = Build(Samples.Utc(2026, 10, 14, 15), TimeZoneInfo.Utc);
+
+        Assert.DoesNotContain(labels, label => label.Text == "12:00");
     }
 
     [Fact]
