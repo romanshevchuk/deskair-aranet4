@@ -1,6 +1,6 @@
 # Backlog: finished items
 
-*Last reviewed: 2026-10-17*
+*Last reviewed: 2026-10-18*
 
 Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.md`](backlog.md). Specs per polish item: [`polish-implementation.md`](polish-implementation.md).
 
@@ -82,3 +82,4 @@ Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.
 | OWN-04 | Flyout and tray at 125 % and 150 % checked by the owner 2026-10-17. Second monitor and other taskbar edges closed without a manual test: `FlyoutPositionerTests` cover all four taskbar edges, corners, a work area not at zero and the overflow popup | done |
 | OWN-03 | Tray: left click, click-away, Esc, the Snooze menu, the value on the tray icon, and the flyout no longer blinks (a new flyout window for each opening), checked by the owner 2026-10-17 | done |
 | OWN-07 | Open folder, Export, Choose file and Import checked by the owner 2026-10-17; a real phone export of about 44,000 readings imported fast | done |
+| OWN-06 | History on real data (Day, Week, Month, Night) looked at again after the Day rework, closed by the owner 2026-10-18 | done |

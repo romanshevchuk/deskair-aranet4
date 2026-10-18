@@ -1,6 +1,6 @@
-# Handoff (updated 2026-10-17)
+# Handoff (updated 2026-10-18)
 
-*Last reviewed: 2026-10-17*
+*Last reviewed: 2026-10-18*
 
 For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory (`AranetHomeDesktop`) unless the owner points you to it, and do not read `../deskair-legacy`.
 
@@ -77,7 +77,7 @@ What changed that you should know about:
 What is left for you, in order (details in `backlog.md`):
 
 1. **Agent work:** REL-01 (Store packaging: plan first; the listing needs the owner's P1 answers), REL-02 (two small items; one needs a real sensor), REL-05 (final pass before a tag).
-2. **Owner work, not yours:** OWN-05 (sensor out of range, PC sleep and wake), OWN-06 (one more look at History), OWN-08 (Windows 10), the accessibility check, the native Ukrainian review, Q27 and P1 to P3. Do not mark these done.
+2. **Owner work, not yours:** OWN-05 (only the sensor out of range is left; sleep and wake passed 2026-10-18), OWN-08 (Windows 10), A11Y-01 (only Narrator on the History period buttons is left; the flyout passed too; keyboard, scaling, High Contrast, Narrator on Live and Settings passed 2026-10-18), the native Ukrainian review, Q27 and P1 to P3. OWN-06 (History) is closed. Do not mark these done.
 
 How the owner likes to work (from this session): be efficient, make real progress toward the release, do not over-engineer; plan first when a change is large and wait for a yes, otherwise just do it; give a plain, honest opinion when asked about design; say what is verified and what is not; the owner is watching token use, so do not review or translate Ukrainian beyond what a change needs, and do not start subagents unless asked.
 

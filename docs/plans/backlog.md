@@ -1,6 +1,6 @@
 # Backlog
 
-*Last reviewed: 2026-10-17*
+*Last reviewed: 2026-10-18*
 
 **Start here.** Everything v1 needs is built. This file lists only what is left before release. Finished items are in [`backlog-done.md`](backlog-done.md) (archive, do not read unless you need history). Update this file in the same change as the work: move a row to the archive when it is done.
 
@@ -12,10 +12,9 @@ Order of work: 1. Owner checks (R1) and decisions (R2), which can start now. 2. 
 
 | ID | What to check | Who | Status |
 |---|---|---|---|
-| OWN-05 | "Try again" and the 30 s read timeout with the sensor out of range; PC sleep and wake with the real sensor | owner | todo |
-| OWN-06 | History on real data: the Day view was reworked after the owner review 2026-10-17 (two cards, tip under the chart, calmer chart). The owner looks at Day, Week, Month and the Night filter once more | owner | doing |
+| OWN-05 | Still open: "Try again" and the 30 s read timeout with the sensor out of range. (PC sleep and wake with the real sensor: checked by the owner 2026-10-18, the app left open over sleep, the sensor was connected after wake) | owner | doing |
 | OWN-08 | Windows 10 (never tried): solid backdrop, title bar, toasts, Do Not Disturb | owner | todo |
-| A11Y-01 | Manual accessibility check in `accessibility.md` (Narrator, keyboard, scaling); the automated part is done | owner | doing |
+| A11Y-01 | Manual check in `accessibility.md`. Checked by the owner 2026-10-18: keyboard only, scaling 150 % and 200 %, High Contrast, Narrator on Live and Settings. Narrator on the flyout checked 2026-10-18 (fine; the flyout now opens above the tray icon also when opened from the keyboard). Still open: Narrator on the History period buttons | owner | doing |
 | I18N-02 | Native Ukrainian review of every string marked "Draft: needs native review" (`ukrainian.md`) | owner | todo |
 
 ## R2. Owner decisions (questions an agent cannot settle)
