@@ -29,6 +29,19 @@ public class ConnectionViewModelTests
     }
 
     [Fact]
+    public void Connecting_shows_its_line_and_fades_the_hero_without_an_error_screen()
+    {
+        var viewModel = new ConnectionViewModel();
+
+        viewModel.Update(ConnectionState.Connecting);
+
+        Assert.True(viewModel.ShowConnectingBanner);
+        Assert.True(viewModel.IsDimmed);
+        Assert.False(viewModel.ShowOfflineView);
+        Assert.False(viewModel.ShowStaleBanner);
+    }
+
+    [Fact]
     public void Normal_clears_every_flag()
     {
         var viewModel = new ConnectionViewModel();

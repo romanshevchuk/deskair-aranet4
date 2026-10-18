@@ -95,7 +95,7 @@ public sealed partial class TrayViewModel : ObservableObject
         {
             connection = state;
 
-            if (state is ConnectionState.NotConnected or ConnectionState.FirstRun)
+            if (state is ConnectionState.NotConnected or ConnectionState.FirstRun or ConnectionState.Connecting)
             {
                 Zone = null;
                 Co2 = null;
@@ -140,6 +140,11 @@ public sealed partial class TrayViewModel : ObservableObject
         if (connection == ConnectionState.FirstRun || devices.Selected is not { } selected || devices.Info(selected) is not { } info)
         {
             return appName;
+        }
+
+        if (connection == ConnectionState.Connecting)
+        {
+            return $"{info.RoomName} · {localizer.Get("Footer_Connecting")}";
         }
 
         if (connection == ConnectionState.NotConnected)

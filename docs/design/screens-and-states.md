@@ -31,6 +31,7 @@ Left-click on the tray icon opens the flyout. Right-click opens the menu. Double
 | Condition | What changes |
 |---|---|
 | Normal | Full UI |
+| Connecting | The Live layout with the last values faded at 55 % opacity, a banner "Connecting to your sensor…" (no button), a grey footer dot with the same text, a grey ring and tray icon, the flyout says "Connecting to your Aranet4…". No error screen and no "Try again" until the attempt fails or 45 seconds pass |
 | Stale data | Banner "Last reading N min ago", hero at 55 % opacity, amber footer dot, Retry |
 | Low battery | Banner with Dismiss; footer battery icon red |
 | Not connected | Full-screen state with last reading and recovery steps; grey ring; grey tray icon; History stays available |
@@ -42,7 +43,7 @@ Each condition combines with the three zones and both themes.
 
 | State | Content, top to bottom |
 |---|---|
-| Connected | Room with zone dot, "updated 2 min ago". "CO₂" with the zone pill. The value (58 px, as the concept page) with "ppm" and the trend. The advice title as one line with the zone's advice icon. The 24 h ribbon (8 px) with labels at 00:00, 06:00, 12:00 and 18:00 at their true positions (none within 2 hours of either end) and "Now" at the right end, and the time in each zone below it. Temperature, humidity and pressure in three columns (value 16 px 600, unit grey, label below). Footer band: Snooze ▾ (1 h, until tomorrow, Resume; "Snoozed until 14:30" while snoozed) and a Settings icon button on the left, a compact filled "Open Deskair" on the right |
+| Connected | Room name (a grey dot only while not connected or connecting; the zone pill already shows the zone, so a zone-coloured dot would say it twice), "updated 2 min ago". "CO₂" with the zone pill. The value (58 px, as the concept page) with "ppm" and the trend. The advice title as one line with the zone's advice icon. The 24 h ribbon (8 px) with labels at 00:00, 06:00, 12:00 and 18:00 at their true positions (none within 2 hours of the left end or 4 hours of "Now", so the labels never touch) and "Now" at the right end. Temperature, humidity and pressure in three columns (value 16 px 600, unit grey, label below). Footer band: Snooze ▾ (1 h, until tomorrow, Resume; "Snoozed until 14:30" while snoozed) and a Settings icon button on the left, a compact filled "Open Deskair" on the right |
 | Not connected | Room with grey dot, "last seen 25 min ago". "Can't reach your Aranet4" and the reason (out of range or asleep, or Bluetooth off). The last reading faded, with its time ("1160 ppm at 12:35"). One recovery step ("Press the button on the Aranet4 to wake it", or "Turn on Bluetooth" when the radio is off; Q48). No ribbon or readings. The same footer band |
 
 The zone glow (grey when not connected) covers the top of the flyout. Clicking the value opens the app, as "Open Deskair" does.

@@ -134,9 +134,10 @@ public sealed class FlyoutController
             var recent = await query.GetRecentAsync(device, ribbonLength, CancellationToken.None);
 
             // Not connected: no current reading, but the last of the day is shown faded.
-            Reading? current = connection.Current is ConnectionState.NotConnected || recent.Count == 0 ? null : recent[^1];
+            var connecting = connection.Current is ConnectionState.Connecting;
+            Reading? current = connection.Current is ConnectionState.NotConnected or ConnectionState.Connecting || recent.Count == 0 ? null : recent[^1];
 
-            viewModel.Update(current, recent, now, room);
+            viewModel.Update(current, recent, now, room, connecting);
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
         {

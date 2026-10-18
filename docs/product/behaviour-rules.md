@@ -81,12 +81,13 @@ CSV exports are unchanged. Display values use proportional figures (design-token
 
 | State | Trigger |
 |---|---|
+| Connecting | The app has just started (or woke from sleep, or another sensor was chosen), a sensor is known, Bluetooth is on, and no live reading has come in yet. Ends at the first live reading, when the connection attempt fails, or after 45 seconds. While it lasts, a silence that would make the state Stale or Not connected is shown as Connecting instead (Q50) |
 | Stale | No reading for about 5 minutes (3 or more intervals) |
 | Not connected | No reading for 10 minutes (or 5 intervals, if that is longer), or Bluetooth is off |
 | Low battery | Sensor at 10 % or below (the footer icon turns amber at 20 %) |
 | First run | No paired sensor |
 
-When several apply, the first of this list wins: First run, Not connected, Stale, Low battery. A stale sensor therefore hides the low battery banner; the banner shows again once readings arrive. Stale starts after 3 missed intervals (about 5 minutes at the usual 2 minute interval). Not connected waits for 5 intervals when the sensor is slower than the usual interval, so a sensor that reports every 5 or 10 minutes can still show Stale and does not flip to Not connected just before its next reading.
+When several apply, the first of this list wins: First run, Not connected because Bluetooth is off, Connecting, Not connected, Stale, Low battery. A stale sensor therefore hides the low battery banner; the banner shows again once readings arrive. Stale starts after 3 missed intervals (about 5 minutes at the usual 2 minute interval). Not connected waits for 5 intervals when the sensor is slower than the usual interval, so a sensor that reports every 5 or 10 minutes can still show Stale and does not flip to Not connected just before its next reading.
 
 ## Alerts
 

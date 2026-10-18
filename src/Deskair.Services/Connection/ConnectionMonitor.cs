@@ -1,6 +1,6 @@
 namespace Deskair.Services.Connection;
 
-/// <summary>Derives the connection state from last reading time, radio state and battery.</summary>
+/// <summary>Derives the connection state from last reading time, radio state, battery and whether a connection attempt is still running.</summary>
 public sealed class ConnectionMonitor
 {
     private static readonly TimeSpan minimumNotConnectedAfter = TimeSpan.FromMinutes(10);
@@ -15,23 +15,29 @@ public sealed class ConnectionMonitor
             return ConnectionState.FirstRun;
         }
 
-        if (inputs.LastReadingAt is not { } lastReading)
+        if (!inputs.RadioOn)
         {
             return ConnectionState.NotConnected;
         }
-
-        var silence = inputs.Now - lastReading;
 
         var notConnectedAfter = TimeSpan.FromTicks(Math.Max(
             minimumNotConnectedAfter.Ticks,
             inputs.Interval.Ticks * NotConnectedAfterIntervals));
 
-        if (!inputs.RadioOn || silence >= notConnectedAfter)
+        var silence = inputs.LastReadingAt is { } lastReading ? inputs.Now - lastReading : (TimeSpan?)null;
+
+        // While the app is still trying to connect, a silence is not yet a problem to show.
+        if (inputs.Attempting && (silence is null || silence >= inputs.Interval * StaleAfterIntervals))
+        {
+            return ConnectionState.Connecting;
+        }
+
+        if (silence is not { } quiet || quiet >= notConnectedAfter)
         {
             return ConnectionState.NotConnected;
         }
 
-        if (silence >= inputs.Interval * StaleAfterIntervals)
+        if (quiet >= inputs.Interval * StaleAfterIntervals)
         {
             return ConnectionState.Stale;
         }

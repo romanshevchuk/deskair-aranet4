@@ -34,12 +34,12 @@
   <sys:Double x:Key="Size.History.Export.StatusWidth">280</sys:Double>
   <sys:Double x:Key="Size.Flyout.Width">360</sys:Double>
   <!-- Flyout (concept page): sections have 16 px at the sides, the footer band runs edge to edge (padding 10 / 12), the ribbon is 8 px high. -->
+  <Thickness x:Key="Space.Flyout.RoomDot">0,0,8,0</Thickness>
   <Thickness x:Key="Space.Flyout.Head">16,14,16,0</Thickness>
   <Thickness x:Key="Space.Flyout.Main">16,14,16,0</Thickness>
   <Thickness x:Key="Space.Flyout.Ribbon">16,18,16,0</Thickness>
   <Thickness x:Key="Space.Flyout.Readings">16,16,16,0</Thickness>
   <Thickness x:Key="Space.Flyout.Advice">0,12,0,0</Thickness>
-  <Thickness x:Key="Space.Flyout.Legend">0,0,12,0</Thickness>
   <Thickness x:Key="Space.Flyout.Footer">12,10,12,10</Thickness>
   <Thickness x:Key="Space.Flyout.FooterTop">0,16,0,0</Thickness>
   <Thickness x:Key="Space.Flyout.Step">0,14,0,0</Thickness>

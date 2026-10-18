@@ -105,6 +105,7 @@ public sealed partial class FooterViewModel : ObservableObject
         StatusText = state switch
         {
             ConnectionState.FirstRun => localizer.Get("Footer_NoSensor"),
+            ConnectionState.Connecting => Connecting(age),
             ConnectionState.NotConnected => localizer.Get("Footer_NotConnected"),
             ConnectionState.Stale => localizer.Format("Banner_Stale", ("min", Minutes(age))),
             _ => Connected(age)
@@ -122,6 +123,15 @@ public sealed partial class FooterViewModel : ObservableObject
         SimulatedProvider.ProviderId => "Sensor_Simulated_Name",
         _ => "Sensor_Aranet4_Name"
     };
+
+    private string Connecting(TimeSpan? age)
+    {
+        var minutes = Minutes(age);
+
+        return minutes < 1
+            ? localizer.Get("Footer_Connecting")
+            : localizer.Format("Footer_ConnectingLast", ("ago", localizer.Duration(minutes)));
+    }
 
     private static int Minutes(TimeSpan? age) => (int)Math.Floor((age ?? TimeSpan.Zero).TotalMinutes);
 

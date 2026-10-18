@@ -97,9 +97,12 @@
       <StackPanel>
         <Grid Margin="{StaticResource Space.Flyout.Head}">
           <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-            <controls:StatusDot VerticalAlignment="Center" Zone="{Binding Zone}" />
-            <TextBlock Margin="{StaticResource Space.Inline}"
-                       VerticalAlignment="Center"
+            <!-- The dot only when there is no zone pill to say it (not connected, connecting): with a pill the dot would say the same twice. -->
+            <controls:StatusDot Margin="{StaticResource Space.Flyout.RoomDot}"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding ShowNotConnected, Converter={StaticResource BoolToVisibility}}"
+                                Zone="{Binding Zone}" />
+            <TextBlock VerticalAlignment="Center"
                        FontWeight="{DynamicResource Font.Weight.SemiBold}"
                        Style="{StaticResource Text.Body}"
                        Text="{Binding RoomName}" />
@@ -166,7 +169,7 @@
           <TextBlock FontWeight="{DynamicResource Font.Weight.SemiBold}"
                      FontSize="{DynamicResource Font.Size.HeroTitle}"
                      Style="{StaticResource Text.Body}"
-                     Text="{loc:T Offline_Title}"
+                     Text="{Binding NotConnectedTitle}"
                      TextWrapping="Wrap" />
           <TextBlock Margin="{StaticResource Space.Hero.Trend}"
                      Style="{StaticResource Text.Secondary}"
@@ -190,6 +193,7 @@
                        Text="{Binding LastDetailText}" />
           </StackPanel>
           <Border Margin="{StaticResource Space.Flyout.Step}"
+                  Visibility="{Binding ShowStep, Converter={StaticResource BoolToVisibility}}"
                   Background="{DynamicResource Flyout.Band.Brush}"
                   CornerRadius="{DynamicResource Radius.Flyout}"
                   Padding="{StaticResource Space.Flyout.StepPadding}">
@@ -246,24 +250,6 @@
             </ItemsControl.ItemTemplate>
           </ItemsControl>
 
-          <ItemsControl Margin="{StaticResource Space.Chart.Ribbon}" Focusable="False" IsTabStop="False" ItemsSource="{Binding ZoneTimes}">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <WrapPanel />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <StackPanel Margin="{StaticResource Space.Flyout.Legend}" Orientation="Horizontal">
-                  <controls:StatusDot VerticalAlignment="Center" Zone="{Binding Zone}" />
-                  <TextBlock Margin="{StaticResource Space.Inline}"
-                             VerticalAlignment="Center"
-                             Style="{StaticResource Text.Caption}"
-                             Text="{Binding Text}" />
-                </StackPanel>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
         </StackPanel>
 
         <!-- Value in semibold, unit quiet, a thin divider between the three. -->

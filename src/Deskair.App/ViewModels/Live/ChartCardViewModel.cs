@@ -46,7 +46,7 @@ public sealed partial class ChartCardViewModel : ObservableObject
     [ObservableProperty]
     private string? accessibleName;
 
-    /// <summary>The labels on the CO₂ threshold lines ("Elevated from 1000", "High from 1400"); null for the other metrics.</summary>
+    /// <summary>The labels on the CO₂ threshold lines ("Elevated ↑", "High ↑"); null for the other metrics.</summary>
     [ObservableProperty]
     private string? elevatedLineLabel;
 
@@ -97,10 +97,10 @@ public sealed partial class ChartCardViewModel : ObservableObject
             ? localizer.Format("Chart_Ideal", ("min", Math.Round(low)), ("max", Math.Round(high)))
             : null;
         ElevatedLineLabel = metric == Metric.Co2
-            ? localizer.Format("Chart_Threshold_Elevated", ("ppm", formatter.Value(metric, ZoneThresholds.Default.ElevatedFromPpm)))
+            ? localizer.Get("Chart_Threshold_Elevated")
             : null;
         HighLineLabel = metric == Metric.Co2
-            ? localizer.Format("Chart_Threshold_High", ("ppm", formatter.Value(metric, ZoneThresholds.Default.HighAbovePpm)))
+            ? localizer.Get("Chart_Threshold_High")
             : null;
 
         if (devices.Selected is not { } device)

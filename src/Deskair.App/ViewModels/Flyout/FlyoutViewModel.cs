@@ -85,6 +85,14 @@ public sealed partial class FlyoutViewModel : ObservableObject
     [ObservableProperty]
     private string stepText = string.Empty;
 
+    /// <summary>"Can't reach your Aranet4", or "Connecting to your Aranet4…" while the app is still trying after a start or a wake.</summary>
+    [ObservableProperty]
+    private string notConnectedTitle = string.Empty;
+
+    /// <summary>False while connecting: there is nothing for the user to do yet.</summary>
+    [ObservableProperty]
+    private bool showStep = true;
+
     /// <summary>True when not connected but an earlier reading is known: it is shown faded.</summary>
     [ObservableProperty]
     private bool showLastReading;
@@ -107,10 +115,6 @@ public sealed partial class FlyoutViewModel : ObservableObject
     /// <summary>The times under the ribbon at their true positions: the round hours that fall inside it, then "Now".</summary>
     [ObservableProperty]
     private IReadOnlyList<FlyoutRibbonLabel> ribbonLabels = [];
-
-    /// <summary>The time in each zone over the last 24 hours, for the zones that occurred.</summary>
-    [ObservableProperty]
-    private IReadOnlyList<FlyoutZoneTime> zoneTimes = [];
 
     /// <summary>Temperature, humidity and pressure.</summary>
     [ObservableProperty]
@@ -160,14 +164,14 @@ public sealed partial class FlyoutViewModel : ObservableObject
 
     /// <param name="reading">The latest reading, or null when the sensor is not connected.</param>
     /// <param name="recent">The readings of the last 24 hours, in time order; the trend and the ribbon come from them. When not connected, the last of them is shown faded.</param>
-    public void Update(Reading? reading, IReadOnlyList<Reading> recent, DateTimeOffset now, string? room)
+    public void Update(Reading? reading, IReadOnlyList<Reading> recent, DateTimeOffset now, string? room, bool connecting = false)
     {
         RoomName = room;
         RefreshSnooze();
 
         if (reading is not { } latest)
         {
-            ShowNoReading(recent, now);
+            ShowNoReading(recent, now, connecting);
             return;
         }
 
@@ -195,7 +199,6 @@ public sealed partial class FlyoutViewModel : ObservableObject
         RibbonSegments = [.. spans.Select(span => new ChartZoneSegment(span.Start, span.End, span.Zone))];
         RibbonEnd = now;
         RibbonLabels = FlyoutRibbonLabels.Build(now, calendar.Zone, localizer.Culture, localizer.Get("Chart_Now"));
-        ZoneTimes = ZoneTimesOf(spans);
         OtherReadings =
         [
             Other(Metric.Temperature, latest.TemperatureC),
@@ -237,7 +240,7 @@ public sealed partial class FlyoutViewModel : ObservableObject
         ResumeText = localizer.Get("Flyout_Resume");
     }
 
-    private void ShowNoReading(IReadOnlyList<Reading> recent, DateTimeOffset now)
+    private void ShowNoReading(IReadOnlyList<Reading> recent, DateTimeOffset now, bool connecting)
     {
         var last = recent.Count > 0 ? recent[^1] : (Reading?)null;
 
@@ -257,8 +260,10 @@ public sealed partial class FlyoutViewModel : ObservableObject
 
         var bluetoothOff = !radio.IsOn;
 
-        ReasonText = localizer.Get(bluetoothOff ? "Offline_Text_BluetoothOff" : "Offline_Text");
-        StepText = localizer.Get(bluetoothOff ? "Offline_Bluetooth" : "Offline_Step_Wake");
+        NotConnectedTitle = localizer.Get(connecting ? "Flyout_Connecting_Title" : "Offline_Title");
+        ReasonText = localizer.Get(connecting ? "Flyout_Connecting_Text" : bluetoothOff ? "Offline_Text_BluetoothOff" : "Offline_Text");
+        StepText = connecting ? string.Empty : localizer.Get(bluetoothOff ? "Offline_Bluetooth" : "Offline_Step_Wake");
+        ShowStep = !connecting;
         ShowLastReading = last is not null;
         LastValueText = last is { } shown ? formatter.Value(Metric.Co2, shown.Co2Ppm) : null;
         LastDetailText = last is { } at
@@ -267,7 +272,6 @@ public sealed partial class FlyoutViewModel : ObservableObject
         RibbonSegments = [];
         RibbonEnd = null;
         RibbonLabels = [];
-        ZoneTimes = [];
         OtherReadings = [];
     }
 
@@ -276,14 +280,6 @@ public sealed partial class FlyoutViewModel : ObservableObject
         return age < TimeSpan.FromMinutes(1)
             ? localizer.Format("Flyout_Updated", ("sec", Math.Max(0, (int)age.TotalSeconds)))
             : localizer.Format("Flyout_UpdatedMinutes", ("min", (int)age.TotalMinutes));
-    }
-
-    private List<FlyoutZoneTime> ZoneTimesOf(IReadOnlyList<ZoneSpan> spans)
-    {
-        return [.. spans
-            .GroupBy(span => span.Zone)
-            .OrderBy(group => group.Key)
-            .Select(group => new FlyoutZoneTime(group.Key, Duration(TimeSpan.FromTicks(group.Sum(span => (span.End - span.Start).Ticks)))))];
     }
 
     private string Duration(TimeSpan time) => localizer.Duration((int)Math.Round(time.TotalMinutes));

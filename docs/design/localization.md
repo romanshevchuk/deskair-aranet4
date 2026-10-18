@@ -76,6 +76,9 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Range_1h / Range_6h / Range_24h | 1h / 6h / 24h | 1 год / 6 год / 24 год |
 | Footer_ConnectedMinutes | Connected · updated {min} min ago | Підключено · оновлено {min} хв тому |
 | Footer_NotConnected | Not connected | Не підключено |
+| Footer_Connecting | Connecting to your sensor… | Підключення до датчика… |
+| Footer_ConnectingLast | Connecting to your sensor… Last reading {ago} ago | Підключення до датчика… Останнє значення {ago} тому |
+| Flyout_Connecting_Title / Flyout_Connecting_Text | Connecting to your Aranet4… / This usually takes a few seconds. | Підключення до Aranet4… / Зазвичай це займає кілька секунд. |
 | Footer_Signal_Good / Fair / Weak | Signal good / fair / weak | Сигнал хороший / середній / слабкий |
 | Banner_LowBattery | Sensor battery is low ({percent}) | Низький заряд датчика ({percent}) |
 | Banner_HistoryUnreadable | Can't read your saved readings. Live data still works. | Не вдається прочитати збережені виміри. Поточні дані працюють. |

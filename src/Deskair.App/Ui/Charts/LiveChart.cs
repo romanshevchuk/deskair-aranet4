@@ -32,14 +32,14 @@ public sealed class LiveChart : ChartBase
         typeof(LiveChart),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
 
-    /// <summary>The label on the Elevated limit ("Elevated from 1000"). Already localized.</summary>
+    /// <summary>The label on the Elevated limit ("Elevated ↑", the number is on the axis). Already localized.</summary>
     public string? ElevatedLineLabel
     {
         get => (string?)GetValue(ElevatedLineLabelProperty);
         set => SetValue(ElevatedLineLabelProperty, value);
     }
 
-    /// <summary>The label on the High limit ("High from 1400"). Already localized.</summary>
+    /// <summary>The label on the High limit ("High ↑"). Already localized.</summary>
     public string? HighLineLabel
     {
         get => (string?)GetValue(HighLineLabelProperty);

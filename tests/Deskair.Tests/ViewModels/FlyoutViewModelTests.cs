@@ -104,6 +104,26 @@ public sealed class FlyoutViewModelTests : IDisposable
     }
 
     [Fact]
+    public void Connecting_says_so_and_offers_no_step()
+    {
+        viewModel.Update(null, [], now, "Office", connecting: true);
+
+        Assert.True(viewModel.ShowNotConnected);
+        Assert.Equal("Flyout_Connecting_Title", viewModel.NotConnectedTitle);
+        Assert.Equal("Flyout_Connecting_Text", viewModel.ReasonText);
+        Assert.False(viewModel.ShowStep);
+    }
+
+    [Fact]
+    public void Not_connected_keeps_its_title_and_its_step()
+    {
+        viewModel.Update(null, [], now, "Office");
+
+        Assert.Equal("Offline_Title", viewModel.NotConnectedTitle);
+        Assert.True(viewModel.ShowStep);
+    }
+
+    [Fact]
     public void No_reading_shows_the_not_connected_state_but_keeps_the_room()
     {
         var recent = History(1300, 1050);
@@ -181,46 +201,7 @@ public sealed class FlyoutViewModelTests : IDisposable
     }
 
     [Fact]
-    public void The_legend_gives_the_time_spent_in_each_zone_that_occurred()
-    {
-        var readings = new List<Reading>();
-
-        for (var slot = 0; slot < 6; slot++)
-        {
-            var ppm = slot < 3 ? 700 : slot < 5 ? 1100 : 1700;
-            readings.Add(Samples.Co2(now.AddMinutes(-60 + (slot * 10) + 1), ppm));
-        }
-
-        viewModel.Update(readings[^1], readings, now, "Office");
-
-        Assert.Equal(
-            [(Zone.Good, "Duration_Minutes(min=30)"), (Zone.Elevated, "Duration_Minutes(min=20)"), (Zone.High, "Duration_Minutes(min=10)")],
-            viewModel.ZoneTimes.Select(item => (item.Zone, item.Text)));
-    }
-
-    [Fact]
-    public void A_zone_that_did_not_occur_is_left_out_of_the_legend()
-    {
-        var readings = Enumerable.Range(0, 7).Select(slot => Samples.Co2(now.AddMinutes(-70 + (slot * 10) + 1), 700)).ToList();
-
-        viewModel.Update(readings[^1], readings, now, "Office");
-
-        Assert.Equal([Zone.Good], viewModel.ZoneTimes.Select(item => item.Zone));
-        Assert.Equal("Duration_HoursMinutes(h=1, min=10)", viewModel.ZoneTimes[0].Text);
-    }
-
-    [Fact]
-    public void Whole_hours_have_no_minutes()
-    {
-        var readings = Enumerable.Range(0, 6).Select(slot => Samples.Co2(now.AddMinutes(-60 + (slot * 10) + 1), 700)).ToList();
-
-        viewModel.Update(readings[^1], readings, now, "Office");
-
-        Assert.Equal("Duration_Hours(h=1)", viewModel.ZoneTimes[0].Text);
-    }
-
-    [Fact]
-    public void Not_connected_has_no_ribbon_legend_or_other_readings()
+    public void Not_connected_has_no_ribbon_or_other_readings()
     {
         var recent = History(1300, 1050);
         viewModel.Update(recent[^1], recent, now, "Office");
@@ -228,7 +209,6 @@ public sealed class FlyoutViewModelTests : IDisposable
         viewModel.Update(null, [], now, "Office");
 
         Assert.Empty(viewModel.RibbonSegments);
-        Assert.Empty(viewModel.ZoneTimes);
         Assert.Empty(viewModel.OtherReadings);
         Assert.Null(viewModel.UpdatedText);
         Assert.Null(viewModel.ZoneText);

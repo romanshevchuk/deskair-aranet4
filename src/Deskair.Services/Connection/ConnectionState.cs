@@ -6,5 +6,8 @@ public enum ConnectionState
     Stale,
     NotConnected,
     LowBattery,
-    FirstRun
+    FirstRun,
+
+    /// <summary>The app is still trying to reach the sensor after a start, a wake from sleep or a new sensor: shown calmly, with no error and no retry button.</summary>
+    Connecting
 }

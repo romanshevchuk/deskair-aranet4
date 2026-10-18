@@ -46,7 +46,7 @@ Green is never used for controls: it only means Good air.
 
 Gauge and ribbon segments: #3FA77E, #E6B04B, #C7453A. Chart lines: #1E8A5C, #C47F00, #C23B2B. Trend text: falling #1B7A53 (dark #6FD3A3), rising #B3342A (dark #FF8A7E). The gauge scale is 400 to 2000 ppm.
 
-**Live chart:** no zone bands. A threshold (1000 or 1400) is a 1 px dashed line (4 on, 4 off) in the zone dot colour at 60 %, with a label in the zone's `pill.text` ("Elevated from 1000", "High from 1400") right-aligned above it (below it on the top edge), drawn only when the threshold is inside the axis or on its edge. Area under the line: the same colour as the line at every height (green below 1000, amber from 1000, red from 1400), 22 % at the line fading to 0 % at the bottom, so the line and the fill never disagree (the fill used to take the current zone, which looked wrong when the last reading had just crossed a limit).
+**Live chart:** no zone bands. A threshold (1000 or 1400) is a 1 px dashed line (4 on, 4 off) in the zone dot colour at 60 %, with a label in the zone's `pill.text` ("Elevated ↑", "High ↑"; the number is on the axis) right-aligned above it (below it on the top edge), drawn only when the threshold is inside the axis or on its edge. Area under the line: the same colour as the line at every height (green below 1000, amber from 1000, red from 1400), 22 % at the line fading to 0 % at the bottom, so the line and the fill never disagree (the fill used to take the current zone, which looked wrong when the last reading had just crossed a limit).
 
 ## Heat scale (History grid)
 

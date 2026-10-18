@@ -75,6 +75,8 @@
   <data name="Gap_DaysNoData_Many" xml:space="preserve"><value>{count} днів без даних</value><comment>Draft: needs native review.</comment></data>
   <data name="Banner_Stale" xml:space="preserve"><value>Останнє значення {min} хв тому</value><comment>Draft: needs native review.</comment></data>
   <data name="Offline_Title" xml:space="preserve"><value>Не вдається зв&apos;язатися з Aranet4</value><comment>Draft: needs native review.</comment></data>
+  <data name="Flyout_Connecting_Title" xml:space="preserve"><value>Підключення до Aranet4…</value><comment>Draft: needs native review.</comment></data>
+  <data name="Flyout_Connecting_Text" xml:space="preserve"><value>Зазвичай це займає кілька секунд.</value><comment>Draft: needs native review.</comment></data>
   <data name="Offline_Bluetooth" xml:space="preserve"><value>Увімкнути Bluetooth</value><comment>Draft: needs native review.</comment></data>
   <data name="Action_Retry" xml:space="preserve"><value>Спробувати ще раз</value><comment>Draft: needs native review.</comment></data>
 <data name="Action_Retrying" xml:space="preserve"><value>Пробуємо…</value><comment>Draft: needs native review.</comment></data>  <data name="Action_RetryFailed" xml:space="preserve"><value>Досі не вдається підключитися. Спробувати ще раз</value><comment>Draft: needs native review.</comment></data>
@@ -197,8 +199,8 @@
   <data name="Duration_Minutes" xml:space="preserve"><value>{min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Duration_HoursMinutes" xml:space="preserve"><value>{h} год {min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Ideal" xml:space="preserve"><value>бажано {min}–{max}</value><comment>Draft: needs native review.</comment></data>
-  <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Підвищений від {ppm}</value><comment>Draft: needs native review. Label on the dashed line where the Elevated zone starts.</comment></data>
-  <data name="Chart_Threshold_High" xml:space="preserve"><value>Високий від {ppm}</value><comment>Draft: needs native review. Label on the dashed line where the High zone starts.</comment></data>
+  <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Підвищений ↑</value><comment>Draft: needs native review. Label on the dashed line where the Elevated zone starts.</comment></data>
+  <data name="Chart_Threshold_High" xml:space="preserve"><value>Високий ↑</value><comment>Draft: needs native review. Label on the dashed line where the High zone starts.</comment></data>
   <data name="Live_Card_AccessibleName" xml:space="preserve"><value>{metric}, {value} {unit}, {status}</value><comment>Read by Narrator for the hero and the mini cards.</comment></data>
   <data name="Chart_Subtitle_OneHour" xml:space="preserve"><value>остання година</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Subtitle_SixHours" xml:space="preserve"><value>останні 6 годин</value><comment>Draft: needs native review.</comment></data>
@@ -212,6 +214,8 @@
   <data name="Range_24h" xml:space="preserve"><value>24 год</value><comment>Draft: needs native review.</comment></data>
   <data name="Footer_ConnectedMinutes" xml:space="preserve"><value>Підключено · оновлено {min} хв тому</value><comment>Draft: needs native review.</comment></data>
   <data name="Footer_NotConnected" xml:space="preserve"><value>Не підключено</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_Connecting" xml:space="preserve"><value>Підключення до датчика…</value><comment>Draft: needs native review.</comment></data>
+  <data name="Footer_ConnectingLast" xml:space="preserve"><value>Підключення до датчика… Останнє значення {ago} тому</value><comment>Draft: needs native review.</comment></data>
   <data name="Footer_Signal_Good" xml:space="preserve"><value>Сигнал хороший</value><comment>Draft: needs native review.</comment></data>
   <data name="Footer_Signal_Fair" xml:space="preserve"><value>Сигнал середній</value><comment>Draft: needs native review.</comment></data>
   <data name="Footer_Signal_Weak" xml:space="preserve"><value>Сигнал слабкий</value><comment>Draft: needs native review.</comment></data>

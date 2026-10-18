@@ -131,6 +131,26 @@ public sealed class FooterViewModelTests : IDisposable
     }
 
     [Fact]
+    public async Task Connecting_has_a_neutral_dot_and_the_age_of_the_last_reading()
+    {
+        await StartAsync();
+        clock.Advance(TimeSpan.FromMinutes(7));
+        messenger.Send(new ConnectionStateChanged(ConnectionState.Connecting));
+
+        Assert.Null(viewModel.DotZone);
+        Assert.Equal("Footer_ConnectingLast(ago=Duration_Minutes(min=7))", viewModel.StatusText);
+    }
+
+    [Fact]
+    public async Task Connecting_without_an_old_reading_has_only_its_line()
+    {
+        await StartAsync();
+        messenger.Send(new ConnectionStateChanged(ConnectionState.Connecting));
+
+        Assert.Equal("Footer_Connecting", viewModel.StatusText);
+    }
+
+    [Fact]
     public async Task A_low_battery_keeps_the_green_dot()
     {
         await StartAsync();

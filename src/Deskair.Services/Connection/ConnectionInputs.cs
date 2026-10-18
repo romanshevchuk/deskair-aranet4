@@ -6,4 +6,5 @@ public sealed record ConnectionInputs(
     DateTimeOffset Now,
     TimeSpan Interval,
     bool RadioOn,
-    int? BatteryPercent);
+    int? BatteryPercent,
+    bool Attempting = false);

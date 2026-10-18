@@ -139,7 +139,92 @@ public sealed class ConnectionTrackerTests : IDisposable
 
         messenger.Send(new DeviceSelected(new DeviceId("test", "B2")));
 
+        Assert.Equal(ConnectionState.Connecting, tracker.Current);
+
+        clock.Advance(ConnectionTracker.ConnectingWindow + TimeSpan.FromSeconds(1));
+        tracker.Evaluate();
         Assert.Equal(ConnectionState.NotConnected, tracker.Current);
+    }
+
+    [Fact]
+    public async Task An_old_stored_reading_at_start_shows_connecting_not_an_error()
+    {
+        await SelectDeviceAsync();
+        await tracker.StartAsync(start.AddHours(-3), cts.Token);
+
+        Assert.Equal(ConnectionState.Connecting, tracker.Current);
+    }
+
+    [Fact]
+    public async Task The_first_live_reading_ends_connecting()
+    {
+        await SelectDeviceAsync();
+        await tracker.StartAsync(start.AddHours(-3), cts.Token);
+
+        Reading(start);
+
+        Assert.Equal(ConnectionState.Normal, tracker.Current);
+    }
+
+    [Fact]
+    public async Task A_failed_attempt_ends_connecting_at_once()
+    {
+        await SelectDeviceAsync();
+        await tracker.StartAsync(start.AddHours(-3), cts.Token);
+
+        messenger.Send(new SensorConnectionFailed(device));
+
+        Assert.Equal(ConnectionState.NotConnected, tracker.Current);
+    }
+
+    [Fact]
+    public async Task A_failed_attempt_of_another_device_does_not_end_connecting()
+    {
+        await SelectDeviceAsync();
+        await tracker.StartAsync(start.AddHours(-3), cts.Token);
+
+        messenger.Send(new SensorConnectionFailed(new DeviceId("test", "B2")));
+
+        Assert.Equal(ConnectionState.Connecting, tracker.Current);
+    }
+
+    [Fact]
+    public async Task Connecting_gives_up_after_the_window()
+    {
+        await SelectDeviceAsync();
+        await tracker.StartAsync(start.AddHours(-3), cts.Token);
+
+        clock.Advance(ConnectionTracker.ConnectingWindow - TimeSpan.FromSeconds(1));
+        tracker.Evaluate();
+        Assert.Equal(ConnectionState.Connecting, tracker.Current);
+
+        clock.Advance(TimeSpan.FromSeconds(2));
+        tracker.Evaluate();
+        Assert.Equal(ConnectionState.NotConnected, tracker.Current);
+    }
+
+    [Fact]
+    public async Task Bluetooth_off_is_not_connected_at_once_even_while_connecting()
+    {
+        await SelectDeviceAsync();
+        radio.IsOn = false;
+        await tracker.StartAsync(start.AddHours(-3), cts.Token);
+
+        Assert.Equal(ConnectionState.NotConnected, tracker.Current);
+    }
+
+    [Fact]
+    public async Task Waking_from_sleep_shows_connecting_again()
+    {
+        await SelectDeviceAsync();
+        await tracker.StartAsync(start, cts.Token);
+        clock.Advance(TimeSpan.FromHours(2));
+        tracker.Evaluate();
+        Assert.Equal(ConnectionState.NotConnected, tracker.Current);
+
+        messenger.Send(new SystemResumed());
+
+        Assert.Equal(ConnectionState.Connecting, tracker.Current);
     }
 
     [Fact]

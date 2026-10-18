@@ -14,6 +14,9 @@ public sealed class ConnectionTracker
 {
     private static readonly TimeSpan checkEvery = TimeSpan.FromSeconds(15);
 
+    /// <summary>How long a start, a wake or a new sensor may look like "connecting" before silence is shown as it is (Q50).</summary>
+    public static readonly TimeSpan ConnectingWindow = TimeSpan.FromSeconds(45);
+
     private readonly DeviceRegistry devices;
     private readonly IBluetoothRadio radio;
     private readonly IMessenger messenger;
@@ -22,6 +25,7 @@ public sealed class ConnectionTracker
     private readonly Lock gate = new();
     private DateTimeOffset? lastReadingAt;
     private int? batteryPercent;
+    private DateTimeOffset? attemptStartedAt;
 
     public ConnectionTracker(DeviceRegistry devices, IBluetoothRadio radio, IMessenger messenger, TimeProvider timeProvider, ILogger<ConnectionTracker> logger)
     {
@@ -44,11 +48,14 @@ public sealed class ConnectionTracker
         {
             lastReadingAt = lastReading;
             batteryPercent = null;
+            attemptStartedAt = timeProvider.GetUtcNow();
         }
 
         messenger.Register<ConnectionTracker, ReadingReceived>(this, static (self, message) => self.OnReading(message));
         messenger.Register<ConnectionTracker, SensorStatusUpdated>(this, static (self, message) => self.OnStatus(message));
         messenger.Register<ConnectionTracker, DeviceSelected>(this, static (self, _) => self.OnDeviceSelected());
+        messenger.Register<ConnectionTracker, SystemResumed>(this, static (self, _) => self.OnAttemptStarted());
+        messenger.Register<ConnectionTracker, SensorConnectionFailed>(this, static (self, message) => self.OnConnectionFailed(message));
         radio.StateChanged += OnRadioChanged;
         cancellationToken.Register(() =>
         {
@@ -75,7 +82,9 @@ public sealed class ConnectionTracker
             var selected = devices.Selected;
             var interval = selected is { } device ? devices.IntervalFor(device, now) : TimeSpan.FromMinutes(2);
 
-            state = ConnectionMonitor.Derive(new ConnectionInputs(selected is not null, lastReadingAt, now, interval, radio.IsOn, batteryPercent));
+            var attempting = attemptStartedAt is { } started && now - started < ConnectingWindow;
+
+            state = ConnectionMonitor.Derive(new ConnectionInputs(selected is not null, lastReadingAt, now, interval, radio.IsOn, batteryPercent, attempting));
 
             if (state == Current)
             {
@@ -131,6 +140,7 @@ public sealed class ConnectionTracker
         lock (gate)
         {
             lastReadingAt = message.Reading.Timestamp;
+            attemptStartedAt = null;
         }
 
         Evaluate();
@@ -157,6 +167,33 @@ public sealed class ConnectionTracker
         {
             lastReadingAt = null;
             batteryPercent = null;
+            attemptStartedAt = timeProvider.GetUtcNow();
+        }
+
+        Evaluate();
+    }
+
+    // A wake from sleep starts a new attempt: the silence of the sleep is not a failure to show.
+    private void OnAttemptStarted()
+    {
+        lock (gate)
+        {
+            attemptStartedAt = timeProvider.GetUtcNow();
+        }
+
+        Evaluate();
+    }
+
+    private void OnConnectionFailed(SensorConnectionFailed message)
+    {
+        if (message.Device != devices.Selected)
+        {
+            return;
+        }
+
+        lock (gate)
+        {
+            attemptStartedAt = null;
         }
 
         Evaluate();

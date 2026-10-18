@@ -5,7 +5,7 @@ namespace Deskair.App.Ui.Charts.Layers;
 
 /// <summary>
 /// The CO₂ zone limits on the Live chart as labelled lines (design-tokens.md "Live chart"): 1 px, dashed 4 on 4 off, in the zone dot colour at 60 %,
-/// with the label ("Elevated from 1000") right-aligned just above in the zone's pill text colour (below, on the top edge). A limit outside the visible range draws nothing; one on its edge is drawn.
+/// with the label ("Elevated ↑", the number is on the axis) right-aligned just above in the zone's pill text colour (below, on the top edge). A limit outside the visible range draws nothing; one on its edge is drawn.
 /// </summary>
 public sealed class ThresholdLayer : IChartLayer
 {
@@ -30,7 +30,7 @@ public sealed class ThresholdLayer : IChartLayer
 
     private static void DrawLimit(DrawingContext context, ChartArea area, double limit, string zone, string? label)
     {
-        // A limit on the edge of the axis still counts: "Elevated from 1000" on the bottom edge says the whole chart is above it.
+        // A limit on the edge of the axis still counts: "Elevated ↑" on the bottom edge says the whole chart is above it.
         if (limit < area.YMin || limit > area.YMax)
         {
             return;

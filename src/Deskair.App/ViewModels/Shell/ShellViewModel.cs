@@ -87,7 +87,7 @@ public sealed partial class ShellViewModel : ObservableObject
 
     private void UpdateHeaderZone()
     {
-        HeaderZone = Connection?.State is ConnectionState.NotConnected or ConnectionState.FirstRun ? null : Live?.Hero.Zone;
+        HeaderZone = Connection?.State is ConnectionState.NotConnected or ConnectionState.FirstRun or ConnectionState.Connecting ? null : Live?.Hero.Zone;
     }
     public ShellViewModel()
     {

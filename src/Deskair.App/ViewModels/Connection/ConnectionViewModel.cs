@@ -15,6 +15,8 @@ public sealed partial class ConnectionViewModel : RetryingViewModel
     [NotifyPropertyChangedFor(nameof(ShowLowBatteryBanner))]
     [NotifyPropertyChangedFor(nameof(ShowOfflineView))]
     [NotifyPropertyChangedFor(nameof(ShowFirstRunView))]
+    [NotifyPropertyChangedFor(nameof(ShowConnectingBanner))]
+    [NotifyPropertyChangedFor(nameof(IsDimmed))]
     private ConnectionState state;
 
     [ObservableProperty]
@@ -37,6 +39,12 @@ public sealed partial class ConnectionViewModel : RetryingViewModel
     }
 
     public bool ShowStaleBanner => State == ConnectionState.Stale;
+
+    /// <summary>The calm "Connecting to your sensor…" line while the app is still trying to reach the sensor after a start or a wake.</summary>
+    public bool ShowConnectingBanner => State == ConnectionState.Connecting;
+
+    /// <summary>The values shown are not live: the hero is faded.</summary>
+    public bool IsDimmed => State is ConnectionState.Stale or ConnectionState.Connecting;
 
     public bool ShowLowBatteryBanner => State == ConnectionState.LowBattery && !LowBatteryDismissed;
 

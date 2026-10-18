@@ -116,6 +116,18 @@ public class TrayViewModelTests
     }
 
     [Fact]
+    public async Task Connecting_turns_the_icon_grey_and_says_so()
+    {
+        var viewModel = await CreateAsync();
+        Reading(1068);
+
+        messenger.Send(new ConnectionStateChanged(ConnectionState.Connecting));
+
+        Assert.Null(viewModel.Zone);
+        Assert.Equal("Office · Footer_Connecting", viewModel.Tooltip);
+    }
+
+    [Fact]
     public async Task The_icon_colour_returns_with_the_next_reading()
     {
         var viewModel = await CreateAsync();

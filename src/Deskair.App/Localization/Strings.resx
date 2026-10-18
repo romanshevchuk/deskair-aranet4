@@ -73,6 +73,8 @@
   <data name="Gap_DaysNoData_Other" xml:space="preserve"><value>{count} days with no data</value></data>
   <data name="Banner_Stale" xml:space="preserve"><value>Last reading {min} min ago</value></data>
   <data name="Offline_Title" xml:space="preserve"><value>Can&apos;t reach your Aranet4</value></data>
+  <data name="Flyout_Connecting_Title" xml:space="preserve"><value>Connecting to your Aranet4…</value></data>
+  <data name="Flyout_Connecting_Text" xml:space="preserve"><value>This usually takes a few seconds.</value></data>
   <data name="Offline_Bluetooth" xml:space="preserve"><value>Turn on Bluetooth</value></data>
   <data name="Action_Retry" xml:space="preserve"><value>Try again</value></data>
   <data name="Action_Retrying" xml:space="preserve"><value>Trying…</value></data>
@@ -196,8 +198,8 @@
   <data name="Duration_Minutes" xml:space="preserve"><value>{min} min</value></data>
   <data name="Duration_HoursMinutes" xml:space="preserve"><value>{h} h {min} min</value></data>
   <data name="Chart_Ideal" xml:space="preserve"><value>ideal {min}–{max}</value></data>
-  <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Elevated from {ppm}</value></data>
-  <data name="Chart_Threshold_High" xml:space="preserve"><value>High from {ppm}</value></data>
+  <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Elevated ↑</value></data>
+  <data name="Chart_Threshold_High" xml:space="preserve"><value>High ↑</value></data>
   <data name="Live_Card_AccessibleName" xml:space="preserve"><value>{metric}, {value} {unit}, {status}</value><comment>Read by Narrator for the hero and the mini cards, which choose the metric of the Live chart.</comment></data>
   <data name="Chart_Subtitle_OneHour" xml:space="preserve"><value>last hour</value></data>
   <data name="Chart_Subtitle_SixHours" xml:space="preserve"><value>last 6 hours</value></data>
@@ -211,6 +213,8 @@
   <data name="Range_24h" xml:space="preserve"><value>24h</value></data>
   <data name="Footer_ConnectedMinutes" xml:space="preserve"><value>Connected · updated {min} min ago</value></data>
   <data name="Footer_NotConnected" xml:space="preserve"><value>Not connected</value></data>
+  <data name="Footer_Connecting" xml:space="preserve"><value>Connecting to your sensor…</value></data>
+  <data name="Footer_ConnectingLast" xml:space="preserve"><value>Connecting to your sensor… Last reading {ago} ago</value></data>
   <data name="Footer_Signal_Good" xml:space="preserve"><value>Signal good</value></data>
   <data name="Footer_Signal_Fair" xml:space="preserve"><value>Signal fair</value></data>
   <data name="Footer_Signal_Weak" xml:space="preserve"><value>Signal weak</value></data>

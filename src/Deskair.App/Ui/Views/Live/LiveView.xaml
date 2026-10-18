@@ -30,6 +30,18 @@
           </Style>
         </controls:Banner.Style>
       </controls:Banner>
+      <controls:Banner Margin="{StaticResource Space.Banner.Below}" Message="{Binding Footer.StatusText}">
+        <controls:Banner.Style>
+          <Style TargetType="{x:Type controls:Banner}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Connection.ShowConnectingBanner}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </controls:Banner.Style>
+      </controls:Banner>
       <controls:Banner Margin="{StaticResource Space.Banner.Below}"
                        Message="{Binding Footer.LowBatteryText}"
                        DismissCommand="{Binding Connection.DismissLowBatteryCommand}">
@@ -70,7 +82,7 @@
           <live:HeroCard.Style>
             <Style TargetType="{x:Type live:HeroCard}">
               <Style.Triggers>
-                <DataTrigger Binding="{Binding DataContext.Connection.ShowStaleBanner, RelativeSource={RelativeSource AncestorType={x:Type live:LiveView}}}" Value="True">
+                <DataTrigger Binding="{Binding DataContext.Connection.IsDimmed, RelativeSource={RelativeSource AncestorType={x:Type live:LiveView}}}" Value="True">
                   <Setter Property="Opacity" Value="0.55" />
                 </DataTrigger>
               </Style.Triggers>
