@@ -7,6 +7,7 @@ using Deskair.Services.Import;
 using Deskair.Services.Live;
 using Deskair.Services.Queries;
 using Deskair.Services.Settings;
+using Deskair.Services.Storage;
 using Deskair.Services.Sync;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +22,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(TimeZoneInfo.Local);
         services.AddSingleton(provider => new LocalCalendar(provider.GetRequiredService<TimeZoneInfo>()));
 
+        services.AddSingleton<HistoryReadMonitor>();
         services.AddSingleton<DeviceRegistry>();
         services.AddSingleton<DeviceEnrollment>();
         services.AddSingleton<SettingsService>();

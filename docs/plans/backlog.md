@@ -23,7 +23,7 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 
 | ID | Decision | Who | Status |
 |---|---|---|---|
-| Q27 | What the user sees when local history cannot be read (locked or corrupt file, missing folder). Likely needed before release | owner | todo |
+| Q27 | Done 2026-10-18 (banner, option A). Owner check left: start the app once with the month file locked and see the banner (see questions.md Q27) | owner | todo |
 | Q7 | Phone export date order and the repeated autumn hour | owner | todo |
 | Q17 | Placeholder strings: owner wording | owner | todo |
 | Q30, Q32, Q33 | Footer signal wording; signal strength not reported by a connected Aranet4; older firmware service id (not supported) | owner | todo |

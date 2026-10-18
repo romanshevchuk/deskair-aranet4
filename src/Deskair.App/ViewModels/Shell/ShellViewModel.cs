@@ -27,6 +27,10 @@ public sealed partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private FooterViewModel? footer;
 
+    /// <summary>The banner shown while the saved readings cannot be read.</summary>
+    [ObservableProperty]
+    private HistoryAccessViewModel? historyAccess;
+
     [ObservableProperty]
     private RoomChipViewModel? room;
 

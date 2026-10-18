@@ -232,6 +232,8 @@
   <data name="Onboarding_PairFailed" xml:space="preserve"><value>Не вдалося додати датчик. Спробуйте ще раз.</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_TextInput" xml:space="preserve"><value>Текстове поле</value><comment>Draft: needs native review.</comment></data>
   <data name="Banner_LowBattery" xml:space="preserve"><value>Низький заряд датчика ({percent})</value><comment>Draft: needs native review.</comment></data>
+  <data name="Banner_HistoryUnreadable" xml:space="preserve"><value>Не вдається прочитати збережені виміри. Поточні дані працюють.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Banner_HistoryOpenFolder" xml:space="preserve"><value>Відкрити папку з даними</value><comment>Draft: needs native review.</comment></data>
   <data name="Startup_Failed" xml:space="preserve"><value>Не вдалося запустити Deskair: {message}</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_StatusDot" xml:space="preserve"><value>Індикатор стану</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Sample_CardText" xml:space="preserve"><value>Вміст картки</value><comment>Draft: needs native review.</comment></data>

@@ -126,6 +126,7 @@ public static class ServiceRegistration
         services.AddSingleton<LiveViewModel>();
         services.AddSingleton<ConnectionViewModel>();
         services.AddSingleton<FooterViewModel>();
+        services.AddSingleton<HistoryAccessViewModel>();
         services.AddSingleton<RoomChipViewModel>();
         services.AddSingleton<OnboardingViewModel>();
         services.AddSingleton<OfflineViewModel>();
@@ -158,6 +159,7 @@ public static class ServiceRegistration
             Live = provider.GetRequiredService<LiveViewModel>(),
             Connection = provider.GetRequiredService<ConnectionViewModel>(),
             Footer = provider.GetRequiredService<FooterViewModel>(),
+            HistoryAccess = provider.GetRequiredService<HistoryAccessViewModel>(),
             Room = provider.GetRequiredService<RoomChipViewModel>(),
             Onboarding = provider.GetRequiredService<OnboardingViewModel>(),
             Offline = provider.GetRequiredService<OfflineViewModel>(),

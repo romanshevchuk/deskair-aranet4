@@ -13,6 +13,9 @@ public sealed class FakeReadingStore : IReadingStore
 
     public List<(DeviceId Device, ReadingSource Source, TimeSpan Interval, int Added)> Merges { get; } = [];
 
+    /// <summary>When set, every read throws it (a locked or unreadable file).</summary>
+    public Exception? FailReads { get; set; }
+
     /// <summary>When set, merging throws it instead of storing (a full or locked disk).</summary>
     public Exception? FailMerges { get; set; }
 
@@ -22,6 +25,7 @@ public sealed class FakeReadingStore : IReadingStore
         DateTimeOffset end,
         CancellationToken cancellationToken)
     {
+        ThrowWhenReadsFail();
         Requested = (device, start, end);
 
         return Task.FromResult<IReadOnlyList<Reading>>(
@@ -29,10 +33,18 @@ public sealed class FakeReadingStore : IReadingStore
     }
 
     public Task<DateTimeOffset?> GetFirstReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
-        => Task.FromResult<DateTimeOffset?>(Readings.Count == 0 ? null : Readings.Min(reading => reading.Timestamp));
+    {
+        ThrowWhenReadsFail();
+
+        return Task.FromResult<DateTimeOffset?>(Readings.Count == 0 ? null : Readings.Min(reading => reading.Timestamp));
+    }
 
     public Task<DateTimeOffset?> GetLastReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
-        => Task.FromResult<DateTimeOffset?>(Readings.Count == 0 ? null : Readings.Max(reading => reading.Timestamp));
+    {
+        ThrowWhenReadsFail();
+
+        return Task.FromResult<DateTimeOffset?>(Readings.Count == 0 ? null : Readings.Max(reading => reading.Timestamp));
+    }
 
     public Task<int> MergeAsync(
         DeviceId device,
@@ -49,5 +61,13 @@ public sealed class FakeReadingStore : IReadingStore
         Merges.Add((device, source, interval, added.Count));
 
         return Task.FromResult(added.Count);
+    }
+
+    private void ThrowWhenReadsFail()
+    {
+        if (FailReads is not null)
+        {
+            throw FailReads;
+        }
     }
 }

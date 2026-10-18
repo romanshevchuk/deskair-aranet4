@@ -231,6 +231,8 @@
   <data name="Onboarding_PairFailed" xml:space="preserve"><value>Could not add the sensor. Try again.</value></data>
   <data name="Gallery_Section_TextInput" xml:space="preserve"><value>Text input</value></data>
   <data name="Banner_LowBattery" xml:space="preserve"><value>Sensor battery is low ({percent})</value></data>
+  <data name="Banner_HistoryUnreadable" xml:space="preserve"><value>Can't read your saved readings. Live data still works.</value></data>
+  <data name="Banner_HistoryOpenFolder" xml:space="preserve"><value>Open data folder</value></data>
   <data name="Startup_Failed" xml:space="preserve"><value>Deskair could not start: {message}</value></data>
   <data name="Gallery_Section_StatusDot" xml:space="preserve"><value>Status dot</value></data>
   <data name="Gallery_Sample_CardText" xml:space="preserve"><value>Card content</value></data>

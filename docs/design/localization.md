@@ -1,6 +1,6 @@
 # Localization
 
-*Last reviewed: 2026-10-14*
+*Last reviewed: 2026-10-18*
 
 ## Languages
 
@@ -78,6 +78,8 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Footer_NotConnected | Not connected | Не підключено |
 | Footer_Signal_Good / Fair / Weak | Signal good / fair / weak | Сигнал хороший / середній / слабкий |
 | Banner_LowBattery | Sensor battery is low ({percent}) | Низький заряд датчика ({percent}) |
+| Banner_HistoryUnreadable | Can't read your saved readings. Live data still works. | Не вдається прочитати збережені виміри. Поточні дані працюють. |
+| Banner_HistoryOpenFolder | Open data folder | Відкрити папку з даними |
 | Action_Dismiss | Dismiss | Закрити |
 | Startup_Failed | Deskair could not start: {message} | Не вдалося запустити Deskair: {message} |
 | Range_Day / Week / Month / Year | Day / Week / Month / Year | День / Тиждень / Місяць / Рік |

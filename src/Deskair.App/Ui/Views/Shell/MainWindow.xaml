@@ -1,6 +1,7 @@
 <Window x:Class="Deskair.App.Ui.Views.Shell.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
         xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
         xmlns:shell="clr-namespace:Deskair.App.Ui.Views.Shell"
         xmlns:live="clr-namespace:Deskair.App.Ui.Views.Live"
@@ -74,10 +75,31 @@
     </Grid.RowDefinitions>
 
     <shell:HeaderBar Grid.Row="0" />
-    <ContentControl Grid.Row="1"
-                    Margin="{StaticResource Space.Page.Padding}"
-                    Content="{Binding}"
-                    Style="{StaticResource Shell.Content}" />
+    <Grid Grid.Row="1" Margin="{StaticResource Space.Page.Padding}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <!-- Q27: the saved readings cannot be read (locked or damaged file, folder gone). Live keeps working. -->
+      <controls:Banner Grid.Row="0"
+                       Margin="{StaticResource Space.Banner.Below}"
+                       ActionCommand="{Binding HistoryAccess.OpenFolderCommand}"
+                       ActionText="{Binding HistoryAccess.ActionText}"
+                       Message="{Binding HistoryAccess.Message}">
+        <controls:Banner.Style>
+          <Style TargetType="{x:Type controls:Banner}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding HistoryAccess.IsUnreadable}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </controls:Banner.Style>
+      </controls:Banner>
+      <ContentControl Grid.Row="1" Content="{Binding}" Style="{StaticResource Shell.Content}" />
+    </Grid>
     <shell:FooterBar Grid.Row="2" />
   </Grid>
 </Window>

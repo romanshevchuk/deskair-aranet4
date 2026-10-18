@@ -1,6 +1,6 @@
 # Behaviour rules
 
-*Last reviewed: 2026-10-17*
+*Last reviewed: 2026-10-18*
 
 ## CO₂ zones
 
@@ -33,6 +33,7 @@ CSV exports are unchanged. Display values use proportional figures (design-token
 2. Existing readings are never deleted or changed. The first reading stored for a slot stays; a later reading for the same slot, from the sensor or from an import, is ignored (D-0013).
 3. Missing readings stay missing. Never interpolate in History.
 4. After a sync, Live shows the last 24 h.
+5. When the saved readings cannot be read (locked file, no access, folder gone), a banner says so with an "Open data folder" button; Live keeps working and nothing is invented (Q27). A line that does not parse is skipped without a banner.
 
 ## History periods (D-0019)
 
