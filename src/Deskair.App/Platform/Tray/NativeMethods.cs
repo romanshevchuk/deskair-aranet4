@@ -37,6 +37,18 @@ internal static class NativeMethods
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool SetWindowPos(nint window, nint insertAfter, int x, int y, int width, int height, uint flags);
 
+    [DllImport("shell32.dll")]
+    internal static extern int Shell_NotifyIconGetRect(ref NativeIconIdentifier identifier, out NativeRect rect);
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct NativeIconIdentifier
+    {
+        internal int size;
+        internal nint window;
+        internal uint id;
+        internal Guid guid;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct NativePoint
     {

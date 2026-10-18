@@ -46,7 +46,7 @@ public sealed class TrayIconHost : IDisposable
                 NoLeftClickDelay = true,
                 ContextMenu = BuildMenu()
             };
-            icon.TrayLeftMouseUp += (_, _) => _ = flyout.ToggleAsync();
+            icon.TrayLeftMouseUp += (_, _) => _ = flyout.ToggleAsync(icon.TrayIcon.Id);
             icon.SetBinding(TaskbarIcon.ToolTipTextProperty, new Binding(nameof(TrayViewModel.Tooltip)) { Source = viewModel });
             icon.ForceCreate(enablesEfficiencyMode: false);
 

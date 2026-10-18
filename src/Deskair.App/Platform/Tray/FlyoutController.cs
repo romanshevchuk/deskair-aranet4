@@ -13,7 +13,7 @@ namespace Deskair.App.Platform.Tray;
 
 /// <summary>
 /// Opens and closes the tray flyout. A click on the tray icon opens it next to the icon with fresh numbers, or closes it when it is open.
-/// The position comes from where the click happened: that point is on the taskbar, so <see cref="FlyoutPositioner"/> finds the edge from it.
+/// The position comes from the tray icon, or from where the click happened (that point is on the taskbar), so <see cref="FlyoutPositioner"/> finds the edge from it.
 /// Used from the UI thread.
 /// </summary>
 public sealed class FlyoutController
@@ -49,8 +49,8 @@ public sealed class FlyoutController
         guard = new ToggleGuard(timeProvider, toggleWindow);
     }
 
-    /// <summary>Opens the flyout, or closes it when it is open. A failure is logged and the flyout stays closed.</summary>
-    public async Task ToggleAsync()
+    /// <summary>Opens the flyout next to the tray icon with this id (or at the cursor when that is not known), or closes it when it is open. A failure is logged and the flyout stays closed.</summary>
+    public async Task ToggleAsync(Guid? trayIconId = null)
     {
         try
         {
@@ -65,7 +65,7 @@ public sealed class FlyoutController
                 return;
             }
 
-            anchor = ScreenPoint.AtCursor();
+            anchor = FindAnchor(trayIconId);
 
             await RefreshAsync();
 
@@ -82,6 +82,12 @@ public sealed class FlyoutController
                 logger.LogError(exception, "Opening the flyout failed.");
             }
         }
+    }
+
+    // The icon's own position first; the cursor only when Windows cannot say where the icon is.
+    private static ScreenPoint? FindAnchor(Guid? trayIconId)
+    {
+        return (trayIconId is { } id ? ScreenPoint.AtTrayIcon(id) : null) ?? ScreenPoint.AtCursor();
     }
 
     private FlyoutWindow CreateWindow()
