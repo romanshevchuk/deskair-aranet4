@@ -15,7 +15,7 @@ Part of REL-01 phase 4 ([`store-packaging.md`](store-packaging.md)). Wording fol
 | Support contact | https://github.com/romanshevchuk/deskair-aranet4/issues |
 | Privacy policy URL | https://github.com/romanshevchuk/deskair-aranet4/blob/main/PRIVACY.md (after the file is pushed) |
 | Website | https://github.com/romanshevchuk/deskair-aranet4 |
-| Hardware requirements | Aranet4 sensor and a PC with Bluetooth LE. |
+| Hardware requirements | Aranet4 sensor with "Smart Home integration" turned on in the Aranet Home app, and a PC with Bluetooth LE. |
 | Age rating | All answers "no" |
 
 ## English
@@ -48,7 +48,7 @@ Deskair is an independent open-source project. It is not made by, affiliated wit
 
 **Languages:** English and Ukrainian.
 
-**What you need:** an Aranet4 sensor and a Windows PC with Bluetooth LE. Pair the sensor with Windows once, then start Deskair.
+**What you need:** an Aranet4 sensor and a Windows PC with Bluetooth LE. In the Aranet Home phone app, turn on "Smart Home integration" for the sensor, then start Deskair.
 
 **What's new (first release)**
 
@@ -96,6 +96,6 @@ Deskair — незалежний проєкт з відкритим кодом. 
 
 **Мови:** англійська та українська.
 
-**Що потрібно:** датчик Aranet4 і комп’ютер з Windows та Bluetooth LE. Один раз з’єднайте датчик з Windows, потім запустіть Deskair.
+**Що потрібно:** датчик Aranet4 і комп’ютер з Windows та Bluetooth LE. У застосунку Aranet Home на телефоні увімкніть для датчика «Smart Home integration», потім запустіть Deskair.
 
 **Що нового:** Перший випуск.

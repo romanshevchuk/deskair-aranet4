@@ -159,7 +159,7 @@ Do not: use the Aranet logo or colours; call it an "app for Aranet" in the title
 
 **The maker.** Aranet appears to be a brand of SAF Tehnika (Latvia) (**unverified** from search results; check the company on their site). I found no published brand rules for third parties. A short courtesy email ("I am publishing a free, open-source, unofficial Windows reader for the Aranet4; here is the wording I plan to use; tell me if anything bothers you") costs nothing and gives a paper trail; it is not required by the Store. Your call.
 
-Also keep in mind: the community library for the Aranet4 notes that "Smart Home integrations" must be enabled in the Aranet Home phone app for full support. If that is true for our sync too, the first-run screen and the listing description should say so (**check** against the docs and your sensor).
+Checked 2026-10-19 on the owner's sensor: with "Smart Home integration" off, reading the current values fails (`ProtocolError`), so it is required. The first-run steps, the offline steps and the listing say so (D-0026).
 
 ## 7. Order of work and who does what
 

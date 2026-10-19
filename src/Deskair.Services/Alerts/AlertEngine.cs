@@ -148,8 +148,8 @@ public sealed class AlertEngine : IDisposable
 
     private bool IsDue(Episode episode, DateTimeOffset now) => episode.Notified switch
     {
-        null => now - episode.StartedAt >= policy.Dwell,
-        Zone.Elevated => episode.Zone == Zone.High && now - episode.ZoneSince >= policy.Dwell,
+        null => now - episode.StartedAt >= (episode.Zone == Zone.High ? policy.HighDwell : policy.Dwell),
+        Zone.Elevated => episode.Zone == Zone.High && now - episode.ZoneSince >= policy.HighDwell,
         _ => episode.Zone == Zone.High && !episode.Acknowledged && now - episode.LastNotified >= policy.RepeatWhileHigh
     };
 

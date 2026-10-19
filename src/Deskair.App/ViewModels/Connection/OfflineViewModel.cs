@@ -200,7 +200,7 @@ public sealed partial class OfflineViewModel : RetryingViewModel
 
     private void UpdateSteps()
     {
-        var list = new List<string> { localizer.Get("Offline_Step_Range"), localizer.Get("Offline_Step_Wake") };
+        var list = new List<string> { localizer.Get("Offline_Step_Range"), localizer.Get("Offline_Step_Wake"), localizer.Get("Offline_Step_SmartHome") };
 
         if (batteryPercent is { } percent)
         {

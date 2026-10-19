@@ -31,7 +31,8 @@ public sealed class Aranet4Provider : ISensorProvider
     public IReadOnlyList<string> OnboardingStepKeys { get; } =
     [
         "Sensor_Aranet4_Step1",
-        "Sensor_Aranet4_Step2"
+        "Sensor_Aranet4_Step2",
+        "Sensor_Aranet4_Step3"
     ];
 
     public IReadOnlyList<IReadingImporter> Importers { get; }

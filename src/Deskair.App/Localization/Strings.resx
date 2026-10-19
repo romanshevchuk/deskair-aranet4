@@ -166,6 +166,7 @@
   <data name="Sensor_Aranet4_Name" xml:space="preserve"><value>Aranet4</value></data>
   <data name="Sensor_Aranet4_Step1" xml:space="preserve"><value>Place your Aranet4 close to your PC.</value></data>
   <data name="Sensor_Aranet4_Step2" xml:space="preserve"><value>Make sure Bluetooth is on.</value></data>
+  <data name="Sensor_Aranet4_Step3" xml:space="preserve"><value>In the Aranet Home app, turn on Smart Home integration for your sensor.</value></data>
   <data name="Import_PhoneExport_Name" xml:space="preserve"><value>Phone app export</value></data>
   <data name="Gallery_Title" xml:space="preserve"><value>Control gallery</value></data>
   <data name="Gallery_Section_Card" xml:space="preserve"><value>Card</value></data>
@@ -273,6 +274,7 @@
   <data name="Offline_HistoryHint" xml:space="preserve"><value>History is still available.</value></data>
   <data name="Offline_Step_Range" xml:space="preserve"><value>Stay within about 10 m of the sensor</value></data>
   <data name="Offline_Step_Wake" xml:space="preserve"><value>Press the button on the Aranet4 to wake it</value></data>
+  <data name="Offline_Step_SmartHome" xml:space="preserve"><value>In the Aranet Home app, check that Smart Home integration is on</value></data>
   <data name="Offline_Step_Battery" xml:space="preserve"><value>Check the sensor battery ({percent} when last seen)</value></data>
   <data name="Tray_AppName" xml:space="preserve"><value>Deskair</value></data>
   <data name="Tray_AlertsPausedByWindows" xml:space="preserve"><value>Alerts paused by Windows</value></data>

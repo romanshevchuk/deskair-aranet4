@@ -73,7 +73,7 @@ public sealed class AlertEngineTests : IDisposable
     }
 
     [Fact]
-    public async Task Episode_notifies_again_on_escalation_to_High_after_the_dwell()
+    public async Task Episode_notifies_again_on_escalation_to_High_after_two_minutes()
     {
         await Send(1100);
         await SendAfter(1100, 5);
@@ -81,7 +81,7 @@ public sealed class AlertEngineTests : IDisposable
 
         Assert.Single(notifier.Sent);
 
-        await SendAfter(1500, 4);
+        await SendAfter(1500, 1);
         Assert.Single(notifier.Sent);
 
         await SendAfter(1500, 1);
@@ -90,10 +90,24 @@ public sealed class AlertEngineTests : IDisposable
     }
 
     [Fact]
+    public async Task A_jump_straight_to_High_notifies_after_two_minutes_not_five()
+    {
+        await Send(1600);
+        await SendAfter(1600, 1);
+
+        Assert.Empty(notifier.Sent);
+
+        await SendAfter(1600, 1);
+
+        var sent = Assert.Single(notifier.Sent);
+        Assert.Equal(Zone.High, sent.Zone);
+    }
+
+    [Fact]
     public async Task Episode_repeats_only_after_60_minutes_while_still_High()
     {
         await Send(1600);
-        await SendAfter(1600, 5);
+        await SendAfter(1600, 2);
 
         Assert.Single(notifier.Sent);
 

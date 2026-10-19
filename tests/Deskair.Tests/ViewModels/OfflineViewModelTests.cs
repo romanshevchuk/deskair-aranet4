@@ -138,11 +138,11 @@ public class OfflineViewModelTests
     public async Task The_steps_mention_the_battery_once_it_is_known()
     {
         var viewModel = await CreateAsync();
-        Assert.Equal(["Offline_Step_Range", "Offline_Step_Wake"], viewModel.Steps);
+        Assert.Equal(["Offline_Step_Range", "Offline_Step_Wake", "Offline_Step_SmartHome"], viewModel.Steps);
 
         messenger.Send(new SensorStatusUpdated(device, new SensorStatus(TimeSpan.FromMinutes(2), 65, null)));
 
-        Assert.Equal(["Offline_Step_Range", "Offline_Step_Wake", "Offline_Step_Battery(percent=65%)"], viewModel.Steps);
+        Assert.Equal(["Offline_Step_Range", "Offline_Step_Wake", "Offline_Step_SmartHome", "Offline_Step_Battery(percent=65%)"], viewModel.Steps);
     }
 
     [Fact]

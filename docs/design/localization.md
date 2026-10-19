@@ -70,6 +70,8 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `Stat_InZone_*` keys because a natural "so far" form with the zone name is too long; the zone is already shown by the hero colour and pill.
 | Duration_Minutes | {min} min | {min} хв |
 | Duration_LessThanMinute | < 1 min | < 1 хв |
+| Sensor_Aranet4_Step3 | In the Aranet Home app, turn on Smart Home integration for your sensor. | У застосунку Aranet Home увімкніть для датчика інтеграцію зі «Smart Home». |
+| Offline_Step_SmartHome | In the Aranet Home app, check that Smart Home integration is on | У застосунку Aranet Home перевірте, що інтеграцію зі «Smart Home» увімкнено |
 | Duration_HoursMinutes | {h} h {min} min | {h} год {min} хв |
 | Chart_Now | Now | Зараз |
 | Chart_Ideal | ideal {min}–{max} | бажано {min}–{max} |

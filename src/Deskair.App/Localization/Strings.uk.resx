@@ -167,6 +167,7 @@
   <data name="Sensor_Aranet4_Name" xml:space="preserve"><value>Aranet4</value><comment>Draft: needs native review.</comment></data>
   <data name="Sensor_Aranet4_Step1" xml:space="preserve"><value>Покладіть Aranet4 поруч із комп&apos;ютером.</value><comment>Draft: needs native review.</comment></data>
   <data name="Sensor_Aranet4_Step2" xml:space="preserve"><value>Переконайтеся, що Bluetooth увімкнено.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Sensor_Aranet4_Step3" xml:space="preserve"><value>У застосунку Aranet Home увімкніть для датчика інтеграцію зі «Smart Home».</value><comment>Draft: needs native review.</comment></data>
   <data name="Import_PhoneExport_Name" xml:space="preserve"><value>Експорт із мобільного застосунку</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Title" xml:space="preserve"><value>Галерея елементів</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Section_Card" xml:space="preserve"><value>Картка</value><comment>Draft: needs native review.</comment></data>
@@ -274,6 +275,7 @@
   <data name="Offline_HistoryHint" xml:space="preserve"><value>Історія, як і раніше, доступна.</value><comment>Draft: needs native review.</comment></data>
   <data name="Offline_Step_Range" xml:space="preserve"><value>Тримайтеся приблизно в межах 10 м від датчика</value><comment>Draft: needs native review.</comment></data>
   <data name="Offline_Step_Wake" xml:space="preserve"><value>Натисніть кнопку на Aranet4, щоб розбудити його</value><comment>Draft: needs native review.</comment></data>
+  <data name="Offline_Step_SmartHome" xml:space="preserve"><value>У застосунку Aranet Home перевірте, що інтеграцію зі «Smart Home» увімкнено</value><comment>Draft: needs native review.</comment></data>
   <data name="Offline_Step_Battery" xml:space="preserve"><value>Перевірте батарею датчика ({percent} востаннє)</value><comment>Draft: needs native review.</comment></data>
   <data name="Tray_AppName" xml:space="preserve"><value>Deskair</value><comment>Draft: needs native review.</comment></data>
   <data name="Tray_AlertsPausedByWindows" xml:space="preserve"><value>Сповіщення призупинено Windows</value><comment>Draft: needs native review.</comment></data>

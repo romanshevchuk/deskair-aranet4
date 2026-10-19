@@ -254,3 +254,13 @@ The logs showed Elevated toasts 9 to 21 minutes apart, mostly at 1003 to 1038 pp
 **Decision:** (1) An episode ends only after the air has stayed Good for 10 minutes. (2) Pressing a toast or its Open button acknowledges the current episodes that have sent a toast: they send no more toasts, except the escalation to High (still after its 5 minute dwell). A newly sent toast is unacknowledged. Snooze is unchanged.
 
 **Consequences:** `AlertPolicy.RecoveryDwell`, `AlertEngine.AcknowledgeAll`, and `ToastActionHandler` calls it; behaviour-rules.md "Alerts" updated. Not done: skipping toasts while the window is open and in front.
+
+## D-0026 High alerts wait 2 minutes, not 5; the sensor needs Smart Home integration
+
+**Status:** accepted · Oct 2026; amends the Alerts rules (D-0025)
+
+At Elevated (1000 ppm) a 5 minute wait stops a toast for every breath on the sensor. At High (1400 ppm) the air is worse and 5 minutes plus the reading interval (up to 7 minutes) is slow.
+
+**Decision:** (1) the dwell before a toast is 2 minutes at High, 5 at Elevated; the escalation from Elevated to High also waits 2 minutes. The sensor reports every 2 minutes, so the High toast comes with the second High reading. (2) A real test on 2026-10-19 showed that with "Smart Home integration" switched off in the Aranet Home app, the sensor refuses the current-readings read (`ProtocolError`), so Deskair needs it on. The first-run steps (`Sensor_Aranet4_Step3`) and the offline steps (`Offline_Step_SmartHome`) now say so, and the Store listing names it.
+
+**Consequences:** `AlertPolicy.HighDwell`; two strings per language; behaviour-rules.md "Alerts"; store-listing.md. Not done: an error that names the cause automatically when the read fails with `ProtocolError`.
