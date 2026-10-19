@@ -1,6 +1,6 @@
 # Decisions
 
-*Last reviewed: 2026-10-17*
+*Last reviewed: 2026-10-19*
 
 A short, append-only log. Each entry: context, decision, consequences. Do not delete entries; mark them superseded. Review the statuses once a quarter so nothing stays "proposed" after it shipped. If this file grows past about 15 entries or an entry needs long reasoning, move that entry to its own file in `docs/decisions.md`.
 
@@ -212,3 +212,25 @@ At 51 % the mini card said "Too humid", which read as an alarm over one point.
 **Decision:** the ideal range stays 30 to 50 %. 25 to 29 % shows "A bit dry", 51 to 55 % "A bit humid"; below 25 % "Too dry", above 55 % "Too humid"; each with the ideal range. Temperature labels are unchanged.
 
 **Consequences:** two new strings per language (`Mini_Humidity_*`); behaviour-rules.md "Live values" updated.
+
+## D-0022 One colour, one meaning: neutral trend, brand logo, neutral CO₂ dot, quiet ideal band
+
+**Status:** accepted · Oct 2026 (POL-50); a review of the Live and History screenshots found places where the app contradicts itself
+
+A red "Rising" sat on a Good card with the advice "Air is fresh, nothing to do" while CO₂ climbed 184 ppm in 30 minutes. Green, amber and red mean zones, yet the header logo ring and the CO₂ tab dot also took those colours, so amber meant both "Elevated" and "the CO₂ series". "0 min Good so far" read as a fault in the first minute. The ideal band on Temperature and Humidity was the heaviest thing on the chart.
+
+**Decision:** (1) the trend text is neutral in every zone; zone colour stays on the pill, gauge, chart and ribbon. (2) In Good, a rising trend at 800 ppm or more shows the advice "Good now, but rising"; there is still no recovery-time or time-to-High estimate (D-0015 stands). (3) Time in zone under one minute reads "< 1 min". (4) The header logo ring is the brand ink; only the tray icon takes the zone colour. (5) The CO₂ metric dot is a neutral slate, so amber means only Elevated. (6) The ideal band is the Good colour at 9 % on the card surface, with 1 px dashed limits at 35 % and a small label top-left.
+
+**Consequences:** `Trend.*` and `Metric.*.Fill/Ideal` tokens are removed; `LogoRing` loses its zone; two advice strings and `Duration_LessThanMinute` in both languages; design-tokens.md, components.md, screens-and-states.md, behaviour-rules.md and localization.md updated. Second batch (heatmaps): [`review-feedback-polish.md`](plans/review-feedback-polish.md).
+
+## D-0023 History grid: keep the six CO₂ steps; tag only complete rows; "worst" only for comfort metrics
+
+**Status:** accepted · Oct 2026 (POL-51 to POL-53); keeps D-0018, amends POL-18
+
+An outside review called the six-step CO₂ legend a second scale next to the three zones. Looking at it again, hue already gives the zone (green, amber, red) and lightness gives how far into it, and the legend names Good, Elevated and High over its swatches. The six steps stay, and no "three or six zones" setting is added. Live keeps three zones because it answers "do I need to act?", and there are three actions.
+
+The review also found real flaws. Today could win "best" with 17 hours of data, before the evening peak, so an unfinished day was always favoured. The row-end bars had no caption. On Temperature and Humidity most days are comfortable, so a "best" tag ranked near-identical days.
+
+**Decision:** (1) best and worst tags go only to complete rows: not today, not the month in progress. (2) A caption over the row-end bars names them: "Time in zones" (CO₂), "Time in range" (Temperature, Humidity). (3) Temperature and Humidity have no "best" tag; "worst" appears only on the row with the least time inside the range, and only if that row has time outside it.
+
+**Consequences:** `HourGridDay.IsComplete`, `HourGridMonth.IsComplete`, `HourGridCalculator.ComfortWorst` replaces `ComfortExtremes`; `HourGridModel.BarCaption` and two strings per language; behaviour-rules.md rules 5 and 10 and screens-and-states.md updated. The floating tooltip and the calendar Month view stay in [`review-feedback-polish.md`](plans/review-feedback-polish.md) batch 3.

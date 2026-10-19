@@ -231,19 +231,19 @@ public class ChartLayerTests
     }
 
     [Fact]
-    public void Ideal_band_fills_the_plot_and_tints_the_ideal_range()
+    public void Ideal_band_tints_only_the_ideal_range_and_draws_its_limits()
     {
         UiHost.Run(() =>
         {
             var area = LayerRenderer.Area(yMin: 15, yMax: 30);
-            var layer = new IdealBandLayer { IdealMin = 20, IdealMax = 24, FillBrushKey = "Metric.Temperature.Fill.Brush", IdealBrushKey = "Metric.Temperature.Ideal.Brush" };
+            var layer = new IdealBandLayer { IdealMin = 20, IdealMax = 24 };
             var bitmap = LayerRenderer.Render(layer, area);
 
             var outside = LayerRenderer.Pixel(bitmap, 100, PixelY(area, 28));
             var inside = LayerRenderer.Pixel(bitmap, 100, PixelY(area, 22));
 
-            Assert.True(outside.A > 0);
-            Assert.True(inside.A > outside.A, "the ideal range is stronger than the plot fill");
+            Assert.Equal(0, outside.A);
+            Assert.True(inside.A > 0, "the ideal range is tinted");
             Assert.Equal(0, LayerRenderer.Pixel(bitmap, 5, PixelY(area, 22)).A);
         });
     }

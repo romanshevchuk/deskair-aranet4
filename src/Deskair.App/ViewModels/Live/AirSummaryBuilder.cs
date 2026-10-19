@@ -8,6 +8,8 @@ namespace Deskair.App.ViewModels.Live;
 /// <summary>Turns the latest reading and recent readings into the zone, trend and advice texts. Calculations stay in Domain; this only picks keys.</summary>
 public sealed class AirSummaryBuilder
 {
+    private const double RisingWarningFromPpm = 800;
+
     private readonly ILocalizer localizer;
 
     public AirSummaryBuilder(ILocalizer localizer)
@@ -22,7 +24,7 @@ public sealed class AirSummaryBuilder
         var detail = trend.Direction == TrendDirection.Steady
             ? null
             : localizer.Format("Trend_Detail", ("ppm", Math.Round(Math.Abs(trend.Change))), ("min", (int)trend.Window.TotalMinutes));
-        var adviceText = zone == Zone.Good ? "Advice_Good_Text" : $"Advice_{zone}_Text_{trend.Direction}";
+        var (adviceTitle, adviceText) = AdviceKeys(zone, latest.Co2Ppm, trend.Direction);
 
         return new AirSummary(
             zone,
@@ -30,7 +32,22 @@ public sealed class AirSummaryBuilder
             trend.Direction,
             localizer.Get($"Trend_{trend.Direction}"),
             detail,
-            localizer.Get($"Advice_{zone}_Title"),
+            localizer.Get(adviceTitle),
             localizer.Get(adviceText));
+    }
+
+    private static (string Title, string Text) AdviceKeys(Zone zone, double ppm, TrendDirection direction)
+    {
+        if (zone != Zone.Good)
+        {
+            return ($"Advice_{zone}_Title", $"Advice_{zone}_Text_{direction}");
+        }
+
+        // A rise from a low level is not worth a warning; only warn when the Good zone is close to ending.
+        var closeToElevated = ppm >= RisingWarningFromPpm;
+
+        return direction == TrendDirection.Rising && closeToElevated
+            ? ("Advice_Good_Title_Rising", "Advice_Good_Text_Rising")
+            : ("Advice_Good_Title", "Advice_Good_Text");
     }
 }

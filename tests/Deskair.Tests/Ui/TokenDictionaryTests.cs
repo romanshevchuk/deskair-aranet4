@@ -90,15 +90,13 @@ public class TokenDictionaryTests
     }
 
     [Fact]
-    public void Every_metric_has_a_colour_a_fill_and_an_ideal_range_token()
+    public void Every_metric_has_a_colour_token()
     {
         var keys = UiHost.Run(() => Keys(Load("Metrics", "Dark")));
 
         foreach (var metric in new[] { "Co2", "Temperature", "Humidity", "Pressure" })
         {
             Assert.Contains($"Metric.{metric}.Brush", keys);
-            Assert.Contains($"Metric.{metric}.Fill.Brush", keys);
-            Assert.Contains($"Metric.{metric}.Ideal.Brush", keys);
         }
     }
 
@@ -113,8 +111,6 @@ public class TokenDictionaryTests
     [InlineData("Light", "Colors", "Accent", "#182026")]
     [InlineData("Dark", "Colors", "Accent", "#EEF2F5")]
     [InlineData("Dark", "Colors", "Accent.On", "#12161A")]
-    [InlineData("Light", "Zones", "Trend.Falling", "#1B7A53")]
-    [InlineData("Dark", "Zones", "Trend.Rising", "#FF8A7E")]
     [InlineData("Light", "Metrics", "Metric.Humidity", "#2563C9")]
     [InlineData("Dark", "Metrics", "Metric.Pressure", "#A58DF0")]
     public void Values_match_the_design_token_table(string theme, string file, string key, string hex)

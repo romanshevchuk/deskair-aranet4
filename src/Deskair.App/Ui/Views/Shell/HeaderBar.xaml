@@ -17,8 +17,7 @@
 
     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
       <controls:LogoRing Width="{StaticResource Size.Logo}"
-                         Height="{StaticResource Size.Logo}"
-                         Zone="{Binding HeaderZone}" />
+                         Height="{StaticResource Size.Logo}" />
       <TextBlock Margin="{StaticResource Space.Inline}"
                  VerticalAlignment="Center"
                  Style="{StaticResource Text.Title}"

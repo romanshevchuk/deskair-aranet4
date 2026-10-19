@@ -73,6 +73,9 @@ public class HeroViewModelTests
 
     [Theory]
     [InlineData(600, 600, "Advice_Good_Title", "Advice_Good_Text")]
+    [InlineData(450, 650, "Advice_Good_Title", "Advice_Good_Text")]
+    [InlineData(700, 900, "Advice_Good_Title_Rising", "Advice_Good_Text_Rising")]
+    [InlineData(950, 850, "Advice_Good_Title", "Advice_Good_Text")]
     [InlineData(1300, 1050, "Advice_Elevated_Title", "Advice_Elevated_Text_Falling")]
     [InlineData(1050, 1070, "Advice_Elevated_Title", "Advice_Elevated_Text_Steady")]
     [InlineData(1050, 1300, "Advice_Elevated_Title", "Advice_Elevated_Text_Rising")]

@@ -15,5 +15,8 @@ public sealed record HourGridDay(DateOnly Date, IReadOnlyList<double?> Hours, in
     /// <summary>How many of the hours have readings.</summary>
     public int HoursWithReadings => Hours.Count(hour => hour is not null);
 
+    /// <summary>False for today: its later hours have not happened yet, so its mean is not comparable with a whole day (no best or worst tag).</summary>
+    public bool IsComplete => HoursShown >= 24;
+
     public bool IsEmpty => HoursWithReadings == 0;
 }

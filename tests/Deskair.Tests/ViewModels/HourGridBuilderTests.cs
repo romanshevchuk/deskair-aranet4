@@ -55,6 +55,13 @@ public class HourGridBuilderTests
     }
 
     [Fact]
+    public void The_row_end_bars_are_captioned_by_what_they_show()
+    {
+        Assert.Equal("History_Grid_BarZones", Build(Day(8, 900)).BarCaption);
+        Assert.Equal("History_Grid_BarRange", BuildTemperature([], ComfortDay(8, 1)).BarCaption);
+    }
+
+    [Fact]
     public void The_best_and_worst_day_are_tagged()
     {
         var model = Build(Day(11, 900), Day(12, 1300), Day(13, 1000));
@@ -121,12 +128,12 @@ public class HourGridBuilderTests
     }
 
     [Fact]
-    public void A_comfort_row_carries_its_share_and_best_and_worst_follow_the_time_inside_the_range()
+    public void A_comfort_row_carries_its_share_and_only_the_worst_is_tagged()
     {
         var model = BuildTemperature([], ComfortDay(8, 1), ComfortDay(9, 0.5), ComfortDay(10, 0.8));
 
         Assert.All(model.Rows, row => Assert.NotNull(row.Comfort));
-        Assert.Equal(HourGridTag.Best, model.Rows[0].Tag);
+        Assert.Equal(HourGridTag.None, model.Rows[0].Tag);
         Assert.Equal(HourGridTag.Worst, model.Rows[1].Tag);
         Assert.Equal(HourGridTag.None, model.Rows[2].Tag);
     }

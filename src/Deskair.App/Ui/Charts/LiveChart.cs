@@ -217,9 +217,7 @@ public sealed class LiveChart : ChartBase
             {
                 IdealMin = IdealMin,
                 IdealMax = IdealMax,
-                Label = IdealLabel,
-                FillBrushKey = $"Metric.{name}.Fill.Brush",
-                IdealBrushKey = $"Metric.{name}.Ideal.Brush"
+                Label = IdealLabel
             });
             layers.Add(new GridLayer { YTicks = ticks });
             layers.Add(new LineLayer { Points = Points, BrushKey = $"Metric.{name}.Brush", ShowEndMarker = true, Smooth = true });

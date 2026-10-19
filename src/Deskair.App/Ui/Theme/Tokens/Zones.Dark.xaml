@@ -62,10 +62,6 @@
   <SolidColorBrush x:Key="Zone.High.Line.Brush" Color="{StaticResource Zone.High.Line.Color}" />
   <Color x:Key="Chart.Band.High.Color">#14C7453A</Color>
   <SolidColorBrush x:Key="Chart.Band.High.Brush" Color="{StaticResource Chart.Band.High.Color}" />
-  <Color x:Key="Trend.Falling.Color">#6FD3A3</Color>
-  <SolidColorBrush x:Key="Trend.Falling.Brush" Color="{StaticResource Trend.Falling.Color}" />
-  <Color x:Key="Trend.Rising.Color">#FF8A7E</Color>
-  <SolidColorBrush x:Key="Trend.Rising.Brush" Color="{StaticResource Trend.Rising.Color}" />
   <!-- Zone glow (D-0017), dark: lower alpha than light, because a bright wash on a dark surface reads as a halo (design-tokens.md "Zone colours"). -->
   <Color x:Key="Zone.Good.Glow.Color">#1C4CC08C</Color>
   <RadialGradientBrush x:Key="Zone.Good.Glow.Brush" Center="0,0" GradientOrigin="0,0" RadiusX="1.3" RadiusY="0.75">

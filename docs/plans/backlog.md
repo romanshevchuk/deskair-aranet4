@@ -1,6 +1,6 @@
 # Backlog
 
-*Last reviewed: 2026-10-18*
+*Last reviewed: 2026-10-19*
 
 **Start here.** Everything v1 needs is built. This file lists only what is left before release. Finished items are in [`backlog-done.md`](backlog-done.md) (archive, do not read unless you need history). Update this file in the same change as the work: move a row to the archive when it is done.
 
@@ -48,6 +48,7 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 | ID | Item | Status |
 |---|---|---|
 | POL-08 | Spike: acrylic flyout (optional) | later |
+| POL-55 to POL-60 | Calendar Month view, diverging temperature grid, typical band, badge icons, comfort-coloured lines, floating grid tooltip ([`review-feedback-polish.md`](review-feedback-polish.md) batch 3) | later |
 | POL-36 | Tests: merge the four near-identical render-test `BuildShell` helpers; look for other duplicates (tidiness only) | later |
 | AIR-01 | Airing feedback | later |
 | SLEEP-01 | Morning toast (the sleep verdict card is done) | later |

@@ -144,7 +144,8 @@ public static class GallerySamples
             WorstTagText = "worst",
             LegendGroups = [("Good", 0, 2), ("Elevated", 2, 2), ("High", 4, 2)],
             NoDataText = "No data",
-            UnitText = "Each square is one hour"
+            UnitText = "Each square is one hour",
+            BarCaption = "Time in zones"
         };
     }
 
@@ -174,7 +175,8 @@ public static class GallerySamples
             WorstTagText = "worst",
             LegendGroups = [("Good", 0, 2), ("Elevated", 2, 2), ("High", 4, 2)],
             NoDataText = "No data",
-            UnitText = "Each square is one day"
+            UnitText = "Each square is one day",
+            BarCaption = "Time in zones"
         };
     }
 }

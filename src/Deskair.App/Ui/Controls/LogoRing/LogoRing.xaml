@@ -7,29 +7,15 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:LogoRing}">
-          <!-- design-tokens.md "Icons": a 28 x 28 view box, ring radius 11, stroke 2.75, centre dot radius 4.5. -->
+          <!-- design-tokens.md "Icons": a 28 x 28 view box, ring radius 11, stroke 2.75, centre dot radius 4.5. Brand ink: the status colours are not used here. -->
           <Viewbox>
             <Canvas Width="28" Height="28">
-              <Ellipse x:Name="Ring" Canvas.Left="3" Canvas.Top="3" Width="22" Height="22"
-                       Stroke="{DynamicResource Text.Tertiary.Brush}" StrokeThickness="2.75" />
-              <Ellipse x:Name="Dot" Canvas.Left="9.5" Canvas.Top="9.5" Width="9" Height="9"
-                       Fill="{DynamicResource Text.Tertiary.Brush}" />
+              <Ellipse Canvas.Left="3" Canvas.Top="3" Width="22" Height="22"
+                       Stroke="{DynamicResource Accent.Brush}" StrokeThickness="2.75" />
+              <Ellipse Canvas.Left="9.5" Canvas.Top="9.5" Width="9" Height="9"
+                       Fill="{DynamicResource Accent.Brush}" />
             </Canvas>
           </Viewbox>
-          <ControlTemplate.Triggers>
-            <Trigger Property="Zone" Value="Good">
-              <Setter TargetName="Ring" Property="Stroke" Value="{DynamicResource Zone.Good.Dot.Brush}" />
-              <Setter TargetName="Dot" Property="Fill" Value="{DynamicResource Zone.Good.Dot.Brush}" />
-            </Trigger>
-            <Trigger Property="Zone" Value="Elevated">
-              <Setter TargetName="Ring" Property="Stroke" Value="{DynamicResource Zone.Elevated.Dot.Brush}" />
-              <Setter TargetName="Dot" Property="Fill" Value="{DynamicResource Zone.Elevated.Dot.Brush}" />
-            </Trigger>
-            <Trigger Property="Zone" Value="High">
-              <Setter TargetName="Ring" Property="Stroke" Value="{DynamicResource Zone.High.Dot.Brush}" />
-              <Setter TargetName="Dot" Property="Fill" Value="{DynamicResource Zone.High.Dot.Brush}" />
-            </Trigger>
-          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

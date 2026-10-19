@@ -1,6 +1,6 @@
 # Design tokens
 
-*Last reviewed: 2026-10-15*
+*Last reviewed: 2026-10-19*
 
 Design size is 1200 × 728 px at 100 % scale; the window cannot be made smaller than 1100 × 700 (below that the History hour grid legend and the Live tip card no longer fit; checked with renders), so a snap to half a 1080p screen (960 px) opens at the minimum and overflows its zone. Implement every value as a named resource in a light and a dark `ResourceDictionary`. The visual target is `design/polish/deskair-polish-concept.html` (POL-00); where it and this file differ, this file wins.
 
@@ -44,7 +44,7 @@ Green is never used for controls: it only means Good air.
 
 **Glow:** a radial gradient over the `surface`, centred on the top-left corner, from the glow colour to transparent. Hero: radius 130 % of the width by 75 % of the height, transparent at 60 %. Flyout: 120 % by 55 %, transparent at 70 %. Not connected uses #1A78828C (light) / #0F96A0AA (dark) in both places. The hero and zone cards have no zone fill, no zone border and no zone-tinted shadow (D-0017); the advice panel has a fill and no border.
 
-Gauge and ribbon segments: #3FA77E, #E6B04B, #C7453A. Chart lines: #1E8A5C, #C47F00, #C23B2B. Trend text: falling #1B7A53 (dark #6FD3A3), rising #B3342A (dark #FF8A7E). The gauge scale is 400 to 2000 ppm.
+Gauge and ribbon segments: #3FA77E, #E6B04B, #C7453A. Chart lines: #1E8A5C, #C47F00, #C23B2B. The trend text is neutral (secondary text, semibold) in every zone: direction is not severity (D-0022). The gauge scale is 400 to 2000 ppm.
 
 **Live chart:** no zone bands. A threshold (1000 or 1400) is a 1 px dashed line (4 on, 4 off) in the zone dot colour at 60 %, with a label in the zone's `pill.text` ("Elevated ↑", "High ↑"; the number is on the axis) right-aligned above it (below it on the top edge), drawn only when the threshold is inside the axis or on its edge. Area under the line: the same colour as the line at every height (green below 1000, amber from 1000, red from 1400), 22 % at the line fading to 0 % at the bottom, so the line and the fill never disagree (the fill used to take the current zone, which looked wrong when the last reading had just crossed a limit).
 
@@ -86,12 +86,12 @@ The comfortable range includes both of its limits (20.0 and 24.0 °C are comfort
 
 | Metric | Light / Dark | Unit | Ideal range |
 |---|---|---|---|
-| CO₂ | #D4961A (dot) | ppm | zones |
+| CO₂ | #5C6B77 / #9AA8B3 (dot; neutral, so amber stays "Elevated", D-0022) | ppm | zones |
 | Temperature | #E07A1F / #F2A15E | °C (°F option) | 20 to 24 °C |
 | Humidity | #2563C9 / #6E9BE0 | % | 30 to 50 % |
 | Pressure | #6D4FC2 / #A58DF0 | hPa | none |
 
-Non-CO₂ Live charts: plot area filled with the metric colour at 7 % opacity, ideal range at 17 %, label "ideal 30 to 50". Sparklines: line 1.75 px in the metric colour, area 18 % to 0 %, end dot 5.5 px.
+Non-CO₂ Live charts (D-0022): the plot stays on the card surface; the ideal range is the Good zone colour at 9 %, with 1 px dashed limits at 35 % and the label "ideal 30 to 50" top-left inside the band in secondary text. Sparklines: line 1.75 px in the metric colour, area 18 % to 0 %, end dot 5.5 px.
 
 ## Typography
 

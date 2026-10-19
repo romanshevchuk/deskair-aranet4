@@ -62,10 +62,6 @@
   <SolidColorBrush x:Key="Zone.High.Line.Brush" Color="{StaticResource Zone.High.Line.Color}" />
   <Color x:Key="Chart.Band.High.Color">#14C7453A</Color>
   <SolidColorBrush x:Key="Chart.Band.High.Brush" Color="{StaticResource Chart.Band.High.Color}" />
-  <Color x:Key="Trend.Falling.Color">#1B7A53</Color>
-  <SolidColorBrush x:Key="Trend.Falling.Brush" Color="{StaticResource Trend.Falling.Color}" />
-  <Color x:Key="Trend.Rising.Color">#B3342A</Color>
-  <SolidColorBrush x:Key="Trend.Rising.Brush" Color="{StaticResource Trend.Rising.Color}" />
   <!-- Zone glow (D-0017): the hero and the flyout are neutral surfaces with a soft radial wash of the zone from their top-left corner (design-tokens.md "Zone colours").
        The clear stop keeps the zone hue at alpha 0, so the fade never passes through grey. -->
   <Color x:Key="Zone.Good.Glow.Color">#2B3FA77E</Color>

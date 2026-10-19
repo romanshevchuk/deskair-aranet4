@@ -109,6 +109,8 @@ public sealed class HourGridLayer : IChartLayer
             }
         }
 
+        DrawBarCaption(context, area, layout);
+
         foreach (var (column, label) in model.ColumnLabels)
         {
             var formatted = area.Text(label, area.Brush("Text.Tertiary.Brush"));
@@ -118,6 +120,21 @@ public sealed class HourGridLayer : IChartLayer
 
             context.DrawText(formatted, new Point(left, layout.Top - 6 - formatted.Height));
         }
+    }
+
+    private static void DrawBarCaption(DrawingContext context, ChartArea area, HourGridLayout layout)
+    {
+        if (string.IsNullOrEmpty(layout.Model.BarCaption))
+        {
+            return;
+        }
+
+        var formatted = area.Text(layout.Model.BarCaption, area.Brush("Text.Tertiary.Brush"));
+        formatted.MaxTextWidth = HourGridLayout.EndWidth - BarLeft;
+        formatted.MaxLineCount = 1;
+        formatted.Trimming = TextTrimming.CharacterEllipsis;
+
+        context.DrawText(formatted, new Point(layout.GridRight + BarLeft, layout.Top - 6 - formatted.Height));
     }
 
     private static void DrawLabel(DrawingContext context, ChartArea text, HourGridLayout layout, int index, HourGridRow row)

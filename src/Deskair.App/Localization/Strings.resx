@@ -21,6 +21,8 @@
   <data name="Trend_Detail" xml:space="preserve"><value>{ppm} ppm over {min} min</value></data>
   <data name="Advice_Good_Title" xml:space="preserve"><value>Air is fresh, nothing to do</value></data>
   <data name="Advice_Good_Text" xml:space="preserve"><value>Below 1,000 ppm, so focus and sleep quality are not affected.</value></data>
+  <data name="Advice_Good_Title_Rising" xml:space="preserve"><value>Good now, but rising</value></data>
+  <data name="Advice_Good_Text_Rising" xml:space="preserve"><value>Still below 1,000 ppm. Open a window soon to keep it that way.</value></data>
   <data name="Advice_Elevated_Title" xml:space="preserve"><value>Open a window for about 10 minutes</value></data>
   <data name="Advice_High_Title" xml:space="preserve"><value>Ventilate now: open windows fully</value></data>
   <data name="Advice_Elevated_Text_Falling" xml:space="preserve"><value>Above the ideal level, but dropping.</value></data>
@@ -196,6 +198,7 @@
   <data name="Stat_InZone_Elevated" xml:space="preserve"><value>Elevated so far</value></data>
   <data name="Stat_InZone_High" xml:space="preserve"><value>High so far</value></data>
   <data name="Duration_Minutes" xml:space="preserve"><value>{min} min</value></data>
+  <data name="Duration_LessThanMinute" xml:space="preserve"><value>&lt; 1 min</value></data>
   <data name="Duration_HoursMinutes" xml:space="preserve"><value>{h} h {min} min</value></data>
   <data name="Chart_Ideal" xml:space="preserve"><value>ideal {min}–{max}</value></data>
   <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Elevated ↑</value></data>
@@ -362,4 +365,6 @@
   <data name="History_Grid_NoReadings" xml:space="preserve"><value>No readings · {from} – {to}</value></data>
   <data name="History_Grid_UnitHour" xml:space="preserve"><value>Each square is one hour</value></data>
   <data name="History_Grid_UnitDay" xml:space="preserve"><value>Each square is one day</value></data>
+  <data name="History_Grid_BarZones" xml:space="preserve"><value>Time in zones</value></data>
+  <data name="History_Grid_BarRange" xml:space="preserve"><value>Time in range</value></data>
 </root>

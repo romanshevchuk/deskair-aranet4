@@ -22,6 +22,8 @@
   <data name="Trend_Detail" xml:space="preserve"><value>{ppm} ppm за {min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_Good_Title" xml:space="preserve"><value>Повітря свіже, нічого робити не потрібно</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_Good_Text" xml:space="preserve"><value>Нижче 1 000 ppm, тож концентрація та якість сну не страждають.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Good_Title_Rising" xml:space="preserve"><value>Зараз добре, але рівень зростає</value><comment>Draft: needs native review.</comment></data>
+  <data name="Advice_Good_Text_Rising" xml:space="preserve"><value>Ще нижче 1 000 ppm. Відчиніть вікно найближчим часом, щоб так і лишилося.</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_Elevated_Title" xml:space="preserve"><value>Відчиніть вікно хвилин на 10</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_High_Title" xml:space="preserve"><value>Провітріть зараз: відчиніть вікна навстіж</value><comment>Draft: needs native review.</comment></data>
   <data name="Advice_Elevated_Text_Falling" xml:space="preserve"><value>Вище бажаного рівня, але знижується.</value></data>
@@ -197,6 +199,7 @@
   <data name="Stat_InZone_Elevated" xml:space="preserve"><value>У цій зоні</value><comment>Draft: needs native review.</comment></data>
   <data name="Stat_InZone_High" xml:space="preserve"><value>У цій зоні</value><comment>Draft: needs native review.</comment></data>
   <data name="Duration_Minutes" xml:space="preserve"><value>{min} хв</value><comment>Draft: needs native review.</comment></data>
+  <data name="Duration_LessThanMinute" xml:space="preserve"><value>&lt; 1 хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Duration_HoursMinutes" xml:space="preserve"><value>{h} год {min} хв</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Ideal" xml:space="preserve"><value>бажано {min}–{max}</value><comment>Draft: needs native review.</comment></data>
   <data name="Chart_Threshold_Elevated" xml:space="preserve"><value>Підвищений ↑</value><comment>Draft: needs native review. Label on the dashed line where the Elevated zone starts.</comment></data>
@@ -365,4 +368,6 @@
   <data name="History_Grid_NoReadings" xml:space="preserve"><value>Немає вимірювань · {from} – {to}</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Grid_UnitHour" xml:space="preserve"><value>Кожен квадрат — одна година</value><comment>Draft: needs native review.</comment></data>
   <data name="History_Grid_UnitDay" xml:space="preserve"><value>Кожен квадрат — один день</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Grid_BarZones" xml:space="preserve"><value>Час у зонах</value><comment>Draft: needs native review.</comment></data>
+  <data name="History_Grid_BarRange" xml:space="preserve"><value>Час у межах</value><comment>Draft: needs native review.</comment></data>
 </root>

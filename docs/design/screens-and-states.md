@@ -1,6 +1,6 @@
 # Screens and states
 
-*Last reviewed: 2026-10-17*
+*Last reviewed: 2026-10-19*
 
 Visual target: `design/polish/deskair-polish-concept.html` (POL-00). Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 
@@ -21,7 +21,7 @@ Left-click on the tray icon opens the flyout. Right-click opens the menu. Double
 
 | Part | Behaviour |
 |---|---|
-| Hero | White card with a zone glow in its top-left corner; "CO₂" and the zone pill (its dot pulses in High while animations are on); the value with "ppm"; the trend; the gauge; the advice (fill, no border); three stats with dividers ("Good in last 24 h", "Peak at 14:16", "Elevated so far") |
+| Hero | White card with a zone glow in its top-left corner; "CO₂" and the zone pill (its dot pulses in High while animations are on); the value with "ppm"; the trend; the gauge; the advice (fill, no border); three stats with dividers ("Good in last 24 h", "Peak at 14:16", "Elevated so far", or "< 1 min" in the first minute) |
 | Metric choice | The hero chooses CO₂; a mini card chooses its metric. The chosen card has an `accent` ring; the hero shows no ring (CO₂ is the default). Cards never move. Keyboard: the hero and the three mini cards are focusable in reading order (Tab moves between them, Space or Enter chooses); Narrator reads each as a selectable item, "CO₂, 1151 ppm, Elevated, selected". An arrow-key group across the four is not built (follow-up) |
 | Chart | Axis fitted to the data (behaviour-rules.md "Live values"); thresholds as labelled lines only when in range; area fill in the same zone colours as the line; monotone smoothing; crosshair and readout as today |
 | Ribbon | CO₂ on 1h and 6h only. Hour labels at 00:00, 06:00, 12:00 and 18:00 at their true positions, leaving out any within 2 hours of either end |
@@ -64,7 +64,7 @@ There is no Hours filter and no Group by. The night hours show as a band and in 
 | Range | Main view |
 |---|---|
 | Day | Line of the readings, coloured by zone (every metric draws its line as a monotone curve, as on the Live chart; readings the sensor stores coarsely, such as whole-percent humidity, still show as steps: that is the data, POL-32), with a light area fill; the typical day of the 7 days before as a grey line; the night hours as a band labelled "Night"; threshold lines at 1000 and 1400 with coloured axis labels; "air improved" markers; crosshair with the time, the value and the typical value. Legend: CO₂, Typical (previous 7 days), Night |
-| Week, Month | Days × hours grid: one row per day (oldest at the top, "Today" last), one square per hour in the heat scale. Above: "Night · 22:00–07:00" bracket and hour labels every 3 hours. Each row ends with its average, a zone bar and a "best" / "worst" tag. Last row: "Typical", with the worst three hours outlined and named ("Worst 17:00–20:00"). Legend at the bottom: the six steps with Good / Elevated / High and their limits, "No data", "Each square is one hour" |
+| Week, Month | Days × hours grid: one row per day (oldest at the top, "Today" last), one square per hour in the heat scale. Above: "Night · 22:00–07:00" bracket and hour labels every 3 hours. Each row ends with its average, a zone bar and a "best" / "worst" tag. Last row: "Typical", with the worst three hours outlined and named ("Worst 17:00–20:00"). Legend at the bottom: the six steps with Good / Elevated / High and their limits, "No data", "Each square is one hour". Over the end column a caption names the bar: "Time in zones" (CO₂) or "Time in range" |
 | Year | Months × days grid: one row per month ("Nov 2025" … "Oct 2026"), one square per day (daily average); day numbers 1, 5, 10 … 31 above. A day needs readings in at least 6 different hours for a value, otherwise its square is outlined; days after today are not drawn. Two or more months in a row without readings fold into one row (as in Week). Rows end as in Week. No typical row. Legend as Week, "Each square is one day" |
 
 **Built (POL-13):** the Day line for CO₂ has the area fill, the typical line (hourly means of the 7 days before, laid over the window by clock hour), the night band with its label, dashed limit lines with coloured y labels (the axis tops out at 1600, 2000 or 2600), the "air improved" rings and the legend. The "air improved" markers are a CO₂ rule; Temperature and Humidity add the typical line and the comfort band, and Pressure has neither (POL-18). The average line is gone from Day.
@@ -74,7 +74,7 @@ There is no Hours filter and no Group by. The night hours show as a band and in 
 | Metric | Week, Month, Year | Day | Summary card |
 |---|---|---|---|
 | CO₂ | The zones grid, as above | As above | As above |
-| Temperature, Humidity | The same grid in the comfort scale (design-tokens.md "Comfort scales"). Row end: average, a below / inside / above bar and a "best" / "worst" tag (most and least time inside the range). The typical row outlines the three hours furthest outside the range ("Coolest 03:00–06:00") | Line in the metric colour, the comfort range as a soft band, the typical line and the night band; no area fill | Average with a comfort pill, time in the comfort range, nights, highest and lowest, one tip |
+| Temperature, Humidity | The same grid in the comfort scale (design-tokens.md "Comfort scales"). Row end: average, a below / inside / above bar and a "worst" tag on the row with the least time inside the range (no "best"; D-0023). The typical row outlines the three hours furthest outside the range ("Coolest 03:00–06:00") | Line in the metric colour, the comfort range as a soft band, the typical line and the night band; no area fill | Average with a comfort pill, time in the comfort range, nights, highest and lowest, one tip |
 | Pressure | One line (hourly means; daily means for Year), fitted axis, the biggest 24 hour change shaded and labelled | Line, fitted axis, no night band, no typical line | Average, change as neutral text, biggest change in 24 hours, the range, "Pressure follows the weather, not the room" |
 
 **Built (POL-18):** the comfort tokens and rules (design-tokens.md, behaviour-rules.md rules 10 to 12); the Temperature and Humidity hour grid with the comfort share and the "coolest/driest hours" tip; the Day comfort band; the Pressure line with the shaded biggest 24 hour change; and the Pressure summary card (average, change, highest and lowest, biggest change in 24 hours with its start, range of the period, one line about the weather). CO₂ typical day and sleep no longer show on the other metrics.

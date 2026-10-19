@@ -1,6 +1,6 @@
 # Components
 
-*Last reviewed: 2026-10-14*
+*Last reviewed: 2026-10-19*
 
 | Component | Purpose and states | WPF approach |
 |---|---|---|
@@ -23,7 +23,7 @@
 | Empty / onboarding card | Icon, title, text, buttons | UserControl |
 | Room menu | Rooms with value and zone | Popup on the chip |
 | Footer | Status dot, connection and age; sensor model, battery icon and percent (hardware ID in the tooltip of the model) | Grid |
-| Logo ring | The logo and tray ring in the zone colour (grey without a zone) | Viewbox with two ellipses |
+| Logo ring | The logo in the window header, in the brand ink (D-0022); only the tray icon takes the zone colour (grey without a zone) | Viewbox with two ellipses |
 | Toast | Snooze and Dismiss actions | Windows toast (`Windows.UI.Notifications`, no package) |
 | Tray icon | Ring in zone colour, or rounded square with value | Rendered bitmaps at 16, 20, 24, 32 px |
 | Flyout | One surface with a zone glow, the reading, ribbon, readings and a footer band | Borderless window placed from the tray icon rectangle. Parts: `ZoneIcon` (advice line), `ZoneRibbon` with `SegmentGap` and `SegmentRadius`, `FractionPanel` (ribbon labels at their true times), `QuietButton` (Snooze), `IconButton` (Settings), a compact `PrimaryButton` |

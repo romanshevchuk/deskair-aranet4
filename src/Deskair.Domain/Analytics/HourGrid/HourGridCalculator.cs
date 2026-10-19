@@ -69,7 +69,7 @@ public static class HourGridCalculator
     {
         ArgumentNullException.ThrowIfNull(days);
 
-        return Extremes(days, day => day.Date, day => day.HoursWithReadings, day => day.Average, MinimumHoursForTag);
+        return Extremes(days, day => day.Date, day => day.IsComplete, day => day.HoursWithReadings, day => day.Average, MinimumHoursForTag);
     }
 
     /// <summary>The best and the worst month of the Year grid: the same rule as for days, with at least <see cref="MinimumHoursForMonthTag"/> hours of readings.</summary>
@@ -77,27 +77,28 @@ public static class HourGridCalculator
     {
         ArgumentNullException.ThrowIfNull(months);
 
-        return Extremes(months, month => month.Month, month => month.HoursWithReadings, month => month.Average, MinimumHoursForMonthTag);
+        return Extremes(months, month => month.Month, month => month.IsComplete, month => month.HoursWithReadings, month => month.Average, MinimumHoursForMonthTag);
     }
 
 
     /// <summary>
-    /// The best day (the most readings inside the comfortable range) and the worst (the fewest), among days with readings in at least <see cref="MinimumHoursForTag"/> hours,
-    /// when at least <see cref="MinimumDaysForTags"/> qualify (Temperature and Humidity, behaviour-rules.md "Aggregation" rule 10).
+    /// The worst day for Temperature and Humidity: the one with the least time inside the comfortable range, among complete days with readings in at least
+    /// <see cref="MinimumHoursForTag"/> hours, when at least <see cref="MinimumDaysForTags"/> qualify. There is no best day: when most days are comfortable,
+    /// ranking near-identical days is noise. Null when no day has any time outside the range or every day is equally far from it (behaviour-rules.md "Aggregation" rule 10).
     /// </summary>
-    public static (DateOnly? Best, DateOnly? Worst) ComfortExtremes(IReadOnlyList<HourGridDay> days)
+    public static DateOnly? ComfortWorst(IReadOnlyList<HourGridDay> days)
     {
         ArgumentNullException.ThrowIfNull(days);
 
-        return ComfortExtremes(days, day => day.Date, day => day.HoursWithReadings, day => day.Comfort, MinimumHoursForTag);
+        return ComfortWorst(days, day => day.Date, day => day.IsComplete, day => day.HoursWithReadings, day => day.Comfort, MinimumHoursForTag);
     }
 
-    /// <summary>The best and the worst month by time inside the comfortable range: the same rule as for days, with at least <see cref="MinimumHoursForMonthTag"/> hours of readings.</summary>
-    public static (DateOnly? Best, DateOnly? Worst) ComfortExtremes(IReadOnlyList<HourGridMonth> months)
+    /// <summary>The worst month by time inside the comfortable range: the same rule as for days, with complete months and at least <see cref="MinimumHoursForMonthTag"/> hours of readings.</summary>
+    public static DateOnly? ComfortWorst(IReadOnlyList<HourGridMonth> months)
     {
         ArgumentNullException.ThrowIfNull(months);
 
-        return ComfortExtremes(months, month => month.Month, month => month.HoursWithReadings, month => month.Comfort, MinimumHoursForMonthTag);
+        return ComfortWorst(months, month => month.Month, month => month.IsComplete, month => month.HoursWithReadings, month => month.Comfort, MinimumHoursForMonthTag);
     }
     /// <summary>
     /// One row per local month from the month of <paramref name="start"/> to the month of <paramref name="end"/> (exclusive). A day's square is the mean of its readings when they cover
@@ -162,9 +163,9 @@ public static class HourGridCalculator
         return months;
     }
 
-    private static (DateOnly? Best, DateOnly? Worst) Extremes<T>(IReadOnlyList<T> rows, Func<T, DateOnly> date, Func<T, int> hours, Func<T, double?> average, int minimumHours)
+    private static (DateOnly? Best, DateOnly? Worst) Extremes<T>(IReadOnlyList<T> rows, Func<T, DateOnly> date, Func<T, bool> complete, Func<T, int> hours, Func<T, double?> average, int minimumHours)
     {
-        var eligible = rows.Where(row => hours(row) >= minimumHours && average(row) is not null).ToList();
+        var eligible = rows.Where(row => complete(row) && hours(row) >= minimumHours && average(row) is not null).ToList();
 
         if (eligible.Count < MinimumDaysForTags)
         {
@@ -174,20 +175,23 @@ public static class HourGridCalculator
         return (date(eligible.MinBy(row => average(row))!), date(eligible.MaxBy(row => average(row))!));
     }
 
-    private static (DateOnly? Best, DateOnly? Worst) ComfortExtremes<T>(IReadOnlyList<T> rows, Func<T, DateOnly> date, Func<T, int> hours, Func<T, ComfortShare?> comfort, int minimumHours)
+    private static DateOnly? ComfortWorst<T>(IReadOnlyList<T> rows, Func<T, DateOnly> date, Func<T, bool> complete, Func<T, int> hours, Func<T, ComfortShare?> comfort, int minimumHours)
     {
-        var eligible = rows.Where(row => hours(row) >= minimumHours && comfort(row) is not null).ToList();
+        var eligible = rows.Where(row => complete(row) && hours(row) >= minimumHours && comfort(row) is not null).ToList();
 
         if (eligible.Count < MinimumDaysForTags)
         {
-            return (null, null);
+            return null;
         }
 
-        var best = eligible.MaxBy(row => comfort(row)!.Inside)!;
         var worst = eligible.MinBy(row => comfort(row)!.Inside)!;
+        var best = eligible.MaxBy(row => comfort(row)!.Inside)!;
 
-        // Rows that are all equally comfortable have no best and no worst.
-        return comfort(best)!.Inside == comfort(worst)!.Inside ? (null, null) : (date(best), date(worst));
+        // A row that is entirely inside the range is not "worst", and rows equally far from it have no worst.
+        var allInside = comfort(worst)!.Inside >= 1;
+        var allEqual = comfort(worst)!.Inside == comfort(best)!.Inside;
+
+        return allInside || allEqual ? null : date(worst);
     }
 
     private static ComfortShare? ComfortShareOf(IEnumerable<Reading> readings, Metric metric)

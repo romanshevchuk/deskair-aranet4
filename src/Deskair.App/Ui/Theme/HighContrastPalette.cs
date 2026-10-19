@@ -50,8 +50,6 @@ public static class HighContrastPalette
                 return colors.GrayText;
             case "Divider" or "Grid":
                 return With(text, 0.5);
-            case "Trend.Falling" or "Trend.Rising":
-                return text;
             case "Glow.Offline":
                 return With(text, 0);
         }

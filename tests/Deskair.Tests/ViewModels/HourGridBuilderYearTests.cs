@@ -92,12 +92,14 @@ public class HourGridBuilderYearTests
     }
 
     [Fact]
-    public void A_month_with_too_few_hours_is_not_tagged()
+    public void A_month_with_too_few_hours_or_in_progress_is_not_tagged()
     {
-        var model = Build(Month(2026, 7, 400, hours: 100), Month(2026, 8, 1300), Month(2026, 9, 1000), Month(2026, 10, 1100, shown: 14));
+        var model = Build(Month(2026, 6, 800), Month(2026, 7, 400, hours: 100), Month(2026, 8, 1300), Month(2026, 9, 1000), Month(2026, 10, 300, shown: 14));
 
-        Assert.Equal(HourGridTag.None, model.Rows[0].Tag);
-        Assert.Equal(HourGridTag.Worst, model.Rows[1].Tag);
+        Assert.Equal(HourGridTag.Best, model.Rows[0].Tag);
+        Assert.Equal(HourGridTag.None, model.Rows[1].Tag);
+        Assert.Equal(HourGridTag.Worst, model.Rows[2].Tag);
+        Assert.Equal(HourGridTag.None, model.Rows[^1].Tag);
     }
 
     [Fact]

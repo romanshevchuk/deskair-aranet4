@@ -4,7 +4,6 @@
              xmlns:charts="clr-namespace:Deskair.App.Ui.Charts"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup"
-             xmlns:trend="clr-namespace:Deskair.Domain.Analytics.Trend;assembly=Deskair.Domain"
              xmlns:zones="clr-namespace:Deskair.Domain.Zones;assembly=Deskair.Domain">
   <!-- DataContext: FlyoutViewModel. The 360 px tray flyout on one surface with a zone glow across its top: room and age, the CO₂ reading (value, zone, trend, advice on one line),
        the 24 h ribbon (8 px high, labels at round hours and "Now", time in each zone), the other readings, and a footer band with the buttons. Not connected shows the last reading faded
@@ -24,14 +23,6 @@
       <Setter Property="Foreground" Value="{DynamicResource Text.Secondary.Brush}" />
       <Setter Property="FontWeight" Value="{DynamicResource Font.Weight.SemiBold}" />
       <Setter Property="VerticalAlignment" Value="Center" />
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding Trend}" Value="{x:Static trend:TrendDirection.Falling}">
-          <Setter Property="Foreground" Value="{DynamicResource Trend.Falling.Brush}" />
-        </DataTrigger>
-        <DataTrigger Binding="{Binding Trend}" Value="{x:Static trend:TrendDirection.Rising}">
-          <Setter Property="Foreground" Value="{DynamicResource Trend.Rising.Brush}" />
-        </DataTrigger>
-      </Style.Triggers>
     </Style>
 
     <!-- The glow of the zone across the top of the surface; grey when there is no zone (not connected). -->

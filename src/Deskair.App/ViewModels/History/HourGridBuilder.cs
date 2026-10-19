@@ -32,7 +32,7 @@ public sealed class HourGridBuilder(ILocalizer localizer, MetricFormatter format
         ArgumentNullException.ThrowIfNull(night);
 
         var scale = ComfortScale.For(metric);
-        var (best, worst) = metric == Metric.Co2 ? HourGridCalculator.Extremes(days) : scale is null ? (null, null) : HourGridCalculator.ComfortExtremes(days);
+        var (best, worst) = metric == Metric.Co2 ? HourGridCalculator.Extremes(days) : scale is null ? (null, null) : (null, HourGridCalculator.ComfortWorst(days));
         var rows = new List<HourGridRow>();
         var run = new List<HourGridDay>();
 
@@ -68,7 +68,8 @@ public sealed class HourGridBuilder(ILocalizer localizer, MetricFormatter format
             Palette = PaletteOf(metric),
             LegendGroups = LegendGroups(metric),
             NoDataText = localizer.Get("Chart_NoData"),
-            UnitText = localizer.Get("History_Grid_UnitHour")
+            UnitText = localizer.Get("History_Grid_UnitHour"),
+            BarCaption = BarCaption(metric)
         };
 
         void Flush()
@@ -135,7 +136,7 @@ public sealed class HourGridBuilder(ILocalizer localizer, MetricFormatter format
         ArgumentNullException.ThrowIfNull(months);
 
         var scale = ComfortScale.For(metric);
-        var (best, worst) = metric == Metric.Co2 ? HourGridCalculator.Extremes(months) : scale is null ? (null, null) : HourGridCalculator.ComfortExtremes(months);
+        var (best, worst) = metric == Metric.Co2 ? HourGridCalculator.Extremes(months) : scale is null ? (null, null) : (null, HourGridCalculator.ComfortWorst(months));
         var current = new DateOnly(today.Year, today.Month, 1);
         var rows = new List<HourGridRow>();
         var run = new List<HourGridMonth>();
@@ -166,7 +167,8 @@ public sealed class HourGridBuilder(ILocalizer localizer, MetricFormatter format
             Palette = PaletteOf(metric),
             LegendGroups = LegendGroups(metric),
             NoDataText = localizer.Get("Chart_NoData"),
-            UnitText = localizer.Get("History_Grid_UnitDay")
+            UnitText = localizer.Get("History_Grid_UnitDay"),
+            BarCaption = BarCaption(metric)
         };
 
         void Flush()
@@ -201,6 +203,8 @@ public sealed class HourGridBuilder(ILocalizer localizer, MetricFormatter format
                 Comfort: month.Comfort);
         }
     }
+
+    private string BarCaption(Metric metric) => localizer.Get(metric == Metric.Co2 ? "History_Grid_BarZones" : "History_Grid_BarRange");
 
     private static HourGridPalette PaletteOf(Metric metric) => metric switch
     {

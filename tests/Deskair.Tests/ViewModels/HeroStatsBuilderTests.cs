@@ -61,6 +61,7 @@ public class HeroStatsBuilderTests
     }
 
     [Theory]
+    [InlineData(0, "Duration_LessThanMinute")]
     [InlineData(38, "Duration_Minutes(min=38)")]
     [InlineData(59, "Duration_Minutes(min=59)")]
     [InlineData(60, "Duration_Hours(h=1)")]

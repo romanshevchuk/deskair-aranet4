@@ -80,6 +80,9 @@ public sealed record HourGridModel(
     /// <summary>"Each square is one hour".</summary>
     public string UnitText { get; init; } = string.Empty;
 
+    /// <summary>The caption over the row-end bars: "Time in zones" (CO₂) or "Time in range".</summary>
+    public string BarCaption { get; init; } = string.Empty;
+
     /// <summary>True for the Year grid: the column labels are day numbers centred over their squares, not times at the left edge of theirs.</summary>
     public bool CenterColumnLabels { get; init; }
 }

@@ -1,6 +1,6 @@
 # Localization
 
-*Last reviewed: 2026-10-18*
+*Last reviewed: 2026-10-19*
 
 ## Languages
 
@@ -44,6 +44,8 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Trend_Detail | {ppm} ppm over {min} min | {ppm} ppm за {min} хв |
 | Advice_Good_Title | Air is fresh, nothing to do | Повітря свіже, нічого робити не потрібно |
 | Advice_Good_Text | Below 1,000 ppm, so focus and sleep quality are not affected. | Нижче 1 000 ppm, тож концентрація та якість сну не страждають. |
+| Advice_Good_Title_Rising | Good now, but rising | Зараз добре, але рівень зростає |
+| Advice_Good_Text_Rising | Still below 1,000 ppm. Open a window soon to keep it that way. | Ще нижче 1 000 ppm. Відчиніть вікно найближчим часом, щоб так і лишилося. |
 | Advice_Elevated_Title | Open a window for about 10 minutes | Відчиніть вікно хвилин на 10 |
 | Advice_Elevated_Text_Falling | Above the ideal level, but dropping. | Вище за ідеальний рівень, але знижується. |
 | Advice_Elevated_Text_Steady | Above the ideal level. Ventilating will help. | Вище за ідеальний рівень. Провітрювання допоможе. |
@@ -67,6 +69,7 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 
 Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `Stat_InZone_*` keys because a natural "so far" form with the zone name is too long; the zone is already shown by the hero colour and pill.
 | Duration_Minutes | {min} min | {min} хв |
+| Duration_LessThanMinute | < 1 min | < 1 хв |
 | Duration_HoursMinutes | {h} h {min} min | {h} год {min} хв |
 | Chart_Now | Now | Зараз |
 | Chart_Ideal | ideal {min}–{max} | бажано {min}–{max} |

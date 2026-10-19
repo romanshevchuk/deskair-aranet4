@@ -109,31 +109,70 @@ public class HourGridCalculatorTests
     }
 
     [Fact]
-    public void Comfort_extremes_are_the_days_with_the_most_and_the_least_time_inside_the_range()
+    public void The_worst_comfort_day_is_the_one_with_the_least_time_inside_the_range_the_earliest_on_a_tie()
     {
         var readings = ClimateDay(10, 22).Concat(ClimateDay(11, 19)).Concat(ClimateDay(12, 22.5)).Concat(ClimateDay(13, 27));
         var days = HourGridCalculator.Build(readings, Metric.Temperature, Samples.Utc(2026, 10, 10), Samples.Utc(2026, 10, 14), utc);
 
-        var (best, worst) = HourGridCalculator.ComfortExtremes(days);
-
-        Assert.Equal(new DateOnly(2026, 10, 10), best);
-        Assert.Equal(new DateOnly(2026, 10, 11), worst);
+        // 11 and 13 October are both entirely outside the range; the first of them is the worst.
+        Assert.Equal(new DateOnly(2026, 10, 11), HourGridCalculator.ComfortWorst(days));
     }
 
     [Fact]
-    public void Comfort_extremes_need_three_days_with_enough_hours()
+    public void The_worst_comfort_day_is_named_when_one_day_is_clearly_further_out()
+    {
+        var readings = ClimateDay(10, 22).Concat(ClimateDay(11, 19)).Concat(ClimateDay(12, 22.5));
+        var days = HourGridCalculator.Build(readings, Metric.Temperature, Samples.Utc(2026, 10, 10), Samples.Utc(2026, 10, 13), utc);
+
+        Assert.Equal(new DateOnly(2026, 10, 11), HourGridCalculator.ComfortWorst(days));
+    }
+
+    [Fact]
+    public void Comfort_worst_needs_three_days_with_enough_hours()
     {
         var days = HourGridCalculator.Build(ClimateDay(10, 22).Concat(ClimateDay(11, 19)), Metric.Temperature, Samples.Utc(2026, 10, 10), Samples.Utc(2026, 10, 12), utc);
 
-        Assert.Equal((null, null), HourGridCalculator.ComfortExtremes(days));
+        Assert.Null(HourGridCalculator.ComfortWorst(days));
     }
 
     [Fact]
-    public void Comfort_extremes_are_empty_when_every_day_is_equally_comfortable()
+    public void Comfort_worst_is_empty_when_every_day_is_entirely_inside_the_range()
     {
         var readings = ClimateDay(10, 22).Concat(ClimateDay(11, 22)).Concat(ClimateDay(12, 22.5));
         var days = HourGridCalculator.Build(readings, Metric.Temperature, Samples.Utc(2026, 10, 10), Samples.Utc(2026, 10, 13), utc);
 
-        Assert.Equal((null, null), HourGridCalculator.ComfortExtremes(days));
+        Assert.Null(HourGridCalculator.ComfortWorst(days));
+    }
+
+    [Fact]
+    public void The_day_in_progress_is_never_best_or_worst()
+    {
+        // The readings of 14 October end at 16:00, before its evening peak: its mean is lower than a whole day's would be.
+        var readings = Enumerable.Range(11, 3).SelectMany(day => Enumerable.Range(0, 24).Select(hour => Samples.Co2(Samples.Utc(2026, 10, day, hour), 1000 + (day * 10))))
+            .Concat(Enumerable.Range(0, 16).Select(hour => Samples.Co2(Samples.Utc(2026, 10, 14, hour), 500)));
+
+        var days = HourGridCalculator.Build(readings, Metric.Co2, Samples.Utc(2026, 10, 11), Samples.Utc(2026, 10, 14, 16), utc);
+        var (best, worst) = HourGridCalculator.Extremes(days);
+
+        Assert.False(days[^1].IsComplete);
+        Assert.Equal(new DateOnly(2026, 10, 11), best);
+        Assert.Equal(new DateOnly(2026, 10, 13), worst);
+    }
+
+    [Fact]
+    public void A_complete_day_is_complete()
+    {
+        var day = Assert.Single(HourGridCalculator.Build([], Metric.Co2, Samples.Utc(2026, 10, 12), Samples.Utc(2026, 10, 13), utc));
+
+        Assert.True(day.IsComplete);
+    }
+
+    [Fact]
+    public void The_comfort_worst_day_skips_the_day_in_progress()
+    {
+        var readings = ClimateDay(10, 22).Concat(ClimateDay(11, 19)).Concat(ClimateDay(12, 22.5)).Concat(ClimateDay(13, 27).Take(10));
+        var days = HourGridCalculator.Build(readings, Metric.Temperature, Samples.Utc(2026, 10, 10), Samples.Utc(2026, 10, 13, 10), utc);
+
+        Assert.Equal(new DateOnly(2026, 10, 11), HourGridCalculator.ComfortWorst(days));
     }
 }

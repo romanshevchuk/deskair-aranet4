@@ -95,6 +95,18 @@ public class HourGridMonthsTests
     }
 
     [Fact]
+    public void The_month_in_progress_is_never_best_or_worst()
+    {
+        HourGridMonth Month(int number, double average, int daysShown)
+            => new(new DateOnly(2026, number, 1), new double?[31], daysShown, average, null, 400);
+
+        var months = new[] { Month(1, 900, 31), Month(2, 1300, 28), Month(3, 1100, 31), Month(4, 300, 14) };
+
+        Assert.False(months[^1].IsComplete);
+        Assert.Equal((new DateOnly(2026, 1, 1), new DateOnly(2026, 2, 1)), HourGridCalculator.Extremes(months));
+    }
+
+    [Fact]
     public void Months_use_local_days()
     {
         var kyiv = new LocalCalendar(Samples.Kyiv);

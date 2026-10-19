@@ -83,3 +83,5 @@ Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.
 | OWN-03 | Tray: left click, click-away, Esc, the Snooze menu, the value on the tray icon, and the flyout no longer blinks (a new flyout window for each opening), checked by the owner 2026-10-17 | done |
 | OWN-07 | Open folder, Export, Choose file and Import checked by the owner 2026-10-17; a real phone export of about 44,000 readings imported fast | done |
 | OWN-06 | History on real data (Day, Week, Month, Night) looked at again after the Day rework, closed by the owner 2026-10-18 | done |
+| POL-50 | Review feedback batch 1 (D-0022): neutral trend, "Good now, but rising" advice, "< 1 min", brand logo, neutral CO₂ dot, quiet ideal band. 2026-10-19 |
+| POL-51 to POL-54 | Heatmaps (D-0023): six CO₂ steps kept; best and worst only on complete rows; caption over the row-end bars; no "best" for Temperature and Humidity. 2026-10-19 |
