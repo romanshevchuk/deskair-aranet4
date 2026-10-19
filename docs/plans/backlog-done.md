@@ -85,3 +85,4 @@ Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.
 | OWN-06 | History on real data (Day, Week, Month, Night) looked at again after the Day rework, closed by the owner 2026-10-18 | done |
 | POL-50 | Review feedback batch 1 (D-0022): neutral trend, "Good now, but rising" advice, "< 1 min", brand logo, neutral CO₂ dot, quiet ideal band. 2026-10-19 |
 | POL-51 to POL-54 | Heatmaps (D-0023): six CO₂ steps kept; best and worst only on complete rows; caption over the row-end bars; no "best" for Temperature and Humidity. 2026-10-19 |
+| ALERT-01 | Toast repeats (D-0025): an episode ends after 10 minutes of Good; pressing a toast acknowledges it. 2026-10-19 |

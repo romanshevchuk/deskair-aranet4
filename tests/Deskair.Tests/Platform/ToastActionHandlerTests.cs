@@ -23,7 +23,7 @@ public sealed class ToastActionHandlerTests : IDisposable
     {
         var (alertEngine, snooze) = TestSnooze.Create(clock, new StrongReferenceMessenger());
         engine = alertEngine;
-        handler = new ToastActionHandler(snooze, windows, dispatcher, NullLogger<ToastActionHandler>.Instance);
+        handler = new ToastActionHandler(alertEngine, snooze, windows, dispatcher, NullLogger<ToastActionHandler>.Instance);
     }
 
     public void Dispose()

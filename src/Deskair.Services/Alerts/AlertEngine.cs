@@ -76,7 +76,7 @@ public sealed class AlertEngine : IDisposable
 
             if (zone == Zone.Good)
             {
-                episodes.Remove(device);
+                EndEpisodeWhenRecovered(device, now);
                 return;
             }
 
@@ -91,6 +91,8 @@ public sealed class AlertEngine : IDisposable
                 episode.ZoneSince = now;
             }
 
+            episode.GoodSince = null;
+
             if (!IsDue(episode, now) || !IsAllowed(zone, now))
             {
                 return;
@@ -99,6 +101,7 @@ public sealed class AlertEngine : IDisposable
             await notifier.NotifyAsync(new AlertNotification(device, roomName, zone, reading.Co2Ppm, now), cancellationToken);
             episode.Notified = zone;
             episode.LastNotified = now;
+            episode.Acknowledged = false;
         }
         finally
         {
@@ -106,11 +109,48 @@ public sealed class AlertEngine : IDisposable
         }
     }
 
+    /// <summary>
+    /// The user pressed a toast, so they have seen it: no more toasts for the current episodes unless the air escalates to High.
+    /// An episode that has not sent a toast yet is unaffected.
+    /// </summary>
+    public void AcknowledgeAll()
+    {
+        gate.Wait();
+
+        try
+        {
+            foreach (var episode in episodes.Values.Where(episode => episode.Notified is not null))
+            {
+                episode.Acknowledged = true;
+            }
+        }
+        finally
+        {
+            gate.Release();
+        }
+    }
+
+    // One Good reading is not a recovery: CO₂ hovering at 1000 ppm would otherwise start a new episode, and a new toast, every few minutes.
+    private void EndEpisodeWhenRecovered(DeviceId device, DateTimeOffset now)
+    {
+        if (!episodes.TryGetValue(device, out var episode))
+        {
+            return;
+        }
+
+        episode.GoodSince ??= now;
+
+        if (now - episode.GoodSince >= policy.RecoveryDwell)
+        {
+            episodes.Remove(device);
+        }
+    }
+
     private bool IsDue(Episode episode, DateTimeOffset now) => episode.Notified switch
     {
         null => now - episode.StartedAt >= policy.Dwell,
         Zone.Elevated => episode.Zone == Zone.High && now - episode.ZoneSince >= policy.Dwell,
-        _ => episode.Zone == Zone.High && now - episode.LastNotified >= policy.RepeatWhileHigh
+        _ => episode.Zone == Zone.High && !episode.Acknowledged && now - episode.LastNotified >= policy.RepeatWhileHigh
     };
 
     private bool IsAllowed(Zone zone, DateTimeOffset now)
@@ -154,5 +194,11 @@ public sealed class AlertEngine : IDisposable
         public Zone? Notified { get; set; }
 
         public DateTimeOffset LastNotified { get; set; }
+
+        /// <summary>The user pressed the last toast: only an escalation to High sends another.</summary>
+        public bool Acknowledged { get; set; }
+
+        /// <summary>When the air first went Good again; null while it is outside Good.</summary>
+        public DateTimeOffset? GoodSince { get; set; }
     }
 }

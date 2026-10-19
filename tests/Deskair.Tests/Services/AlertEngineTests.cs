@@ -105,11 +105,11 @@ public sealed class AlertEngineTests : IDisposable
     }
 
     [Fact]
-    public async Task Episode_ends_when_the_air_is_Good_and_a_new_episode_notifies_again()
+    public async Task Episode_ends_after_ten_minutes_of_Good_and_a_new_episode_notifies_again()
     {
         await Send(1100);
         await SendAfter(1100, 5);
-        await SendAfter(800, 2);
+        await SendAfter(800, 2, 2, 2, 2, 2, 2);
         await SendAfter(1100, 2);
         await SendAfter(1100, 4);
         Assert.Single(notifier.Sent);
@@ -117,6 +117,86 @@ public sealed class AlertEngineTests : IDisposable
         await SendAfter(1100, 1);
 
         Assert.Equal(2, notifier.Sent.Count);
+    }
+
+    [Fact]
+    public async Task A_value_hovering_at_the_boundary_stays_one_episode_with_one_toast()
+    {
+        await Send(1003);
+        await SendAfter(1003, 5);
+        Assert.Single(notifier.Sent);
+
+        // 995 and 1005 alternate every two minutes for half an hour: one dip is not a recovery.
+        for (var step = 0; step < 15; step++)
+        {
+            await SendAfter(step % 2 == 0 ? 995 : 1005, 2);
+        }
+
+        Assert.Single(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task A_pressed_toast_is_not_repeated_in_the_same_episode()
+    {
+        await Send(1100);
+        await SendAfter(1100, 5);
+        engine.AcknowledgeAll();
+
+        await SendAfter(800, 2);
+        await SendAfter(1100, 2, 6, 30);
+
+        Assert.Single(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task A_pressed_toast_still_allows_the_escalation_to_High()
+    {
+        await Send(1100);
+        await SendAfter(1100, 5);
+        engine.AcknowledgeAll();
+
+        await SendAfter(1500, 1);
+        await SendAfter(1500, 5);
+
+        Assert.Equal([Zone.Elevated, Zone.High], notifier.Sent.Select(sent => sent.Zone));
+    }
+
+    [Fact]
+    public async Task A_pressed_High_toast_is_not_repeated_after_60_minutes()
+    {
+        await Send(1500);
+        await SendAfter(1500, 5);
+        engine.AcknowledgeAll();
+
+        await SendAfter(1500, 30, 31);
+
+        Assert.Single(notifier.Sent);
+    }
+
+    [Fact]
+    public async Task A_new_toast_after_a_press_can_be_pressed_again()
+    {
+        await Send(1100);
+        await SendAfter(1100, 5);
+        engine.AcknowledgeAll();
+        await SendAfter(1500, 1);
+        await SendAfter(1500, 5);
+        engine.AcknowledgeAll();
+
+        await SendAfter(1500, 61);
+
+        Assert.Equal(2, notifier.Sent.Count);
+    }
+
+    [Fact]
+    public async Task Pressing_a_toast_does_not_affect_an_episode_that_has_not_sent_one()
+    {
+        await Send(1100);
+        engine.AcknowledgeAll();
+
+        await SendAfter(1100, 5);
+
+        Assert.Single(notifier.Sent);
     }
 
     [Fact]

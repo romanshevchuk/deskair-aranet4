@@ -244,3 +244,13 @@ Comfortable squares were neutral grey. Everywhere else green means fine: the CO�
 **Decision:** `heat.comfort` is the pale green of the lowest CO₂ step (light #DDF2E7, dark #1D3B30). Cool stays blue, warm orange; the pale green is the quietest step, so exceptions stay the strongest marks. "No data" stays an empty outline.
 
 **Consequences:** two token values and design-tokens.md; no code change.
+
+## D-0025 An alert episode survives short dips below 1000 ppm; pressing a toast acknowledges it
+
+**Status:** accepted · Oct 2026; amends the Alerts rules
+
+The logs showed Elevated toasts 9 to 21 minutes apart, mostly at 1003 to 1038 ppm. One reading below 1000 ended the episode, so CO₂ hovering at the limit started a new episode, and after five minutes a new toast. A user who had pressed the toast and opened the app got another one anyway.
+
+**Decision:** (1) An episode ends only after the air has stayed Good for 10 minutes. (2) Pressing a toast or its Open button acknowledges the current episodes that have sent a toast: they send no more toasts, except the escalation to High (still after its 5 minute dwell). A newly sent toast is unacknowledged. Snooze is unchanged.
+
+**Consequences:** `AlertPolicy.RecoveryDwell`, `AlertEngine.AcknowledgeAll`, and `ToastActionHandler` calls it; behaviour-rules.md "Alerts" updated. Not done: skipping toasts while the window is open and in front.

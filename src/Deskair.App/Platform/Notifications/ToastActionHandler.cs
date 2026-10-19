@@ -5,20 +5,23 @@ using Microsoft.Extensions.Logging;
 
 namespace Deskair.App.Platform.Notifications;
 
-/// <summary>Does what the user asked for on a toast: Snooze mutes alerts for an hour, pressing the toast opens the main window.</summary>
+/// <summary>Does what the user asked for on a toast: Snooze mutes alerts for an hour, pressing the toast opens the main window and counts as seen, so the same episode does not toast again (D-0025).</summary>
 public sealed class ToastActionHandler
 {
+    private readonly AlertEngine alerts;
     private readonly SnoozeService snooze;
     private readonly IMainWindowController windows;
     private readonly IUiDispatcher dispatcher;
     private readonly ILogger<ToastActionHandler> logger;
 
     public ToastActionHandler(
+        AlertEngine alerts,
         SnoozeService snooze,
         IMainWindowController windows,
         IUiDispatcher dispatcher,
         ILogger<ToastActionHandler> logger)
     {
+        this.alerts = alerts;
         this.snooze = snooze;
         this.windows = windows;
         this.dispatcher = dispatcher;
@@ -40,6 +43,7 @@ public sealed class ToastActionHandler
 
                 break;
             case ToastAction.Open:
+                alerts.AcknowledgeAll();
                 dispatcher.Post(() => windows.Show());
                 break;
             default:
