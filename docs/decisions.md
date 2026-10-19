@@ -241,7 +241,7 @@ The review also found real flaws. Today could win "best" with 17 hours of data, 
 
 Comfortable squares were neutral grey. Everywhere else green means fine: the CO₂ grid's Good, the row-end bar and the "Comfortable" pill. Grey reads as inactive or missing, so a good month looked empty and the grid said "nothing here" about the hours that were fine.
 
-**Decision:** `heat.comfort` is the pale green of the lowest CO₂ step (light #DDF2E7, dark #1D3B30). Cool stays blue, warm orange; the pale green is the quietest step, so exceptions stay the strongest marks. "No data" stays an empty outline.
+**Decision:** `heat.comfort` is a mid green (light #B4E0C9, dark #244F3F). A first try with the palest green (#DDF2E7) nearly vanished on the light card and was fainter than the mild cool and humid steps, which inverted the hierarchy. Cool stays blue, warm orange; the outer steps stay the strongest marks. "No data" stays an empty outline.
 
 **Consequences:** two token values and design-tokens.md; no code change.
 

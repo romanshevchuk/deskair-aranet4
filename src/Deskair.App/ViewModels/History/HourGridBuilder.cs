@@ -269,5 +269,6 @@ public sealed class HourGridBuilder(ILocalizer localizer, MetricFormatter format
 
     private string Short(DateOnly date) => date.ToString("d MMM", localizer.Culture);
 
-    private static string Hour(int hour) => $"{hour:00}:00";
+    // A three-hour window can run past midnight (23:00 to 02:00).
+    private static string Hour(int hour) => $"{hour % 24:00}:00";
 }

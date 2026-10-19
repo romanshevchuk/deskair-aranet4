@@ -66,7 +66,7 @@ No data: an empty square with a 1 px `heat.none.line` outline. Pressure has no g
 
 ### Comfort scales (Temperature and Humidity)
 
-A comfort range gives colour a meaning here, so the grid uses a diverging scale of five steps around `heat.comfort`, the pale green of the lowest CO₂ step (D-0024: green means "fine" everywhere, and grey reads as missing data): two steps on the low side, comfortable, two on the high side (POL-18). The limits are fixed in v1 (no setting) and stored in °C; the legend shows them in the unit chosen.
+A comfort range gives colour a meaning here, so the grid uses a diverging scale of five steps around `heat.comfort`, a mid green (the CO₂ step `heat.g2` in light, a little darker in dark) (D-0024: green means "fine" everywhere, and grey reads as missing data): two steps on the low side, comfortable, two on the high side (POL-18). The limits are fixed in v1 (no setting) and stored in °C; the legend shows them in the unit chosen.
 
 | Token | Temperature | Humidity | Light | Dark |
 |---|---|---|---|---|
@@ -74,7 +74,7 @@ A comfort range gives colour a meaning here, so the grid uses a diverging scale 
 | heat.cool1 | 18 to 20 °C | | #B5CDEE | #2D4567 |
 | heat.dry2 | | below 25 % | #B9844A | #C99456 |
 | heat.dry1 | | 25 to 30 % | #E8CFAA | #5A4734 |
-| heat.comfort | 20 to 24 °C | 30 to 50 % | #DDF2E7 | #1D3B30 |
+| heat.comfort | 20 to 24 °C | 30 to 50 % | #B4E0C9 | #244F3F |
 | heat.warm1 | 24 to 26 °C | | #F4C29A | #6A4A33 |
 | heat.warm2 | 26 °C and above | | #DE7A31 | #E0813A |
 | heat.humid1 | | 50 to 60 % | #A9D3E9 | #2C5466 |
@@ -143,7 +143,7 @@ Logo and tray ring: 28 × 28 viewbox, circle r 11, stroke 2.75 to 3, centre dot 
 
 All text pairs reach 4.5:1 and all chart colours 3:1, in both themes. Re-check if a token changes.
 
-**Exception (D-0018, POL-22):** `heat.comfort` (the same pale green as `heat.g1`: a filled square, but the quietest step on purpose) and the heat steps `heat.g1` and `heat.g2` (light) and `heat.g1` (dark) are below 3:1 against the surface on purpose: fresh air is meant to recede. The grid's values are always available as text: each row's average, the tooltip and keyboard focus label of every square, and the Narrator label (accessibility.md).
+**Exception (D-0018, POL-22):** the heat steps `heat.g1` and `heat.g2` (light) and `heat.g1` (dark) are below 3:1 against the surface on purpose: fresh air is meant to recede. The grid's values are always available as text: each row's average, the tooltip and keyboard focus label of every square, and the Narrator label (accessibility.md).
 
 ## Motion
 

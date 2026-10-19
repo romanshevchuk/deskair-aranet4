@@ -78,6 +78,16 @@ public class HourGridBuilderTests
     }
 
     [Fact]
+    public void A_worst_window_that_runs_past_midnight_ends_the_next_morning()
+    {
+        var typical = Enumerable.Range(0, 24).Select(hour => new HourOfDayAverage(hour, hour is 23 or 0 or 1 ? 1400 : 900, 10)).ToList();
+
+        var model = builder.Build([Day(11, 900)], typical, Metric.Co2, Period.Week, NightWindow.Default, today);
+
+        Assert.Equal("History_Grid_Worst(from=23:00, to=02:00)", model.WorstText);
+    }
+
+    [Fact]
     public void The_typical_row_outlines_the_worst_three_hours_and_names_them()
     {
         var typical = Enumerable.Range(0, 24).Select(hour => new HourOfDayAverage(hour, hour is >= 16 and < 19 ? 1400 : 900, 10)).ToList();
