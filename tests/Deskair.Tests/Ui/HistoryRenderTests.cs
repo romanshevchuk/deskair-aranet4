@@ -28,12 +28,15 @@ namespace Deskair.Tests.Ui;
 public class HistoryRenderTests
 {
     private static readonly DateTimeOffset now = new(2026, 10, 12, 18, 40, 0, TimeSpan.Zero);
-    private static readonly DeviceId device = new("simulated", "SIM-0001");
+    private static readonly DeviceId device = new("aranet4", "C3DEC8FCC7C6");
 
     [Theory]
     [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Co2, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Dark, "en-US", Period.Month, Metric.Co2, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Light, "uk-UA", Period.Year, Metric.Co2, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Light, "uk-UA", Period.Week, Metric.Co2, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Light, "uk-UA", Period.Day, Metric.Co2, TemperatureUnit.Celsius)]
+    [InlineData(ThemeChoice.Dark, "en-US", Period.Week, Metric.Co2, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Dark, "en-US", Period.Year, Metric.Co2, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Light, "en-US", Period.Day, Metric.Co2, TemperatureUnit.Celsius)]
     [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Temperature, TemperatureUnit.Fahrenheit)]

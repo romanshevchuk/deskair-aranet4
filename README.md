@@ -1,5 +1,7 @@
 # Deskair
 
+> **Unofficial.** Deskair is an independent open-source project. It is not made by, affiliated with or endorsed by the maker of Aranet4. Aranet is a trademark of its owner. Privacy: [`PRIVACY.md`](PRIVACY.md).
+
 A Windows desktop monitor for the Aranet4 CO₂ sensor. Live readings, a tray icon that changes colour with air quality, gentle alerts, and long-term history stored on your PC.
 
 - **Live:** CO₂, temperature, humidity and pressure, with hover charts and a 24 h ribbon.

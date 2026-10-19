@@ -32,7 +32,7 @@ public class MainWindowRenderTests
 {
     // The simulated room is at about 1,050 ppm and falling at this time of day.
     private static readonly DateTimeOffset now = new(2026, 10, 12, 18, 40, 0, TimeSpan.Zero);
-    private static readonly DeviceId device = new("simulated", "SIM-0001");
+    private static readonly DeviceId device = new("aranet4", "C3DEC8FCC7C6");
 
     [Theory]
     [InlineData(ThemeChoice.Light, "en-US", ConnectionState.Normal, TemperatureUnit.Celsius)]

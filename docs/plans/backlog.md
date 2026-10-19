@@ -40,7 +40,7 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 
 | ID | Item | Who | Status |
 |---|---|---|---|
-| REL-01 | Store packaging; winget and GitHub later. Plan and status: [`store-packaging.md`](store-packaging.md) (phases 0 to 2 done 2026-10-18; next: the owner installs the test package, phase 3). Needs P1 from the owner for the listing; the packaging itself is agent work | both | todo |
+| REL-01 | Store packaging; winget and GitHub later. Plan and status: [`store-packaging.md`](store-packaging.md) (phases 0 to 2 done 2026-10-18; texts, privacy page and screenshots prepared 2026-10-19, section 10 of the plan; next: the owner runs the phase 3 checks on `Deskair_0.1.1.0_x64.msix`). Needs P1 from the owner for the listing; the packaging itself is agent work | both | todo |
 | REL-05 | Final pass: build, tests, format clean, renders in light and dark (EN), soak test, then tag | both | todo |
 
 ## Later (not v1)

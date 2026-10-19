@@ -97,6 +97,9 @@
   <data name="Settings_Devices" xml:space="preserve"><value>Пристрої</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Data" xml:space="preserve"><value>Дані та сховище</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Startup" xml:space="preserve"><value>Запуск</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_About" xml:space="preserve"><value>Про застосунок</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_About_Unofficial" xml:space="preserve"><value>Неофіційний незалежний проєкт</value><comment>Draft: needs native review.</comment></data>
+  <data name="Settings_About_Text" xml:space="preserve"><value>Deskair — застосунок з відкритим кодом. Його не створювала компанія-виробник Aranet4, він не пов’язаний з нею і не схвалений нею. github.com/romanshevchuk/deskair-aranet4</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Appearance" xml:space="preserve"><value>Вигляд і одиниці</value><comment>Draft: needs native review.</comment></data>
   <data name="Settings_Unit" xml:space="preserve"><value>Одиниця температури</value><comment>Draft: needs native review.</comment></data>
   <data name="Unit_Celsius" xml:space="preserve"><value>°C</value></data>
@@ -162,7 +165,7 @@
   <data name="Sensor_Simulated_Name" xml:space="preserve"><value>Імітований датчик</value><comment>Draft: needs native review.</comment></data>
   <data name="Sensor_Simulated_Step1" xml:space="preserve"><value>Налаштовувати нічого не потрібно: імітований датчик завжди доступний.</value><comment>Draft: needs native review.</comment></data>
   <data name="Sensor_Aranet4_Name" xml:space="preserve"><value>Aranet4</value><comment>Draft: needs native review.</comment></data>
-  <data name="Sensor_Aranet4_Step1" xml:space="preserve"><value>Покладіть датчик поруч із комп&apos;ютером.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Sensor_Aranet4_Step1" xml:space="preserve"><value>Покладіть Aranet4 поруч із комп&apos;ютером.</value><comment>Draft: needs native review.</comment></data>
   <data name="Sensor_Aranet4_Step2" xml:space="preserve"><value>Переконайтеся, що Bluetooth увімкнено.</value><comment>Draft: needs native review.</comment></data>
   <data name="Import_PhoneExport_Name" xml:space="preserve"><value>Експорт із мобільного застосунку</value><comment>Draft: needs native review.</comment></data>
   <data name="Gallery_Title" xml:space="preserve"><value>Галерея елементів</value><comment>Draft: needs native review.</comment></data>
@@ -227,7 +230,7 @@
   <data name="Onboarding_Room_DefaultName" xml:space="preserve"><value>Моя кімната</value><comment>Draft: needs native review.</comment></data>
   <data name="Onboarding_Step_Pick" xml:space="preserve"><value>Оберіть датчик і назвіть кімнату</value><comment>Draft: needs native review.</comment></data>
   <data name="Onboarding_Welcome_Title" xml:space="preserve"><value>Ласкаво просимо до Deskair</value><comment>Draft: needs native review.</comment></data>
-  <data name="Onboarding_Welcome_Text" xml:space="preserve"><value>Стежте за CO₂, температурою, вологістю й тиском у кімнаті та отримуйте нагадування, коли час відчинити вікно.</value><comment>Draft: needs native review.</comment></data>
+  <data name="Onboarding_Welcome_Text" xml:space="preserve"><value>Стежте за CO₂, температурою, вологістю й тиском з вашого датчика Aranet4 та отримуйте нагадування, коли час відчинити вікно.</value><comment>Draft: needs native review.</comment></data>
   <data name="Onboarding_Nearby_Title" xml:space="preserve"><value>Датчики поблизу</value><comment>Draft: needs native review.</comment></data>
   <data name="Onboarding_Pair" xml:space="preserve"><value>Підключити</value><comment>Draft: needs native review.</comment></data>
   <data name="Onboarding_Searching" xml:space="preserve"><value>Пошук датчиків…</value><comment>Draft: needs native review.</comment></data>

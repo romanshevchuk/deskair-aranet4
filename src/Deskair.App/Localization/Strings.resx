@@ -96,6 +96,9 @@
   <data name="Settings_Devices" xml:space="preserve"><value>Devices</value></data>
   <data name="Settings_Data" xml:space="preserve"><value>Data and storage</value></data>
   <data name="Settings_Startup" xml:space="preserve"><value>Start-up</value></data>
+  <data name="Settings_About" xml:space="preserve"><value>About</value></data>
+  <data name="Settings_About_Unofficial" xml:space="preserve"><value>Unofficial, independent project</value></data>
+  <data name="Settings_About_Text" xml:space="preserve"><value>Deskair is open source and is not made by, affiliated with or endorsed by the maker of Aranet4. github.com/romanshevchuk/deskair-aranet4</value></data>
   <data name="Settings_Appearance" xml:space="preserve"><value>Appearance and units</value></data>
   <data name="Settings_Unit" xml:space="preserve"><value>Temperature unit</value></data>
   <data name="Unit_Celsius" xml:space="preserve"><value>°C</value></data>
@@ -161,7 +164,7 @@
   <data name="Sensor_Simulated_Name" xml:space="preserve"><value>Simulated sensor</value></data>
   <data name="Sensor_Simulated_Step1" xml:space="preserve"><value>Nothing to set up: the simulated sensor is always available.</value></data>
   <data name="Sensor_Aranet4_Name" xml:space="preserve"><value>Aranet4</value></data>
-  <data name="Sensor_Aranet4_Step1" xml:space="preserve"><value>Place the sensor close to your PC.</value></data>
+  <data name="Sensor_Aranet4_Step1" xml:space="preserve"><value>Place your Aranet4 close to your PC.</value></data>
   <data name="Sensor_Aranet4_Step2" xml:space="preserve"><value>Make sure Bluetooth is on.</value></data>
   <data name="Import_PhoneExport_Name" xml:space="preserve"><value>Phone app export</value></data>
   <data name="Gallery_Title" xml:space="preserve"><value>Control gallery</value></data>
@@ -226,7 +229,7 @@
   <data name="Onboarding_Room_DefaultName" xml:space="preserve"><value>My room</value></data>
   <data name="Onboarding_Step_Pick" xml:space="preserve"><value>Pick your sensor, then name the room</value></data>
   <data name="Onboarding_Welcome_Title" xml:space="preserve"><value>Welcome to Deskair</value></data>
-  <data name="Onboarding_Welcome_Text" xml:space="preserve"><value>Watch your room’s CO₂, temperature, humidity and pressure, and get a nudge when it’s time to open a window.</value></data>
+  <data name="Onboarding_Welcome_Text" xml:space="preserve"><value>Watch the CO₂, temperature, humidity and pressure from your Aranet4 sensor, and get a nudge when it’s time to open a window.</value></data>
   <data name="Onboarding_Nearby_Title" xml:space="preserve"><value>Sensors found nearby</value></data>
   <data name="Onboarding_Pair" xml:space="preserve"><value>Pair</value></data>
   <data name="Onboarding_Searching" xml:space="preserve"><value>Looking for sensors…</value></data>

@@ -1,6 +1,6 @@
 # Store packaging: the plan, step by step
 
-*Last reviewed: 2026-10-18*
+*Last reviewed: 2026-10-19*
 
 Backlog item: REL-01. Status: **plan, waiting for the owner's decisions** (section 2). Written for the owner, who is new to Store publishing. Facts come from Microsoft's own pages (links at the end); anything not confirmed is marked **unverified**.
 
@@ -215,3 +215,16 @@ The publisher name can be changed later only with effort (it is tied to the rese
 - [Package a desktop app from source code using Visual Studio (MSIX)](https://learn.microsoft.com/en-us/windows/msix/desktop/desktop-to-uwp-packaging-dot-net): the `.wapproj` route; single-project MSIX is for WinUI 3 only
 - [App capability declarations](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/app-capability-declarations): restricted capabilities such as `runFullTrust`
 - Project decisions: `docs/decisions.md` D-0003 (Store first, data in Documents), D-0010 (name); `docs/engineering/release-and-distribution.md`
+
+## 10. Prepared 2026-10-19 (agent)
+
+| Item | Where |
+|---|---|
+| Privacy policy text | `PRIVACY.md` (push it to GitHub before the listing links to it) |
+| Unofficial line | `README.md` top, and Settings, About card (`AboutSettingsView`, English and Ukrainian) |
+| Listing texts, fields, certification notes (English; Ukrainian draft) | [`store-listing.md`](store-listing.md) |
+| Store screenshots (2400 x 1400, light and dark, English and Ukrainian, "Aranet4" in the footer; made by the render tests, `$env:DESKAIR_RENDER=1`) | `artifacts/store/en`, `artifacts/store/uk` (not in git). Only 3 Ukrainian ones: reuse or re-render more if the listing needs them |
+| First-run screen | Now names the Aranet4 in the welcome text and step 1, so a reviewer without the sensor sees what the app needs (policy 10.1.1). The plan said it already did; it did not |
+| Test package | `artifacts\msix\Deskair_0.1.1.0_x64.msix` (built from the current branch; the first Store upload may use any version at or above it) |
+
+Not done by the agent: the real tray flyout screenshot (the render is 840 px wide, below the Store minimum; take one with the packaged app if wanted), and all Partner Center clicks.

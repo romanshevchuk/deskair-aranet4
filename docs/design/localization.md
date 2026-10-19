@@ -111,12 +111,15 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Settings_Devices | Devices | Пристрої |
 | Settings_Data | Data and storage | Дані та сховище |
 | Settings_Startup | Start-up | Запуск |
+| Settings_About | About | Про застосунок |
+| Settings_About_Unofficial | Unofficial, independent project | Неофіційний незалежний проєкт |
+| Settings_About_Text | Deskair is open source and is not made by, affiliated with or endorsed by the maker of Aranet4. github.com/romanshevchuk/deskair-aranet4 | Deskair — застосунок з відкритим кодом. Його не створювала компанія-виробник Aranet4, він не пов’язаний з нею і не схвалений нею. github.com/romanshevchuk/deskair-aranet4 |
 | Toast_Elevated_Title | CO₂ is elevated · {room} | Рівень CO₂ підвищений · {room} |
 | Toast_Snooze | Snooze 1 h | Відкласти на 1 год |
 | Toast_Dismiss | Dismiss | Закрити |
 | Action_OpenApp | Open Deskair | Відкрити Deskair |
 | Onboarding_Welcome_Title | Welcome to Deskair | Ласкаво просимо до Deskair |
-| Onboarding_Welcome_Text | Watch your room’s CO₂, temperature, humidity and pressure, and get a nudge when it’s time to open a window. | Стежте за CO₂, температурою, вологістю й тиском у кімнаті та отримуйте нагадування, коли час відчинити вікно. |
+| Onboarding_Welcome_Text | Watch the CO₂, temperature, humidity and pressure from your Aranet4 sensor, and get a nudge when it’s time to open a window. | Стежте за CO₂, температурою, вологістю й тиском з вашого датчика Aranet4 та отримуйте нагадування, коли час відчинити вікно. |
 | Onboarding_Step_Pick | Pick your sensor, then name the room | Оберіть датчик і назвіть кімнату |
 | Onboarding_Nearby_Title | Sensors found nearby | Датчики поблизу |
 | Onboarding_Pair | Pair | Підключити |
