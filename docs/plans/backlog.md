@@ -15,7 +15,7 @@ Order of work: 1. Owner checks (R1) and decisions (R2), which can start now. 2. 
 | OWN-05 | Still open: "Try again" and the 30 s read timeout with the sensor out of range. (PC sleep and wake with the real sensor: checked by the owner 2026-10-18, the app left open over sleep, the sensor was connected after wake) | owner | doing |
 | OWN-08 | Windows 10 (never tried): solid backdrop, title bar, toasts, Do Not Disturb | owner | todo |
 | A11Y-01 | Manual check in `accessibility.md`. Checked by the owner 2026-10-18: keyboard only, scaling 150 % and 200 %, High Contrast, Narrator on Live and Settings. Narrator on the flyout checked 2026-10-18 (fine; the flyout now opens above the tray icon also when opened from the keyboard). Still open: Narrator on the History period buttons | owner | doing |
-| I18N-02 | Native Ukrainian review of every string marked "Draft: needs native review" (`ukrainian.md`) | owner | todo |
+| I18N-02 | Native Ukrainian review of the strings still marked "Draft: needs native review" (9 left on 2026-10-19: the Smart Home steps, About card, rising advice, "< 1 min", welcome text; the rest were reviewed by the owner and the agent) and of the listing text in `store-listing.md` | owner | doing |
 
 ## R2. Owner decisions (questions an agent cannot settle)
 

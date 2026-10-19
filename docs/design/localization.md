@@ -86,7 +86,7 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Flyout_Connecting_Title / Flyout_Connecting_Text | Connecting to your Aranet4… / This usually takes a few seconds. | Підключення до Aranet4… / Зазвичай це займає кілька секунд. |
 | Footer_Signal_Good / Fair / Weak | Signal good / fair / weak | Сигнал хороший / середній / слабкий |
 | Banner_LowBattery | Sensor battery is low ({percent}) | Низький заряд датчика ({percent}) |
-| Banner_HistoryUnreadable | Can't read your saved readings. Live data still works. | Не вдається прочитати збережені виміри. Поточні дані працюють. |
+| Banner_HistoryUnreadable | Can't read your saved readings. Live data still works. | Не вдається прочитати збережені вимірювання. Дані наживо працюють. |
 | Banner_HistoryOpenFolder | Open data folder | Відкрити папку з даними |
 | Action_Dismiss | Dismiss | Закрити |
 | Startup_Failed | Deskair could not start: {message} | Не вдалося запустити Deskair: {message} |
@@ -181,7 +181,7 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Sleep_Verdict_Good / Fair / Poor | Good night / Fair night / Poor night | Гарна ніч / Посередня ніч / Погана ніч |
 | Sleep_TimeAbove / Sleep_HoursOf | Time above {limit} {unit} / {hours} h of {total} h | Час вище {limit} {unit} / {hours} год із {total} год |
 | Sleep_Peak / Sleep_Deep | Peak at {time} / Deep sleep avg (02–05 h) | Пік о {time} / Середнє в глибокому сні (02–05) |
-| Sleep_Tip_Ajar | Leaving the bedroom door ajar or a window tilted usually shortens the time above the limit. | Прочинені двері спальні або відхилене вікно зазвичай скорочують час вище межі. |
+| Sleep_Tip_Ajar | Leaving the bedroom door ajar or a window tilted usually shortens the time above the limit. | Якщо залишити двері спальні прочиненими або вікно на провітрюванні, час вище межі зазвичай скорочується. |
 | Sleep_Tip_Fresh / Sleep_Tip_Other | Air stayed fresh through the night. / Overnight values for the night hours. | Повітря залишалося свіжим усю ніч. / Нічні значення за години ночі. |
 | Sleep_Partial | Only {recorded} of {total} hours were recorded: Deskair was not connected for the rest. | Записано лише {recorded} із {total} год: Deskair не був підключений решту часу. |
 | Sleep_Empty | No readings from last night. | Немає даних за минулу ніч. |
