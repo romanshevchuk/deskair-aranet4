@@ -28,7 +28,7 @@ Decided 2026-10-19 after a second look. The six CO₂ steps stay: hue gives the 
 | POL-53 | Caption over the row-end bars: "Time in zones" (CO₂), "Time in range" (Temperature, Humidity) | done |
 | POL-54 | Temperature and Humidity: no "best"; "worst" only when that row has time outside the range | done |
 
-Left as they are: the all-green row-end bars on a comfortable Temperature month (revisit with the calendar view, POL-55).
+Also done: comfortable is pale green, not grey (D-0024). Left as they are: the all-green row-end bars on a comfortable Temperature month (revisit with the calendar view, POL-55).
 
 ## Batch 3: after release
 

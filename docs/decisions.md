@@ -234,3 +234,13 @@ The review also found real flaws. Today could win "best" with 17 hours of data, 
 **Decision:** (1) best and worst tags go only to complete rows: not today, not the month in progress. (2) A caption over the row-end bars names them: "Time in zones" (CO₂), "Time in range" (Temperature, Humidity). (3) Temperature and Humidity have no "best" tag; "worst" appears only on the row with the least time inside the range, and only if that row has time outside it.
 
 **Consequences:** `HourGridDay.IsComplete`, `HourGridMonth.IsComplete`, `HourGridCalculator.ComfortWorst` replaces `ComfortExtremes`; `HourGridModel.BarCaption` and two strings per language; behaviour-rules.md rules 5 and 10 and screens-and-states.md updated. The floating tooltip and the calendar Month view stay in [`review-feedback-polish.md`](plans/review-feedback-polish.md) batch 3.
+
+## D-0024 Comfortable is pale green in the Temperature and Humidity grids
+
+**Status:** accepted · Oct 2026; amends POL-18 and POL-22
+
+Comfortable squares were neutral grey. Everywhere else green means fine: the CO₂ grid's Good, the row-end bar and the "Comfortable" pill. Grey reads as inactive or missing, so a good month looked empty and the grid said "nothing here" about the hours that were fine.
+
+**Decision:** `heat.comfort` is the pale green of the lowest CO₂ step (light #DDF2E7, dark #1D3B30). Cool stays blue, warm orange; the pale green is the quietest step, so exceptions stay the strongest marks. "No data" stays an empty outline.
+
+**Consequences:** two token values and design-tokens.md; no code change.

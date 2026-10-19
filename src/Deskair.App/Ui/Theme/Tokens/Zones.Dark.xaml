@@ -117,7 +117,7 @@
   <SolidColorBrush x:Key="Heat.Cool2.Brush" Color="{StaticResource Heat.Cool2.Color}" />
   <Color x:Key="Heat.Cool1.Color">#2D4567</Color>
   <SolidColorBrush x:Key="Heat.Cool1.Brush" Color="{StaticResource Heat.Cool1.Color}" />
-  <Color x:Key="Heat.Comfort.Color">#3A444E</Color>
+  <Color x:Key="Heat.Comfort.Color">#1D3B30</Color>
   <SolidColorBrush x:Key="Heat.Comfort.Brush" Color="{StaticResource Heat.Comfort.Color}" />
   <Color x:Key="Heat.Warm1.Color">#6A4A33</Color>
   <SolidColorBrush x:Key="Heat.Warm1.Brush" Color="{StaticResource Heat.Warm1.Color}" />
@@ -131,7 +131,7 @@
   <SolidColorBrush x:Key="Heat.Humid1.Brush" Color="{StaticResource Heat.Humid1.Color}" />
   <Color x:Key="Heat.Humid2.Color">#52A9DF</Color>
   <SolidColorBrush x:Key="Heat.Humid2.Brush" Color="{StaticResource Heat.Humid2.Color}" />
-  <!-- Comfort scales (temperature, humidity): diverging around a neutral Heat.Comfort; design-tokens.md "Heat scale". -->
+  <!-- Comfort scales (temperature, humidity): diverging around Heat.Comfort, the pale green of the lowest CO₂ step (D-0024); design-tokens.md "Heat scale". -->
   <Color x:Key="Heat.None.Line.Color">#29FFFFFF</Color>
   <SolidColorBrush x:Key="Heat.None.Line.Brush" Color="{StaticResource Heat.None.Line.Color}" />
 </ResourceDictionary>
