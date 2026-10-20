@@ -97,6 +97,7 @@ public sealed class AppServicesStarter
         messenger.Register<AppServicesStarter, DeviceSelected>(this, static (self, message) => self.Restart(message.Device));
         messenger.Register<AppServicesStarter, RetryRequested>(this, static (self, _) => self.RestartSelected());
         messenger.Register<AppServicesStarter, SystemResumed>(this, static (self, _) => self.RestartSelected());
+        messenger.Register<AppServicesStarter, SyncRequested>(this, static (self, _) => self.RestartSelected());
         cancellationToken.Register(() => messenger.UnregisterAll(this));
 
         await tracker.StartAsync(lastReading, cancellationToken);

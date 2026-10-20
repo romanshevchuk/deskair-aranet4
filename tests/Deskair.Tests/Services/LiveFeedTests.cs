@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Deskair.Domain.Readings;
 using Deskair.Services.Live;
 using Deskair.Services.Messages;
+using Deskair.Services.Sensors;
 using Deskair.Services.Storage;
 using Deskair.Tests.Fakes;
 using Microsoft.Extensions.Logging;
@@ -311,5 +312,53 @@ public sealed class LiveFeedTests : IDisposable
         await Start();
 
         Assert.Equal(0, sensor.ReadCurrentCalls);
+    }
+
+    private static SensorBroadcast Broadcast(int minute, double ppm, int? battery = 80)
+        => new(Samples.Co2(Samples.Utc(2026, 10, 9, 12).AddMinutes(minute), ppm), interval, battery);
+
+    [Fact]
+    public async Task Listen_stores_and_announces_each_broadcast_reading()
+    {
+        sensor.Broadcasts.AddRange([Broadcast(0, 800), Broadcast(2, 820)]);
+        var listening = feed.ListenAsync(sensor, device, stop.Token);
+
+        await Wait.Until(() => received.Count == 2);
+
+        Assert.Equal([800, 820], received.Select(message => message.Reading.Co2Ppm));
+        Assert.Equal(2, store.Readings.Count);
+        Assert.All(store.Merges, merge => Assert.Equal(ReadingSource.Device, merge.Source));
+        Assert.Equal(0, sensor.ReadCurrentCalls);
+
+        await stop.CancelAsync();
+        await listening;
+    }
+
+    [Fact]
+    public async Task Listen_passes_on_the_middle_of_the_last_batteries_and_only_when_it_changes()
+    {
+        var statuses = new ConcurrentQueue<SensorStatusUpdated>();
+        messenger.Register<SensorStatusUpdated>(this, (_, message) => statuses.Enqueue(message));
+        sensor.Broadcasts.AddRange(new[] { 48, 43, 47, 46, 44, 48 }.Select((percent, index) => Broadcast(index * 2, 800 + index, percent)));
+        var listening = feed.ListenAsync(sensor, device, stop.Token);
+
+        await Wait.Until(() => received.Count == 6);
+
+        Assert.Equal([48, 47, 46], statuses.Select(message => message.Status.BatteryPercent));
+        Assert.All(statuses, message => Assert.Equal(interval, message.Status.Interval));
+
+        await stop.CancelAsync();
+        await listening;
+    }
+
+    [Fact]
+    public async Task Listen_ends_quietly_when_cancelled()
+    {
+        var listening = feed.ListenAsync(sensor, device, stop.Token);
+        await Wait.Until(() => sensor.ListenCalls == 1);
+
+        await stop.CancelAsync();
+
+        await listening;
     }
 }

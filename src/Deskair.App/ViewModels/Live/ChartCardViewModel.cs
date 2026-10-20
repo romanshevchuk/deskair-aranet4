@@ -115,6 +115,12 @@ public sealed partial class ChartCardViewModel : ObservableObject
         var day = await query.GetRecentAsync(device, TimeSpan.FromHours(24), cancellationToken);
         var recent = length == TimeSpan.FromHours(24) ? day : await query.GetRecentAsync(device, length, cancellationToken);
 
+        // The newest reading sits on its slot, which can be a little after now; the chart must reach it.
+        if (recent.Count > 0 && recent[^1].Timestamp > EndTime)
+        {
+            EndTime = recent[^1].Timestamp;
+        }
+
         Points = ToPoints(recent, metric, device);
         SummaryText = Summary(recent, metric, range);
         AccessibleName = AccessibleNameOf(recent, metric);

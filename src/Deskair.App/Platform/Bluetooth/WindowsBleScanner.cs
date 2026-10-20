@@ -16,7 +16,9 @@ public sealed class WindowsBleScanner : IBleScanner
 {
     private const int BufferSize = 512;
 
-    public async IAsyncEnumerable<BleAdvertisement> ScanAsync([EnumeratorCancellation] CancellationToken cancellationToken)
+    public IAsyncEnumerable<BleAdvertisement> ScanAsync(CancellationToken cancellationToken) => ScanAsync(BleScanMode.Active, cancellationToken);
+
+    public async IAsyncEnumerable<BleAdvertisement> ScanAsync(BleScanMode mode, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         // A crowded room can produce many advertisements a second; if the consumer falls behind, the oldest are dropped.
         var channel = Channel.CreateBounded<BleAdvertisement>(new BoundedChannelOptions(BufferSize)
@@ -26,7 +28,10 @@ public sealed class WindowsBleScanner : IBleScanner
             SingleWriter = false
         });
 
-        var watcher = new BluetoothLEAdvertisementWatcher { ScanningMode = BluetoothLEScanningMode.Active };
+        var watcher = new BluetoothLEAdvertisementWatcher
+        {
+            ScanningMode = mode == BleScanMode.Passive ? BluetoothLEScanningMode.Passive : BluetoothLEScanningMode.Active
+        };
         watcher.Received += (_, args) => channel.Writer.TryWrite(ToAdvertisement(args));
         watcher.Stopped += (_, args) =>
         {

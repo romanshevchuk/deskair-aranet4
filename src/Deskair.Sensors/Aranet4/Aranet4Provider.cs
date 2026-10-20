@@ -62,5 +62,5 @@ public sealed class Aranet4Provider : ISensorProvider
         }
     }
 
-    public ISensor Create(DeviceId id) => new Aranet4Sensor(connectionFactory(), id, timeProvider);
+    public ISensor Create(DeviceId id) => new Aranet4Sensor(connectionFactory(), scanner, id, timeProvider);
 }

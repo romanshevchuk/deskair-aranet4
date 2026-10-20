@@ -131,7 +131,65 @@ public sealed class LiveFeed
             return null;
         }
 
-        // A failure to store is not a lost connection, so it never reaches the session: the reading is lost, the connection is fine.
+        await PublishAsync(device, reading, interval, store, cancellationToken);
+
+        return reading;
+    }
+
+    /// <summary>
+    /// Stores and announces the readings a sensor announces by itself, until cancelled. Nothing is polled and no connection is used.
+    /// The battery is passed on whenever it changes, because a sensor that is not connected cannot be asked for it.
+    /// </summary>
+    public async Task ListenAsync(ISensor sensor, DeviceId device, CancellationToken cancellationToken)
+    {
+        int? battery = null;
+        var batteries = new Queue<int>();
+
+        try
+        {
+            await foreach (var broadcast in sensor.ListenAsync(cancellationToken).WithCancellation(cancellationToken))
+            {
+                var steady = Steady(batteries, broadcast.BatteryPercent);
+
+                if (steady != battery)
+                {
+                    battery = steady;
+                    messenger.Send(new SensorStatusUpdated(device, new SensorStatus(broadcast.Interval, battery, null)));
+                }
+
+                await PublishAsync(device, broadcast.Reading, broadcast.Interval, store: true, cancellationToken);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancelling is how listening is stopped; it is not an error.
+        }
+    }
+
+    private const int BatterySamples = 5;
+
+    /// <summary>
+    /// The middle value of the last few battery readings. The sensor works the percentage out from the cell voltage, which moves by several points from one measurement to the next
+    /// (43 to 48 % within minutes on a resting sensor), so the raw value would make the footer flicker and could flash the low-battery banner.
+    /// </summary>
+    private static int? Steady(Queue<int> recent, int? percent)
+    {
+        if (percent is { } value)
+        {
+            recent.Enqueue(value);
+
+            if (recent.Count > BatterySamples)
+            {
+                recent.Dequeue();
+            }
+        }
+
+        return recent.Count == 0 ? null : recent.Order().ElementAt(recent.Count / 2);
+    }
+
+    // A failure to store is not a lost connection, so it never reaches the session: the reading is lost, the connection is fine.
+    private async Task PublishAsync(DeviceId device, Reading reading, TimeSpan interval, bool store, CancellationToken cancellationToken)
+    {
         try
         {
             if (store)
@@ -150,7 +208,5 @@ public sealed class LiveFeed
         {
             logger.LogWarning(exception, "Storing the live reading of {Provider} {Address} failed; trying again in {Interval}.", device.ProviderId, device.Address, interval);
         }
-
-        return reading;
     }
 }

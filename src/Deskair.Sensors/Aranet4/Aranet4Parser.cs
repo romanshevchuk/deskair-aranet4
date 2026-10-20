@@ -35,6 +35,38 @@ public static class Aranet4Parser
             TimeSpan.FromSeconds(BinaryPrimitives.ReadUInt16LittleEndian(bytes[Aranet4Protocol.CurrentAgeOffset..])));
     }
 
+    /// <summary>
+    /// Reads the manufacturer data of an advertisement. Returns null when it carries no usable measurement: too short, "Smart Home integration" is off (no values are sent then),
+    /// or a value is marked invalid (for example, before the first measurement).
+    /// </summary>
+    public static Aranet4Current? ParseAdvertisement(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.Length < Aranet4Protocol.AdvertisementLength
+            || (bytes[Aranet4Protocol.AdvertisementFlagsOffset] & Aranet4Protocol.AdvertisementIntegrationsFlag) == 0)
+        {
+            return null;
+        }
+
+        var co2 = DecodeCo2(BinaryPrimitives.ReadUInt16LittleEndian(bytes[Aranet4Protocol.AdvertisementCo2Offset..]));
+        var temperature = DecodeTemperature(BinaryPrimitives.ReadUInt16LittleEndian(bytes[Aranet4Protocol.AdvertisementTemperatureOffset..]));
+        var pressure = DecodePressure(BinaryPrimitives.ReadUInt16LittleEndian(bytes[Aranet4Protocol.AdvertisementPressureOffset..]));
+        var humidity = DecodeHumidity(bytes[Aranet4Protocol.AdvertisementHumidityOffset]);
+
+        if (co2 is null || temperature is null || pressure is null || humidity is null)
+        {
+            return null;
+        }
+
+        return new Aranet4Current(
+            co2.Value,
+            temperature.Value,
+            humidity.Value,
+            pressure.Value,
+            bytes[Aranet4Protocol.AdvertisementBatteryOffset],
+            TimeSpan.FromSeconds(BinaryPrimitives.ReadUInt16LittleEndian(bytes[Aranet4Protocol.AdvertisementIntervalOffset..])),
+            TimeSpan.FromSeconds(BinaryPrimitives.ReadUInt16LittleEndian(bytes[Aranet4Protocol.AdvertisementAgeOffset..])));
+    }
+
     /// <summary>A two-byte little-endian number such as the interval, the stored count or the age. Throws <see cref="ArgumentException"/> when the value is shorter.</summary>
     public static int ParseUInt16(ReadOnlySpan<byte> bytes)
         => bytes.Length < 2

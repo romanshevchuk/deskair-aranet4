@@ -308,6 +308,9 @@
   <data name="Settings_Data_ChooseFile" xml:space="preserve"><value>Вибрати файл</value></data>
   <data name="Settings_Data_Export" xml:space="preserve"><value>Експорт у CSV</value></data>
   <data name="Settings_Data_ExportHint" xml:space="preserve"><value>Усі збережені вимірювання вибраної кімнати</value></data>
+  <data name="Settings_Data_Sync" xml:space="preserve"><value>Синхронізувати історію</value><comment>Draft: needs native review. Row title in Settings, Data and storage.</comment></data>
+  <data name="Settings_Data_SyncHint" xml:space="preserve"><value>Завантажує вимірювання, які датчик зберіг, поки Deskair їх не приймав. Приблизно 20 секунд інші застосунки не бачать датчик</value><comment>Draft: needs native review. Hint under the sync row.</comment></data>
+  <data name="Action_Sync" xml:space="preserve"><value>Синхронізувати</value><comment>Draft: needs native review. Button.</comment></data>
   <data name="Data_NoSensor" xml:space="preserve"><value>Спочатку додайте датчик.</value></data>
   <data name="Dialog_AllFiles" xml:space="preserve"><value>Усі файли</value></data>
   <data name="Import_DialogTitle" xml:space="preserve"><value>Виберіть експорт із застосунку на телефоні</value></data>

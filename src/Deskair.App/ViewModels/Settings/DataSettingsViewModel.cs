@@ -1,8 +1,10 @@
 using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Localization;
 using Deskair.App.ViewModels.Data;
+using Deskair.Services.Messages;
 using Deskair.Services.Platform;
 using Microsoft.Extensions.Logging;
 
@@ -19,6 +21,7 @@ public sealed partial class DataSettingsViewModel : ObservableObject
     private readonly IDataFolderChoice choice;
     private readonly IFileDialogs dialogs;
     private readonly ILocalizer localizer;
+    private readonly IMessenger messenger;
     private readonly ILogger<DataSettingsViewModel> logger;
 
     /// <summary>The folder in use now.</summary>
@@ -38,8 +41,10 @@ public sealed partial class DataSettingsViewModel : ObservableObject
         ILocalizer localizer,
         ImportViewModel import,
         ExportViewModel export,
+        IMessenger messenger,
         ILogger<DataSettingsViewModel> logger)
     {
+        this.messenger = messenger;
         this.folders = folders;
         this.folderOpener = folderOpener;
         this.choice = choice;
@@ -62,6 +67,12 @@ public sealed partial class DataSettingsViewModel : ObservableObject
         ShowPendingChange();
 
         return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private void SyncHistory()
+    {
+        messenger.Send(new SyncRequested());
     }
 
     [RelayCommand]
