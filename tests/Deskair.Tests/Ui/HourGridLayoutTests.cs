@@ -31,6 +31,24 @@ public class HourGridLayoutTests
     }
 
     [Fact]
+    public void Short_tags_keep_the_normal_end_column()
+    {
+        var layout = new HourGridLayout(Model(7), new Size(800, 600), tagWidth: 33);
+
+        Assert.Equal(160, layout.EndWidth);
+        Assert.Equal(800 - 84 - 160, layout.GridWidth);
+    }
+
+    [Fact]
+    public void A_long_tag_widens_the_end_column_and_narrows_the_squares()
+    {
+        var layout = new HourGridLayout(Model(7), new Size(800, 600), tagWidth: 66);
+
+        Assert.Equal(HourGridLayout.TagLeft + 66, layout.EndWidth);
+        Assert.Equal(800 - 84 - layout.EndWidth, layout.GridWidth);
+    }
+
+    [Fact]
     public void A_month_shares_the_height_and_gets_compact_rows()
     {
         var layout = new HourGridLayout(Model(30), new Size(800, 470));

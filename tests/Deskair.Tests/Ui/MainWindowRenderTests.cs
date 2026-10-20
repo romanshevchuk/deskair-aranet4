@@ -139,6 +139,41 @@ public class MainWindowRenderTests
         RenderOutput.Save($"live-{theme.ToString().ToLowerInvariant()}-en-{(co2Shift == -450 ? "good" : co2Shift == 600 ? "high" : "crossing")}.png", png);
     }
 
+    // Store screenshots: the longer chart ranges show the air moving through the zones, which the one-hour chart does not.
+    [Theory]
+    [InlineData(ThemeChoice.Light, -150, LiveRange.TwentyFourHours)]
+    [InlineData(ThemeChoice.Light, -150, LiveRange.SixHours)]
+    [InlineData(ThemeChoice.Light, -250, LiveRange.TwentyFourHours)]
+    [InlineData(ThemeChoice.Dark, -150, LiveRange.TwentyFourHours)]
+    [InlineData(ThemeChoice.Light, 600, LiveRange.TwentyFourHours)]
+    [InlineData(ThemeChoice.Light, 600, LiveRange.SixHours)]
+    [InlineData(ThemeChoice.Light, 0, LiveRange.TwentyFourHours)]
+    public void Render_the_live_screen_for_the_store(ThemeChoice theme, double co2Shift, LiveRange range)
+    {
+        RenderOutput.Require();
+
+        var png = UiHost.Run(theme, () =>
+        {
+            UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo("en-US"));
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+
+            var shell = BuildShell(ConnectionState.Normal, TemperatureUnit.Celsius, co2Shift: co2Shift);
+            var live = shell.Live!;
+            live.Tabs.SelectedRange = range;
+            live.ChartCard.RefreshAsync(Metric.Co2, range, CancellationToken.None).GetAwaiter().GetResult();
+
+            var window = new MainWindow(shell);
+            var content = (FrameworkElement)window.Content;
+
+            content.DataContext = shell;
+            window.Content = null;
+
+            return ControlRenderer.ToPng(content, 1200, 700);
+        });
+
+        RenderOutput.Save($"store-live-{theme.ToString().ToLowerInvariant()}-{co2Shift}-{range}.png", png);
+    }
+
     internal static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit, bool bluetoothOff = false, double co2Shift = 0)
     {
         var messenger = new StrongReferenceMessenger();

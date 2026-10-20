@@ -75,6 +75,25 @@ public class HistoryRenderTests
         Write(theme, "en-US", shell, $"{range.ToString().ToLowerInvariant()}-{metric.ToString().ToLowerInvariant()}-varied");
     }
 
+    // Store screenshots: a room whose days differ from each other, with no long gap.
+    [Theory]
+    [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Co2)]
+    [InlineData(ThemeChoice.Light, "en-US", Period.Day, Metric.Co2)]
+    [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Temperature)]
+    [InlineData(ThemeChoice.Light, "en-US", Period.Week, Metric.Humidity)]
+    [InlineData(ThemeChoice.Dark, "en-US", Period.Week, Metric.Co2)]
+    [InlineData(ThemeChoice.Light, "uk-UA", Period.Week, Metric.Co2)]
+    [InlineData(ThemeChoice.Light, "uk-UA", Period.Day, Metric.Co2)]
+    public async Task Render_the_history_screen_for_the_store(ThemeChoice theme, string culture, Period range, Metric metric)
+    {
+        RenderOutput.Require();
+
+        UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo(culture));
+        var shell = await BuildShellAsync(range, metric, TemperatureUnit.Celsius, sample: new RealisticRoom());
+
+        Write(theme, culture, shell, $"store-{range.ToString().ToLowerInvariant()}-{metric.ToString().ToLowerInvariant()}");
+    }
+
     [Theory]
     [InlineData(ThemeChoice.Light, "en-US")]
     [InlineData(ThemeChoice.Dark, "uk-UA")]
@@ -116,7 +135,7 @@ public class HistoryRenderTests
         return reading with { TemperatureC = 22.5 + (4 * Math.Sin(hour - 2.2)) + (2 * spell), HumidityPct = Math.Round(39 + (11 * Math.Sin(hour + 1)) + (7 * spell)) };
     }
 
-    private static async Task<ShellViewModel> BuildShellAsync(Period range, Metric metric, TemperatureUnit unit, bool withReadings = true, bool varied = false)
+    private static async Task<ShellViewModel> BuildShellAsync(Period range, Metric metric, TemperatureUnit unit, bool withReadings = true, bool varied = false, RealisticRoom? sample = null)
     {
         var messenger = new StrongReferenceMessenger();
         var dispatcher = new FakeUiDispatcher();
@@ -126,13 +145,17 @@ public class HistoryRenderTests
 
         var store = new FakeReadingStore();
 
-        for (var time = now.AddDays(-400); time <= now; time += TimeSpan.FromMinutes(2))
+        for (var time = now.AddDays(sample is null ? -400 : -60); time <= now; time += TimeSpan.FromMinutes(2))
         {
             var day = (now - time).TotalDays;
-            var inGap = day is > 3 and < 5;
-            var partialDay = time.Date == new DateTime(2026, 10, 9) && time.Hour is < 6 or > 9 && time.Date == new DateTime(2026, 10, 9);
+            var inGap = sample is null && day is > 3 and < 5;
+            var partialDay = sample is null && time.Date == new DateTime(2026, 10, 9) && time.Hour is < 6 or > 9 && time.Date == new DateTime(2026, 10, 9);
 
-            if (withReadings && !inGap && !partialDay)
+            if (sample is not null)
+            {
+                store.Readings.Add(sample.ReadingAt(time));
+            }
+            else if (withReadings && !inGap && !partialDay)
             {
                 store.Readings.Add(varied ? Varied(SimulatedSensor.ReadingAt(time)) : SimulatedSensor.ReadingAt(time));
             }

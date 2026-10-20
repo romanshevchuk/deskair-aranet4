@@ -17,7 +17,6 @@ public sealed class HourGridLayer : IChartLayer
     private const double AverageRight = 46;
     private const double BarLeft = 56;
     private const double BarWidth = 60;
-    private const double TagLeft = 124;
     private const double NightLine = 18;
 
     public HourGridLayout? Layout { get; set; }
@@ -130,7 +129,7 @@ public sealed class HourGridLayer : IChartLayer
         }
 
         var formatted = area.Text(layout.Model.BarCaption, area.Brush("Text.Tertiary.Brush"));
-        formatted.MaxTextWidth = HourGridLayout.EndWidth - BarLeft;
+        formatted.MaxTextWidth = layout.EndWidth - BarLeft;
         formatted.MaxLineCount = 1;
         formatted.Trimming = TextTrimming.CharacterEllipsis;
 
@@ -208,7 +207,7 @@ public sealed class HourGridLayer : IChartLayer
             var label = row.Tag == HourGridTag.Best ? layout.Model.BestText : layout.Model.WorstTagText;
             var brush = text.Brush(row.Tag == HourGridTag.Best ? "Zone.Good.PillText.Brush" : "Zone.High.PillText.Brush");
             var formatted = text.Text(label, brush, bold: true);
-            context.DrawText(formatted, new Point(layout.GridRight + TagLeft, middle - (formatted.Height / 2)));
+            context.DrawText(formatted, new Point(layout.GridRight + HourGridLayout.TagLeft, middle - (formatted.Height / 2)));
         }
     }
 

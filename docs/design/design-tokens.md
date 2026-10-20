@@ -1,6 +1,6 @@
 # Design tokens
 
-*Last reviewed: 2026-10-19*
+*Last reviewed: 2026-10-20*
 
 Design size is 1200 × 728 px at 100 % scale; the window cannot be made smaller than 1100 × 700 (below that the History hour grid legend and the Live tip card no longer fit; checked with renders), so a snap to half a 1080p screen (960 px) opens at the minimum and overflows its zone. Implement every value as a named resource in a light and a dark `ResourceDictionary`. The visual target is `design/polish/deskair-polish-concept.html` (POL-00); where it and this file differ, this file wins.
 
@@ -131,7 +131,7 @@ Segoe UI Variable Text, falling back to Segoe UI; display sizes use Segoe UI Var
 | Settings | One column, at most 720 px wide, centred. Section titles 14 px 600 above their cards. Card padding 12 / 22 / 8 px; row at least 40 px tall with 4 px above and below, 16 px between label and control, a 1 px divider above every row but the first. Time fields 88 px wide; the three segmented controls in Appearance are at least 296 px wide, with equal segments so their left edges line up; a note or status under a row is a caption (6 px below, no divider), and "invalid time" captions sit right-aligned under the field |
 | Live grid | 3 equal columns; rows 1 fr and 132 px |
 | History | Toolbar 40 px: metric segmented control, period navigator (title 16 px 600, at least 176 px wide, 32 px arrow buttons), range segmented control, 34 px export icon button. Main card padding 18 / 22 / 12. Summary card 330 px wide, padding 20 / 22, full height |
-| History grid | Label column 84 px; end column 160 px (row average right-aligned 46 px in, zone bar 60 px wide and up to 6 px high at 56 px, tag at 124 px); 2 px between squares; square radius 4 px or a quarter of its height if smaller; row height 9 to 44 px from the space available; a collapsed run is one 28 px row; the typical row follows a 16 px separator; legend band 50 px; the night bracket above the hour labels |
+| History grid | Label column 84 px; end column 160 px, wider only when the best or worst tag needs more (Ukrainian "найкращий": about 190 px) (row average right-aligned 46 px in, zone bar 60 px wide and up to 6 px high at 56 px, tag at 124 px); 2 px between squares; square radius 4 px or a quarter of its height if smaller; row height 9 to 44 px from the space available; a collapsed run is one 28 px row; the typical row follows a 16 px separator; legend band 50 px; the night bracket above the hour labels |
 | Flyout | 360 px wide, radius 8 px (as the Windows flyouts), 1 px `card.border` outline, shadow 0 16 40 at 30 % black (WPF: blur 32, depth 10, opacity 0.28). Content padding 16 px at the sides. Footer band in `flyout.band`, padding 10 / 12, a 1 px `divider` above it. Ribbon 8 px high, segments radius 3 px, 2 px apart |
 | Toast | drawn by Windows (card, fonts, corners); Deskair supplies the zone-coloured ring (96 px image, the same ring as the tray icon) and the texts; no left edge, no custom colours |
 

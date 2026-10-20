@@ -4,14 +4,15 @@ using Deskair.App.ViewModels.ChartModels;
 namespace Deskair.App.Ui.Charts;
 
 /// <summary>
-/// Where every part of the History grid goes (design-tokens.md "History grid"): an 84 px label column, the squares, a 160 px end column;
+/// Where every part of the History grid goes (design-tokens.md "History grid"): an 84 px label column, the squares, a 160 px end column that grows when a tag needs more room;
 /// the night bracket and hour labels on top, the legend at the bottom. Rows share the height left, between 9 and 44 px each; a folded run of
 /// days without readings is one 28 px row; the typical row follows a 16 px gap. Row index -1 is the typical row.
 /// </summary>
 public sealed class HourGridLayout
 {
     public const double LabelWidth = 84;
-    public const double EndWidth = 160;
+    public const double MinEndWidth = 160;
+    public const double TagLeft = 124;
     public const double CollapsedHeight = 28;
     public const double TypicalGap = 16;
     public const double LegendBand = 50;
@@ -22,12 +23,13 @@ public sealed class HourGridLayout
 
     private readonly List<double> rowTops = [];
 
-    public HourGridLayout(HourGridModel model, Size size)
+    public HourGridLayout(HourGridModel model, Size size, double tagWidth = 0)
     {
         ArgumentNullException.ThrowIfNull(model);
 
         Model = model;
         Size = size;
+        EndWidth = Math.Max(MinEndWidth, tagWidth > 0 ? TagLeft + tagWidth : 0);
         GridWidth = Math.Max(0, size.Width - LabelWidth - EndWidth);
         CellWidth = GridWidth / Math.Max(1, model.Columns);
         Top = model.Night is null ? TopPlain : TopWithNight;
@@ -52,6 +54,9 @@ public sealed class HourGridLayout
     public HourGridModel Model { get; }
 
     public Size Size { get; }
+
+    /// <summary>160 px, or more when the best or worst tag is a long word (Ukrainian), so the grid gives up room only when it must.</summary>
+    public double EndWidth { get; }
 
     public double GridLeft { get; } = LabelWidth;
 

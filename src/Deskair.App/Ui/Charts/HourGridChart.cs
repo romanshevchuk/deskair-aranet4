@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Deskair.App.Ui.Charts.Layers;
 using Deskair.App.ViewModels.ChartModels;
 
@@ -34,7 +35,19 @@ public sealed class HourGridChart : ChartBase
 
     protected override Thickness PlotMargin => default;
 
-    private HourGridLayout? CurrentLayout => Model is { } model ? new HourGridLayout(model, RenderSize) : null;
+    private HourGridLayout? CurrentLayout => Model is { } model ? new HourGridLayout(model, RenderSize, TagWidth(model)) : null;
+
+    /// <summary>How wide the longer of the best and worst tags is, so the grid keeps its normal end column when the words are short.</summary>
+    private double TagWidth(HourGridModel model)
+    {
+        var area = CreateArea(RenderSize, 0, 1, 0, 1);
+
+        return new[] { model.BestText, model.WorstTagText }
+            .Where(text => !string.IsNullOrEmpty(text))
+            .Select(text => area.Text(text!, Brushes.Black, bold: true).Width)
+            .DefaultIfEmpty(0)
+            .Max();
+    }
 
     protected override IReadOnlyList<IChartLayer> CreateLayers()
     {
