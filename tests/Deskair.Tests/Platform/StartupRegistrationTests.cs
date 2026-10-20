@@ -28,13 +28,13 @@ public sealed class StartupRegistrationTests : IDisposable
     }
 
     [Fact]
-    public async Task Enabling_writes_the_quoted_path_and_reports_enabled()
+    public async Task Enabling_writes_the_quoted_path_with_the_background_argument_and_reports_enabled()
     {
         await registration.SetEnabledAsync(true, TestContext.Current.CancellationToken);
 
         Assert.True(registration.IsEnabled);
         using var key = Registry.CurrentUser.OpenSubKey(keyPath);
-        Assert.Equal($"\"{Program}\"", key?.GetValue("Deskair"));
+        Assert.Equal($"\"{Program}\" --background", key?.GetValue("Deskair"));
     }
 
     [Fact]

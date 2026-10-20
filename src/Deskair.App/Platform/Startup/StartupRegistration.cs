@@ -1,5 +1,6 @@
 using System.IO;
 using System.Security;
+using Deskair.App.Composition;
 using Deskair.Services.Platform;
 using Microsoft.Win32;
 
@@ -7,7 +8,7 @@ namespace Deskair.App.Platform.Startup;
 
 /// <summary>
 /// Start with Windows through the per-user Run key (unpackaged builds). A packaged build would use a startup task instead (docs/decisions.md D-0003);
-/// that difference stays inside this class. The value is the quoted path of the running program.
+/// that difference stays inside this class. The value is the quoted path of the running program plus <c>--background</c>, so it starts in the tray.
 /// </summary>
 public sealed class StartupRegistration : IStartupRegistration
 {
@@ -57,7 +58,7 @@ public sealed class StartupRegistration : IStartupRegistration
         if (enabled)
         {
             using var key = Registry.CurrentUser.CreateSubKey(keyPath, writable: true);
-            key.SetValue(valueName, $"\"{executablePath}\"", RegistryValueKind.String);
+            key.SetValue(valueName, $"\"{executablePath}\" {AppOptions.BackgroundArgument}", RegistryValueKind.String);
         }
         else
         {

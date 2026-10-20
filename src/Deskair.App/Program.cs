@@ -1,5 +1,7 @@
 using Deskair.App.Composition;
 using Deskair.App.Platform;
+using Deskair.App.Platform.Packaging;
+using Deskair.App.Platform.Startup;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -11,6 +13,11 @@ public static class Program
     public static int Main(string[] args)
     {
         var options = AppOptions.Parse(args);
+
+        if (!options.StartedInBackground && new WindowsPackageIdentity().IsPackaged && PackagedStartupActivation.WasStartedByStartupTask())
+        {
+            options = options with { StartedInBackground = true };
+        }
 
         if (options.FirstRun)
         {

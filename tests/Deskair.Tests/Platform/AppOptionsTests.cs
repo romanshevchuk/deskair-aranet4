@@ -46,6 +46,13 @@ public class AppOptionsTests
         Assert.True(AppOptions.Parse(["--first-run"]).FirstRun);
     }
 
+    [Fact]
+    public void The_background_argument_of_the_startup_entry_is_recognised()
+    {
+        Assert.True(AppOptions.Parse(["--BACKGROUND"]).StartedInBackground);
+        Assert.False(AppOptions.Parse([]).StartedInBackground);
+    }
+
     [Theory]
     [InlineData("-ToastActivated")]
     [InlineData("-Embedding")]

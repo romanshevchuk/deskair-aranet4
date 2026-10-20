@@ -1,6 +1,6 @@
 # Decisions
 
-*Last reviewed: 2026-10-19*
+*Last reviewed: 2026-10-20*
 
 A short, append-only log. Each entry: context, decision, consequences. Do not delete entries; mark them superseded. Review the statuses once a quarter so nothing stays "proposed" after it shipped. If this file grows past about 15 entries or an entry needs long reasoning, move that entry to its own file in `docs/decisions.md`.
 
@@ -264,3 +264,13 @@ At Elevated (1000 ppm) a 5 minute wait stops a toast for every breath on the sen
 **Decision:** (1) the dwell before a toast is 2 minutes at High, 5 at Elevated; the escalation from Elevated to High also waits 2 minutes. The sensor reports every 2 minutes, so the High toast comes with the second High reading. (2) A real test on 2026-10-19 showed that with "Smart Home integration" switched off in the Aranet Home app, the sensor refuses the current-readings read (`ProtocolError`), so Deskair needs it on. The first-run steps (`Sensor_Aranet4_Step3`) and the offline steps (`Offline_Step_SmartHome`) now say so, and the Store listing names it.
 
 **Consequences:** `AlertPolicy.HighDwell`; two strings per language; behaviour-rules.md "Alerts"; store-listing.md. Not done: an error that names the cause automatically when the read fails with `ProtocolError`.
+
+## D-0027 Start with Windows starts in the tray
+
+**Status:** accepted · Oct 2026
+
+After sign-in the main window opened in front of the user's work, although the app lives in the tray.
+
+**Decision:** a start caused by Start with Windows does not show the window when the tray icon is up. The Run key entry (unpackaged) adds `--background`; the packaged startup task cannot pass an argument, so `Program` asks Windows whether the activation kind is `StartupTask`. Starting by hand, or a second launch, still shows the window.
+
+**Consequences:** `AppOptions.StartedInBackground`, `PackagedStartupActivation`, `StartupSequence`. An existing Run entry without `--background` is rewritten when the user switches the setting off and on. The packaged path is not verified on a real sign-in yet.

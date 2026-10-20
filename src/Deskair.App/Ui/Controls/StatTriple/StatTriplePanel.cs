@@ -83,7 +83,15 @@ public class StatTriplePanel : Panel
             return new Size(desired.Max() * children.Count, children.Max(child => child.DesiredSize.Height));
         }
 
+        var previous = columns;
         columns = Allocate(availableSize.Width, desired);
+
+        // The dividers are drawn from the columns; a new value can move them while the panel keeps its size, and then WPF would not draw them again.
+        if (!previous.SequenceEqual(columns))
+        {
+            InvalidateVisual();
+        }
+
         double tallest = 0;
 
         for (var index = 0; index < children.Count; index++)

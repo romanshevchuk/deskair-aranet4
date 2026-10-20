@@ -1,3 +1,7 @@
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Deskair.App.Ui.Controls;
 
 namespace Deskair.Tests.Ui;
@@ -40,5 +44,43 @@ public class StatTriplePanelTests
         var widths = StatTriplePanel.Allocate(300, [150, 150, 150]);
 
         Assert.All(widths, width => Assert.Equal(100, width, 0.01));
+    }
+
+    [Fact]
+    public void The_dividers_are_drawn_again_when_a_value_changes_and_moves_the_columns()
+    {
+        UiHost.Run(() =>
+        {
+            var middle = new Border { Width = 40 };
+            var panel = new CountingPanel { DividerBrush = Brushes.Black, Children = { new Border { Width = 40 }, middle, new Border { Width = 40 } } };
+            var host = new Border { Width = 300, Child = panel };
+
+            Show(host);
+            var before = panel.Renders;
+
+            middle.Width = 150;
+            Show(host);
+
+            Assert.True(panel.Renders > before);
+        });
+    }
+
+    private static void Show(FrameworkElement host)
+    {
+        host.Measure(new Size(300, 100));
+        host.Arrange(new Rect(0, 0, 300, 100));
+        host.UpdateLayout();
+        new RenderTargetBitmap(300, 100, 96, 96, PixelFormats.Pbgra32).Render(host);
+    }
+
+    private sealed class CountingPanel : StatTriplePanel
+    {
+        public int Renders { get; private set; }
+
+        protected override void OnRender(DrawingContext dc)
+        {
+            Renders++;
+            base.OnRender(dc);
+        }
     }
 }
