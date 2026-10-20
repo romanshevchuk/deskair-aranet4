@@ -66,7 +66,10 @@ public sealed class ReadingQueryService
         CancellationToken cancellationToken)
     {
         var now = timeProvider.GetUtcNow();
-        var recent = await readings.ReadRangeAsync(device, now - window, now, cancellationToken);
+
+        // A reading is stored on the nearest slot, which can lie up to half an interval after the moment it was measured; stopping at "now" would hide the newest reading until the next one.
+        var end = now + (devices.IntervalFor(device, now) / 2);
+        var recent = await readings.ReadRangeAsync(device, now - window, end, cancellationToken);
 
         return recent.OrderBy(reading => reading.Timestamp).ToList();
     }

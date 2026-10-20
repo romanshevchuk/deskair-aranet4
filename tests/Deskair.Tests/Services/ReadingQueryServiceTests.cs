@@ -86,7 +86,18 @@ public class ReadingQueryServiceTests
         var recent = await service.GetRecentAsync(device, TimeSpan.FromHours(24), CancellationToken.None);
 
         Assert.Equal(new[] { 700.0, 900.0, 1000.0 }, recent.Select(reading => reading.Co2Ppm));
-        Assert.Equal((device, now.AddHours(-24), now), store.Requested);
+        Assert.Equal((device, now.AddHours(-24), now + TimeSpan.FromMinutes(1)), store.Requested);
+    }
+
+    [Fact]
+    public async Task Live_includes_a_reading_stored_on_a_slot_just_after_now()
+    {
+        // Measured 25 s ago, stored on the nearest slot of the grid, which is 35 s ahead.
+        store.Readings.AddRange([Samples.Co2(now.AddSeconds(35), 1100), Samples.Co2(now.AddSeconds(90), 1200)]);
+
+        var recent = await service.GetRecentAsync(device, TimeSpan.FromHours(1), CancellationToken.None);
+
+        Assert.Equal([1100], recent.Select(reading => reading.Co2Ppm));
     }
 
     [Fact]

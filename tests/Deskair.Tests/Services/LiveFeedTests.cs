@@ -335,16 +335,16 @@ public sealed class LiveFeedTests : IDisposable
     }
 
     [Fact]
-    public async Task Listen_passes_the_battery_on_only_when_it_changes()
+    public async Task Listen_passes_on_the_middle_of_the_last_batteries_and_only_when_it_changes()
     {
         var statuses = new ConcurrentQueue<SensorStatusUpdated>();
         messenger.Register<SensorStatusUpdated>(this, (_, message) => statuses.Enqueue(message));
-        sensor.Broadcasts.AddRange([Broadcast(0, 800, 80), Broadcast(2, 810, 80), Broadcast(4, 820, 79)]);
+        sensor.Broadcasts.AddRange(new[] { 48, 43, 47, 46, 44, 48 }.Select((percent, index) => Broadcast(index * 2, 800 + index, percent)));
         var listening = feed.ListenAsync(sensor, device, stop.Token);
 
-        await Wait.Until(() => received.Count == 3);
+        await Wait.Until(() => received.Count == 6);
 
-        Assert.Equal([80, 79], statuses.Select(message => message.Status.BatteryPercent));
+        Assert.Equal([48, 47, 46], statuses.Select(message => message.Status.BatteryPercent));
         Assert.All(statuses, message => Assert.Equal(interval, message.Status.Interval));
 
         await stop.CancelAsync();

@@ -76,9 +76,21 @@ public class ChartCardViewModelTests
         await viewModel.RefreshAsync(Metric.Co2, range, TestContext.Current.CancellationToken);
 
         Assert.Equal(now.AddHours(-hours), store.Requested!.Value.Start);
-        Assert.Equal(now, store.Requested!.Value.End);
+        Assert.Equal(now + (interval / 2), store.Requested!.Value.End);
         Assert.Equal(TimeSpan.FromHours(hours), viewModel.Window);
         Assert.Equal(now, viewModel.EndTime);
+    }
+
+    [Fact]
+    public async Task The_chart_reaches_a_newest_reading_stored_just_after_now()
+    {
+        await SelectDeviceAsync();
+        store.Readings.Add(Samples.Co2(now.AddSeconds(35), 1100));
+
+        await viewModel.RefreshAsync(Metric.Co2, LiveRange.OneHour, TestContext.Current.CancellationToken);
+
+        Assert.Equal([1100], viewModel.Points!.Select(point => point.Value));
+        Assert.Equal(now.AddSeconds(35), viewModel.EndTime);
     }
 
     [Fact]

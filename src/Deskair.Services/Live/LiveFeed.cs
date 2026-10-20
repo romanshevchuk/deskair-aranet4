@@ -143,14 +143,17 @@ public sealed class LiveFeed
     public async Task ListenAsync(ISensor sensor, DeviceId device, CancellationToken cancellationToken)
     {
         int? battery = null;
+        var batteries = new Queue<int>();
 
         try
         {
             await foreach (var broadcast in sensor.ListenAsync(cancellationToken).WithCancellation(cancellationToken))
             {
-                if (broadcast.BatteryPercent != battery)
+                var steady = Steady(batteries, broadcast.BatteryPercent);
+
+                if (steady != battery)
                 {
-                    battery = broadcast.BatteryPercent;
+                    battery = steady;
                     messenger.Send(new SensorStatusUpdated(device, new SensorStatus(broadcast.Interval, battery, null)));
                 }
 
@@ -161,6 +164,27 @@ public sealed class LiveFeed
         {
             // Cancelling is how listening is stopped; it is not an error.
         }
+    }
+
+    private const int BatterySamples = 5;
+
+    /// <summary>
+    /// The middle value of the last few battery readings. The sensor works the percentage out from the cell voltage, which moves by several points from one measurement to the next
+    /// (43 to 48 % within minutes on a resting sensor), so the raw value would make the footer flicker and could flash the low-battery banner.
+    /// </summary>
+    private static int? Steady(Queue<int> recent, int? percent)
+    {
+        if (percent is { } value)
+        {
+            recent.Enqueue(value);
+
+            if (recent.Count > BatterySamples)
+            {
+                recent.Dequeue();
+            }
+        }
+
+        return recent.Count == 0 ? null : recent.Order().ElementAt(recent.Count / 2);
     }
 
     // A failure to store is not a lost connection, so it never reaches the session: the reading is lost, the connection is fine.
