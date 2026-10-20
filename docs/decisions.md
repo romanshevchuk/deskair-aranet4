@@ -273,4 +273,4 @@ After sign-in the main window opened in front of the user's work, although the a
 
 **Decision:** a start caused by Start with Windows does not show the window when the tray icon is up. The Run key entry (unpackaged) adds `--background`; the packaged startup task cannot pass an argument, so `Program` asks Windows whether the activation kind is `StartupTask`. Starting by hand, or a second launch, still shows the window.
 
-**Consequences:** `AppOptions.StartedInBackground`, `PackagedStartupActivation`, `StartupSequence`. An existing Run entry without `--background` is rewritten when the user switches the setting off and on. The packaged path is not verified on a real sign-in yet.
+**Consequences:** `AppOptions.StartedInBackground`, `PackagedStartupActivation`, `StartupSequence`. An existing Run entry without `--background` is rewritten when the user switches the setting off and on. Verified by the owner on a packaged test build after a restart (2026-10-20).
