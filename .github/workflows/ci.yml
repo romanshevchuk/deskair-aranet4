@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Build
+        run: dotnet build Deskair.sln --configuration Release
+      - name: Format check
+        run: dotnet format Deskair.sln --verify-no-changes
+      # The test project is an executable; running it directly is reliable here (docs/plans/handoff.md, "Tooling notes").
+      # The render tests skip themselves unless DESKAIR_RENDER=1.
+      - name: Test
+        run: tests\Deskair.Tests\bin\Release\net10.0-windows10.0.19041.0\Deskair.Tests.exe

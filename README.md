@@ -65,6 +65,10 @@ The code is split into five projects with one-way dependencies: `Domain` (types 
 - **No toasts:** Windows Do Not Disturb may be holding them; Deskair says so in Settings.
 - **Logs (running from source):** `%LOCALAPPDATA%\Deskair\logs`.
 
+## Acknowledgements
+
+The Aranet4 Bluetooth protocol was learned from the [Aranet4-Python](https://github.com/Anrijs/Aranet4-Python) project by Anrijs Jargans and contributors (MIT licence), whose protocol documentation and client were a research reference. Deskair's C# implementation is separate; it uses protocol identifiers and packet layouts as interoperability facts. Our own capture of the sensor's history format is in [`docs/plans/spike-s1-ble-history.md`](docs/plans/spike-s1-ble-history.md).
+
 ## Documentation
 
 - Start at [`docs/00-index.md`](docs/00-index.md): product rules, design, data model, architecture and decisions.
