@@ -230,3 +230,7 @@ The publisher name can be changed later only with effort (it is tied to the rese
 Not done by the agent: the real tray flyout screenshot (the render is 840 px wide, below the Store minimum; take one with the packaged app if wanted), and all Partner Center clicks.
 
 **Phase 3 results (2026-10-19, installed `0.1.1.0`, owner):** passed: Bluetooth finds the sensor, toast with picture, Snooze and Open on a toast, tray, flyout, Start with Windows toggle and its Windows startup entry, `Documents\Deskair` data, About card and Ukrainian. **Phase 3 results (2026-10-20, owner):** 7 (start after sign-in) passed, but the window opened instead of staying in the tray (fixed by D-0027; re-checked on test package `0.1.2.0` after a restart on 2026-10-20: starts in the tray, passed); 9 (sleep and wake) passed; 11 (uninstall keeps `Documents\Deskair`) passed.
+
+## 11. Published (2026-10-20)
+
+Deskair `0.1.3.0` (unsigned upload package from commit `1e64e94`) passed certification and went live in the Microsoft Store: https://apps.microsoft.com/detail/9N027HRZXSMH. English listing only (the Ukrainian listing was removed until the text is reviewed by a native speaker), price free, age rating IARC 3+, category Utilities and tools, `runFullTrust` justified in Submission options, tester notes under Additional Testing Information. A PC with the signed test package installed does not receive Store updates; uninstall it and install from the Store.

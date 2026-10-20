@@ -1,6 +1,6 @@
 # Microsoft Store listing: draft texts
 
-*Last reviewed: 2026-10-19*
+*Last reviewed: 2026-10-20*
 
 Part of REL-01 phase 4 ([`store-packaging.md`](store-packaging.md)). Wording follows section 6 there: the title is "Deskair" only; compatibility and "unofficial" go in the first lines. Ukrainian is a draft that needs native review (I18N-02). Copy each block into Partner Center.
 

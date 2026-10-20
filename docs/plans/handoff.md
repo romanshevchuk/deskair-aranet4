@@ -1,10 +1,34 @@
-# Handoff (updated 2026-10-19)
+# Handoff (updated 2026-10-20)
 
-*Last reviewed: 2026-10-19*
+*Last reviewed: 2026-10-20*
 
 For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory (`AranetHomeDesktop`) unless the owner points you to it, and do not read `../deskair-legacy`.
 
-## Session of 2026-10-19 (read this first)
+## Session of 2026-10-20 (read this first)
+
+**Deskair 0.1.3.0 is published in the Microsoft Store** (product ID `9N027HRZXSMH`, https://apps.microsoft.com/detail/9N027HRZXSMH; submitted and certified the same day). Local `main` is ahead of `origin/main` until the owner pushes; CI is on GitHub and passed.
+
+| Done | Where |
+|---|---|
+| Start with Windows starts in the tray (D-0027): the Run key adds `--background`; the packaged startup task is detected through `AppInstance.GetActivatedEventArgs`; owner checked it on a packaged test build after a restart | `AppOptions`, `StartupSequence`, `PackagedStartupActivation`, `Program` |
+| Stat dividers on the hero card were drawn from stale column widths; `StatTriplePanel` now repaints when columns move | `StatTriplePanel`, `StatTriplePanelTests` |
+| History grid end column is 160 px and grows only when a best or worst tag is wider (Ukrainian "найкращий") | `HourGridLayout.EndWidth`, `HourGridChart.TagWidth`, `design-tokens.md` |
+| Store listing (English only), Partner Center pages filled, tester notes written | `store-listing.md`; the Ukrainian listing was removed on purpose until its text is reviewed by a native speaker |
+| Store screenshots: Live good, high and dark, flyout (a real capture), History week and day, Temperature; made from `RealisticRoom` (days that differ, window dips) by the `...ForTheStore` render tests | `artifacts/store/en` (not in git); six copies in `docs/screenshots/` for the README |
+| README rewritten with screenshots, requirements, build, troubleshooting and acknowledgements; CI workflow (`.github/workflows/ci.yml`: build, format check, tests) | `README.md`, `.github/` |
+
+**Facts to know**
+- The Store build and the test package share one identity, so a PC that has the **signed test package** installed shows "Installed version 0.1.2.0" in the Store and does not update; uninstall the test package, then install from the Store.
+- Package settings: category Utilities and tools, price 0, age rating IARC 3+, only the English listing, `runFullTrust` justified in Submission options, Additional Testing Information says the sensor is separate hardware.
+- `build-msix.ps1` wipes `artifacts\msix` (the old test package and `DeskairTest.cer` go too); the test certificate is still trusted on the owner's PC.
+- The legacy repo `romanshevchuk/aranet4-monitor` (local copy `C:\Personal\Dev\Projects\AranetHomeDesktop`) is superseded; the owner plans to delete or archive it. Its `THIRD-PARTY-NOTICES.md` credits Aranet4-Python; our README now has an Acknowledgements section.
+
+**What to do next**
+1. Watch for Store reviews and GitHub issues; fix what real users hit first.
+2. Ideas from the older list still stand: a message that names Smart Home integration when the read fails with `ProtocolError`; Windows 10 check (OWN-08); native Ukrainian review, then a Ukrainian Store listing; a "Try demo data" button if certification ever complains that the app cannot be tested without a sensor.
+3. For an update: bump the version, `packaging\build-msix.ps1 -Version <higher, last number 0>`, upload in Partner Center with "Start update".
+
+## Session of 2026-10-19 (older)
 
 State: `main` is pushed and clean (head `d1ce3a6`). Release build and format are clean; **1732 tests, 0 failed** (69 skipped: the opt-in render tests). Work happened on a branch that was merged into `main` and deleted (local and remote); no Claude or Co-Authored-By trailer (the owner asked again; see the memory note).
 

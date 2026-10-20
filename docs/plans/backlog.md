@@ -1,6 +1,6 @@
 # Backlog
 
-*Last reviewed: 2026-10-19*
+*Last reviewed: 2026-10-20*
 
 **Start here.** Everything v1 needs is built. This file lists only what is left before release. Finished items are in [`backlog-done.md`](backlog-done.md) (archive, do not read unless you need history). Update this file in the same change as the work: move a row to the archive when it is done.
 
@@ -40,7 +40,7 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 
 | ID | Item | Who | Status |
 |---|---|---|---|
-| REL-01 | Store packaging; winget and GitHub later. Plan and status: [`store-packaging.md`](store-packaging.md) (phases 0 to 2 done 2026-10-18; texts, privacy page and screenshots prepared 2026-10-19, section 10 of the plan; next: the owner runs the phase 3 checks on `Deskair_0.1.1.0_x64.msix`). Needs P1 from the owner for the listing; the packaging itself is agent work | both | todo |
+| REL-01 | Store packaging; winget and GitHub later. Plan and status: [`store-packaging.md`](store-packaging.md) (phases 0 to 2 done 2026-10-18; texts, privacy page and screenshots prepared 2026-10-19, section 10 of the plan; phase 3 passed 2026-10-20; **published in the Microsoft Store on 2026-10-20, package 0.1.3.0**; see `handoff.md`) | both | done, move to backlog-done.md |
 | REL-05 | Final pass: build, tests, format clean, renders in light and dark (EN), soak test, then tag | both | todo |
 
 ## Later (not v1)

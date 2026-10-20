@@ -34,7 +34,7 @@
 
 ## Install
 
-- **Microsoft Store:** submitted for review; a link will appear here when it is published.
+- **Microsoft Store (recommended):** [Get Deskair from the Microsoft Store](https://apps.microsoft.com/detail/9N027HRZXSMH). Free, updates itself.
 - **From source:** see below.
 
 ## Build and run
