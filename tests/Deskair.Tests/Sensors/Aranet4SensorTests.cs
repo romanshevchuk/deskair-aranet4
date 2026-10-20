@@ -14,8 +14,8 @@ public class Aranet4SensorTests
     private static FakeAranet4Connection Connection(int age = 1)
         => new(Aranet4TestData.CapturedValues(), 120, age, Aranet4TestData.CurrentReadings);
 
-    private static Aranet4Sensor Sensor(FakeAranet4Connection connection, FakeClock? clock = null)
-        => new(connection, device, clock ?? new FakeClock(now));
+    private static Aranet4Sensor Sensor(FakeAranet4Connection connection, FakeClock? clock = null, IBleScanner? scanner = null)
+        => new(connection, scanner ?? new FakeBleScanner(), device, clock ?? new FakeClock(now));
 
     private static async Task<List<Reading>> ReadAll(Aranet4Sensor sensor, DateTimeOffset since, CancellationToken cancellationToken)
     {

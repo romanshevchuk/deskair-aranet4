@@ -1,6 +1,6 @@
 # Adding a sensor (for forks and AI assistants)
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-20*
 
 Goal: support another sensor without touching UI, storage or analytics. The sensor must provide CO₂ (ppm), temperature, humidity and pressure.
 
@@ -9,7 +9,7 @@ Goal: support another sensor without touching UI, storage or analytics. The sens
 1. **Document the protocol.** Capture the sensor's Bluetooth LE data (for example with nRF Connect) and write what you learn in `docs/sensors/<name>.md`: the service and characteristic UUIDs, byte layouts, units, scaling, how history is read, and the update interval. A *service* groups *characteristics*; a characteristic is one readable value identified by a UUID. Save raw example byte arrays.
 2. **Add a folder** `src/Deskair.Sensors/<Name>/`. It may use only `Deskair.Services` (the contracts) and `Deskair.Domain`. No UI, files or Windows APIs.
 3. **Write the parser** as a pure class: bytes in, `Reading` out, converted to °C and hPa. Add unit tests in `tests/Deskair.Tests/Sensors/<Name>/` using the recorded bytes.
-4. **Write the sensor** implementing `ISensor` on top of `IBleConnection`. Set `Capabilities` honestly (History, Battery, SignalStrength).
+4. **Write the sensor** implementing `ISensor` on top of `IBleConnection`. Set `Capabilities` honestly (History, Battery, SignalStrength, Broadcasts). A sensor that announces its readings by itself (Bluetooth advertisements) sets `Broadcasts` and implements `ListenAsync`; the app then connects it only to sync (D-0028). Any other sensor stays connected and is polled.
 5. **Write the provider** implementing `ISensorProvider`: scanning (filter by name or service UUID), creating sensors, and the resource keys for the display name and onboarding steps.
 6. **Optional:** an importer implementing `IReadingImporter` for the vendor's export files.
 7. **Register:** add `Add<Name>(this IServiceCollection)` and call it from `src/Deskair.App/Composition/ServiceRegistration.cs`. This is the only edit outside your folder, apart from strings.

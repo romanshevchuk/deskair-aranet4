@@ -16,6 +16,10 @@
       </controls:SettingsRow>
       <TextBlock Style="{StaticResource Text.Caption}" Margin="{StaticResource Space.SettingsRow.Caption}" TextWrapping="Wrap" Text="{Binding FolderNote}" Visibility="{Binding HasFolderNote, Converter={StaticResource BoolToVisibility}}" />
 
+      <controls:SettingsRow Header="{loc:T Settings_Data_Sync}" Description="{loc:T Settings_Data_SyncHint}">
+        <controls:SecondaryButton Command="{Binding SyncHistoryCommand}" Content="{loc:T Action_Sync}" />
+      </controls:SettingsRow>
+
       <controls:SettingsRow Header="{loc:T Settings_Data_Import}" Description="{loc:T Settings_Data_ImportHint}">
         <controls:SecondaryButton Command="{Binding Import.ChooseFileCommand}" Content="{loc:T Settings_Data_ChooseFile}" />
       </controls:SettingsRow>

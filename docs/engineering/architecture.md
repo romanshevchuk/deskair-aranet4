@@ -1,6 +1,6 @@
 # Architecture
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-20*
 
 Status: approved structure; details may change during M1. Behaviour is in `docs/product/`, visuals in `docs/design/`, storage in `data-model.md`, decisions in `docs/decisions.md`.
 
@@ -114,10 +114,11 @@ public interface ISensorProvider                    // one per sensor family
 
 public interface ISensor : IAsyncDisposable
 {
-    SensorCapabilities Capabilities { get; }        // History, Battery, SignalStrength
+    SensorCapabilities Capabilities { get; }        // History, Battery, SignalStrength, Broadcasts
     Task<SensorStatus> ConnectAsync(CancellationToken ct);   // interval, battery, signal
     Task<Reading> ReadCurrentAsync(CancellationToken ct);
     IAsyncEnumerable<Reading> ReadHistoryAsync(DateTimeOffset since, CancellationToken ct);
+    IAsyncEnumerable<SensorBroadcast> ListenAsync(CancellationToken ct);  // only if Capabilities.Broadcasts: readings the sensor announces without a connection (D-0028)
 }
 
 // Services/Sensors: only what the Aranet4 driver really needs
@@ -153,8 +154,8 @@ flowchart LR
 | Service | Does |
 |---|---|
 | `DeviceRegistry` | Known devices, names, room types, selected device |
-| `SyncService` | On launch, reconnect and resume: read history since the last stored slot and merge by interval slot (`data-model.md`) |
-| `LiveFeed` | Polls current readings at the sensor's interval, stores them, raises `ReadingReceived` |
+| `SyncService` | On launch, resume, "Sync history" and retry: read history since the last stored slot and merge by interval slot (`data-model.md`) |
+| `LiveFeed` | Stores the readings a sensor announces (or polls them at its interval, for a sensor that does not), raises `ReadingReceived` |
 | `ConnectionMonitor` | Derives Normal, Stale, Not connected, Low battery, First run from last reading time, radio state and battery |
 | `AlertEngine` | Applies the alert rules and calls `INotifier` |
 | `ImportService`, `ExportService` | Preview, merge and write files |

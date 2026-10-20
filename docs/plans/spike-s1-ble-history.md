@@ -101,3 +101,7 @@ The captured files are in `artifacts/spike-s1/` (git-ignored). A trimmed copy sh
 - All values match the phone export row by row.
 - Not shown, and not blocking: behaviour with the phone app closed; behaviour at a weak signal (a stalled transfer). The stall handling in the real client is covered by tests with a fake connection instead.
 - Recommendation: build ARANET-01a to 04a and BLE-01a, 02a/b/c on this layout. Check `docs/engineering/sync-and-import.md` for how an incomplete download must be handled before starting those cards.
+
+### Run 4: advertisements without a connection (2026-10-20)
+
+Deskair closed, phone app idle, sensor at -58 to -67 dBm, Smart Home integration on. A throwaway scan (company 0x0702) for 5 minutes in active mode and 3 minutes in passive mode heard the 22-byte block `21070002000901014D04A501902639300278006100AD` (1101 ppm, 21.05 °C, 987.2 hPa, 57 %, battery 48 %, 120 s, 97 s old): about every 3 s (longest gap 14 s), the same measurement for a whole interval, a new one every 120 s, 2 to 3 s behind the sensor; passive mode delivered it too. Layout and decoding: `Aranet4Protocol` (advertisement constants) and `Aranet4AdvertisementTests`. Decision: D-0028.

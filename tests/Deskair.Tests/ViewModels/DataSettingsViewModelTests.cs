@@ -5,6 +5,7 @@ using Deskair.App.ViewModels.Settings;
 using Deskair.Domain.Time;
 using Deskair.Services.Devices;
 using Deskair.Services.Import;
+using Deskair.Services.Messages;
 using Deskair.Storage.Export;
 using Deskair.Tests.Fakes;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -18,11 +19,12 @@ public sealed class DataSettingsViewModelTests : IDisposable
     private readonly FakeFileDialogs dialogs = new();
     private readonly FakeDataFolderChoice choice = new();
     private readonly ListLogger<DataSettingsViewModel> logger = new();
+    private readonly StrongReferenceMessenger messenger = new();
     private readonly DataSettingsViewModel viewModel;
 
     public DataSettingsViewModelTests()
     {
-        viewModel = Create(folders, opener, dialogs, choice, logger);
+        viewModel = Create(folders, opener, dialogs, choice, logger, messenger);
     }
 
     public void Dispose()
@@ -36,7 +38,8 @@ public sealed class DataSettingsViewModelTests : IDisposable
         FakeFolderOpener? opener = null,
         FakeFileDialogs? dialogs = null,
         FakeDataFolderChoice? choice = null,
-        ListLogger<DataSettingsViewModel>? logger = null)
+        ListLogger<DataSettingsViewModel>? logger = null,
+        IMessenger? messenger = null)
     {
         var readings = new FakeReadingStore();
         var registry = new DeviceRegistry(new FakeDeviceStore());
@@ -67,7 +70,19 @@ public sealed class DataSettingsViewModelTests : IDisposable
                 calendar,
                 TimeProvider.System,
                 NullLogger<ExportViewModel>.Instance),
+            messenger ?? new StrongReferenceMessenger(),
             logger ?? new ListLogger<DataSettingsViewModel>());
+    }
+
+    [Fact]
+    public void Sync_history_asks_for_a_sync()
+    {
+        var asked = 0;
+        messenger.Register<SyncRequested>(this, (_, _) => asked++);
+
+        viewModel.SyncHistoryCommand.Execute(null);
+
+        Assert.Equal(1, asked);
     }
 
     [Fact]

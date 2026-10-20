@@ -327,4 +327,16 @@ public sealed class AppServicesStarterTests : IAsyncDisposable
 
         Assert.Empty(provider.Created);
     }
+
+    [Fact]
+    public async Task Asking_for_a_sync_connects_to_the_selected_sensor_again()
+    {
+        await Create(simulated: true).StartAsync(cts.Token);
+        await Wait.Until(() => provider.Created.Count == 1);
+
+        messenger.Send(new SyncRequested());
+
+        await Wait.Until(() => provider.Created.Count == 2);
+        Assert.All(provider.Created, device => Assert.Equal("SIM-0001", device.Address));
+    }
 }

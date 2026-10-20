@@ -131,7 +131,41 @@ public sealed class LiveFeed
             return null;
         }
 
-        // A failure to store is not a lost connection, so it never reaches the session: the reading is lost, the connection is fine.
+        await PublishAsync(device, reading, interval, store, cancellationToken);
+
+        return reading;
+    }
+
+    /// <summary>
+    /// Stores and announces the readings a sensor announces by itself, until cancelled. Nothing is polled and no connection is used.
+    /// The battery is passed on whenever it changes, because a sensor that is not connected cannot be asked for it.
+    /// </summary>
+    public async Task ListenAsync(ISensor sensor, DeviceId device, CancellationToken cancellationToken)
+    {
+        int? battery = null;
+
+        try
+        {
+            await foreach (var broadcast in sensor.ListenAsync(cancellationToken).WithCancellation(cancellationToken))
+            {
+                if (broadcast.BatteryPercent != battery)
+                {
+                    battery = broadcast.BatteryPercent;
+                    messenger.Send(new SensorStatusUpdated(device, new SensorStatus(broadcast.Interval, battery, null)));
+                }
+
+                await PublishAsync(device, broadcast.Reading, broadcast.Interval, store: true, cancellationToken);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancelling is how listening is stopped; it is not an error.
+        }
+    }
+
+    // A failure to store is not a lost connection, so it never reaches the session: the reading is lost, the connection is fine.
+    private async Task PublishAsync(DeviceId device, Reading reading, TimeSpan interval, bool store, CancellationToken cancellationToken)
+    {
         try
         {
             if (store)
@@ -150,7 +184,5 @@ public sealed class LiveFeed
         {
             logger.LogWarning(exception, "Storing the live reading of {Provider} {Address} failed; trying again in {Interval}.", device.ProviderId, device.Address, interval);
         }
-
-        return reading;
     }
 }

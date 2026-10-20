@@ -98,5 +98,31 @@ public sealed class FakeSensor : ISensor
         }
     }
 
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+    /// <summary>What the sensor announces by itself (when its capabilities say it can), in order. Listening then waits for cancellation.</summary>
+    public List<SensorBroadcast> Broadcasts { get; } = [];
+
+    public int ListenCalls { get; private set; }
+
+    public int Disposals { get; private set; }
+
+    public async IAsyncEnumerable<SensorBroadcast> ListenAsync([EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        ListenCalls++;
+
+        foreach (var broadcast in Broadcasts)
+        {
+            await Task.Yield();
+
+            yield return broadcast;
+        }
+
+        await Task.Delay(Timeout.Infinite, cancellationToken);
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        Disposals++;
+
+        return ValueTask.CompletedTask;
+    }
 }

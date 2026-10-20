@@ -8,8 +8,8 @@ using Microsoft.Extensions.Logging;
 namespace Deskair.Services.Live;
 
 /// <summary>
-/// Runs one device: connect, download the history, then poll live readings until stopped. If the sensor cannot be reached the session
-/// tries again every 30 seconds. Starting another device stops the one that is running.
+/// Runs one device: connect, download the history, then follow live readings until stopped. If the sensor cannot be reached the session
+/// tries again every 30 seconds. Starting another device stops the one that is running. Every start (launch, wake from sleep, "Sync history", retry) syncs once.
 /// </summary>
 public sealed class SensorSession : IAsyncDisposable, IDisposable
 {
@@ -124,42 +124,7 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
         {
             try
             {
-                await using var sensor = provider.Create(device);
-                var status = await ConnectAsync(sensor, cancellationToken);
-
-                if (logger.IsEnabled(LogLevel.Information))
-                {
-                    logger.LogInformation("Connected to {Address}; interval {Interval}, battery {Battery} %.", device.Address, status.Interval, status.BatteryPercent);
-                }
-
-                messenger.Send(new SensorStatusUpdated(device, status));
-
-                // Show the current value at once: the first history download can take half a minute.
-                await liveFeed.PollOnceAsync(sensor, device, status.Interval, cancellationToken);
-
-                SyncResult result;
-                messenger.Send(new SyncStarted(device));
-
-                try
-                {
-                    result = await sync.SyncAsync(sensor, device, status.Interval, new ProgressMessages(messenger, device), cancellationToken);
-                }
-                catch
-                {
-                    // Whatever went wrong, the "syncing" note must not stay on screen.
-                    messenger.Send(new SyncCompleted(device, 0));
-
-                    throw;
-                }
-
-                if (logger.IsEnabled(LogLevel.Information))
-                {
-                    logger.LogInformation("History sync for {Address} finished: {Added} readings added, complete {Complete}.", device.Address, result.ReadingsAdded, result.Complete);
-                }
-
-                messenger.Send(new SyncCompleted(device, result.ReadingsAdded));
-
-                await liveFeed.RunAsync(sensor, device, status.Interval, cancellationToken, pollFirst: false);
+                await RunOnceAsync(provider, device, cancellationToken);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -184,6 +149,75 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
                 return;
             }
         }
+    }
+
+    /// <summary>
+    /// One pass: connect, download the history, and then follow the live readings until stopped. A sensor that announces its readings
+    /// (<see cref="SensorCapabilities.Broadcasts"/>) is disconnected after the sync and listened to; while connected it is out of reach of every other app, the phone app included.
+    /// Any other sensor stays connected and is polled.
+    /// </summary>
+    private async Task RunOnceAsync(ISensorProvider provider, DeviceId device, CancellationToken cancellationToken)
+    {
+        SensorStatus status;
+
+        await using (var sensor = provider.Create(device))
+        {
+            status = await ConnectAndSyncAsync(sensor, device, cancellationToken);
+
+            if (!sensor.Capabilities.Broadcasts)
+            {
+                await liveFeed.RunAsync(sensor, device, status.Interval, cancellationToken, pollFirst: false);
+
+                return;
+            }
+        }
+
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("Released {Address}; listening for its readings.", device.Address);
+        }
+
+        await using var listener = provider.Create(device);
+        await liveFeed.ListenAsync(listener, device, cancellationToken);
+    }
+
+    private async Task<SensorStatus> ConnectAndSyncAsync(ISensor sensor, DeviceId device, CancellationToken cancellationToken)
+    {
+        var status = await ConnectAsync(sensor, cancellationToken);
+
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("Connected to {Address}; interval {Interval}, battery {Battery} %.", device.Address, status.Interval, status.BatteryPercent);
+        }
+
+        messenger.Send(new SensorStatusUpdated(device, status));
+
+        // Show the current value at once: the first history download can take half a minute.
+        await liveFeed.PollOnceAsync(sensor, device, status.Interval, cancellationToken);
+
+        SyncResult result;
+        messenger.Send(new SyncStarted(device));
+
+        try
+        {
+            result = await sync.SyncAsync(sensor, device, status.Interval, new ProgressMessages(messenger, device), cancellationToken);
+        }
+        catch
+        {
+            // Whatever went wrong, the "syncing" note must not stay on screen.
+            messenger.Send(new SyncCompleted(device, 0));
+
+            throw;
+        }
+
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("History sync for {Address} finished: {Added} readings added, complete {Complete}.", device.Address, result.ReadingsAdded, result.Complete);
+        }
+
+        messenger.Send(new SyncCompleted(device, result.ReadingsAdded));
+
+        return status;
     }
 
     private async Task<SensorStatus> ConnectAsync(ISensor sensor, CancellationToken cancellationToken)

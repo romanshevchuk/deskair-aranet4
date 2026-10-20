@@ -17,17 +17,19 @@ public sealed class Aranet4Sensor : ISensor
     ];
 
     private readonly IBleConnection connection;
+    private readonly IBleScanner scanner;
     private readonly DeviceId id;
     private readonly TimeProvider timeProvider;
 
-    public Aranet4Sensor(IBleConnection connection, DeviceId id, TimeProvider timeProvider)
+    public Aranet4Sensor(IBleConnection connection, IBleScanner scanner, DeviceId id, TimeProvider timeProvider)
     {
         this.connection = connection;
+        this.scanner = scanner;
         this.id = id;
         this.timeProvider = timeProvider;
     }
 
-    public SensorCapabilities Capabilities { get; } = new(History: true, Battery: true, SignalStrength: false);
+    public SensorCapabilities Capabilities { get; } = new(History: true, Battery: true, SignalStrength: false, Broadcasts: true);
 
     /// <summary>Connects and reads the interval and the battery. The signal is null: a connected sensor does not report it (only its advertisements carry one).</summary>
     public async Task<SensorStatus> ConnectAsync(CancellationToken cancellationToken)
@@ -49,6 +51,36 @@ public sealed class Aranet4Sensor : ISensor
         var current = Aranet4Parser.ParseCurrent(bytes);
 
         return new Reading(timeProvider.GetUtcNow() - current.Age, current.Co2Ppm, current.TemperatureC, current.HumidityPct, current.PressureHpa);
+    }
+
+    /// <summary>
+    /// The measurements in the sensor's advertisements, without a connection (needs "Smart Home integration" on in the phone app). The sensor repeats the same measurement in
+    /// every advertisement for a whole interval, so one is passed on only when its measurement time is clearly later than the last one's. Its time is the receiving time minus
+    /// the age the sensor reports, as for <see cref="ReadCurrentAsync"/>. Listens passively: asking the sensor for its scan response on every packet would cost its battery.
+    /// </summary>
+    public async IAsyncEnumerable<SensorBroadcast> ListenAsync([EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        DateTimeOffset? newest = null;
+
+        await foreach (var advertisement in scanner.ScanAsync(BleScanMode.Passive, cancellationToken).WithCancellation(cancellationToken))
+        {
+            if (!IsFromThisSensor(advertisement) || Aranet4Parser.ParseAdvertisement(advertisement.ManufacturerData[Aranet4Protocol.ManufacturerId]) is not { } current)
+            {
+                continue;
+            }
+
+            var measuredAt = timeProvider.GetUtcNow() - current.Age;
+
+            if (newest is { } last && measuredAt - last < current.Interval / 2)
+            {
+                continue;
+            }
+
+            newest = measuredAt;
+            var reading = new Reading(measuredAt, current.Co2Ppm, current.TemperatureC, current.HumidityPct, current.PressureHpa);
+
+            yield return new SensorBroadcast(reading, current.Interval, current.BatteryPercent <= 100 ? current.BatteryPercent : null);
+        }
     }
 
     /// <summary>
@@ -101,6 +133,10 @@ public sealed class Aranet4Sensor : ISensor
 
         return (int)Math.Clamp(index - 1, 1, total);
     }
+
+    private bool IsFromThisSensor(BleAdvertisement advertisement)
+        => string.Equals(advertisement.Address, id.Address, StringComparison.OrdinalIgnoreCase)
+            && advertisement.ManufacturerData.ContainsKey(Aranet4Protocol.ManufacturerId);
 
     private Task<byte[]> ReadAsync(Guid characteristic, CancellationToken cancellationToken)
         => connection.ReadAsync(Aranet4Protocol.ServiceId, characteristic, cancellationToken);

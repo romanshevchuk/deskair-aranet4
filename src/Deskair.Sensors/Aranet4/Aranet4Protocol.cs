@@ -52,6 +52,32 @@ public static class Aranet4Protocol
     /// <summary>The company id in the advertisement's manufacturer data (seen in the scan).</summary>
     public const ushort ManufacturerId = 0x0702;
 
+    /// <summary>
+    /// The manufacturer data block of an advertisement, when "Smart Home integration" is on (captured from our sensor on 2026-10-20, 22 bytes, the same layout as the library
+    /// Aranet4-Python reads): <c>21070002000901014D04A501902639300278006100AD</c> = 1101 ppm, 21.05 °C, 987.2 hPa, 57 %, battery 48 %, status 2, 120 s, 97 s old.
+    /// Byte 0 is flags (bit 5 set: the measurements are included), 1 to 3 the firmware version, 4 to 7 unused here; then the values as in the current-readings value
+    /// (CO₂, temperature, pressure, humidity, battery, status, interval, age) from byte 8. A last byte (a counter) follows and is not used.
+    /// </summary>
+    public const int AdvertisementLength = 21;
+
+    public const int AdvertisementFlagsOffset = 0;
+
+    public const byte AdvertisementIntegrationsFlag = 0x20;
+
+    public const int AdvertisementCo2Offset = 8;
+
+    public const int AdvertisementTemperatureOffset = 10;
+
+    public const int AdvertisementPressureOffset = 12;
+
+    public const int AdvertisementHumidityOffset = 14;
+
+    public const int AdvertisementBatteryOffset = 15;
+
+    public const int AdvertisementIntervalOffset = 17;
+
+    public const int AdvertisementAgeOffset = 19;
+
     /// <summary>The advertised name starts with this (seen: "Aranet4 0A0B3").</summary>
     public const string NamePrefix = "Aranet4";
 

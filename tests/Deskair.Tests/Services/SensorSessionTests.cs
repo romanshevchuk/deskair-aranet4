@@ -92,6 +92,59 @@ public sealed class SensorSessionTests : IAsyncDisposable
     }
 
     [Fact]
+    public async Task A_sensor_that_announces_its_readings_is_released_after_the_sync_and_listened_to()
+    {
+        sensor.Capabilities = new SensorCapabilities(History: true, Battery: true, SignalStrength: false, Broadcasts: true);
+        sensor.Broadcasts.Add(new SensorBroadcast(Samples.Co2(start.AddMinutes(-1), 950), TimeSpan.FromMinutes(2), 80));
+
+        await session.StartAsync(device);
+        await Wait.Until(() => messages.OfType<ReadingReceived>().Any(message => message.Reading.Co2Ppm == 950));
+
+        // One connection for the sync, closed before listening starts; the listening sensor is a second instance.
+        Assert.Equal(2, provider.Created.Count);
+        Assert.Equal(1, sensor.ListenCalls);
+        Assert.True(sensor.Disposals >= 1);
+        Assert.True(messages.OfType<SyncCompleted>().Any());
+    }
+
+    [Fact]
+    public async Task A_sensor_that_announces_its_readings_is_not_polled()
+    {
+        sensor.Capabilities = new SensorCapabilities(History: true, Battery: true, SignalStrength: false, Broadcasts: true);
+        await session.StartAsync(device);
+        await Wait.Until(() => sensor.ListenCalls == 1);
+
+        clock.Advance(TimeSpan.FromMinutes(10));
+        await Wait.Quiet();
+
+        // Only the reading shown right after connecting; no connection is kept for polling.
+        Assert.Equal(1, sensor.ReadCurrentCalls);
+    }
+
+    [Fact]
+    public async Task A_sensor_that_does_not_announce_its_readings_stays_connected()
+    {
+        await session.StartAsync(device);
+        await Wait.Until(() => messages.OfType<SyncCompleted>().Any());
+        await Wait.Quiet();
+
+        Assert.Equal(0, sensor.Disposals);
+        Assert.Equal(0, sensor.ListenCalls);
+    }
+
+    [Fact]
+    public async Task Stopping_ends_the_listening()
+    {
+        sensor.Capabilities = new SensorCapabilities(History: true, Battery: true, SignalStrength: false, Broadcasts: true);
+        await session.StartAsync(device);
+        await Wait.Until(() => sensor.ListenCalls == 1);
+
+        var stopped = await Record.ExceptionAsync(session.StopAsync);
+
+        Assert.Null(stopped);
+    }
+
+    [Fact]
     public async Task After_the_sync_the_next_poll_waits_one_interval()
     {
         await session.StartAsync(device);
