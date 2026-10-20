@@ -1,8 +1,44 @@
-# Handoff (updated 2026-10-18)
+# Handoff (updated 2026-10-19)
 
-*Last reviewed: 2026-10-18*
+*Last reviewed: 2026-10-19*
 
 For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory (`AranetHomeDesktop`) unless the owner points you to it, and do not read `../deskair-legacy`.
+
+## Session of 2026-10-19 (read this first)
+
+State: `main` is pushed and clean (head `d1ce3a6`). Release build and format are clean; **1732 tests, 0 failed** (69 skipped: the opt-in render tests). Work happened on a branch that was merged into `main` and deleted (local and remote); no Claude or Co-Authored-By trailer (the owner asked again; see the memory note).
+
+**What changed (decisions in `docs/decisions.md`):**
+
+| ID | What |
+|---|---|
+| D-0022 | One colour, one meaning: the trend text is neutral; "Good now, but rising" advice at 800 ppm or more; "< 1 min" instead of "0 min"; the header logo is brand ink (only the tray icon follows the zone); the CO₂ dot is neutral slate; the Temperature and Humidity ideal band is the Good green at 9 % with dashed limits |
+| D-0023 | History grid: the six CO₂ steps stay (no three-zone grid, no "detailed zones" setting); best and worst only on complete rows (not today, not the month in progress); a caption over the row-end bars ("Time in zones", "Time in range"); no "best" for Temperature and Humidity |
+| D-0024 | Comfortable is mid green (light `#B4E0C9`, dark `#244F3F`), not grey |
+| D-0025 | An alert episode ends only after 10 minutes of Good; pressing a toast acknowledges the episode (only the escalation to High still sends) |
+| D-0026 | High alerts wait 2 minutes (Elevated 5); the sensor needs "Smart Home integration" on in the Aranet Home app (with it off the current-values read fails with `ProtocolError`); the first-run and offline steps and the listing say so |
+
+Also: the typical-window label wrapped past midnight ("23:00–26:00", now "23:00–02:00"); Settings has an About card ("unofficial"); the first-run text names the Aranet4; render tests use an `aranet4` device so the footer shows "Aranet4"; the Ukrainian strings were reviewed (6 still carry the "Draft" flag, check `Strings.uk.resx`).
+
+**Store (REL-01), read [`store-packaging.md`](store-packaging.md) sections 9 and 10, and [`store-listing.md`](store-listing.md):**
+
+- Done: phases 0 to 2; `PRIVACY.md` is on `main` and its URL works; the GitHub description and topics are set; listing texts (English; Ukrainian reviewed by the owner); screenshots in `artifacts/store/en` and `artifacts/store/uk` (not in git; re-render with `$env:DESKAIR_RENDER=1`); a test package `artifacts\msix\Deskair_0.1.1.0_x64.msix` signed with the test certificate (already trusted on the owner's PC).
+- Owner checks on the installed package: 1, 2, 3 (Snooze and Open), 4, 5, 6, 8, 10 passed (2026-10-19). **Pending: 7 (start with Windows after sign-in), 9 (sleep and wake), 11 (uninstall keeps `Documents\Deskair`).**
+- Decisions taken: category Utilities and tools; `Aranet4` is not a search term (policy 10.1.3; it is in the description); no courtesy email.
+- Not done: a full-screen real flyout screenshot (the owner will take one with the desktop icons hidden), the Partner Center clicks (listing, age rating, upload, submit), and the clean upload package.
+- Note: the test package `0.1.1.0` was built before D-0026; rebuild for any further test.
+
+**What to do next, in order:**
+
+1. When the owner reports checks 7, 9 and 11: record them in `store-packaging.md` (section 10) and `backlog.md`. Fix anything that failed.
+2. REL-05 final pass: build, tests, format, renders in light and dark (English); then build the **upload package** with `packaging\build-msix.ps1 -Version <higher than 0.1.1.0, last number 0>` from the final commit. Do not sign it with the test certificate for upload (unverified whether Store accepts it; Microsoft signs Store packages). Tell the owner the path.
+3. If the owner sends the flyout screenshot, check it is at least 1366 x 768 and crop only if asked.
+4. Ideas not done, in rough order of value (none blocks release): an in-app message that names the cause when the sensor read fails with `ProtocolError` (Smart Home integration off); the amber line outside the ideal range on Temperature and Humidity charts and a Y axis that always includes the ideal range (D-0022 left out); the floating grid tooltip (POL-60); the calendar Month view (POL-55; plan it first, mock "one colour per day" against "four daypart stripes"); alert state is in memory, so a restart sends a new toast (D-0025 note); an unexplained moment where the tray showed "not connected" while the footer said "Connected" (same state drives both; not reproduced).
+5. Plan: [`review-feedback-polish.md`](review-feedback-polish.md) holds the polish batches (batch 3 is after release).
+
+How the owner worked this session: asks for an opinion and wants a plain recommendation; "do it locally, no commit" and "commit" are explicit, so do not commit or push without being asked; wants simple step-by-step instructions for manual checks; wants honest limits ("not verified").
+
+Everything below this section is older; where it differs (test counts, "latest decision D-0016"), this section wins.
 
 ## Rules you must follow
 
@@ -56,7 +92,7 @@ The owner's sensor is an Aranet4 `0A0B3`, address `C3DEC8FCC7C6`, Bluetooth is o
 
 The per-feature rules and what was and was not verified are in the decided Q entries of `docs/plans/questions.md` (tray Q37, flyout Q38, single instance Q39, resume Q40, toasts Q41, snooze Q42, Do Not Disturb Q43, reconnect Q44, try again Q45, sleep Q46, prototype alignment Q47, title bar Q14, offline Q31, stats Q36). The spike notes (`spike-s1` to `spike-s5`, `research-do-not-disturb.md`) record how the Windows parts were found out. The Aranet4 history download is documented in `spike-s1-ble-history.md` (5040 readings every 120 s; a real capture is `tests/Deskair.Tests/TestData/aranet4-history-capture.txt`).
 
-### Session of 2026-10-17 (read this first)
+### Session of 2026-10-17 (older)
 
 **Packaging (REL-01):** read [`store-packaging.md`](store-packaging.md) first, section 9 has the status; the research is done, do not repeat it.
 
@@ -124,7 +160,7 @@ Q7 (read the date order from the export header; flag the repeated autumn hour), 
 | BLE protocol as seen on the sensor | `docs/plans/spike-s1-ble-history.md`, `Aranet4Protocol.cs`, `tests/Deskair.Tests/TestData/aranet4-history-capture.txt` |
 | Colours and sizes | `docs/design/design-tokens.md`, then `design/prototype/index.html` |
 | Adding a control, string, setting, sensor | `docs/guides/` and the skills in `.claude/skills/` |
-| Why something was decided | `docs/decisions.md` (latest: D-0016) and the decided entries in `docs/plans/questions.md` |
+| Why something was decided | `docs/decisions.md` (latest: D-0026) and the decided entries in `docs/plans/questions.md` |
 | Dependency rules | `docs/engineering/architecture.md` section 3, `tests/Deskair.Tests/Architecture` |
 | Startup and wiring | `src/Deskair.App/Composition/` (`AppServicesStarter`, `StartupSequence`, `ServiceRegistration`, `SettingsApplier`, `AppOptions`) |
 | Test helpers | `tests/Deskair.Tests/Fakes/` (`FakeClock`, `FakeAranet4Connection`, `FakeBleScanner`, `Aranet4TestData`, `ThreadSafeLog`, `ListProgress`, `Wait`) |

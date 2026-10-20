@@ -1,6 +1,6 @@
 # Store packaging: the plan, step by step
 
-*Last reviewed: 2026-10-19*
+*Last reviewed: 2026-10-20*
 
 Backlog item: REL-01. Status: **plan, waiting for the owner's decisions** (section 2). Written for the owner, who is new to Store publishing. Facts come from Microsoft's own pages (links at the end); anything not confirmed is marked **unverified**.
 
@@ -228,3 +228,5 @@ The publisher name can be changed later only with effort (it is tied to the rese
 | Test package | `artifacts\msix\Deskair_0.1.1.0_x64.msix` (built from the current branch; the first Store upload may use any version at or above it) |
 
 Not done by the agent: the real tray flyout screenshot (the render is 840 px wide, below the Store minimum; take one with the packaged app if wanted), and all Partner Center clicks.
+
+**Phase 3 results (2026-10-19, installed `0.1.1.0`, owner):** passed: Bluetooth finds the sensor, toast with picture, Snooze and Open on a toast, tray, flyout, Start with Windows toggle and its Windows startup entry, `Documents\Deskair` data, About card and Ukrainian. **Phase 3 results (2026-10-20, owner):** 7 (start after sign-in) passed, but the window opened instead of staying in the tray (fixed by D-0027, needs a re-check on a new package); 9 (sleep and wake) passed; 11 (uninstall keeps `Documents\Deskair`) passed.
