@@ -1,7 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
-  <!-- The coverage note (prototype): an amber box in the advice colours, radius 10, with the sentence in semibold. The name stays "chip" from the first design. -->
+  <!-- The coverage note: an amber box in the advice colours, radius 10, with the sentence in semibold. The name stays "chip" from the first design. -->
   <Style TargetType="{x:Type local:CoverageChip}">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Focusable" Value="False" />

@@ -20,7 +20,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Deskair.Tests.Ui;
 
 /// <summary>
-/// Renders the whole window in its first-run state to artifacts/visual, one image per step of the welcome screen, so it can be compared with the prototype.
+/// Renders the whole window in its first-run state to artifacts/visual, one image per step of the welcome screen, so it can be checked by eye.
 /// Off in normal runs; switch on with the environment variable DESKAIR_RENDER=1.
 /// </summary>
 public class OnboardingRenderTests

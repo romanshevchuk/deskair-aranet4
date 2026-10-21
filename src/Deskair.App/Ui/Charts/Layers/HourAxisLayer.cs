@@ -5,7 +5,7 @@ using Deskair.App.Localization;
 
 namespace Deskair.App.Ui.Charts.Layers;
 
-/// <summary>Labels for the typical-day chart (prototype): values on the y axis at <see cref="YTicks"/> and a label every three hours under the middle of that hour's bar ("00h", "03h" ... "21h"), in Text.Tertiary.</summary>
+/// <summary>Labels for the typical-day chart: values on the y axis at <see cref="YTicks"/> and a label every three hours under the middle of that hour's bar ("00h", "03h" ... "21h"), in Text.Tertiary.</summary>
 public sealed class HourAxisLayer : IChartLayer
 {
     private const double LabelGap = 8;

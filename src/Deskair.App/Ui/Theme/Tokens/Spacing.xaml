@@ -24,7 +24,7 @@
   <Thickness x:Key="Space.Item">0,0,16,16</Thickness>
   <Thickness x:Key="Space.SectionLabel">0,0,0,8</Thickness>
   <Thickness x:Key="Space.Card.Padding">16</Thickness>
-  <!-- Confirmed by the prototype: top 22, sides 24, bottom 20. -->
+  <!-- Top 22, sides 24, bottom 20. -->
   <Thickness x:Key="Space.Hero.Padding">24,22,24,20</Thickness>
   <sys:Double x:Key="Size.Live.MiniRow.Height">132</sys:Double>
   <sys:Double x:Key="Size.History.Toolbar.Height">40</sys:Double>
@@ -55,7 +55,7 @@
   <sys:Double x:Key="Size.ZoneIcon">20</sys:Double>
   <sys:Double x:Key="Size.Toggle.Width">38</sys:Double>
   <sys:Double x:Key="Size.Toggle.Height">22</sys:Double>
-  <!-- Not in the token table: taken from the original HTML prototype. -->
+  <!-- Not in the token table. -->
   <sys:Double x:Key="Size.Toggle.Knob">18</sys:Double>
   <sys:Double x:Key="Size.StatusDot">8</sys:Double>
   <Thickness x:Key="Space.Toggle.KnobOff">2,0,0,0</Thickness>
@@ -65,7 +65,7 @@
   <Thickness x:Key="Space.Segment.Item.Padding">14,5,14,5</Thickness>
   <Thickness x:Key="Space.Pill.Padding">9,4,11,4</Thickness>
 
-  <!-- Gauge (CTRL-01): sizes taken from the original HTML prototype. -->
+  <!-- Gauge (CTRL-01) sizes. -->
   <sys:Double x:Key="Size.Gauge.Bar">8</sys:Double>
   <sys:Double x:Key="Size.Gauge.Marker">20</sys:Double>
   <sys:Double x:Key="Size.Gauge.Ticks">16</sys:Double>
@@ -74,7 +74,7 @@
   <Thickness x:Key="Space.Gauge.SegmentGap.First">0,0,1,0</Thickness>
   <Thickness x:Key="Space.Gauge.SegmentGap.Last">1,0,0,0</Thickness>
 
-  <!-- Advice card, stats, chips, battery (prototype values). -->
+  <!-- Advice card, stats, chips, battery. -->
   <sys:Double x:Key="Size.Advice.Badge">30</sys:Double>
   <sys:Double x:Key="Size.Advice.Icon">18</sys:Double>
   <Thickness x:Key="Space.Advice.Padding">14,12,16,12</Thickness>
@@ -92,7 +92,7 @@
   <Thickness x:Key="Space.Mini.Sparkline">12,0,0,0</Thickness>
   <Thickness x:Key="Space.Banner.Buttons">8,0,0,0</Thickness>
   <Thickness x:Key="Space.Chart.Margin">44,8,14,24</Thickness>
-  <!-- Live screen layout (prototype). -->
+  <!-- Live screen layout. -->
   <GridLength x:Key="Grid.Card.Gap">16</GridLength>
   <GridLength x:Key="Grid.Live.MiniRow">132</GridLength>
   <Thickness x:Key="Space.Hero.Trend">0,4,0,0</Thickness>
@@ -105,7 +105,7 @@
   <Thickness x:Key="Space.Mini.Gap">8,0,8,0</Thickness>
   <Thickness x:Key="Space.Mini.Row">-8,0,-8,0</Thickness>
   <Thickness x:Key="Space.Chart.Card">24,20,24,16</Thickness>
-  <!-- History cards (prototype): the main chart 22 / 16 / 22 / 8, the typical day 22 / 14 / 22 / 6, the stats card 20 / 16. -->
+  <!-- History cards: the main chart 22 / 16 / 22 / 8, the typical day 22 / 14 / 22 / 6, the stats card 20 / 16. -->
   <Thickness x:Key="Space.History.Chart.Card">22,16,22,8</Thickness>
   <Thickness x:Key="Space.Stats.Card">20,14,20,14</Thickness>
   <Thickness x:Key="Space.Chart.Caption">0,10,0,0</Thickness>
@@ -123,7 +123,7 @@
   <sys:Double x:Key="Size.Battery.Width">26</sys:Double>
   <sys:Double x:Key="Size.Battery.Height">12</sys:Double>
 
-  <!-- Settings card and row (CTRL-14, CTRL-15): prototype values (card padding 12 22 8, row min height 40, gap 16). -->
+  <!-- Settings card and row (CTRL-14, CTRL-15): card padding 12 22 8, row min height 40, gap 16. -->
   <Thickness x:Key="Space.SettingsCard.Padding">22,12,22,8</Thickness>
   <!-- The section title sits above the card, outside it (design-tokens.md "Settings"). -->
   <Thickness x:Key="Space.SettingsCard.Header">0,0,0,8</Thickness>
@@ -134,7 +134,7 @@
   <sys:Double x:Key="Size.SettingsRow.MinHeight">40</sys:Double>
   <Thickness x:Key="Space.SettingsRow.Caption">0,0,0,6</Thickness>
   <sys:Double x:Key="Size.Segmented.SettingsMinWidth">296</sys:Double>
-  <!-- History stats card (prototype: zone share bar 10 px high, insight box padding 9 12). -->
+  <!-- History stats card (zone share bar 10 px high, insight box padding 9 12). -->
   <sys:Double x:Key="Size.ZoneShare.Height">10</sys:Double>
   <Thickness x:Key="Space.Insight.Padding">12,9,12,9</Thickness>
   <Thickness x:Key="Space.Stats.Block">0,9,0,0</Thickness>
@@ -149,7 +149,7 @@
   <Thickness x:Key="Space.Input.Padding">14,6,14,6</Thickness>
   <sys:Double x:Key="Size.Input.MinWidth">200</sys:Double>
 
-  <!-- First-run screen (prototype: welcome card padding 26 28, step rows 10 high, 26 px badge, gap 12). -->
+  <!-- First-run screen (welcome card padding 26 28, step rows 10 high, 26 px badge, gap 12). -->
   <Thickness x:Key="Space.Welcome.Padding">28,26,28,26</Thickness>
   <Thickness x:Key="Space.Welcome.Text">0,6,0,18</Thickness>
   <Thickness x:Key="Space.Step.Padding">0,10,0,10</Thickness>

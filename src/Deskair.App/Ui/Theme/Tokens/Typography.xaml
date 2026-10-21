@@ -3,7 +3,7 @@
                     xmlns:sys="clr-namespace:System;assembly=System.Runtime">
   <!-- Typography tokens (docs/design/design-tokens.md). Minimum size 12 px. -->
   <FontFamily x:Key="Font.Family">Segoe UI Variable Text, Segoe UI</FontFamily>
-  <!-- The big numbers (hero value, mini card value, History average, flyout value) use the display optical size, as the prototype's .disp class does: Text has heavier strokes at 32 px and above. -->
+  <!-- The big numbers (hero value, mini card value, History average, flyout value) use the display optical size: Text has heavier strokes at 32 px and above. -->
   <FontFamily x:Key="Font.Family.Display">Segoe UI Variable Display, Segoe UI Variable Text, Segoe UI</FontFamily>
 
   <sys:Double x:Key="Font.Size.Hero">104</sys:Double>

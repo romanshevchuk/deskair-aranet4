@@ -1,6 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <!-- Radius and elevation tokens (docs/design/design-tokens.md). Advice 12 and banner 10 follow the prototype. -->
+  <!-- Radius and elevation tokens (docs/design/design-tokens.md). -->
   <CornerRadius x:Key="Radius.Card">16</CornerRadius>
   <CornerRadius x:Key="Radius.Hero">16</CornerRadius>
   <CornerRadius x:Key="Radius.Advice">12</CornerRadius>
@@ -12,7 +12,7 @@
   <CornerRadius x:Key="Radius.Window">10</CornerRadius>
   <CornerRadius x:Key="Radius.Flyout">8</CornerRadius>
   <CornerRadius x:Key="Radius.Toast">8</CornerRadius>
-  <!-- Pills (the Pill control, the toggle track, the focus ring) have half their height as radius through PillRadiusConverter: the prototype's border-radius 999 turns into elliptical ends in WPF. Banner 10 and buttons 6 come from the prototype. -->
+  <!-- Pills (the Pill control, the toggle track, the focus ring) have half their height as radius through PillRadiusConverter: a huge radius (CSS border-radius 999) turns into elliptical ends in WPF. -->
   <CornerRadius x:Key="Radius.Chip">10</CornerRadius>
   <CornerRadius x:Key="Radius.Battery">3</CornerRadius>
   <CornerRadius x:Key="Radius.Gauge.Start">4,0,0,4</CornerRadius>

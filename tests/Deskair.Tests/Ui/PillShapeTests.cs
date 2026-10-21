@@ -6,7 +6,7 @@ using Deskair.Domain.Zones;
 
 namespace Deskair.Tests.Ui;
 
-/// <summary>A pill ends in half circles (prototype: border-radius 999). WPF clamps a huge corner radius on each axis separately, which makes elliptical ends, so the radius has to be half the height.</summary>
+/// <summary>A pill ends in half circles. WPF clamps a huge corner radius on each axis separately, which makes elliptical ends, so the radius has to be half the height.</summary>
 public class PillShapeTests
 {
     private static RenderTargetBitmap Draw(FrameworkElement element, out Size size)

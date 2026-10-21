@@ -4,7 +4,7 @@ using System.Windows.Media;
 namespace Deskair.App.Ui.Charts.Layers;
 
 /// <summary>
-/// The words around the 24 h ribbon on the Live chart (prototype): a caption ("24 h") at the left of the bar, a white notch across the bar at 00, 06, 12 and 18 o'clock local time and the hour
+/// The words around the 24 h ribbon on the Live chart: a caption ("24 h") at the left of the bar, a white notch across the bar at 00, 06, 12 and 18 o'clock local time and the hour
 /// ("00h") under each notch. The ribbon ends now, so the notches are wherever those hours fall in the last 24 hours. A notch at the very ends of the bar is left out.
 /// </summary>
 public sealed class RibbonLabelLayer : IChartLayer
