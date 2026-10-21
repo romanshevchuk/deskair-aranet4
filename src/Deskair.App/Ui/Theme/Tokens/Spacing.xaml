@@ -55,7 +55,7 @@
   <sys:Double x:Key="Size.ZoneIcon">20</sys:Double>
   <sys:Double x:Key="Size.Toggle.Width">38</sys:Double>
   <sys:Double x:Key="Size.Toggle.Height">22</sys:Double>
-  <!-- Not in the token table: taken from design/prototype/index.html. -->
+  <!-- Not in the token table: taken from the original HTML prototype. -->
   <sys:Double x:Key="Size.Toggle.Knob">18</sys:Double>
   <sys:Double x:Key="Size.StatusDot">8</sys:Double>
   <Thickness x:Key="Space.Toggle.KnobOff">2,0,0,0</Thickness>
@@ -65,7 +65,7 @@
   <Thickness x:Key="Space.Segment.Item.Padding">14,5,14,5</Thickness>
   <Thickness x:Key="Space.Pill.Padding">9,4,11,4</Thickness>
 
-  <!-- Gauge (CTRL-01): sizes taken from design/prototype/index.html. -->
+  <!-- Gauge (CTRL-01): sizes taken from the original HTML prototype. -->
   <sys:Double x:Key="Size.Gauge.Bar">8</sys:Double>
   <sys:Double x:Key="Size.Gauge.Marker">20</sys:Double>
   <sys:Double x:Key="Size.Gauge.Ticks">16</sys:Double>

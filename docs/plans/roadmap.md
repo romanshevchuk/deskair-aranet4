@@ -1,12 +1,12 @@
 # Roadmap
 
-*Last reviewed: 2026-10-14*
+*Last reviewed: 2026-10-21*
 
 Each milestone ends with a working, testable result.
 
 | Milestone | Content | Exit criteria | Status |
 |---|---|---|---|
-| M0 Spikes | BLE history sync; tray flyout positioning; title bar with Mica and snap layouts; icon rendering; toast setup (`spikes.md`) | Each spike answered with a short write-up | done |
+| M0 Spikes | BLE history sync; tray flyout positioning; title bar with Mica and snap layouts; icon rendering; toast setup | Each spike answered with a short write-up | done |
 | M1 Foundation | Solution structure (five projects) and dependency-rules tests (per `architecture.md`), control gallery, simulated sensor, theme dictionaries, localization infrastructure (EN, UK), data layer: monthly CSV, merge, in-memory aggregation | Unit tests pass; language switch works at runtime | built; open checks in `handoff.md` |
 | M2 Live | Hero, mini cards, Live chart with ranges and hover, ribbon, footer | Matches the prototype in light and dark, EN and UK | built; open checks in `handoff.md` |
 | M3 Tray and alerts | Icon states, flyout, menu, toasts, Do Not Disturb indicator | Works on Windows 10 and 11, multiple monitors | built; open checks in `handoff.md` |

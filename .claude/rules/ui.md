@@ -11,4 +11,4 @@ paths:
 - XAML about 120 lines at most; split into child controls first.
 - Charts are `ChartBase` plus small layer classes. They receive plain data from `ViewModels/ChartModels` and never calculate analytics.
 - Every control appears in the gallery in light, dark, English and Ukrainian, and works with keyboard and Narrator (`docs/design/accessibility.md`).
-- Reference: `docs/design/components.md` and `design/prototype/index.html`.
+- Reference: `docs/design/components.md`.

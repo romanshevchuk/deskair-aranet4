@@ -1,8 +1,8 @@
 # Screens and states
 
-*Last reviewed: 2026-10-19*
+*Last reviewed: 2026-10-21*
 
-Visual target: `design/polish/deskair-polish-concept.html` (POL-00). Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
+Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 
 ## Screens
 

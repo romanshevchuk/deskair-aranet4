@@ -8,7 +8,7 @@ using WindowsToasts = Windows.UI.Notifications;
 namespace Deskair.App.Platform.Notifications;
 
 /// <summary>
-/// Shows an alert as a Windows toast (docs/plans/spike-s5-toasts.md). Windows decides whether to show it: Do Not Disturb, Focus assist and the user's notification settings
+/// Shows an alert as a Windows toast. Windows decides whether to show it: Do Not Disturb, Focus assist and the user's notification settings
 /// for Deskair all apply, and nothing here overrides them. A newer toast for the same room replaces the older one in the notification centre.
 /// </summary>
 public sealed class ToastNotifier : INotifier

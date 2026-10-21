@@ -1,8 +1,8 @@
 # Backlog: finished items
 
-*Last reviewed: 2026-10-18*
+*Last reviewed: 2026-10-21*
 
-Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.md`](backlog.md). Specs per polish item: [`polish-implementation.md`](polish-implementation.md).
+Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.md`](backlog.md).
 
 | ID | Item | Status |
 |---|---|---|

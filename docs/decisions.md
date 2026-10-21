@@ -1,6 +1,6 @@
 # Decisions
 
-*Last reviewed: 2026-10-20*
+*Last reviewed: 2026-10-21*
 
 A short, append-only log. Each entry: context, decision, consequences. Do not delete entries; mark them superseded. Review the statuses once a quarter so nothing stays "proposed" after it shipped. If this file grows past about 15 entries or an entry needs long reasoning, move that entry to its own file in `docs/decisions.md`.
 
@@ -22,7 +22,7 @@ The owner knows WPF; the design needs custom charts and tray behaviour. .NET 8 r
 
 **Decision:** WPF on .NET 10 (`net10.0-windows10.0.19041.0` for the app). Support Windows 10 (2004 and later) and Windows 11. Mica only on Windows 11; solid colour on Windows 10. Confirm the .NET 10 minimum Windows 10 version against Microsoft's supported-OS table.
 
-**Consequences:** square corners and no snap-layout popup on Windows 10. The tray flyout, title bar and BLE sync are prototyped first (`plans/spikes.md`).
+**Consequences:** square corners and no snap-layout popup on Windows 10. The tray flyout, title bar and BLE sync are prototyped first.
 
 ## D-0003 Microsoft Store first; data in Documents
 
@@ -167,11 +167,11 @@ Spike S1 showed that the Aranet4 history is requested by writing a command to on
 
 **Status:** accepted · Oct 2026 (POL-00)
 
-The UI review (`docs/plans/ui-polish-plan.md`) found that one zone appeared up to ten times at once (hero fill, border and shadow, pill, advice fill and border, gauge, chart bands, line, ribbon), toggles were green (the Good colour), the primary button black and the logo amber (the Elevated colour): the app had no colour of its own and the zone colours stopped carrying meaning.
+The UI review found that one zone appeared up to ten times at once (hero fill, border and shadow, pill, advice fill and border, gauge, chart bands, line, ribbon), toggles were green (the Good colour), the primary button black and the logo amber (the Elevated colour): the app had no colour of its own and the zone colours stopped carrying meaning.
 
 **Decision:** the accent is ink (`accent`: text.primary in each theme) for the nav underline, toggles, the primary button and selected states; the focus ring stays blue. The hero card is white with a zone glow in one corner; zone fill, zone border and zone-tinted shadow go; the advice panel keeps its fill and loses its border. The flyout gets the same glow and no inner card.
 
-**Consequences:** token changes in both themes (design-tokens.md); green means Good air only; the "use the Windows accent colour" idea (polish-ideas 13) is dropped for now. Supersedes the Q47 notes on the zone-tinted hero shadow and the zone card border.
+**Consequences:** token changes in both themes (design-tokens.md); green means Good air only; the "use the Windows accent colour" idea is dropped for now. Supersedes the Q47 notes on the zone-tinted hero shadow and the zone card border.
 
 ## D-0018 History draws a grid of hours instead of range bars and a typical-day card
 
@@ -221,7 +221,7 @@ A red "Rising" sat on a Good card with the advice "Air is fresh, nothing to do" 
 
 **Decision:** (1) the trend text is neutral in every zone; zone colour stays on the pill, gauge, chart and ribbon. (2) In Good, a rising trend at 800 ppm or more shows the advice "Good now, but rising"; there is still no recovery-time or time-to-High estimate (D-0015 stands). (3) Time in zone under one minute reads "< 1 min". (4) The header logo ring is the brand ink; only the tray icon takes the zone colour. (5) The CO₂ metric dot is a neutral slate, so amber means only Elevated. (6) The ideal band is the Good colour at 9 % on the card surface, with 1 px dashed limits at 35 % and a small label top-left.
 
-**Consequences:** `Trend.*` and `Metric.*.Fill/Ideal` tokens are removed; `LogoRing` loses its zone; two advice strings and `Duration_LessThanMinute` in both languages; design-tokens.md, components.md, screens-and-states.md, behaviour-rules.md and localization.md updated. Second batch (heatmaps): [`review-feedback-polish.md`](plans/review-feedback-polish.md).
+**Consequences:** `Trend.*` and `Metric.*.Fill/Ideal` tokens are removed; `LogoRing` loses its zone; two advice strings and `Duration_LessThanMinute` in both languages; design-tokens.md, components.md, screens-and-states.md, behaviour-rules.md and localization.md updated. Second batch (heatmaps): D-0023.
 
 ## D-0023 History grid: keep the six CO₂ steps; tag only complete rows; "worst" only for comfort metrics
 
@@ -233,7 +233,7 @@ The review also found real flaws. Today could win "best" with 17 hours of data, 
 
 **Decision:** (1) best and worst tags go only to complete rows: not today, not the month in progress. (2) A caption over the row-end bars names them: "Time in zones" (CO₂), "Time in range" (Temperature, Humidity). (3) Temperature and Humidity have no "best" tag; "worst" appears only on the row with the least time inside the range, and only if that row has time outside it.
 
-**Consequences:** `HourGridDay.IsComplete`, `HourGridMonth.IsComplete`, `HourGridCalculator.ComfortWorst` replaces `ComfortExtremes`; `HourGridModel.BarCaption` and two strings per language; behaviour-rules.md rules 5 and 10 and screens-and-states.md updated. The floating tooltip and the calendar Month view stay in [`review-feedback-polish.md`](plans/review-feedback-polish.md) batch 3.
+**Consequences:** `HourGridDay.IsComplete`, `HourGridMonth.IsComplete`, `HourGridCalculator.ComfortWorst` replaces `ComfortExtremes`; `HourGridModel.BarCaption` and two strings per language; behaviour-rules.md rules 5 and 10 and screens-and-states.md updated. The floating tooltip and the calendar Month view stay in the backlog under "Later" (`plans/backlog.md`).
 
 ## D-0024 Comfortable is pale green in the Temperature and Humidity grids
 

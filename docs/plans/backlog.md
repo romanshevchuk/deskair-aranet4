@@ -1,6 +1,6 @@
 # Backlog
 
-*Last reviewed: 2026-10-20*
+*Last reviewed: 2026-10-21*
 
 **Start here.** Everything v1 needs is built. This file lists only what is left before release. Finished items are in [`backlog-done.md`](backlog-done.md) (archive, do not read unless you need history). Update this file in the same change as the work: move a row to the archive when it is done.
 
@@ -50,7 +50,12 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 | ID | Item | Status |
 |---|---|---|
 | POL-08 | Spike: acrylic flyout (optional) | later |
-| POL-55 to POL-60 | Calendar Month view, diverging temperature grid, typical band, badge icons, comfort-coloured lines, floating grid tooltip ([`review-feedback-polish.md`](review-feedback-polish.md) batch 3) | later |
+| POL-55 | Month view as a calendar grid (7 columns, about 5 rows, one colour per day, click opens the Day view) | later |
+| POL-56 | Temperature grid on a diverging scale around 22 °C instead of grey for "comfortable" | later |
+| POL-57 | "Typical" line on the Day chart as a quiet band (median and 25th to 75th percentile) with a value in the tooltip | later |
+| POL-58 | Icons in the status badges (✓ / ! / ▲) so zones do not rely on colour alone | later |
+| POL-59 | Temperature and Humidity chart lines coloured by comfort zone, as the CO₂ chart is | later |
+| POL-60 | Floating tooltip beside the grid square (hover and keyboard), with the row and hour labels highlighted; today the readout is a fixed line under the legend. Needs edge handling and keyboard support | later |
 | POL-36 | Tests: merge the four near-identical render-test `BuildShell` helpers; look for other duplicates (tidiness only) | later |
 | AIR-01 | Airing feedback | later |
 | SLEEP-01 | Morning toast (the sleep verdict card is done) | later |

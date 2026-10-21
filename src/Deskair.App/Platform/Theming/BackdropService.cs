@@ -8,7 +8,7 @@ namespace Deskair.App.Platform.Theming;
 /// <summary>
 /// The window frame's look: a dark or light title bar that follows the theme, and the Mica backdrop on Windows 11 (build 22621 and later), where the window background
 /// becomes see-through so Mica shows between the cards. On Windows 10 and early Windows 11 there is no Mica and the window keeps the solid <c>Window.Bg</c> token.
-/// Snap layouts and dragging come from <see cref="System.Windows.Shell.WindowChrome"/> on the window itself (docs/plans/spike-s3-title-bar.md).
+/// Snap layouts and dragging come from <see cref="System.Windows.Shell.WindowChrome"/> on the window itself.
 /// </summary>
 public sealed class BackdropService
 {

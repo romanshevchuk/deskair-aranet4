@@ -6,7 +6,7 @@
              xmlns:vm="clr-namespace:Deskair.App.ViewModels.Shell">
   <!-- DataContext: ShellViewModel. The logo and name on the left, the navigation in the middle, the room chip on the right.
        It is the window's title bar (WindowChrome, 52 px): the empty parts drag the window and double-click maximizes it; the tabs and the chip are marked clickable. The system draws the
-       three caption buttons at the right edge (docs/plans/spike-s3-title-bar.md). -->
+       three caption buttons at the right edge. -->
   <Grid Margin="{StaticResource Space.Header.Padding}">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto" />

@@ -1,6 +1,6 @@
 # Sync and import
 
-*Last reviewed: 2026-10-20*
+*Last reviewed: 2026-10-21*
 
 ## Sensor sync
 
@@ -11,7 +11,7 @@
 - After the sync Deskair listens to the sensor's advertisements (passive scan, no connection; needs Smart Home integration). The same measurement repeats in every advertisement for a whole interval, so a reading is stored only when its measurement time (heard at minus age) is more than half an interval after the last one. A sensor without advertisements stays connected and is polled instead; that poll counts from the sensor's own measurement time (one interval after the last value was measured, plus 6 seconds), because counting from the end of the previous poll drifted past the sensor's schedule and skipped a reading every few hours.
 - Readings missed while listening (PC out of range, phone connected to the sensor) stay gaps until the next sync.
 - After sync, Live must have the last 24 h.
-- The protocol and the comparison with a phone export are in `docs/plans/spike-s1-ble-history.md`.
+- The protocol is in `Aranet4Protocol.cs`; a real capture is `tests/Deskair.Tests/TestData/aranet4-history-capture.txt`.
 
 ## Import from the phone app (.xlsx)
 

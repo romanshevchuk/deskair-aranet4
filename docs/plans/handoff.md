@@ -1,6 +1,6 @@
 # Handoff (updated 2026-10-20)
 
-*Last reviewed: 2026-10-20*
+*Last reviewed: 2026-10-21*
 
 For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory (`AranetHomeDesktop`) unless the owner points you to it, and do not read `../deskair-legacy`.
 
@@ -58,7 +58,6 @@ Also: the typical-window label wrapped past midnight ("23:00–26:00", now "23:0
 2. REL-05 final pass: build, tests, format, renders in light and dark (English); then build the **upload package** with `packaging\build-msix.ps1 -Version <higher than 0.1.1.0, last number 0>` from the final commit. Do not sign it with the test certificate for upload (unverified whether Store accepts it; Microsoft signs Store packages). Tell the owner the path.
 3. If the owner sends the flyout screenshot, check it is at least 1366 x 768 and crop only if asked.
 4. Ideas not done, in rough order of value (none blocks release): an in-app message that names the cause when the sensor read fails with `ProtocolError` (Smart Home integration off); the amber line outside the ideal range on Temperature and Humidity charts and a Y axis that always includes the ideal range (D-0022 left out); the floating grid tooltip (POL-60); the calendar Month view (POL-55; plan it first, mock "one colour per day" against "four daypart stripes"); alert state is in memory, so a restart sends a new toast (D-0025 note); an unexplained moment where the tray showed "not connected" while the footer said "Connected" (same state drives both; not reproduced).
-5. Plan: [`review-feedback-polish.md`](review-feedback-polish.md) holds the polish batches (batch 3 is after release).
 
 How the owner worked this session: asks for an opinion and wants a plain recommendation; "do it locally, no commit" and "commit" are explicit, so do not commit or push without being asked; wants simple step-by-step instructions for manual checks; wants honest limits ("not verified").
 
@@ -73,7 +72,6 @@ Everything below this section is older; where it differs (test counts, "latest d
 - **Subagents:** only when the owner asks for them (an independent code review through the `code-review` skill found real bugs on 2026-10-13).
 - For each change: write or unskip the test, see it fail (for a pixel or visual change, break the code once to prove the test can fail), implement, run the three checks, update the docs that describe the behaviour.
 - If the docs are silent, add a question to `docs/plans/questions.md` and move on. Do not guess.
-- When you find a gap in the prototype (`design/prototype/index.html`), fix it in the prototype and in the docs together (the owner asked for this).
 - Do not mention vendor names outside `Deskair.Sensors` and `App/Composition`. Do not use `DateTime.Now`. UI strings and colours come from resources and tokens.
 - **The owner is not a native Ukrainian speaker.** Every new string gets an English and a Ukrainian value; mark the Ukrainian `<comment>Draft: needs native review.</comment>` and add product strings to `docs/design/localization.md`.
 - The owner wants to be told plainly what is verified and what is not (for example "tested with a fake, not on the real sensor"). Say so.
@@ -96,7 +94,6 @@ You cannot see the UI, so use these:
 |---|---|
 | Gallery of every control, light and dark, English and Ukrainian, as PNG | `$env:DESKAIR_RENDER=1; dotnet test tests/Deskair.Tests --filter "FullyQualifiedName~GalleryRenderTests"` writes `artifacts/visual/gallery-*.png`. The gallery is long (about 6000 px high); crop the part you need with System.Drawing in PowerShell |
 | Whole screens with real view models | same switch with `--filter "FullyQualifiedName~RenderTests"` (or one of `MainWindowRenderTests` (Live), `OnboardingRenderTests`, `SettingsRenderTests`, `HistoryRenderTests`, the flyout and tray icon tests). They write `live-*.png`, `firstrun-*.png`, `settings-*.png`, `history-*.png`, `flyout-*.png`, `tray-icons.png` |
-| The prototype as PNG | `design/prototype-shot.ps1` (see its header) screenshots the prototype window in a given state to `artifacts/proto/` at the same scale as the renders |
 | The real running app | see "Running the real app", and capture its window with the Windows `PrintWindow` call (`PrintWindow(hwnd, dc, 2)` into a `Bitmap`). The first capture of a process works; a later capture of the same process has sometimes returned only the title bar |
 
 Open the PNGs with the Read tool. `artifacts/` is git-ignored. In renders, toggle knobs always sit on the "off" side (the animation does not run offscreen); that is not a bug.
@@ -114,7 +111,7 @@ The owner's sensor is an Aranet4 `0A0B3`, address `C3DEC8FCC7C6`, Bluetooth is o
 
 ## Where things stand
 
-The per-feature rules and what was and was not verified are in the decided Q entries of `docs/plans/questions.md` (tray Q37, flyout Q38, single instance Q39, resume Q40, toasts Q41, snooze Q42, Do Not Disturb Q43, reconnect Q44, try again Q45, sleep Q46, prototype alignment Q47, title bar Q14, offline Q31, stats Q36). The spike notes (`spike-s1` to `spike-s5`, `research-do-not-disturb.md`) record how the Windows parts were found out. The Aranet4 history download is documented in `spike-s1-ble-history.md` (5040 readings every 120 s; a real capture is `tests/Deskair.Tests/TestData/aranet4-history-capture.txt`).
+The per-feature rules and what was and was not verified are in the decided Q entries of `docs/plans/questions.md` (tray Q37, flyout Q38, single instance Q39, resume Q40, toasts Q41, snooze Q42, Do Not Disturb Q43, reconnect Q44, try again Q45, sleep Q46, prototype alignment Q47, title bar Q14, offline Q31, stats Q36). The spike notes were removed after release (they are in git history). The Aranet4 history download returns 5040 readings every 120 s (a real capture is `tests/Deskair.Tests/TestData/aranet4-history-capture.txt`).
 
 ### Session of 2026-10-17 (older)
 
@@ -181,8 +178,8 @@ Q7 (read the date order from the export header; flag the repeated autumn hour), 
 | Need | File |
 |---|---|
 | Behaviour, thresholds, merge, trend | `docs/product/behaviour-rules.md`, `docs/engineering/data-model.md` |
-| BLE protocol as seen on the sensor | `docs/plans/spike-s1-ble-history.md`, `Aranet4Protocol.cs`, `tests/Deskair.Tests/TestData/aranet4-history-capture.txt` |
-| Colours and sizes | `docs/design/design-tokens.md`, then `design/prototype/index.html` |
+| BLE protocol as seen on the sensor | `Aranet4Protocol.cs`, `tests/Deskair.Tests/TestData/aranet4-history-capture.txt` |
+| Colours and sizes | `docs/design/design-tokens.md` |
 | Adding a control, string, setting, sensor | `docs/guides/` and the skills in `.claude/skills/` |
 | Why something was decided | `docs/decisions.md` (latest: D-0026) and the decided entries in `docs/plans/questions.md` |
 | Dependency rules | `docs/engineering/architecture.md` section 3, `tests/Deskair.Tests/Architecture` |

@@ -1,7 +1,7 @@
 namespace Deskair.Sensors.Aranet4;
 
 /// <summary>
-/// GATT service and characteristic UUIDs and byte layouts. Every value comes from spike S1 (docs/plans/spike-s1-ble-history.md),
+/// GATT service and characteristic UUIDs and byte layouts. Every value comes from spike S1,
 /// checked against a real sensor and a phone export on 2026-10-12.
 /// </summary>
 public static class Aranet4Protocol

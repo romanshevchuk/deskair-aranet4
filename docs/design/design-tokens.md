@@ -1,8 +1,8 @@
 # Design tokens
 
-*Last reviewed: 2026-10-20*
+*Last reviewed: 2026-10-21*
 
-Design size is 1200 × 728 px at 100 % scale; the window cannot be made smaller than 1100 × 700 (below that the History hour grid legend and the Live tip card no longer fit; checked with renders), so a snap to half a 1080p screen (960 px) opens at the minimum and overflows its zone. Implement every value as a named resource in a light and a dark `ResourceDictionary`. The visual target is `design/polish/deskair-polish-concept.html` (POL-00); where it and this file differ, this file wins.
+Design size is 1200 × 728 px at 100 % scale; the window cannot be made smaller than 1100 × 700 (below that the History hour grid legend and the Live tip card no longer fit; checked with renders), so a snap to half a 1080p screen (960 px) opens at the minimum and overflows its zone. Implement every value as a named resource in a light and a dark `ResourceDictionary`.
 
 ## Neutrals
 
