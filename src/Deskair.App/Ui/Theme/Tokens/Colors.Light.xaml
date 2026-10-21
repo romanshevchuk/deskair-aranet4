@@ -45,7 +45,7 @@
   <SolidColorBrush x:Key="Caption.CloseHover.Brush" Color="{StaticResource Caption.CloseHover.Color}" />
   <Color x:Key="Border.Window.Color">#4D808080</Color>
   <SolidColorBrush x:Key="Border.Window.Brush" Color="{StaticResource Border.Window.Color}" />
-  <!-- Cards: the prototype's .card, a 1 px border of 9 % ink over the white surface and a soft shadow (0 1 2 at 4 %, 0 8 20 -6 at 8 %). WPF has one shadow per element, so the two are merged. -->
+  <!-- Cards: a 1 px border of 9 % ink over the white surface and a soft shadow (0 1 2 at 4 %, 0 8 20 -6 at 8 %). WPF has one shadow per element, so the two are merged. -->
   <Color x:Key="Card.Border.Color">#EAEBEC</Color>
   <SolidColorBrush x:Key="Card.Border.Brush" Color="{StaticResource Card.Border.Color}" />
   <Color x:Key="Card.Border.Hover.Color">#B3BDC4</Color>

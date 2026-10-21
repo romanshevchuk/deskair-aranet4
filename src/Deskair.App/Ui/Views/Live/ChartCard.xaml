@@ -60,7 +60,7 @@
                         NowLabel="{loc:T Chart_Now}"
                         NoDataText="{loc:T Chart_NoData}" />
 
-      <!-- The 24 h ribbon with its caption and hours, under a divider (prototype). Only for CO2 on 1h and 6h. -->
+      <!-- The 24 h ribbon with its caption and hours, under a divider. Only for CO2 on 1h and 6h. -->
       <Border Grid.Row="3"
               Margin="0,12,0,0"
               BorderBrush="{DynamicResource Divider.Brush}"

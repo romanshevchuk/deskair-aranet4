@@ -25,7 +25,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Deskair.Tests.Ui;
 
 /// <summary>
-/// Renders the main window with real view models and simulated readings to artifacts/visual, so the Live screen can be compared with the prototype.
+/// Renders the main window with real view models and simulated readings to artifacts/visual, so the Live screen can be checked by eye.
 /// Off in normal runs; switch on with the environment variable DESKAIR_RENDER=1.
 /// </summary>
 public class MainWindowRenderTests

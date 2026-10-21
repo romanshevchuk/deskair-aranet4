@@ -1,20 +1,19 @@
 # Deskair
 
-**A Windows desktop monitor for the Aranet4 CO₂ sensor.** See your air quality live, get a gentle alert when the room needs fresh air, and look back over days, weeks and months. Everything stays on your PC.
+A Windows app for the Aranet4 CO₂ sensor. It shows live air quality, tells you when the room needs fresh air, and keeps your history on your PC.
 
-> **Unofficial.** Deskair is an independent open-source project. It is not made by, affiliated with or endorsed by the maker of Aranet4. Aranet is a trademark of its owner. Privacy: [`PRIVACY.md`](PRIVACY.md).
+> **Unofficial.** Deskair is an independent open-source project, not made by or connected to the maker of Aranet4. Aranet is a trademark of its owner. Privacy: [`PRIVACY.md`](PRIVACY.md).
 
 ![Deskair Live screen: CO₂ in the Good zone with a 24-hour chart](docs/screenshots/live.png)
 
 ## Features
 
-- **Live:** CO₂ in large numbers with a clear zone (Good, Elevated or High), plain advice such as "Open a window for about 10 minutes", and temperature, humidity and pressure with trend charts. Charts cover 1 hour, 6 hours or 24 hours.
-- **Tray:** an icon that changes colour with the air quality, a quick flyout on left-click and a menu on right-click.
-- **Alerts:** a Windows notification when the air stays high, with Snooze. It respects quiet hours and Windows Do Not Disturb, and never sends a second toast for the same episode.
-- **History:** day, week, month and year views, a typical day, night-only averages and the hours when the air is usually worst. Gaps stay gaps: Deskair never invents data, and it says how complete a period is.
-- **Private:** no account, no cloud, no tracking. Readings are saved as CSV files in `Documents\Deskair`, and you can export them.
-- **Languages:** English and Ukrainian, light and dark themes, Celsius and Fahrenheit.
-- **Also:** can start with Windows (straight into the tray), keeps running in the tray when you close the window, and catches up on the sensor's stored history after sleep.
+- **Live:** CO₂ with a zone (Good, Elevated or High) and a short tip like "Open a window for about 10 minutes", plus temperature, humidity and pressure. Charts for 1, 6 or 24 hours.
+- **Tray:** the icon changes colour with the air. Click it for a quick look.
+- **Alerts:** a Windows notification when CO₂ stays high, with Snooze. It follows quiet hours and Do Not Disturb, and sends one toast per episode.
+- **History:** by day, week, month or year, with a typical day and the hours when the air is usually worst. Gaps stay gaps; nothing is made up.
+- **Your data:** no account, no cloud. Readings are CSV files in `Documents\Deskair`. Export them, or import the xlsx from the Aranet Home phone app.
+- **Also:** English and Ukrainian, light and dark themes, °C and °F. Starts with Windows if you want, keeps running in the tray, and catches up on the sensor's stored history after sleep.
 
 | Tray flyout | Dark theme |
 |---|---|
@@ -34,7 +33,7 @@
 
 ## Install
 
-- **Microsoft Store (recommended):** [Get Deskair from the Microsoft Store](https://apps.microsoft.com/detail/9N027HRZXSMH). Free, updates itself.
+- **Microsoft Store (recommended):** [Deskair in the Microsoft Store](https://apps.microsoft.com/detail/9N027HRZXSMH). Free, and it updates itself.
 - **From source:** see below.
 
 ## Build and run
@@ -57,7 +56,7 @@ More switches (a control gallery, one real sensor by address, the first-run scre
 
 ## How it works
 
-The code is split into five projects with one-way dependencies: `Domain` (types and pure calculations), `Services` (sync, live feed, alerts, queries), `Sensors` (one folder per sensor), `Storage` (monthly CSV files and settings) and `App` (WPF views and view models). Another sensor can be added without touching the rest; see [`docs/guides/adding-a-sensor.md`](docs/guides/adding-a-sensor.md).
+Five projects, each depending only on the ones before it: `Domain` (types and calculations), `Services` (sync, live feed, alerts, queries), `Sensors` (one folder per sensor), `Storage` (monthly CSV files and settings) and `App` (WPF views and view models). A new sensor can be added without touching the rest; see [`docs/guides/adding-a-sensor.md`](docs/guides/adding-a-sensor.md).
 
 ## Troubleshooting
 
@@ -67,7 +66,7 @@ The code is split into five projects with one-way dependencies: `Domain` (types 
 
 ## Acknowledgements
 
-The Aranet4 Bluetooth protocol was learned from the [Aranet4-Python](https://github.com/Anrijs/Aranet4-Python) project by Anrijs Jargans and contributors (MIT licence), whose protocol documentation and client were a research reference. Deskair's C# implementation is separate; it uses protocol identifiers and packet layouts as interoperability facts. Our own capture of the sensor's history format is `tests/Deskair.Tests/TestData/aranet4-history-capture.txt`.
+Thanks to [Aranet4-Python](https://github.com/Anrijs/Aranet4-Python) by Anrijs Jargans and contributors (MIT licence). Its protocol documentation and client were the reference for talking to the sensor. Deskair's C# code is separate and only uses the protocol identifiers and packet layouts. A capture of the sensor's history format is in `tests/Deskair.Tests/TestData/aranet4-history-capture.txt`.
 
 ## Documentation
 

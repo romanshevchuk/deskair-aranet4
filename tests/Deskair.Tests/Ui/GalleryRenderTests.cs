@@ -10,7 +10,7 @@ using Deskair.Services.Settings;
 namespace Deskair.Tests.Ui;
 
 /// <summary>
-/// Renders the gallery to PNG files in artifacts/visual so the controls can be compared with the prototype without a screen.
+/// Renders the gallery to PNG files in artifacts/visual so the controls can be checked by eye without running the app.
 /// Off in normal runs; switch on with the environment variable DESKAIR_RENDER=1.
 /// </summary>
 public class GalleryRenderTests

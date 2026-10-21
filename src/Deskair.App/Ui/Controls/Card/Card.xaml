@@ -1,7 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Deskair.App.Ui.Controls">
-  <!-- The prototype's .card: a 1 px border, 16 px radius and a soft shadow. The shadow is drawn by a separate border behind the content, so a chart or a value that changes inside the card
+  <!-- A card: a 1 px border, 16 px radius and a soft shadow. The shadow is drawn by a separate border behind the content, so a chart or a value that changes inside the card
        does not make Windows blur the whole card again. Every card, a zone card included, has the same neutral surface, border and shadow (D-0017); a zone card adds the zone glow
        from its top-left corner on a layer between the surface and the content. -->
   <Style TargetType="{x:Type local:Card}">
