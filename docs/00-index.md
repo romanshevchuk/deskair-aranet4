@@ -23,4 +23,4 @@ Agents start at `AGENTS.md` (shared) or `CLAUDE.md` (Claude Code). Area rules ar
 
 ## Architecture
 
-`engineering/architecture.md` (five projects, rules, glossary) and `guides/adding-a-sensor.md` (how forks add a sensor). Ideas for a more premium feel: `design/polish-ideas.md`.
+`engineering/architecture.md` (five projects, rules, glossary) and `guides/adding-a-sensor.md` (how forks add a sensor).

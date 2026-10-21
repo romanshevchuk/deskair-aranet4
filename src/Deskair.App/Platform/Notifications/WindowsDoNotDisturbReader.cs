@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace Deskair.App.Platform.Notifications;
 
 /// <summary>
-/// Reads whether Windows Do Not Disturb is on (docs/plans/research-do-not-disturb.md). Windows has no documented way to ask: on Windows 11 build 26200 the documented
+/// Reads whether Windows Do Not Disturb is on. Windows has no documented way to ask: on Windows 11 build 26200 the documented
 /// <c>FocusSessionManager.IsFocusActive</c> and <c>SHQueryUserNotificationState</c> do not change when Do Not Disturb is switched. What does change is the state
 /// <c>WNF_SHEL_QUIETHOURS_ACTIVE_PROFILE_CHANGED</c> (a system state number, 0 off, non-zero on), read with the undocumented <c>NtQueryWnfStateData</c>.
 /// When the state cannot be read, the answer is null, and the app treats alerts as allowed.

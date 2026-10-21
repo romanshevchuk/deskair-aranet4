@@ -1,6 +1,6 @@
 # Architecture
 
-*Last reviewed: 2026-10-20*
+*Last reviewed: 2026-10-21*
 
 Status: approved structure; details may change during M1. Behaviour is in `docs/product/`, visuals in `docs/design/`, storage in `data-model.md`, decisions in `docs/decisions.md`.
 
@@ -233,7 +233,7 @@ Each class implements an interface from `Services`. Store (packaged) and non-Sto
 
 ## 13. Build order
 
-The solution was built in this order, and a new area depends on the ones before it: `Domain`, then `Services` and `Storage`, `Sensors/Simulated`, the `App` shell with theme tokens and localization, the dependency-rules test, then `Sensors/Aranet4` and `App/Platform` (found out through the spikes, `docs/plans/spikes.md`).
+The solution was built in this order, and a new area depends on the ones before it: `Domain`, then `Services` and `Storage`, `Sensors/Simulated`, the `App` shell with theme tokens and localization, the dependency-rules test, then `Sensors/Aranet4` and `App/Platform` (found out through spikes).
 
 ## 14. Glossary
 

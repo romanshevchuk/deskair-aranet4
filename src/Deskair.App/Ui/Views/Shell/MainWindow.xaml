@@ -17,7 +17,7 @@
         MinHeight="{StaticResource Size.Window.MinHeight}"
         Height="728">
   <!-- The header is the title bar: a 52 px caption with the system's own caption buttons, so dragging, double-click, resizing and the snap layouts box on the maximize
-       button all work as usual (docs/plans/spike-s3-title-bar.md). BackdropService adds Mica on Windows 11. -->
+       button all work as usual. BackdropService adds Mica on Windows 11. -->
   <WindowChrome.WindowChrome>
     <WindowChrome CaptionHeight="{StaticResource Size.Header.Height}"
                   CornerRadius="0"

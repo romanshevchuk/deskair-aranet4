@@ -1,6 +1,6 @@
 # Maintaining agent instructions
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-21*
 
 Based on the Claude Code memory documentation (code.claude.com/docs/en/memory). Claude treats instruction files as context, not enforced configuration, so wording and placement decide how well they work.
 
@@ -29,7 +29,7 @@ Nested `CLAUDE.md` files per folder load only when Claude reads a file there, so
 
 ## Enforcement (owner to set up)
 
-Instructions are not guarantees. For hard limits use permission rules or hooks in `.claude/settings.json`, for example: deny edits under `design/prototype/`, deny adding packages, and run `dotnet format` or the tests before a commit. Check the current hooks and permissions documentation for syntax.
+Instructions are not guarantees. For hard limits use permission rules or hooks in `.claude/settings.json`, for example: deny adding packages, and run `dotnet format` or the tests before a commit. Check the current hooks and permissions documentation for syntax.
 
 ## Review
 

@@ -16,7 +16,7 @@ namespace Deskair.App.Platform.Tray;
 /// <summary>
 /// Owns the notification-area icon. The icon and tooltip follow <see cref="TrayViewModel"/>: the colour always updates, even when toasts are off.
 /// Left click opens the flyout (or closes it), right click opens the menu (<see cref="TrayMenuViewModel"/>). With the setting on, the icon shows the value instead of the ring.
-/// The icon is drawn at the size Windows uses for small icons, so it is sharp (docs/plans/spike-s4-tray-icons.md).
+/// The icon is drawn at the size Windows uses for small icons, so it is sharp.
 /// </summary>
 public sealed class TrayIconHost : IDisposable
 {

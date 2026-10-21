@@ -2,7 +2,7 @@
 
 Deskair is a Windows desktop app (WPF, .NET 10) that shows live and historical CO₂, temperature, humidity and pressure from an Aranet4 sensor over Bluetooth LE. It lives in the tray, alerts the user when CO₂ is high, and stores every reading locally. Languages: English (default) and Ukrainian.
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-10-21*
 
 ## Data flow
 
@@ -56,7 +56,7 @@ WPF cannot be built or run on Linux or macOS. If a command here is wrong, fix it
 | Why something was decided | `docs/decisions.md` |
 | What is undecided | `docs/plans/questions.md` |
 
-The visual reference is `design/prototype/index.html`. Its data is simulated; known shortcuts are in `docs/design/README.md`. Where the prototype and the docs disagree, the docs win. `docs/engineering/csharp-instructions.md` holds C# conventions (owner-maintained; if empty, use standard .NET conventions).
+The visual reference is the app's own renders (`artifacts/visual/`, see `docs/guides/run-the-gallery.md`) together with `docs/design/`. `docs/engineering/csharp-instructions.md` holds C# conventions (owner-maintained; if empty, use standard .NET conventions).
 
 ## Working rules
 
@@ -79,7 +79,6 @@ The visual reference is `design/prototype/index.html`. Its data is simulated; kn
 - Do not create summary, notes or changelog markdown files unless asked.
 - Do not add comments or docstrings to code you did not change.
 - Do not leave long methods filled with comments; split the work into small methods, or stub one with `throw new NotImplementedException("TODO(ID)")` and a short comment naming its spec.
-- Do not edit `design/prototype/` unless the task is a design update.
 - Do not read or copy the legacy prototype (`../deskair-legacy`) unless the task says so. When told to, adapt its ideas to our interfaces and tests; never copy it wholesale.
 
 ## Git
