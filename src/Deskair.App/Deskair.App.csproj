@@ -10,6 +10,40 @@
     <SatelliteResourceLanguages>en;uk</SatelliteResourceLanguages>
   </PropertyGroup>
 
+  <!-- Store package size (docs/plans/size-and-startup.md, SIZE-02): publish trims only the Windows SDK projection;
+       WPF does not support trimming, so every other assembly is copied unchanged. -->
+  <PropertyGroup>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>partial</TrimMode>
+    <_SuppressWpfTrimError>true</_SuppressWpfTrimError>
+    <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+  </PropertyGroup>
+
+  <!-- PublishTrimmed also switches off runtime features for the whole app (built-in COM, type descriptors,
+       System.Text.Json reflection, ...). WPF and our JSON settings need them, so keep the untrimmed defaults. -->
+  <PropertyGroup>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <_ComObjectDescriptorSupport>true</_ComObjectDescriptorSupport>
+    <_DefaultValueAttributeSupport>true</_DefaultValueAttributeSupport>
+    <CustomResourceTypesSupport>true</CustomResourceTypesSupport>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+    <EnableUnsafeUTF7Encoding>true</EnableUnsafeUTF7Encoding>
+    <MetadataUpdaterSupport>true</MetadataUpdaterSupport>
+    <StartupHookSupport>true</StartupHookSupport>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+    <EnableConsumingManagedCodeFromNativeHosting>true</EnableConsumingManagedCodeFromNativeHosting>
+    <EnableCppCLIHostActivation>true</EnableCppCLIHostActivation>
+  </PropertyGroup>
+
+  <Target Name="TrimOnlyWindowsSdk" AfterTargets="PrepareForILLink">
+    <ItemGroup>
+      <ManagedAssemblyToLink Condition="'%(Filename)' != 'Microsoft.Windows.SDK.NET'">
+        <IsTrimmable>false</IsTrimmable>
+        <TrimMode>copy</TrimMode>
+      </ManagedAssemblyToLink>
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
     <!-- Program.Main starts the app, so App.xaml is a page, not the application definition. -->
     <ApplicationDefinition Remove="App.xaml" />

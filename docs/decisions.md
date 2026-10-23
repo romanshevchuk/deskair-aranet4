@@ -285,6 +285,16 @@ Deskair kept one Bluetooth connection open all day and read the current values o
 
 **Consequences:** the footer battery is the middle of the last five advertised values (the sensor derives it from the cell voltage and it moves by several points); the Live chart and the other "recent" queries now include a reading stored on a slot up to half an interval after now (a reading is stored on the nearest slot of the grid, which can be ahead of the moment it was measured, so the chart used to lag the Hero card by one reading); the phone app can reach the sensor except for the roughly 20 seconds of a sync. A reading missed while the PC is out of range or the phone holds the sensor stays a gap until the next sync (the user can press "Sync history"). Smart Home integration stays required (D-0026). `ISensor.ListenAsync`, `SensorBroadcast`, `SensorCapabilities.Broadcasts`, `BleScanMode`, `Aranet4Parser.ParseAdvertisement`, `SyncRequested`; sync-and-import.md. Not done: a re-sync when a gap is noticed, signal strength from the advertisements (Q33).
 
+## D-0029 Publish trims only the Windows SDK projection
+
+**Status:** accepted · Oct 2026; pending the owner's packaged check (`size-and-startup.md` section 3)
+
+`Microsoft.Windows.SDK.NET.dll` was 23.7 MB, the largest file in the package, and the app uses only a few WinRT namespaces. WPF does not support trimming, so trimming everything would break its reflection.
+
+**Decision:** `Deskair.App.csproj` sets `PublishTrimmed` with `TrimMode=partial`, and the target `TrimOnlyWindowsSdk` marks every assembly except `Microsoft.Windows.SDK.NET` as not trimmable (copied unchanged). `_SuppressWpfTrimError` is an internal SDK switch that silences the "WPF is not trim-compatible" error; a future SDK may rename it. Only `dotnet publish` is affected, not build, run or tests. `PublishTrimmed` also writes trimming switches into `runtimeconfig.json` that apply to the whole app; the first try crashed at start (`NotSupportedException: Built-in COM has been disabled`, from WPF's `ThemeManager`). A second property group in the csproj sets those switches back to the untrimmed defaults (built-in COM, type descriptors, `DefaultValueAttribute`, `System.Text.Json` reflection and others).
+
+**Consequences:** the DLL is 0.52 MB; the `.msix` goes from 65.8 to 60 MB and the install from 159 to 136 MB (measured 2026-10-23). Trimming can only break code that calls WinRT (Bluetooth, toasts, startup task), hence the owner check. Fallback if anything fails: delete the property group and the target; there is no partial fix.
+
 ## D-0030 A scan that goes quiet is restarted with a new connection
 
 **Status:** accepted · Oct 2026; amends D-0028
