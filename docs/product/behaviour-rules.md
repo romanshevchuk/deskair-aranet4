@@ -1,6 +1,6 @@
 # Behaviour rules
 
-*Last reviewed: 2026-10-19*
+*Last reviewed: 2026-10-23*
 
 ## CO₂ zones
 
@@ -94,7 +94,7 @@ When several apply, the first of this list wins: First run, Not connected becaus
 - Notify on entering Elevated after a 5 minute dwell, or High after a 2 minute dwell (about one confirming reading; High is more urgent, D-0026).
 - One toast per episode. Notify again only on escalation to High, or if still High after 60 minutes.
 - The dwell counts from the start of the episode (first reading outside Good). After a toast at Elevated, escalation to High needs 2 minutes in High before the second toast, so a value hovering at the boundary does not repeat it. Each device has its own episode. The air must stay Good for 10 minutes to end the episode, so a value hovering at 1000 ppm is one episode with one toast (D-0025).
-- Pressing a toast (or its Open button) counts as seen: no further toast for the current episodes, except the escalation to High, which still needs its 5 minutes. A new toast can be pressed again. An episode that has not sent a toast is unaffected (D-0025).
+- Pressing the body of a toast counts as seen: no further toast for the current episodes, except the escalation to High, which still needs its 5 minutes. A new toast can be pressed again. An episode that has not sent a toast is unaffected (D-0025).
 - A toast that is held back (alerts off, Notify at Elevated or High off, quiet hours, Snooze, Do Not Disturb) is not stored. If the air is still Elevated or High when the hold ends, the toast is sent then; if it became Good meanwhile, there is none.
 - Quiet hours use the local time. Equal start and end mean no quiet hours.
 - Respect quiet hours, Snooze, and Windows Do Not Disturb. Never override Do Not Disturb. Show "Alerts paused by Windows" in the tray tooltip and in Settings.
