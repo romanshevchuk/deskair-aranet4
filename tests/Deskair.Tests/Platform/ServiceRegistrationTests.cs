@@ -99,4 +99,11 @@ public sealed class ServiceRegistrationTests : IDisposable
     {
         Assert.NotNull(provider.GetRequiredService<ILogger<Deskair.App.ViewModels.Live.LiveViewModel>>());
     }
+
+    [Fact]
+    public void The_start_up_sequence_and_the_app_logger_resolve_from_a_plain_service_collection()
+    {
+        Assert.NotNull(provider.GetRequiredService<StartupSequence>());
+        Assert.NotNull(provider.GetRequiredService<ILogger<Deskair.App.App>>());
+    }
 }
