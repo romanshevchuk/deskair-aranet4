@@ -24,8 +24,7 @@ public sealed class ExportService
         CancellationToken cancellationToken)
     {
         var inRange = await readings.ReadRangeAsync(device, start, end, cancellationToken);
-        var ordered = inRange.OrderBy(reading => reading.Timestamp).ToList();
 
-        await exporter.WriteAsync(ordered, zone, destination, cancellationToken);
+        await exporter.WriteAsync(inRange, zone, destination, cancellationToken);
     }
 }

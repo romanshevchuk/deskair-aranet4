@@ -1,6 +1,6 @@
 # Questions raised while building the skeleton
 
-*Last reviewed: 2026-10-21*
+*Last reviewed: 2026-10-23*
 
 Questions the docs did not answer, and the decisions made while building. Decisions are recorded in the doc they change and in [../decisions.md](../decisions.md); they are listed here too so the numbers cited in code comments, tests and other docs still make sense.
 
@@ -13,6 +13,7 @@ Questions the docs did not answer, and the decisions made while building. Decisi
 | Q32 | A connected Aranet4 does not report its signal strength (only its advertisements carry one), so the footer shows no signal for it. Should the scanner pass the last advertisement signal on to the session? | `Aranet4Sensor.ConnectAsync` (ARANET-03a); `FooterViewModel` | `SensorStatus.SignalDbm` is null and `SignalStrength` is false for the Aranet4. The footer shows no signal text (confirmed against Aranet4-Python: only scanning, not a connection, gives RSSI). |
 | Q33 | Older Aranet4 firmware may expose its characteristics under the service `f0cd1400-95da-4f4b-9ac8-aa55d312af0c` instead of `0000fce0-...`. Our sensor (firmware 2.0.7) uses `0000fce0`. Is older firmware supported? | `Aranet4Protocol.LegacyServiceId`; spike S1 | Only `0000fce0` is used. An older sensor fails to connect with a clear error. |
 | Q17 | Strings added by the skeleton need owner wording and a native Ukrainian review: Sensor_*_Step*, Footer_NoSensor, Nav_Main, Language_*, Gallery_*, Import_PhoneExport_Name. Cards ask for further keys (Coverage_Chip). | localization.md; Strings.resx | Short placeholder wording in both languages. |
+| Q53 | `FakeReadingStore.ReadRangeAsync` includes a reading at exactly `end` (`<= end`); the real store (`ReadingIndex.Range`) and the `IReadingStore` contract exclude it (`< end`). Tests that depend on the difference would change if the fake followed the contract. | PERF-04 | The fake keeps `<= end`; make it match the real store in a separate item. |
 
 ## Decided
 
