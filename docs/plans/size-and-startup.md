@@ -281,6 +281,18 @@ var app = new App(provider);
 
 **Agent.** Publish twice into `artifacts\r2r-off` and `artifacts\r2r-on` (the second with `-p:PublishReadyToRun=true`, otherwise exactly as `build-msix.ps1` publishes). Report the size of each folder and of each `Deskair.*.dll`. Do not change any project file.
 
+**Agent results (2026-10-23).** Published from the SIZE-02 branch (so the Windows SDK projection is trimmed in both); folders `artifacts\r2r-off` and `artifacts\r2r-on` are left on the agent's PC for the owner's runs. No project file was changed.
+
+| | ReadyToRun off | ReadyToRun on |
+|---|---|---|
+| Whole folder | 135.9 MB (287 files) | 140.0 MB (287 files) |
+| `Deskair.App.dll` | 782 KB | 1,608 KB |
+| `Deskair.Domain.dll` / `Services` / `Sensors` / `Storage` | 85 / 131 / 59 / 37 KB | 220 / 332 / 144 / 100 KB |
+| `CommunityToolkit.Mvvm.dll` | 180 KB | 364 KB |
+| Warm time to window (`--simulated`, 3 runs, not a cold start) | 660, 661, 678 ms (middle 661 ms) | 962, 599, 605 ms (middle 605 ms) |
+
+So ReadyToRun costs about 4.1 MB (about 3 %) and saved about 56 ms in a warm start; the first "on" run (962 ms) was a first touch of a new folder. By the rule below (more than about 100 ms for a few MB) this leans to "not worth it", but only the owner's cold-start runs decide.
+
 **Owner.** For each folder: restart the PC (for a real cold start) or at least wait a few minutes, quit every Deskair, then run:
 
 ```powershell

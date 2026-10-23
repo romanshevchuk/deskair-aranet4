@@ -43,7 +43,7 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 | PERF-03 | No footer tick while the main window is hidden (section 6) | agent | todo |
 | PERF-04 | No second sort of readings the store already returns sorted (section 7) | agent | todo |
 | PERF-05 | Read the packaged startup task state without blocking (section 8) | agent | todo |
-| PERF-06 | Measure ReadyToRun; the owner decides from the numbers (section 9) | both | todo |
+| PERF-06 | Measure ReadyToRun; the owner decides from the numbers (section 9). Agent part done 2026-10-23 (+4.1 MB, about 56 ms warm); waits for the owner's cold-start runs | both | owner check |
 
 ## R4. Release
 
