@@ -3,7 +3,7 @@ using Deskair.App.Platform;
 using Deskair.App.Platform.Packaging;
 using Deskair.App.Platform.Startup;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Deskair.App;
 
@@ -34,15 +34,24 @@ public static class Program
             return 0;
         }
 
-        var builder = Host.CreateApplicationBuilder(args);
-        builder.Services.AddDeskair(options);
-        builder.Services.AddSingleton(instance);
+        // Only a service container is needed, so the generic host (configuration files, extra log sinks) is left out.
+        var services = new ServiceCollection();
+        services.AddLogging(logging => logging.SetMinimumLevel(LogLevel.Information));
+        services.AddDeskair(options);
+        services.AddSingleton(instance);
 
-        using var host = builder.Build();
+        var provider = services.BuildServiceProvider();
 
-        var app = new App(host.Services);
-        app.InitializeComponent();
+        try
+        {
+            var app = new App(provider);
+            app.InitializeComponent();
 
-        return app.Run();
+            return app.Run();
+        }
+        finally
+        {
+            ServiceProviderShutdown.Dispose(provider);
+        }
     }
 }
