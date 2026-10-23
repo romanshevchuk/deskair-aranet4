@@ -5,6 +5,7 @@ using Deskair.Services.Platform;
 using Deskair.Services.Storage;
 using Deskair.Services.Sync;
 using Deskair.Storage.Devices;
+using Microsoft.Extensions.Logging;
 
 namespace Deskair.Storage.Readings;
 
@@ -19,10 +20,14 @@ public sealed class MonthlyCsvStore : IReadingStore, IDisposable
     private readonly IKnownFolders folders;
     private readonly Dictionary<DeviceId, ReadingIndex> indexes = new();
     private readonly SemaphoreSlim gate = new(1, 1);
+    private readonly ILogger<MonthlyCsvStore> logger;
+    private readonly TimeProvider timeProvider;
 
-    public MonthlyCsvStore(IKnownFolders folders)
+    public MonthlyCsvStore(IKnownFolders folders, ILogger<MonthlyCsvStore> logger, TimeProvider timeProvider)
     {
         this.folders = folders;
+        this.logger = logger;
+        this.timeProvider = timeProvider;
     }
 
     public void Dispose()
@@ -172,29 +177,53 @@ public sealed class MonthlyCsvStore : IReadingStore, IDisposable
             return cached;
         }
 
-        var index = new ReadingIndex();
+        var started = timeProvider.GetTimestamp();
         var folder = DeviceFolders.For(folders, device);
 
-        if (Directory.Exists(folder))
-        {
-            var loaded = new List<Reading>();
-
-            foreach (var file in Directory.GetFiles(folder, "readings-*.csv").Order(StringComparer.Ordinal))
-            {
-                await foreach (var line in File.ReadLinesAsync(file, cancellationToken))
-                {
-                    if (CsvReadingFormat.TryParse(line, out var reading, out _))
-                    {
-                        loaded.Add(reading);
-                    }
-                }
-            }
-
-            index.Add(loaded);
-        }
+        // Years of rows are split and parsed here, so this must not run on the caller's (UI) thread. Nothing is cached when it is cancelled.
+        var (index, count) = await Task.Run(() => BuildIndex(folder, cancellationToken), cancellationToken);
 
         indexes[device] = index;
 
+        if (logger.IsEnabled(LogLevel.Information))
+        {
+            logger.LogInformation("Loaded {Count} readings for {Address} in {Milliseconds} ms.", count, device.Address, (long)timeProvider.GetElapsedTime(started).TotalMilliseconds);
+        }
+
         return index;
+    }
+
+    private static (ReadingIndex Index, int Count) BuildIndex(string folder, CancellationToken cancellationToken)
+    {
+        var loaded = ReadAll(folder, cancellationToken);
+        var index = new ReadingIndex();
+        index.Add(loaded);
+
+        return (index, loaded.Count);
+    }
+
+    private static List<Reading> ReadAll(string folder, CancellationToken cancellationToken)
+    {
+        var loaded = new List<Reading>();
+
+        if (!Directory.Exists(folder))
+        {
+            return loaded;
+        }
+
+        foreach (var file in Directory.GetFiles(folder, "readings-*.csv").Order(StringComparer.Ordinal))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            foreach (var line in File.ReadLines(file))
+            {
+                if (CsvReadingFormat.TryParse(line, out var reading, out _))
+                {
+                    loaded.Add(reading);
+                }
+            }
+        }
+
+        return loaded;
     }
 }
