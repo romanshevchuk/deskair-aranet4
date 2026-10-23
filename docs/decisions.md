@@ -287,7 +287,7 @@ Deskair kept one Bluetooth connection open all day and read the current values o
 
 ## D-0029 Publish trims only the Windows SDK projection
 
-**Status:** accepted · Oct 2026; pending the owner's packaged check (`size-and-startup.md` section 3)
+**Status:** accepted · Oct 2026; verified by the owner on the unpackaged and the packaged test build (2026-10-23)
 
 `Microsoft.Windows.SDK.NET.dll` was 23.7 MB, the largest file in the package, and the app uses only a few WinRT namespaces. WPF does not support trimming, so trimming everything would break its reflection.
 

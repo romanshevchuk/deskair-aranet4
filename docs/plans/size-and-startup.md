@@ -93,7 +93,7 @@ A first version without the second property group published fine but crashed at 
 3. In `artifacts\msix\publish`: `Microsoft.Windows.SDK.NET.dll` is under 1 MB, `PresentationFramework.dll` is still about 15 MB, and the only culture folder is `uk`.
 4. Docs: in `packaging/README.md`, change "about 66 MB" to the new size and add one line on the trimming. In `docs/decisions.md`, add a decision entry with the next free number (check the highest number; it is D-0029): "Publish trims only the Windows SDK projection", with the reason, the internal switch `_SuppressWpfTrimError`, and the fallback (delete the block).
 
-**Status 2026-10-23: block added, agent checks 1 to 4 pass (`.msix` 60 MB, SDK DLL 0.52 MB, `PresentationFramework.dll` 15.08 MB, only `uk` culture folder, 135.9 MB installed, 1662 tests pass); docs done (D-0029). The trimmed build starts and shows its window with `--simulated` (after the fix for a start-up crash); everything that talks to Windows is still unchecked. Waiting for the owner.**
+**Status 2026-10-23: done.** Agent checks 1 to 4 passed (`.msix` 60 MB, SDK DLL 0.52 MB, `PresentationFramework.dll` 15.08 MB, only `uk` culture folder, 135.9 MB installed). The owner checked the unpackaged and the packaged build the same day: toasts (Snooze and body press), Bluetooth off and on, a real sensor run, Ukrainian, the data folder and sync, Start with Windows, quitting without an error. Two other bugs surfaced and were fixed on the way (the quit crash of PERF-02, and the silent Bluetooth scan, D-0030).
 
 **Owner check: see section 3** (both parts). The item is done only when section 3 passes. If anything fails, delete the block, rebuild and say what failed. There is no partial fix to try.
 
