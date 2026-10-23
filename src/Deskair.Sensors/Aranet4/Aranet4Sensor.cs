@@ -57,17 +57,39 @@ public sealed class Aranet4Sensor : ISensor
     /// The measurements in the sensor's advertisements, without a connection (needs "Smart Home integration" on in the phone app). The sensor repeats the same measurement in
     /// every advertisement for a whole interval, so one is passed on only when its measurement time is clearly later than the last one's. Its time is the receiving time minus
     /// the age the sensor reports, as for <see cref="ReadCurrentAsync"/>. Listens passively: asking the sensor for its scan response on every packet would cost its battery.
+    /// The sensor repeats its advertisement every few seconds, so hearing nothing from it for <see cref="SilenceLimit"/> means the scan has gone quiet (or the sensor is out of reach):
+    /// the sequence then throws <see cref="TimeoutException"/> and the caller starts again with a connection.
     /// </summary>
     public async IAsyncEnumerable<SensorBroadcast> ListenAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         DateTimeOffset? newest = null;
+        var silent = false;
 
-        await foreach (var advertisement in scanner.ScanAsync(BleScanMode.Passive, cancellationToken).WithCancellation(cancellationToken))
+        using var scanning = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        using var watchdog = timeProvider.CreateTimer(_ =>
         {
+            silent = true;
+            scanning.Cancel();
+        }, null, SilenceLimit, Timeout.InfiniteTimeSpan);
+
+        await using var advertisements = scanner.ScanAsync(BleScanMode.Passive, scanning.Token).GetAsyncEnumerator(scanning.Token);
+
+        while (true)
+        {
+            if (!await NextAsync(advertisements, () => silent && !cancellationToken.IsCancellationRequested))
+            {
+                yield break;
+            }
+
+            var advertisement = advertisements.Current;
+
             if (!IsFromThisSensor(advertisement) || Aranet4Parser.ParseAdvertisement(advertisement.ManufacturerData[Aranet4Protocol.ManufacturerId]) is not { } current)
             {
                 continue;
             }
+
+            // Every advertisement of this sensor counts, the repeated ones too: it is the scan that is being watched, not the measurements.
+            watchdog.Change(SilenceLimit, Timeout.InfiniteTimeSpan);
 
             var measuredAt = timeProvider.GetUtcNow() - current.Age;
 
@@ -80,6 +102,22 @@ public sealed class Aranet4Sensor : ISensor
             var reading = new Reading(measuredAt, current.Co2Ppm, current.TemperatureC, current.HumidityPct, current.PressureHpa);
 
             yield return new SensorBroadcast(reading, current.Interval, current.BatteryPercent <= 100 ? current.BatteryPercent : null);
+        }
+    }
+
+    /// <summary>How long the scan may hear nothing from the sensor before listening is given up and started again.</summary>
+    public static readonly TimeSpan SilenceLimit = TimeSpan.FromSeconds(90);
+
+    // The watchdog stops a quiet scan by cancelling it; that is turned into a timeout here, outside the iterator, because an iterator cannot yield inside a try with a catch.
+    private static async Task<bool> NextAsync(IAsyncEnumerator<BleAdvertisement> advertisements, Func<bool> watchdogFired)
+    {
+        try
+        {
+            return await advertisements.MoveNextAsync();
+        }
+        catch (OperationCanceledException) when (watchdogFired())
+        {
+            throw new TimeoutException($"No advertisement from the sensor for {SilenceLimit.TotalSeconds:0} s; the Bluetooth scan has gone quiet.");
         }
     }
 
