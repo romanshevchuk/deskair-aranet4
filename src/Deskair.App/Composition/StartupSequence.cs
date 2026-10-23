@@ -88,7 +88,7 @@ public sealed class StartupSequence : IDisposable
         }
     }
 
-    /// <summary>For <c>--test-toast</c>: one High CO₂ toast through the real notifier, so Snooze and Open can be tried at once.</summary>
+    /// <summary>For <c>--test-toast</c>: one High CO₂ toast through the real notifier, so Snooze (the button) and Open (pressing the toast) can be tried at once.</summary>
     private async Task ShowTestToastAsync()
     {
         var logger = services.GetRequiredService<ILogger<StartupSequence>>();
