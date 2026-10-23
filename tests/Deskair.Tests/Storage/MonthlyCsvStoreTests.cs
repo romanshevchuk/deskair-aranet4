@@ -74,6 +74,25 @@ public sealed class MonthlyCsvStoreTests : IDisposable
     }
 
     [Fact]
+    public async Task Reading_ranges_come_back_oldest_first()
+    {
+        var lastOfSeptember = Samples.Utc(2026, 9, 30, 23, 58);
+        WriteFile("2026-10", CsvReadingFormat.Header + "\n" + Row(lastOfSeptember.AddMinutes(6), 4) + "\n");
+
+        // Merged out of order, one reading in September and two in October, on top of what the file already holds.
+        await store.MergeAsync(
+            office,
+            [Samples.Co2(lastOfSeptember.AddMinutes(4), 3), Samples.Co2(lastOfSeptember.AddMinutes(8), 5), Samples.Co2(lastOfSeptember, 1)],
+            ReadingSource.Device,
+            interval,
+            CancellationToken.None);
+
+        var readings = await store.ReadRangeAsync(office, lastOfSeptember, lastOfSeptember.AddMinutes(10), CancellationToken.None);
+
+        Assert.Equal(new[] { 1.0, 3.0, 4.0, 5.0 }, readings.Select(reading => reading.Co2Ppm));
+    }
+
+    [Fact]
     public async Task ReadRange_is_start_inclusive_and_end_exclusive()
     {
         WriteFile("2026-10", CsvReadingFormat.Header + "\n" + Row(noon, 1) + "\n" + Row(noon.AddMinutes(2), 2) + "\n" + Row(noon.AddMinutes(4), 3) + "\n");
