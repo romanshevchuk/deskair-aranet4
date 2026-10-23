@@ -19,11 +19,9 @@ public sealed partial class StartupSettingsViewModel : ObservableObject
         this.logger = logger;
     }
 
-    public Task LoadAsync(CancellationToken cancellationToken)
+    public async Task LoadAsync(CancellationToken cancellationToken)
     {
-        SetWithoutApplying(registration.IsEnabled);
-
-        return Task.CompletedTask;
+        SetWithoutApplying(await registration.IsEnabledAsync(cancellationToken));
     }
 
     partial void OnStartWithWindowsChanged(bool value)

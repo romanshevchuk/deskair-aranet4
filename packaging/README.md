@@ -32,7 +32,7 @@ Remove again: `Get-AppxPackage RomanShevchuk.Deskair | Remove-AppxPackage`, and 
 
 ## Things to know
 
-- The package is self-contained (it carries .NET), so it is large (about 66 MB; only the English and Ukrainian framework resources are included). There is no shared .NET 10 package to depend on.
+- The package is self-contained (it carries .NET), so it is large (about 60 MB; only the English and Ukrainian framework resources are included, and publish trims the Windows SDK projection, the only trimmed assembly: D-0029). There is no shared .NET 10 package to depend on.
 - Identity values must match Partner Center exactly: `RomanShevchuk.Deskair`, `CN=C6F2FCB9-D5F4-41BE-9616-7B99EB94EFA1`, `Roman Shevchuk` (product identity page of the reserved name).
 - The toast class id and the startup task id in the manifest must match `ToastIdentity.ActivatorClassId` and `PackagedStartupRegistration.TaskId`.
 - Logos have the exact sizes, with no scale variants. A sharper taskbar icon at high scaling would need `resources.pri` (MakePri); not done yet.

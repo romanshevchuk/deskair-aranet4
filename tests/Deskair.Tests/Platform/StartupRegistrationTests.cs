@@ -22,9 +22,9 @@ public sealed class StartupRegistrationTests : IDisposable
     }
 
     [Fact]
-    public void Nothing_is_registered_to_begin_with()
+    public async Task Nothing_is_registered_to_begin_with()
     {
-        Assert.False(registration.IsEnabled);
+        Assert.False(await registration.IsEnabledAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public sealed class StartupRegistrationTests : IDisposable
     {
         await registration.SetEnabledAsync(true, TestContext.Current.CancellationToken);
 
-        Assert.True(registration.IsEnabled);
+        Assert.True(await registration.IsEnabledAsync(TestContext.Current.CancellationToken));
         using var key = Registry.CurrentUser.OpenSubKey(keyPath);
         Assert.Equal($"\"{Program}\" --background", key?.GetValue("Deskair"));
     }
@@ -44,7 +44,7 @@ public sealed class StartupRegistrationTests : IDisposable
 
         await registration.SetEnabledAsync(false, TestContext.Current.CancellationToken);
 
-        Assert.False(registration.IsEnabled);
+        Assert.False(await registration.IsEnabledAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public sealed class StartupRegistrationTests : IDisposable
     {
         await registration.SetEnabledAsync(false, TestContext.Current.CancellationToken);
 
-        Assert.False(registration.IsEnabled);
+        Assert.False(await registration.IsEnabledAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public sealed class StartupRegistrationTests : IDisposable
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => registration.SetEnabledAsync(true, cancelled.Token));
 
-        Assert.False(registration.IsEnabled);
+        Assert.False(await registration.IsEnabledAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]

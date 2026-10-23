@@ -1,6 +1,6 @@
 # Sync and import
 
-*Last reviewed: 2026-10-21*
+*Last reviewed: 2026-10-23*
 
 ## Sensor sync
 
@@ -9,7 +9,7 @@
 - Sync fills missing slots only (see merge rule in `data-model.md`). Timestamps are computed from the sync time and each reading's age, so allow a few seconds of error and snap to the interval grid.
 - A sync starts after the newest stored reading, or at the stored reading before the first hole (a gap of more than one and a half intervals) in the last 7 days, so a skipped slot is filled later (Q51). Merging only fills empty slots, so downloading more than is missing is harmless. A hole the sensor itself never recorded (it was off) cannot be filled and makes each sync download from there.
 - After the sync Deskair listens to the sensor's advertisements (passive scan, no connection; needs Smart Home integration). The same measurement repeats in every advertisement for a whole interval, so a reading is stored only when its measurement time (heard at minus age) is more than half an interval after the last one. A sensor without advertisements stays connected and is polled instead; that poll counts from the sensor's own measurement time (one interval after the last value was measured, plus 6 seconds), because counting from the end of the previous poll drifted past the sensor's schedule and skipped a reading every few hours.
-- Readings missed while listening (PC out of range, phone connected to the sensor) stay gaps until the next sync.
+- Readings missed while listening (PC out of range, phone connected to the sensor) stay gaps until the next sync. A scan that hears nothing from the sensor for 90 seconds is given up and the session starts again with a connection and a sync (D-0030).
 - After sync, Live must have the last 24 h.
 - The protocol is in `Aranet4Protocol.cs`; a real capture is `tests/Deskair.Tests/TestData/aranet4-history-capture.txt`.
 
