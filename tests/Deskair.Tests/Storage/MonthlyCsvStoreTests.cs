@@ -3,6 +3,8 @@ using Deskair.Domain.Readings;
 using Deskair.Services.Storage;
 using Deskair.Storage.Readings;
 using Deskair.Tests.Fakes;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Deskair.Tests.Storage;
 
@@ -13,11 +15,13 @@ public sealed class MonthlyCsvStoreTests : IDisposable
     private static readonly DateTimeOffset noon = Samples.Utc(2026, 10, 9, 12);
 
     private readonly TempKnownFolders folders = new();
+    private readonly FakeClock clock = new(noon);
+    private readonly ListLogger<MonthlyCsvStore> logger = new();
     private readonly MonthlyCsvStore store;
 
     public MonthlyCsvStoreTests()
     {
-        store = new MonthlyCsvStore(folders);
+        store = new MonthlyCsvStore(folders, logger, clock);
     }
 
     // Folder name is "<providerId>-<address>" with characters that are not allowed in file names replaced (questions.md Q9).
@@ -34,7 +38,7 @@ public sealed class MonthlyCsvStoreTests : IDisposable
     private static string Row(DateTimeOffset time, double ppm, string source = "dev")
         => CsvReadingFormat.Write(Samples.Co2(time, ppm), source == "imp" ? ReadingSource.Import : ReadingSource.Device);
 
-    private MonthlyCsvStore Reopen() => new(folders);
+    private MonthlyCsvStore Reopen() => new(folders, NullLogger<MonthlyCsvStore>.Instance, clock);
 
     private static Task<IReadOnlyList<Reading>> All(MonthlyCsvStore from)
         => from.ReadRangeAsync(office, DateTimeOffset.MinValue, DateTimeOffset.MaxValue, CancellationToken.None);
@@ -61,6 +65,35 @@ public sealed class MonthlyCsvStoreTests : IDisposable
         var readings = await All(store);
 
         Assert.Equal(new[] { 0.0, 1.0, 2.0 }, readings.Select(reading => reading.Co2Ppm));
+    }
+
+    [Fact]
+    public async Task A_cancelled_first_load_throws_and_a_later_load_reads_the_files()
+    {
+        WriteFile("2026-10", CsvReadingFormat.Header + "\n" + Row(noon, 1) + "\n" + Row(noon.AddMinutes(2), 2) + "\n");
+        WriteFile("2026-09", CsvReadingFormat.Header + "\n" + Row(noon.AddDays(-30), 0) + "\n");
+        using var cancelled = new CancellationTokenSource();
+        await cancelled.CancelAsync();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => store.ReadRangeAsync(office, DateTimeOffset.MinValue, DateTimeOffset.MaxValue, cancelled.Token));
+
+        // Nothing was cached by the cancelled load.
+        var readings = await All(store);
+        Assert.Equal(new[] { 0.0, 1.0, 2.0 }, readings.Select(reading => reading.Co2Ppm));
+    }
+
+    [Fact]
+    public async Task The_first_load_of_a_device_logs_how_many_readings_it_read()
+    {
+        WriteFile("2026-10", CsvReadingFormat.Header + "\n" + Row(noon, 1) + "\n" + Row(noon.AddMinutes(2), 2) + "\n");
+
+        await All(store);
+        await All(store);
+
+        var entry = Assert.Single(logger.Entries);
+        Assert.Equal(LogLevel.Information, entry.Level);
+        Assert.Equal("Loaded 2 readings for AA:01 in 0 ms.", entry.Message);
     }
 
     [Fact]
