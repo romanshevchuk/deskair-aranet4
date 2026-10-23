@@ -33,20 +33,19 @@ public sealed class StartupRegistration : IStartupRegistration
     }
 
     /// <summary>True when the Run key has a value for the app. A key that cannot be read counts as not enabled.</summary>
-    public bool IsEnabled
+    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken)
     {
-        get
-        {
-            try
-            {
-                using var key = Registry.CurrentUser.OpenSubKey(keyPath);
+        cancellationToken.ThrowIfCancellationRequested();
 
-                return key?.GetValue(valueName) is string { Length: > 0 };
-            }
-            catch (Exception exception) when (exception is SecurityException or UnauthorizedAccessException or IOException)
-            {
-                return false;
-            }
+        try
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(keyPath);
+
+            return Task.FromResult(key?.GetValue(valueName) is string { Length: > 0 });
+        }
+        catch (Exception exception) when (exception is SecurityException or UnauthorizedAccessException or IOException)
+        {
+            return Task.FromResult(false);
         }
     }
 

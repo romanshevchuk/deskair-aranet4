@@ -42,7 +42,6 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 | PERF-02 | Replace the generic host with a plain `ServiceCollection` (section 5). **Needs the owner's yes first** (package change) | both | todo |
 | PERF-03 | No footer tick while the main window is hidden (section 6) | agent | todo |
 | PERF-04 | No second sort of readings the store already returns sorted (section 7) | agent | todo |
-| PERF-05 | Read the packaged startup task state without blocking (section 8) | agent | todo |
 | PERF-06 | Measure ReadyToRun; the owner decides from the numbers (section 9) | both | todo |
 
 ## R4. Release
