@@ -1,6 +1,6 @@
 # Handoff (updated 2026-10-20)
 
-*Last reviewed: 2026-10-21*
+*Last reviewed: 2026-10-23*
 
 For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory (`AranetHomeDesktop`) unless the owner points you to it, and do not read `../deskair-legacy`.
 
@@ -129,7 +129,7 @@ What changed that you should know about:
 - **Window:** minimum size 1100 × 700 (tokens `Size.Window.MinWidth` and `MinHeight`), chosen by rendering Live and History at smaller sizes.
 - **Flyout:** a new `FlyoutWindow` for each opening (reusing one made a transparent window blink on re-show).
 - **Removed:** `IBleConnection.SubscribeAsync` and the notification code (unused, never verified), the bar-era chart header branches and strings.
-- **New dev switch:** `--test-toast` (use with `--simulated`) shows one High CO₂ toast at start, to try its Snooze and Open buttons.
+- **New dev switch:** `--test-toast` (use with `--simulated`) shows one High CO₂ toast at start, to try Snooze (the button) and Open (pressing the toast body).
 - **Sleep verdict pill colours:** Good green, Fair neutral, Poor amber (red is kept for the air being High now).
 - **Measured, not changed:** a Year refresh over a year of 2-minute readings is fast (POL-35), so the query layer was left alone.
 
