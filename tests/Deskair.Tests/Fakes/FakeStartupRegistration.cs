@@ -18,6 +18,8 @@ public sealed class FakeStartupRegistration : IStartupRegistration
 
     public bool Fail { get; set; }
 
+    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken) => Task.FromResult(IsEnabled);
+
     public int Calls { get; private set; }
 
     public Task SetEnabledAsync(bool enabled, CancellationToken cancellationToken)
