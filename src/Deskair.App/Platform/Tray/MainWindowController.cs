@@ -1,5 +1,7 @@
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Threading;
 using Deskair.App.ViewModels.Shell;
 
 namespace Deskair.App.Platform.Tray;
@@ -58,18 +60,36 @@ public sealed class MainWindowController : IMainWindowController
             window.Show();
         }
 
-        if (window.WindowState == WindowState.Minimized)
-        {
-            window.WindowState = WindowState.Normal;
-        }
-
+        Restore(window);
         window.Activate();
+
+        // The flyout that asked for this closes while it runs; look again once that is over, in case the restore did not hold.
+        window.Dispatcher.BeginInvoke(() => Restore(window), DispatcherPriority.Background);
     }
 
     public void Quit()
     {
         quitting = true;
         shutdown();
+    }
+
+    // WPF's WindowState can disagree with the real window (for example after Show desktop), and then setting it to Normal does nothing; ask Windows too.
+    private static void Restore(Window target)
+    {
+        var handle = new WindowInteropHelper(target).Handle;
+        var minimized = target.WindowState == WindowState.Minimized || (handle != 0 && NativeMethods.IsIconic(handle));
+
+        if (!minimized)
+        {
+            return;
+        }
+
+        target.WindowState = WindowState.Normal;
+
+        if (handle != 0 && NativeMethods.IsIconic(handle))
+        {
+            _ = NativeMethods.ShowWindow(handle, NativeMethods.SwRestore);
+        }
     }
 
     private void OnClosing(object? sender, CancelEventArgs e)

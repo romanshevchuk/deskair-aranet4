@@ -128,4 +128,36 @@ public class MainWindowControllerTests
 
         Assert.Null(Record.Exception(() => controller.Show(ShellSection.Settings)));
     }
+
+    [Fact]
+    public void Show_restores_a_window_that_Windows_minimized()
+    {
+        var restored = Run(() =>
+        {
+            var controller = new MainWindowController(new ShellViewModel(), () => { });
+            var window = new Window { ShowActivated = false, Width = 100, Height = 100 };
+            controller.Attach(window);
+            controller.Show();
+            var handle = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+
+            // Minimized by Windows itself, not through window.WindowState.
+            _ = ShowWindow(handle, 6);
+            var wasMinimized = IsIconic(handle);
+
+            controller.Show();
+            var stillMinimized = IsIconic(handle);
+            window.Close();
+
+            return (wasMinimized, stillMinimized);
+        });
+
+        Assert.True(restored.wasMinimized);
+        Assert.False(restored.stillMinimized);
+    }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool ShowWindow(nint window, int command);
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool IsIconic(nint window);
 }
