@@ -106,4 +106,29 @@ public sealed class ServiceRegistrationTests : IDisposable
         Assert.NotNull(provider.GetRequiredService<StartupSequence>());
         Assert.NotNull(provider.GetRequiredService<ILogger<Deskair.App.App>>());
     }
+
+    [Fact]
+    public void Shutting_down_the_container_disposes_services_that_only_dispose_asynchronously()
+    {
+        var services = new ServiceCollection();
+        services.AddSingleton<AsyncOnlyService>();
+        var container = services.BuildServiceProvider();
+        var service = container.GetRequiredService<AsyncOnlyService>();
+
+        ServiceProviderShutdown.Dispose(container);
+
+        Assert.True(service.Disposed);
+    }
+
+    private sealed class AsyncOnlyService : IAsyncDisposable
+    {
+        public bool Disposed { get; private set; }
+
+        public ValueTask DisposeAsync()
+        {
+            Disposed = true;
+
+            return ValueTask.CompletedTask;
+        }
+    }
 }

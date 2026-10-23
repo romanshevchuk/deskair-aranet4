@@ -40,11 +40,18 @@ public static class Program
         services.AddDeskair(options);
         services.AddSingleton(instance);
 
-        using var provider = services.BuildServiceProvider();
+        var provider = services.BuildServiceProvider();
 
-        var app = new App(provider);
-        app.InitializeComponent();
+        try
+        {
+            var app = new App(provider);
+            app.InitializeComponent();
 
-        return app.Run();
+            return app.Run();
+        }
+        finally
+        {
+            ServiceProviderShutdown.Dispose(provider);
+        }
     }
 }
