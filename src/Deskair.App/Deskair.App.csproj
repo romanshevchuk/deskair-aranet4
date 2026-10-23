@@ -6,6 +6,8 @@
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <StartupObject>Deskair.App.Program</StartupObject>
+    <!-- The app ships English and Ukrainian only; the framework's other languages would add about 8 MB to the package. -->
+    <SatelliteResourceLanguages>en;uk</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>

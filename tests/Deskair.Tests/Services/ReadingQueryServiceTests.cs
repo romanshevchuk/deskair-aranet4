@@ -193,20 +193,6 @@ public class ReadingQueryServiceTests
         Assert.Null(await service.GetZoneShareAsync(device, now.AddDays(-1), now, CancellationToken.None));
     }
 
-    [Fact]
-    public async Task A_device_with_no_stored_readings_has_none()
-    {
-        Assert.False(await service.HasReadingsAsync(device, CancellationToken.None));
-    }
-
-    [Fact]
-    public async Task A_device_with_a_stored_reading_has_readings()
-    {
-        store.Readings.Add(Samples.Co2(now, 800));
-
-        Assert.True(await service.HasReadingsAsync(device, CancellationToken.None));
-    }
-
     private async Task<ReadingQueryService> ServiceWithNightAsync(TimeOnly nightStart, TimeOnly nightEnd)
     {
         var devices = new FakeDeviceStore();

@@ -1,6 +1,6 @@
 # Backlog: finished items
 
-*Last reviewed: 2026-10-21*
+*Last reviewed: 2026-10-23*
 
 Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.md`](backlog.md).
 
@@ -86,3 +86,4 @@ Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.
 | POL-50 | Review feedback batch 1 (D-0022): neutral trend, "Good now, but rising" advice, "< 1 min", brand logo, neutral CO₂ dot, quiet ideal band. 2026-10-19 |
 | POL-51 to POL-54 | Heatmaps (D-0023): six CO₂ steps kept; best and worst only on complete rows; caption over the row-end bars; no "best" for Temperature and Humidity. 2026-10-19 |
 | ALERT-01 | Toast repeats (D-0025): an episode ends after 10 minutes of Good; pressing a toast acknowledges it. 2026-10-19 |
+| TIDY-01 | Dead code removed (`HourAxisLayer`, `HourBar`, `TimeSlot`, `ZoneChanged`, `HasReadingsAsync`); only English and Ukrainian framework resources in the package (`.msix` 69.2 → 65.8 MB). See `size-and-startup.md` section 0. 2026-10-22 |

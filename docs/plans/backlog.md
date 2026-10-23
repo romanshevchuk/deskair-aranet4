@@ -1,6 +1,6 @@
 # Backlog
 
-*Last reviewed: 2026-10-21*
+*Last reviewed: 2026-10-23*
 
 **Start here.** Everything v1 needs is built. This file lists only what is left before release. Finished items are in [`backlog-done.md`](backlog-done.md) (archive, do not read unless you need history). Update this file in the same change as the work: move a row to the archive when it is done.
 
@@ -37,6 +37,13 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 |---|---|---|---|
 | REL-02 | Known gaps still open (the rest of the old list was checked 2026-10-17: the grey header ring and the dark Settings scrollbar were already fixed; History now refreshes on the UI thread; the main window has a minimum size, 1100 × 700; Devices follows new rooms again after leaving and re-entering Settings): (1) fixed 2026-10-18: a room switch keeps the Devices rows; (2) `WindowsBleConnection` opens a new `GattDeviceService` for each characteristic lookup in an already-opened service (freed on dispose) and attaches its disconnect handler after the pairing checks (needs a real sensor to test) | both | todo |
 | BLE-10 | Release the sensor between syncs (D-0028): connect only to sync (start, wake, "Sync history", retry), live values from advertisements (`ISensor.ListenAsync`, passive scan), battery from advertisements. Done 2026-10-20 in the working tree with tests; waits for OWN-09. Open: a re-sync when a gap is noticed; signal strength from advertisements (Q33) | agent | doing |
+| SIZE-02 | Trim only the Windows SDK projection on publish (`.msix` about 66 → 60 MB). Plan and owner checks: [`size-and-startup.md`](size-and-startup.md) sections 2 and 3 | both | todo |
+| PERF-01 | Load the reading files off the UI thread, and log how long the load takes ([`size-and-startup.md`](size-and-startup.md) section 4) | both | todo |
+| PERF-02 | Replace the generic host with a plain `ServiceCollection` (section 5). **Needs the owner's yes first** (package change) | both | todo |
+| PERF-03 | No footer tick while the main window is hidden (section 6) | agent | todo |
+| PERF-04 | No second sort of readings the store already returns sorted (section 7) | agent | todo |
+| PERF-05 | Read the packaged startup task state without blocking (section 8) | agent | todo |
+| PERF-06 | Measure ReadyToRun; the owner decides from the numbers (section 9) | both | todo |
 
 ## R4. Release
 

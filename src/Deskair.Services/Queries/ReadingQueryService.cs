@@ -42,12 +42,6 @@ public sealed class ReadingQueryService
 
     private static readonly TimeSpan typicalDayBeforeADay = TimeSpan.FromDays(7);
 
-    /// <summary>Whether anything at all is stored for the device (the History screen shows a "collecting data" state until then).</summary>
-    public async Task<bool> HasReadingsAsync(DeviceId device, CancellationToken cancellationToken)
-    {
-        return await readings.GetLastReadingTimeAsync(device, cancellationToken) is not null;
-    }
-
     /// <summary>The time of the oldest stored reading, or null when nothing is stored: History goes back no further than the period before it (D-0019).</summary>
     public Task<DateTimeOffset?> GetFirstReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)
         => readings.GetFirstReadingTimeAsync(device, cancellationToken);

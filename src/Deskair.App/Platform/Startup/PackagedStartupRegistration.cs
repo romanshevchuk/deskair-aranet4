@@ -6,7 +6,7 @@ namespace Deskair.App.Platform.Startup;
 /// <summary>
 /// Start with Windows for the packaged (Store) build: the startup task the manifest declares (<see cref="TaskId"/>) instead of the Run key.
 /// The user can also switch the task off in Windows Settings → Apps → Startup; the app cannot turn it back on then, so enabling fails and the toggle goes back.
-/// The calls run on a thread pool thread and are waited for, so the UI thread never waits on Windows.
+/// Reading the state runs on a thread pool thread and is waited for, so it cannot deadlock on the UI thread (it still blocks the caller briefly).
 /// </summary>
 public sealed class PackagedStartupRegistration : IStartupRegistration
 {
