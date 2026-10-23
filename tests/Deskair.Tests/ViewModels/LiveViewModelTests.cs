@@ -122,20 +122,6 @@ public class LiveViewModelTests
     }
 
     [Fact]
-    public async Task A_zone_change_keeps_the_hero_in_step()
-    {
-        await SelectDeviceAsync();
-        AddHour(600);
-        await viewModel.StartAsync(TestContext.Current.CancellationToken);
-        var posted = dispatcher.Posted;
-
-        messenger.Send(new ZoneChanged(device, Zone.Good, Zone.Elevated, now));
-
-        Assert.Equal(posted + 1, dispatcher.Posted);
-        Assert.Equal(600, hero.Co2Ppm);
-    }
-
-    [Fact]
     public async Task Selecting_another_metric_reloads_the_chart_and_the_mini_cards()
     {
         await SelectDeviceAsync();

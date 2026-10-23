@@ -1,6 +1,6 @@
 # Architecture
 
-*Last reviewed: 2026-10-21*
+*Last reviewed: 2026-10-23*
 
 Status: approved structure; details may change during M1. Behaviour is in `docs/product/`, visuals in `docs/design/`, storage in `data-model.md`, decisions in `docs/decisions.md`.
 
@@ -53,7 +53,7 @@ src/Deskair.Domain/
   Readings/  Reading.cs  DeviceId.cs  SensorStatus.cs
   Zones/     Zone.cs  ZoneThresholds.cs  ZoneClassifier.cs
   Metrics/   Metric.cs  MetricDescriptor.cs
-  Time/      Period.cs  LocalCalendar.cs  TimeSlot.cs
+  Time/      Period.cs  LocalCalendar.cs
   Analytics/ Aggregation/  Coverage/  Trend/  TypicalDay/  HoursFilter/  HourGrid/
 
 src/Deskair.Services/
@@ -67,7 +67,7 @@ src/Deskair.Services/
   Devices/        DeviceRegistry.cs  IDeviceStore.cs
   Settings/       AppSettings.cs  SettingsService.cs  ISettingsStore.cs
   Storage/        IReadingStore.cs
-  Messages/       ReadingReceived.cs  ZoneChanged.cs  ConnectionStateChanged.cs  SettingsChanged.cs  LanguageChanged.cs
+  Messages/       ReadingReceived.cs  ConnectionStateChanged.cs  SettingsChanged.cs  LanguageChanged.cs
   Platform/       IBluetoothRadio.cs  IStartupRegistration.cs  IKnownFolders.cs  ISystemTheme.cs  IUiDispatcher.cs
 
 src/Deskair.Sensors/
@@ -162,7 +162,7 @@ flowchart LR
 | `SettingsService` | Typed settings with change notifications |
 | `ReadingQueryService` | Range, filter and grouping in; buckets and stats out |
 
-Events between services and view models use `CommunityToolkit.Mvvm` `IMessenger` (`ReadingReceived`, `ZoneChanged`, `ConnectionStateChanged`, `SettingsChanged`, `LanguageChanged`). Each long operation takes a `CancellationToken`; shutting down a sensor cancels its sync and live loop.
+Events between services and view models use `CommunityToolkit.Mvvm` `IMessenger` (`ReadingReceived`, `ConnectionStateChanged`, `SettingsChanged`, `LanguageChanged`). Each long operation takes a `CancellationToken`; shutting down a sensor cancels its sync and live loop.
 
 ## 7. MVVM (CommunityToolkit.Mvvm)
 
