@@ -182,4 +182,96 @@ public class Aranet4ListenTests
             }
         }
     }
+
+    private static (Task Listening, List<SensorBroadcast> Heard, ControlledBleScanner Scanner, FakeClock Clock) StartListening()
+    {
+        var clock = new FakeClock(now);
+        var scanner = new ControlledBleScanner();
+        var sensor = new Aranet4Sensor(Connection(), scanner, device, clock);
+        var heard = new List<SensorBroadcast>();
+
+        var listening = Task.Run(async () =>
+        {
+            await foreach (var broadcast in sensor.ListenAsync(TestContext.Current.CancellationToken))
+            {
+                heard.Add(broadcast);
+            }
+        });
+
+        return (listening, heard, scanner, clock);
+    }
+
+    [Fact]
+    public async Task A_scan_that_hears_nothing_from_the_sensor_ends_the_listening_with_a_timeout()
+    {
+        var (listening, _, scanner, clock) = StartListening();
+        await Wait.Until(() => clock.PendingTimers > 0);
+        scanner.Send(Advertisement("C3DEC8FCC7C6", BlockWith(age: 10)));
+        await Wait.Quiet();
+
+        clock.Advance(Aranet4Sensor.SilenceLimit + TimeSpan.FromSeconds(1));
+
+        await Assert.ThrowsAsync<TimeoutException>(() => listening);
+    }
+
+    [Fact]
+    public async Task Repeated_advertisements_of_the_sensor_keep_the_listening_going_without_new_readings()
+    {
+        var (listening, heard, scanner, clock) = StartListening();
+        await Wait.Until(() => clock.PendingTimers > 0);
+
+        // Three minutes of the same measurement, repeated every minute with the age the sensor would report: more than the limit in total, never more than the limit between two.
+        for (var minute = 0; minute < 3; minute++)
+        {
+            scanner.Send(Advertisement("C3DEC8FCC7C6", BlockWith(age: (byte)(10 + (60 * minute)))));
+            await Wait.Until(() => scanner.Waiting == 0);
+            await Wait.Quiet();
+            clock.Advance(TimeSpan.FromSeconds(60));
+        }
+
+        Assert.False(listening.IsCompleted);
+        Assert.Single(heard);
+
+        scanner.End();
+        await listening;
+    }
+
+    [Fact]
+    public async Task Advertisements_of_other_devices_do_not_keep_the_listening_alive()
+    {
+        var (listening, _, scanner, clock) = StartListening();
+        await Wait.Until(() => clock.PendingTimers > 0);
+
+        for (var step = 0; step < 2; step++)
+        {
+            scanner.Send(Advertisement("AA:BB:CC:DD:EE:FF", BlockWith(age: 10)));
+            await Wait.Until(() => scanner.Waiting == 0);
+            await Wait.Quiet();
+            clock.Advance(TimeSpan.FromSeconds(50));
+        }
+
+        await Assert.ThrowsAsync<TimeoutException>(() => listening);
+    }
+
+    [Fact]
+    public async Task Cancelling_the_listening_is_a_cancellation_not_a_timeout()
+    {
+        var clock = new FakeClock(now);
+        var scanner = new ControlledBleScanner();
+        var sensor = new Aranet4Sensor(Connection(), scanner, device, clock);
+        using var stop = new CancellationTokenSource();
+
+        var listening = Task.Run(async () =>
+        {
+            await foreach (var broadcast in sensor.ListenAsync(stop.Token))
+            {
+                _ = broadcast;
+            }
+        }, TestContext.Current.CancellationToken);
+        await Wait.Until(() => clock.PendingTimers > 0);
+
+        await stop.CancelAsync();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => listening);
+    }
 }

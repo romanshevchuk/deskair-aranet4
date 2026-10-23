@@ -1,7 +1,10 @@
 using System.Windows;
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Platform.Tray;
 using Deskair.App.ViewModels.Shell;
+using Deskair.Services.Devices;
 using Deskair.Services.Settings;
+using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.Ui;
 
@@ -128,4 +131,73 @@ public class MainWindowControllerTests
 
         Assert.Null(Record.Exception(() => controller.Show(ShellSection.Settings)));
     }
+
+    [Fact]
+    public void The_footer_is_told_when_the_window_is_shown_or_hidden()
+    {
+        var dispatcher = new FakeUiDispatcher();
+        var postedAfterShow = Run(() =>
+        {
+            var footer = new FooterViewModel(
+                new DeviceRegistry(new FakeDeviceStore()),
+                new StrongReferenceMessenger(),
+                dispatcher,
+                new FakeClock(Samples.Utc(2026, 10, 12, 12)),
+                new FakeLocalizer());
+            var controller = new MainWindowController(new ShellViewModel { Footer = footer }, () => { });
+            var window = new Window { ShowActivated = false, Width = 100, Height = 100 };
+            controller.Attach(window);
+            controller.KeepInTray();
+
+            // Attached but not shown yet: nothing to refresh. Showing it refreshes once.
+            var postedBeforeShow = dispatcher.Posted;
+            controller.Show();
+            var posted = (before: postedBeforeShow, shown: dispatcher.Posted);
+
+            // Hidden to the tray and shown again: one more refresh.
+            window.Close();
+            controller.Show();
+            var postedAgain = dispatcher.Posted;
+            controller.Quit();
+            window.Close();
+
+            return (posted, postedAgain);
+        });
+
+        Assert.Equal(0, postedAfterShow.posted.before);
+        Assert.Equal(1, postedAfterShow.posted.shown);
+        Assert.Equal(2, postedAfterShow.postedAgain);
+    }
+
+    [Fact]
+    public void Show_restores_a_window_that_Windows_minimized()
+    {
+        var restored = Run(() =>
+        {
+            var controller = new MainWindowController(new ShellViewModel(), () => { });
+            var window = new Window { ShowActivated = false, Width = 100, Height = 100 };
+            controller.Attach(window);
+            controller.Show();
+            var handle = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+
+            // Minimized by Windows itself, not through window.WindowState.
+            _ = ShowWindow(handle, 6);
+            var wasMinimized = IsIconic(handle);
+
+            controller.Show();
+            var stillMinimized = IsIconic(handle);
+            window.Close();
+
+            return (wasMinimized, stillMinimized);
+        });
+
+        Assert.True(restored.wasMinimized);
+        Assert.False(restored.stillMinimized);
+    }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool ShowWindow(nint window, int command);
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool IsIconic(nint window);
 }

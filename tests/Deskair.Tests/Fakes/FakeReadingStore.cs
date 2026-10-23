@@ -4,7 +4,7 @@ using Deskair.Services.Sync;
 
 namespace Deskair.Tests.Fakes;
 
-/// <summary>An in-memory reading store. Reads return the readings inside the requested range in the order they were added; merges fill empty slots like the real store.</summary>
+/// <summary>An in-memory reading store. Reads return the readings inside the requested range, oldest first like the real store; merges fill empty slots like the real store.</summary>
 public sealed class FakeReadingStore : IReadingStore
 {
     public List<Reading> Readings { get; } = [];
@@ -29,7 +29,7 @@ public sealed class FakeReadingStore : IReadingStore
         Requested = (device, start, end);
 
         return Task.FromResult<IReadOnlyList<Reading>>(
-            Readings.Where(reading => reading.Timestamp >= start && reading.Timestamp <= end).ToList());
+            Readings.Where(reading => reading.Timestamp >= start && reading.Timestamp <= end).OrderBy(reading => reading.Timestamp).ToList());
     }
 
     public Task<DateTimeOffset?> GetFirstReadingTimeAsync(DeviceId device, CancellationToken cancellationToken)

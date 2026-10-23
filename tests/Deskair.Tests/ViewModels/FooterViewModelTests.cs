@@ -16,6 +16,7 @@ public sealed class FooterViewModelTests : IDisposable
     private static readonly DeviceId device = new("aranet4", "0A0B3");
 
     private readonly FakeClock clock = new(start);
+    private readonly FakeUiDispatcher dispatcher = new();
     private readonly StrongReferenceMessenger messenger = new();
     private readonly FakeDeviceStore deviceStore = new();
     private readonly DeviceRegistry registry;
@@ -24,7 +25,7 @@ public sealed class FooterViewModelTests : IDisposable
     public FooterViewModelTests()
     {
         registry = new DeviceRegistry(deviceStore);
-        viewModel = new FooterViewModel(registry, messenger, new FakeUiDispatcher(), clock, new FakeLocalizer());
+        viewModel = new FooterViewModel(registry, messenger, dispatcher, clock, new FakeLocalizer());
     }
 
     public void Dispose()
@@ -233,5 +234,60 @@ public sealed class FooterViewModelTests : IDisposable
         messenger.Send(new ConnectionStateChanged(ConnectionState.LowBattery));
 
         Assert.Equal("Banner_LowBattery(percent=8%)", viewModel.LowBatteryText);
+    }
+
+    private async Task TickAsync()
+    {
+        await Wait.Until(() => clock.PendingTimers > 0);
+        clock.Advance(TimeSpan.FromSeconds(1));
+        await Wait.Until(() => clock.PendingTimers > 0);
+    }
+
+    [Fact]
+    public async Task A_hidden_window_gets_no_footer_ticks()
+    {
+        await StartAsync();
+        viewModel.SetWindowShown(false);
+        var postedBefore = dispatcher.Posted;
+
+        for (var tick = 0; tick < 10; tick++)
+        {
+            await TickAsync();
+        }
+
+        Assert.Equal(postedBefore, dispatcher.Posted);
+    }
+
+    [Fact]
+    public async Task Showing_the_window_refreshes_the_footer_at_once()
+    {
+        await StartAsync();
+        viewModel.SetWindowShown(false);
+        await Wait.Until(() => clock.PendingTimers > 0);
+        clock.Advance(TimeSpan.FromMinutes(3));
+        await Wait.Until(() => clock.PendingTimers > 0);
+        Assert.Equal("Footer_Connected(sec=0)", viewModel.StatusText);
+        var postedBefore = dispatcher.Posted;
+
+        viewModel.SetWindowShown(true);
+
+        Assert.Equal(postedBefore + 1, dispatcher.Posted);
+        Assert.Equal("Footer_ConnectedMinutes(min=3)", viewModel.StatusText);
+    }
+
+    [Fact]
+    public async Task Ticks_resume_after_the_window_is_shown_again()
+    {
+        await StartAsync();
+        viewModel.SetWindowShown(false);
+        viewModel.SetWindowShown(true);
+        var postedBefore = dispatcher.Posted;
+
+        for (var tick = 0; tick < 3; tick++)
+        {
+            await TickAsync();
+        }
+
+        Assert.Equal(postedBefore + 3, dispatcher.Posted);
     }
 }

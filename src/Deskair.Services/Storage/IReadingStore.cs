@@ -4,6 +4,7 @@ namespace Deskair.Services.Storage;
 
 public interface IReadingStore
 {
+    /// <summary>The readings from <paramref name="start"/> (inclusive) to <paramref name="end"/> (exclusive), oldest first. Callers rely on the order and do not sort again.</summary>
     Task<IReadOnlyList<Reading>> ReadRangeAsync(
         DeviceId device,
         DateTimeOffset start,
