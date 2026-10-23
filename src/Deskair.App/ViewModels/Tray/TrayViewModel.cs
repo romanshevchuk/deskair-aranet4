@@ -26,6 +26,7 @@ public sealed partial class TrayViewModel : ObservableObject
     private readonly SettingsService settings;
     private bool doNotDisturb;
     private ConnectionState connection = ConnectionState.Normal;
+    private double? lastCo2;
 
     /// <summary>The zone of the last reading, or null (grey icon) when there is none or the sensor is not connected.</summary>
     [ObservableProperty]
@@ -83,8 +84,8 @@ public sealed partial class TrayViewModel : ObservableObject
 
         dispatcher.Post(() =>
         {
-            Co2 = message.Reading.Co2Ppm;
-            Zone = double.IsNaN(message.Reading.Co2Ppm) ? null : ZoneClassifier.Classify(message.Reading.Co2Ppm);
+            lastCo2 = message.Reading.Co2Ppm;
+            ShowLastReading();
             UpdateTooltip();
         });
     }
@@ -100,6 +101,11 @@ public sealed partial class TrayViewModel : ObservableObject
                 Zone = null;
                 Co2 = null;
             }
+            else
+            {
+                // The next reading can be minutes away, so the icon takes the last one back as soon as the sensor is connected again.
+                ShowLastReading();
+            }
 
             UpdateTooltip();
         });
@@ -109,10 +115,22 @@ public sealed partial class TrayViewModel : ObservableObject
     {
         dispatcher.Post(() =>
         {
+            lastCo2 = null;
             Zone = null;
             Co2 = null;
             UpdateTooltip();
         });
+    }
+
+    private void ShowLastReading()
+    {
+        if (lastCo2 is not { } value)
+        {
+            return;
+        }
+
+        Co2 = value;
+        Zone = double.IsNaN(value) ? null : ZoneClassifier.Classify(value);
     }
 
     private void OnSettings(AppSettings current)
