@@ -91,7 +91,9 @@ A first version without the second property group published fine but crashed at 
 1. The three commands in section 1.
 2. `.\packaging\build-msix.ps1 -Version 0.1.90.0` succeeds. Record the size it prints (expected about 60 MB).
 3. In `artifacts\msix\publish`: `Microsoft.Windows.SDK.NET.dll` is under 1 MB, `PresentationFramework.dll` is still about 15 MB, and the only culture folder is `uk`.
-4. Docs: in `packaging/README.md`, change "about 66 MB" to the new size and add one line on the trimming. In `docs/decisions.md`, add a decision entry with the next free number (the backlog already refers to D-0028; check the highest number): "Publish trims only the Windows SDK projection", with the reason, the internal switch `_SuppressWpfTrimError`, and the fallback (delete the block).
+4. Docs: in `packaging/README.md`, change "about 66 MB" to the new size and add one line on the trimming. In `docs/decisions.md`, add a decision entry with the next free number (check the highest number; it is D-0029): "Publish trims only the Windows SDK projection", with the reason, the internal switch `_SuppressWpfTrimError`, and the fallback (delete the block).
+
+**Status 2026-10-23: block added, agent checks 1 to 4 pass (`.msix` 60 MB, SDK DLL 0.52 MB, `PresentationFramework.dll` 15.08 MB, only `uk` culture folder, 135.9 MB installed, 1662 tests pass); docs done (D-0029). The trimmed build starts and shows its window with `--simulated` (after the fix for a start-up crash); everything that talks to Windows is still unchecked. Waiting for the owner.**
 
 **Owner check: see section 3** (both parts). The item is done only when section 3 passes. If anything fails, delete the block, rebuild and say what failed. There is no partial fix to try.
 
