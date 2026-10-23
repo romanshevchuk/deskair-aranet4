@@ -1,6 +1,6 @@
 # Decisions
 
-*Last reviewed: 2026-10-21*
+*Last reviewed: 2026-10-23*
 
 A short, append-only log. Each entry: context, decision, consequences. Do not delete entries; mark them superseded. Review the statuses once a quarter so nothing stays "proposed" after it shipped. If this file grows past about 15 entries or an entry needs long reasoning, move that entry to its own file in `docs/decisions.md`.
 
@@ -251,7 +251,7 @@ Comfortable squares were neutral grey. Everywhere else green means fine: the COâ
 
 The logs showed Elevated toasts 9 to 21 minutes apart, mostly at 1003 to 1038 ppm. One reading below 1000 ended the episode, so COâ‚‚ hovering at the limit started a new episode, and after five minutes a new toast. A user who had pressed the toast and opened the app got another one anyway.
 
-**Decision:** (1) An episode ends only after the air has stayed Good for 10 minutes. (2) Pressing a toast or its Open button acknowledges the current episodes that have sent a toast: they send no more toasts, except the escalation to High (still after its 5 minute dwell). A newly sent toast is unacknowledged. Snooze is unchanged.
+**Decision:** (1) An episode ends only after the air has stayed Good for 10 minutes. (2) Pressing the body of a toast acknowledges the current episodes that have sent a toast: they send no more toasts, except the escalation to High (still after its 5 minute dwell). A newly sent toast is unacknowledged. Snooze is unchanged.
 
 **Consequences:** `AlertPolicy.RecoveryDwell`, `AlertEngine.AcknowledgeAll`, and `ToastActionHandler` calls it; behaviour-rules.md "Alerts" updated. Not done: skipping toasts while the window is open and in front.
 

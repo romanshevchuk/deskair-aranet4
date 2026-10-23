@@ -51,7 +51,7 @@ public sealed class ReadingQueryService
     {
         var inRange = await readings.ReadRangeAsync(device, start, end, cancellationToken);
 
-        return inRange.OrderBy(reading => reading.Timestamp).ToList();
+        return inRange;
     }
 
     public async Task<IReadOnlyList<Reading>> GetRecentAsync(
@@ -65,7 +65,7 @@ public sealed class ReadingQueryService
         var end = now + (devices.IntervalFor(device, now) / 2);
         var recent = await readings.ReadRangeAsync(device, now - window, end, cancellationToken);
 
-        return recent.OrderBy(reading => reading.Timestamp).ToList();
+        return recent;
     }
 
     public async Task<IReadOnlyList<Bucket>> GetBucketsAsync(

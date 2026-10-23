@@ -11,6 +11,7 @@ internal static class NativeMethods
     internal const uint SwpNoSize = 0x0001;
     internal const uint SwpNoZOrder = 0x0004;
     internal const uint SwpNoActivate = 0x0010;
+    internal const int SwRestore = 9;
 
     [DllImport("user32.dll")]
     internal static extern int GetSystemMetrics(int index);
@@ -36,6 +37,14 @@ internal static class NativeMethods
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool SetWindowPos(nint window, nint insertAfter, int x, int y, int width, int height, uint flags);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool IsIconic(nint window);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool ShowWindow(nint window, int command);
 
     [DllImport("shell32.dll")]
     internal static extern int Shell_NotifyIconGetRect(ref NativeIconIdentifier identifier, out NativeRect rect);
