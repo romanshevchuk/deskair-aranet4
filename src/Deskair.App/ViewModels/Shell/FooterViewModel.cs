@@ -23,6 +23,7 @@ public sealed partial class FooterViewModel : ObservableObject
     private readonly ILocalizer localizer;
     private ConnectionState state = ConnectionState.FirstRun;
     private DateTimeOffset? lastReadingAt;
+    private bool windowShown = true;
 
     /// <summary>The colour of the dot as a zone: green when connected, amber when stale, none (grey) otherwise.</summary>
     [ObservableProperty]
@@ -88,6 +89,18 @@ public sealed partial class FooterViewModel : ObservableObject
 
         Refresh();
         _ = TickAsync(cancellationToken);
+    }
+
+    /// <summary>Tells the footer whether anyone can see it. While the window is hidden or minimized the second-by-second refresh is skipped; showing it again refreshes at once.</summary>
+    public void SetWindowShown(bool shown)
+    {
+        var wasHidden = !windowShown;
+        windowShown = shown;
+
+        if (shown && wasHidden)
+        {
+            dispatcher.Post(Refresh);
+        }
     }
 
     /// <summary>Works out every text from what is known now.</summary>
@@ -161,7 +174,11 @@ public sealed partial class FooterViewModel : ObservableObject
             while (!cancellationToken.IsCancellationRequested)
             {
                 await Task.Delay(TimeSpan.FromSeconds(1), timeProvider, cancellationToken);
-                dispatcher.Post(Refresh);
+
+                if (windowShown)
+                {
+                    dispatcher.Post(Refresh);
+                }
             }
         }
         catch (OperationCanceledException)
