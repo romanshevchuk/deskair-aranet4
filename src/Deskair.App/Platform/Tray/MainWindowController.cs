@@ -32,6 +32,9 @@ public sealed class MainWindowController : IMainWindowController
     public void Attach(Window mainWindow)
     {
         window = mainWindow;
+        window.IsVisibleChanged += (_, _) => UpdateFooter();
+        window.StateChanged += (_, _) => UpdateFooter();
+        UpdateFooter();
     }
 
     /// <summary>From now on closing the window only hides it. Call this once the tray icon is there to bring it back.</summary>
@@ -71,6 +74,17 @@ public sealed class MainWindowController : IMainWindowController
     {
         quitting = true;
         shutdown();
+    }
+
+    // Nobody sees the footer in the tray, so it need not tick every second there.
+    private void UpdateFooter()
+    {
+        if (window is null)
+        {
+            return;
+        }
+
+        shell.Footer?.SetWindowShown(window.IsVisible && window.WindowState != WindowState.Minimized);
     }
 
     // WPF's WindowState can disagree with the real window (for example after Show desktop), and then setting it to Normal does nothing; ask Windows too.

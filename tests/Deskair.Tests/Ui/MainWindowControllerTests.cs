@@ -1,7 +1,10 @@
 using System.Windows;
+using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Platform.Tray;
 using Deskair.App.ViewModels.Shell;
+using Deskair.Services.Devices;
 using Deskair.Services.Settings;
+using Deskair.Tests.Fakes;
 
 namespace Deskair.Tests.Ui;
 
@@ -127,6 +130,43 @@ public class MainWindowControllerTests
         var controller = new MainWindowController(new ShellViewModel(), () => { });
 
         Assert.Null(Record.Exception(() => controller.Show(ShellSection.Settings)));
+    }
+
+    [Fact]
+    public void The_footer_is_told_when_the_window_is_shown_or_hidden()
+    {
+        var dispatcher = new FakeUiDispatcher();
+        var postedAfterShow = Run(() =>
+        {
+            var footer = new FooterViewModel(
+                new DeviceRegistry(new FakeDeviceStore()),
+                new StrongReferenceMessenger(),
+                dispatcher,
+                new FakeClock(Samples.Utc(2026, 10, 12, 12)),
+                new FakeLocalizer());
+            var controller = new MainWindowController(new ShellViewModel { Footer = footer }, () => { });
+            var window = new Window { ShowActivated = false, Width = 100, Height = 100 };
+            controller.Attach(window);
+            controller.KeepInTray();
+
+            // Attached but not shown yet: nothing to refresh. Showing it refreshes once.
+            var postedBeforeShow = dispatcher.Posted;
+            controller.Show();
+            var posted = (before: postedBeforeShow, shown: dispatcher.Posted);
+
+            // Hidden to the tray and shown again: one more refresh.
+            window.Close();
+            controller.Show();
+            var postedAgain = dispatcher.Posted;
+            controller.Quit();
+            window.Close();
+
+            return (posted, postedAgain);
+        });
+
+        Assert.Equal(0, postedAfterShow.posted.before);
+        Assert.Equal(1, postedAfterShow.posted.shown);
+        Assert.Equal(2, postedAfterShow.postedAgain);
     }
 
     [Fact]

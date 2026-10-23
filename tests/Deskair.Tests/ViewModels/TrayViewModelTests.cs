@@ -127,6 +127,37 @@ public class TrayViewModelTests
         Assert.Equal("Office · Footer_Connecting", viewModel.Tooltip);
     }
 
+    [Theory]
+    [InlineData(ConnectionState.NotConnected)]
+    [InlineData(ConnectionState.Connecting)]
+    public async Task The_icon_takes_the_last_reading_back_when_the_sensor_is_connected_again(ConnectionState dropped)
+    {
+        var viewModel = await CreateAsync();
+        Reading(1068);
+        messenger.Send(new ConnectionStateChanged(dropped));
+        Assert.Null(viewModel.Zone);
+
+        messenger.Send(new ConnectionStateChanged(ConnectionState.Normal));
+
+        Assert.Equal(Zone.Elevated, viewModel.Zone);
+        Assert.Equal(1068, viewModel.Co2);
+        Assert.Equal("Office · 1068 ppm · Zone_Elevated", viewModel.Tooltip);
+    }
+
+    [Fact]
+    public async Task A_new_room_does_not_get_the_old_rooms_reading_when_the_connection_returns()
+    {
+        var viewModel = await CreateAsync();
+        Reading(1068);
+        messenger.Send(new DeviceSelected(other));
+
+        messenger.Send(new ConnectionStateChanged(ConnectionState.NotConnected));
+        messenger.Send(new ConnectionStateChanged(ConnectionState.Normal));
+
+        Assert.Null(viewModel.Zone);
+        Assert.Null(viewModel.Co2);
+    }
+
     [Fact]
     public async Task The_icon_colour_returns_with_the_next_reading()
     {

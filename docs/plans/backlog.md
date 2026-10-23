@@ -39,7 +39,6 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 | BLE-10 | Release the sensor between syncs (D-0028): connect only to sync (start, wake, "Sync history", retry), live values from advertisements (`ISensor.ListenAsync`, passive scan), battery from advertisements. Done 2026-10-20 in the working tree with tests; waits for OWN-09. Open: a re-sync when a gap is noticed; signal strength from advertisements (Q33) | agent | doing |
 | SIZE-02 | Trim only the Windows SDK projection on publish (`.msix` about 66 → 60 MB). Plan and owner checks: [`size-and-startup.md`](size-and-startup.md) sections 2 and 3 | both | todo |
 | PERF-02 | Replace the generic host with a plain `ServiceCollection` (section 5). **Needs the owner's yes first** (package change) | both | todo |
-| PERF-03 | No footer tick while the main window is hidden (section 6) | agent | todo |
 | PERF-06 | Measure ReadyToRun; the owner decides from the numbers (section 9) | both | todo |
 
 ## R4. Release
