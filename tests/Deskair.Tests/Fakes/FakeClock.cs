@@ -39,6 +39,11 @@ public sealed class FakeClock : TimeProvider
         }
     }
 
+    /// <summary>Follows the fake time, so elapsed times measured with this clock are exact (zero unless a test advances it).</summary>
+    public override long GetTimestamp() => GetUtcNow().UtcTicks;
+
+    public override long TimestampFrequency => TimeSpan.TicksPerSecond;
+
     public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
     {
         var timer = new FakeTimer(this, callback, state);

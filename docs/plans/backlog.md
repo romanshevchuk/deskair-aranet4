@@ -1,6 +1,6 @@
 # Backlog
 
-*Last reviewed: 2026-10-23*
+*Last reviewed: 2026-11-12*
 
 **Start here.** Everything v1 needs is built. This file lists only what is left before release. Finished items are in [`backlog-done.md`](backlog-done.md) (archive, do not read unless you need history). Update this file in the same change as the work: move a row to the archive when it is done.
 
@@ -39,6 +39,19 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 | BLE-10 | Release the sensor between syncs (D-0028): connect only to sync (start, wake, "Sync history", retry), live values from advertisements (`ISensor.ListenAsync`, passive scan), battery from advertisements. Done 2026-10-20 in the working tree with tests; waits for OWN-09. Open: a re-sync when a gap is noticed; signal strength from advertisements (Q33) | agent | doing |
 | PERF-06 | Measure ReadyToRun; the owner decides from the numbers (section 9). Agent part done 2026-10-23 (+4.1 MB, about 56 ms warm); waits for the owner's cold-start runs | both | owner check |
 
+### After release: review pass of 2026-11-12 (first users)
+
+Found by reading the code after the Store release; ranked by how likely a user hits it. FIX-01 to FIX-05 go into patch 0.1.4.
+
+| ID | Item | Who | Status |
+|---|---|---|---|
+| FIX-02 | Unhandled exceptions are logged before the app closes (UI thread, other threads, unobserved tasks), and Settings → About opens the log folder (the Store build keeps it in a hidden package folder) | agent | todo |
+| FIX-03 | Phone export import reads the date order from the header (`Time(DD/MM/YYYY …)` or `Time(MM/DD/YYYY …)`) instead of always day first (Q7) | agent | todo |
+| FIX-04 | A sensor with "Smart Home integration" off is named as such: its advertisements say so, the session stops reconnecting every 30 s and the offline screen shows the one step that fixes it | agent | todo |
+| FIX-05 | A readings file that cannot be written (open in Excel, OneDrive busy) is not a lost connection: the sync and live readings keep the readings in memory and write them later; the reading files are opened so other apps may hold them | agent | todo |
+| FIX-06 | A history download that fails partway is tried again later, not only at the next start or wake | agent | todo |
+| FIX-07 | A hole the sensor cannot fill (battery change, sensor off) makes every sync download the whole history; the sensor's memory is 5040 readings × interval, not a fixed 7 days | agent | todo |
+
 ## R4. Release
 
 | ID | Item | Who | Status |
@@ -57,6 +70,10 @@ Full text in [`questions.md`](questions.md) "Open". Until answered, the agent ke
 | POL-58 | Icons in the status badges (✓ / ! / ▲) so zones do not rely on colour alone | later |
 | POL-59 | Temperature and Humidity chart lines coloured by comfort zone, as the CO₂ chart is | later |
 | POL-60 | Floating tooltip beside the grid square (hover and keyboard), with the row and hour labels highlighted; today the readout is a fixed line under the legend. Needs edge handling and keyboard support | later |
+| FIX-08 | Alert episodes and the snooze survive a restart (today a restart sends a new toast and forgets the snooze) | later |
+| FIX-09 | Settings saves run one at a time (two quick changes can lose one or clash on `settings.json.tmp`) | later |
+| FIX-10 | A chosen data folder that is missing (drive unplugged) says so instead of showing the first-run screen as if the data were gone | later |
+| FIX-11 | A `settings.json` that cannot be read is kept as `settings.json.bad` before defaults overwrite it | later |
 | POL-36 | Tests: merge the four near-identical render-test `BuildShell` helpers; look for other duplicates (tidiness only) | later |
 | AIR-01 | Airing feedback | later |
 | SLEEP-01 | Morning toast (the sleep verdict card is done) | later |

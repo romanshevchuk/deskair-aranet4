@@ -1,6 +1,6 @@
 # Backlog: finished items
 
-*Last reviewed: 2026-10-23*
+*Last reviewed: 2026-11-12*
 
 Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.md`](backlog.md).
 
@@ -94,3 +94,4 @@ Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.
 | PERF-04 | No second sort of readings the store already returns oldest first: `IReadingStore.ReadRangeAsync` documents the order, `ReadingQueryService.GetRangeAsync`/`GetRecentAsync` and `ExportService` no longer sort again; `FakeReadingStore` returns sorted readings; new test `Reading_ranges_come_back_oldest_first`. Open question Q53 (the fake includes a reading at `end`). Plan: `size-and-startup.md` section 7. 2026-10-23 |
 | BLE-11 | Listening restarts when the sensor goes quiet (D-0030): `Aranet4Sensor.ListenAsync` times out after 90 s without an advertisement of the sensor, the session reconnects, syncs and listens again; the Windows scanner logs and ends on every stop. Found in the owner's test of the trimmed build, 2026-10-23. |
 | SIZE-02 | Publish trims only the Windows SDK projection (D-0029): `.msix` 65.8 → 60 MB, installed 159 → 136 MB. Checked by the owner on the unpackaged and the packaged build, 2026-10-23. See `size-and-startup.md` section 2. |
+| FIX-01 | `FakeClock` measures elapsed time in fake time (`GetTimestamp` follows `GetUtcNow`), so `MonthlyCsvStoreTests` no longer fails when loading takes 1 ms or more. Review pass of 2026-11-12. |
