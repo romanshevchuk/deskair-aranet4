@@ -15,7 +15,8 @@ public sealed class ConnectionMonitor
             return ConnectionState.FirstRun;
         }
 
-        if (!inputs.RadioOn)
+        // A sensor that refuses its readings sends none until the user changes its setting (D-0032), so waiting for the silence would only delay the message.
+        if (!inputs.RadioOn || inputs.NeedsSetup)
         {
             return ConnectionState.NotConnected;
         }

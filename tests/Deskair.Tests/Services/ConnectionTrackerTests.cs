@@ -82,6 +82,29 @@ public sealed class ConnectionTrackerTests : IDisposable
     }
 
     [Fact]
+    public async Task A_sensor_that_needs_a_setting_is_not_connected_at_once_even_with_a_fresh_reading()
+    {
+        await SelectDeviceAsync();
+        await tracker.StartAsync(start.AddMinutes(-3), cts.Token);
+
+        messenger.Send(new SensorNeedsSetup(device, "Step_Key"));
+
+        Assert.Equal(ConnectionState.NotConnected, tracker.Current);
+    }
+
+    [Fact]
+    public async Task A_connected_sensor_after_the_setting_was_changed_is_normal_again()
+    {
+        await SelectDeviceAsync();
+        await tracker.StartAsync(start.AddMinutes(-3), cts.Token);
+        messenger.Send(new SensorNeedsSetup(device, "Step_Key"));
+
+        Reading(start);
+
+        Assert.Equal(ConnectionState.Normal, tracker.Current);
+    }
+
+    [Fact]
     public async Task A_new_reading_brings_it_back_to_normal()
     {
         await SelectDeviceAsync();

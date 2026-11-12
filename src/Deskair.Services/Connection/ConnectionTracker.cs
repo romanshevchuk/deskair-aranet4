@@ -26,6 +26,7 @@ public sealed class ConnectionTracker
     private DateTimeOffset? lastReadingAt;
     private int? batteryPercent;
     private DateTimeOffset? attemptStartedAt;
+    private bool needsSetup;
 
     public ConnectionTracker(DeviceRegistry devices, IBluetoothRadio radio, IMessenger messenger, TimeProvider timeProvider, ILogger<ConnectionTracker> logger)
     {
@@ -56,6 +57,7 @@ public sealed class ConnectionTracker
         messenger.Register<ConnectionTracker, DeviceSelected>(this, static (self, _) => self.OnDeviceSelected());
         messenger.Register<ConnectionTracker, SystemResumed>(this, static (self, _) => self.OnAttemptStarted());
         messenger.Register<ConnectionTracker, SensorConnectionFailed>(this, static (self, message) => self.OnConnectionFailed(message));
+        messenger.Register<ConnectionTracker, SensorNeedsSetup>(this, static (self, message) => self.OnNeedsSetup(message));
         radio.StateChanged += OnRadioChanged;
         cancellationToken.Register(() =>
         {
@@ -84,7 +86,7 @@ public sealed class ConnectionTracker
 
             var attempting = attemptStartedAt is { } started && now - started < ConnectingWindow;
 
-            state = ConnectionMonitor.Derive(new ConnectionInputs(selected is not null, lastReadingAt, now, interval, radio.IsOn, batteryPercent, attempting));
+            state = ConnectionMonitor.Derive(new ConnectionInputs(selected is not null, lastReadingAt, now, interval, radio.IsOn, batteryPercent, attempting, needsSetup));
 
             if (state == Current)
             {
@@ -156,6 +158,7 @@ public sealed class ConnectionTracker
         lock (gate)
         {
             batteryPercent = message.Status.BatteryPercent;
+            needsSetup = false;
         }
 
         Evaluate();
@@ -167,6 +170,7 @@ public sealed class ConnectionTracker
         {
             lastReadingAt = null;
             batteryPercent = null;
+            needsSetup = false;
             attemptStartedAt = timeProvider.GetUtcNow();
         }
 
@@ -179,6 +183,21 @@ public sealed class ConnectionTracker
         lock (gate)
         {
             attemptStartedAt = timeProvider.GetUtcNow();
+        }
+
+        Evaluate();
+    }
+
+    private void OnNeedsSetup(SensorNeedsSetup message)
+    {
+        if (message.Device != devices.Selected)
+        {
+            return;
+        }
+
+        lock (gate)
+        {
+            needsSetup = true;
         }
 
         Evaluate();

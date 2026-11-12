@@ -38,6 +38,12 @@ public class ConnectionMonitorTests
     }
 
     [Fact]
+    public void Derive_is_NotConnected_at_once_when_the_sensor_needs_a_setting_changed()
+    {
+        Assert.Equal(ConnectionState.NotConnected, ConnectionMonitor.Derive(Inputs(minutesSinceReading: 1) with { NeedsSetup = true }));
+    }
+
+    [Fact]
     public void Derive_is_Normal_during_an_attempt_when_the_last_reading_is_fresh()
     {
         Assert.Equal(ConnectionState.Normal, ConnectionMonitor.Derive(Inputs(minutesSinceReading: 1, attempting: true)));
