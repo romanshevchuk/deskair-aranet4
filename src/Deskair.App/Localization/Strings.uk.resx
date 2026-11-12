@@ -271,6 +271,8 @@
   <data name="Insight_MostHumid_Night" xml:space="preserve"><value>**Найвологіші години: {from}–{to}**, поки ви спите (середнє {value}). Трохи відчинене вікно допоможе.</value></data>
   <data name="Offline_Text" xml:space="preserve"><value>Датчик може бути поза зоною дії або «спати».</value></data>
   <data name="Offline_Text_BluetoothOff" xml:space="preserve"><value>Bluetooth вимкнено, тож Deskair не може зв&apos;язатися з датчиком.</value></data>
+  <data name="Offline_Title_Setup" xml:space="preserve"><value>Ваш Aranet4 не передає вимірювання</value><comment>Draft: needs native review. Title of the offline screen when Smart Home integration is off.</comment></data>
+  <data name="Offline_Text_Setup" xml:space="preserve"><value>Deskair знайшов датчик, але той передає вимірювання, лише коли ввімкнено одне налаштування. Увімкніть його й натисніть «Спробувати ще раз».</value><comment>Draft: needs native review. Text of the offline screen when Smart Home integration is off.</comment></data>
   <data name="Offline_LastReading" xml:space="preserve"><value>Останнє вимірювання: {value}, {time}.</value></data>
   <data name="Offline_HistoryHint" xml:space="preserve"><value>Історія, як і раніше, доступна.</value></data>
   <data name="Offline_Step_Range" xml:space="preserve"><value>Тримайтеся приблизно в межах 10 м від датчика</value></data>

@@ -270,6 +270,8 @@
   <data name="Insight_MostHumid_Night" xml:space="preserve"><value>**Most humid hours: {from}–{to}**, while you sleep (avg {value}). A slightly open window helps.</value></data>
   <data name="Offline_Text" xml:space="preserve"><value>The sensor may be out of range or asleep.</value></data>
   <data name="Offline_Text_BluetoothOff" xml:space="preserve"><value>Bluetooth is off, so Deskair cannot reach the sensor.</value></data>
+  <data name="Offline_Title_Setup" xml:space="preserve"><value>Your Aranet4 is not sharing its readings</value></data>
+  <data name="Offline_Text_Setup" xml:space="preserve"><value>Deskair found the sensor, but it shares its readings only when one setting is on. Turn it on, then press Try again.</value></data>
   <data name="Offline_LastReading" xml:space="preserve"><value>Your last reading was {value} at {time}.</value></data>
   <data name="Offline_HistoryHint" xml:space="preserve"><value>History is still available.</value></data>
   <data name="Offline_Step_Range" xml:space="preserve"><value>Stay within about 10 m of the sensor</value></data>

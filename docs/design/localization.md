@@ -102,6 +102,7 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Gap_DaysNoData (plural) | {count} day with no data / {count} days with no data | one: {count} день без даних; few: {count} дні без даних; many: {count} днів без даних |
 | Banner_Stale | Last reading {min} min ago | Останнє значення {min} хв тому |
 | Offline_Title | Can't reach your Aranet4 | Не вдається зв'язатися з Aranet4 |
+| Offline_Title_Setup / Text_Setup | Your Aranet4 is not sharing its readings / Deskair found the sensor, but it shares its readings only when one setting is on. Turn it on, then press Try again. | Ваш Aranet4 не передає вимірювання / Deskair знайшов датчик, але той передає вимірювання, лише коли ввімкнено одне налаштування. Увімкніть його й натисніть «Спробувати ще раз». (draft: needs native review) |
 | Offline_Bluetooth | Turn on Bluetooth | Увімкнути Bluetooth |
 | Action_Retry | Try again | Спробувати ще раз |
 | Footer_Connected | Connected · updated {sec} s ago | Підключено · оновлено {sec} с тому |

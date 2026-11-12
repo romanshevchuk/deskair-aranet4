@@ -45,7 +45,6 @@ Found by reading the code after the Store release; ranked by how likely a user h
 
 | ID | Item | Who | Status |
 |---|---|---|---|
-| FIX-04 | A sensor with "Smart Home integration" off is named as such: its advertisements say so, the session stops reconnecting every 30 s and the offline screen shows the one step that fixes it | agent | todo |
 | FIX-05 | A readings file that cannot be written (open in Excel, OneDrive busy) is not a lost connection: the sync and live readings keep the readings in memory and write them later; the reading files are opened so other apps may hold them | agent | todo |
 | FIX-06 | A history download that fails partway is tried again later, not only at the next start or wake | agent | todo |
 | FIX-07 | A hole the sensor cannot fill (battery change, sensor off) makes every sync download the whole history; the sensor's memory is 5040 readings × interval, not a fixed 7 days | agent | todo |

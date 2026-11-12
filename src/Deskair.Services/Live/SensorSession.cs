@@ -9,7 +9,7 @@ namespace Deskair.Services.Live;
 
 /// <summary>
 /// Runs one device: connect, download the history, then follow live readings until stopped. If the sensor cannot be reached the session
-/// tries again every 30 seconds. Starting another device stops the one that is running. Every start (launch, wake from sleep, "Sync history", retry) syncs once.
+/// tries again every 30 seconds, unless the sensor needs a setting changed first (<see cref="SensorSetupRequiredException"/>). Starting another device stops the one that is running. Every start (launch, wake from sleep, "Sync history", retry) syncs once.
 /// </summary>
 public sealed class SensorSession : IAsyncDisposable, IDisposable
 {
@@ -130,6 +130,12 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
             {
                 return;
             }
+            catch (SensorSetupRequiredException exception)
+            {
+                ReportSetupRequired(device, exception);
+
+                return;
+            }
             catch (Exception exception)
             {
                 if (logger.IsEnabled(LogLevel.Warning))
@@ -149,6 +155,21 @@ public sealed class SensorSession : IAsyncDisposable, IDisposable
                 return;
             }
         }
+    }
+
+    /// <summary>
+    /// Trying again every 30 seconds cannot help until the user changes the sensor's setting, and each try connects to the sensor, so the session stops;
+    /// "Try again", a wake from sleep or the next start begins again.
+    /// </summary>
+    private void ReportSetupRequired(DeviceId device, SensorSetupRequiredException exception)
+    {
+        if (logger.IsEnabled(LogLevel.Warning))
+        {
+            logger.LogWarning(exception, "The sensor {Address} needs a setting changed ({Step}); waiting for Try again.", device.Address, exception.StepKey);
+        }
+
+        messenger.Send(new SensorNeedsSetup(device, exception.StepKey));
+        messenger.Send(new SensorConnectionFailed(device));
     }
 
     /// <summary>

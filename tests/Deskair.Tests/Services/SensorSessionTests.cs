@@ -282,6 +282,37 @@ public sealed class SensorSessionTests : IAsyncDisposable
     }
 
     [Fact]
+    public async Task A_sensor_that_needs_a_setting_changed_is_announced_and_not_tried_again()
+    {
+        var setups = new ThreadSafeLog<SensorNeedsSetup>();
+        var failures = new ThreadSafeLog<SensorConnectionFailed>();
+        messenger.Register<SensorNeedsSetup>(this, (_, message) => setups.Add(message));
+        messenger.Register<SensorConnectionFailed>(this, (_, message) => failures.Add(message));
+        sensor.ConnectError = new SensorSetupRequiredException("Step_Key", "Refused.", new BleProtocolException("ProtocolError"));
+
+        await session.StartAsync(device);
+        await Wait.Until(() => failures.Count == 1);
+        clock.Advance(TimeSpan.FromMinutes(5));
+
+        Assert.Equal([new SensorNeedsSetup(device, "Step_Key")], setups.ToList());
+        Assert.Equal(1, sensor.ConnectCalls);
+        Assert.Equal(0, clock.PendingTimers);
+    }
+
+    [Fact]
+    public async Task Try_again_after_a_setting_was_needed_connects_again()
+    {
+        sensor.ConnectError = new SensorSetupRequiredException("Step_Key", "Refused.", new BleProtocolException("ProtocolError"));
+        await session.StartAsync(device);
+        await Wait.Until(() => logger.Entries.Any(entry => entry.Level == LogLevel.Warning));
+        sensor.ConnectError = null;
+
+        await session.StartAsync(device);
+
+        await Wait.Until(() => messages.OfType<ReadingReceived>().Any());
+    }
+
+    [Fact]
     public async Task A_connection_that_never_answers_is_given_up_after_the_timeout_and_announced()
     {
         var failures = new ThreadSafeLog<SensorConnectionFailed>();
