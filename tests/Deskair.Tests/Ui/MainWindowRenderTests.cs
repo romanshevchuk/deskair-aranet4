@@ -69,6 +69,32 @@ public class MainWindowRenderTests
         RenderOutput.Save($"live-{theme.ToString().ToLowerInvariant()}-{culture[..2]}-{state.ToString().ToLowerInvariant()}-{unit.ToString().ToLowerInvariant()}.png", png);
     }
 
+    // Smart Home integration off (D-0032): one short sentence and the step with the setting in bold.
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("uk-UA")]
+    public void Render_the_offline_screen_when_the_sensor_needs_a_setting(string culture)
+    {
+        RenderOutput.Require();
+
+        var png = UiHost.Run(ThemeChoice.Light, () =>
+        {
+            UiHost.Localizer.SetCulture(CultureInfo.GetCultureInfo(culture));
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+
+            var shell = BuildShell(ConnectionState.NotConnected, TemperatureUnit.Celsius, setupStepKey: "Offline_Step_SmartHome");
+            var window = new MainWindow(shell);
+            var content = (FrameworkElement)window.Content;
+
+            content.DataContext = shell;
+            window.Content = null;
+
+            return ControlRenderer.ToPng(content, 1200, 700);
+        });
+
+        RenderOutput.Save($"live-light-{culture[..2]}-needssetup.png", png);
+    }
+
     // Windows "High contrast black": the palette is laid over the dark tokens the way ThemeService does it.
     [Fact]
     public void Render_the_live_screen_in_high_contrast()
@@ -174,7 +200,7 @@ public class MainWindowRenderTests
         RenderOutput.Save($"store-live-{theme.ToString().ToLowerInvariant()}-{co2Shift}-{range}.png", png);
     }
 
-    internal static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit, bool bluetoothOff = false, double co2Shift = 0)
+    internal static ShellViewModel BuildShell(ConnectionState state, TemperatureUnit unit, bool bluetoothOff = false, double co2Shift = 0, string? setupStepKey = null)
     {
         var messenger = new StrongReferenceMessenger();
         var dispatcher = new FakeUiDispatcher();
@@ -232,6 +258,11 @@ public class MainWindowRenderTests
         var radio = new FakeBluetoothRadio { IsOn = !bluetoothOff };
         var offline = new OfflineViewModel(registry, query, radio, messenger, dispatcher, formatter, localizer, new FriendlyTime(localizer, calendar, clock), new FakeSystemSettings());
         messenger.Send(new ReadingReceived(device, store.Readings[^1]));
+
+        if (setupStepKey is not null)
+        {
+            messenger.Send(new SensorNeedsSetup(device, setupStepKey));
+        }
 
         return new ShellViewModel { Live = live, Connection = connection, Footer = footer, Room = room, Offline = offline };
     }

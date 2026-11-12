@@ -24,7 +24,7 @@
                     ItemsSource="{Binding Steps}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
+            <TextBlock Style="{StaticResource Text.Secondary}" loc:InlineMarkup.Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>

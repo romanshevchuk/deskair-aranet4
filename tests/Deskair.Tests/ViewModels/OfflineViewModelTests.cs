@@ -76,8 +76,19 @@ public class OfflineViewModelTests
         messenger.Send(new SensorNeedsSetup(device, "Offline_Step_SmartHome"));
 
         Assert.Equal("Offline_Title_Setup", viewModel.Title);
-        Assert.Equal("Offline_Text_Setup Offline_HistoryHint", viewModel.Message);
+        Assert.Equal("Offline_Text_Setup", viewModel.Message);
         Assert.Equal(["Offline_Step_SmartHome"], viewModel.Steps);
+    }
+
+    [Fact]
+    public async Task A_refused_attempt_still_says_try_again_not_cant_reach_it()
+    {
+        var viewModel = await CreateAsync();
+
+        messenger.Send(new SensorConnectionFailed(device));
+        messenger.Send(new SensorNeedsSetup(device, "Offline_Step_SmartHome"));
+
+        Assert.Equal("Action_Retry", viewModel.RetryText);
     }
 
     [Fact]
