@@ -1,6 +1,6 @@
 # Data model
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-11-12*
 
 Raw readings are the source of truth. Every average, minimum and maximum in History is calculated from them, so nothing is lost when a rule changes. Hourly and daily files are not stored.
 
@@ -17,6 +17,7 @@ Readings columns: `ts_utc, co2_ppm, temp_c, rh_pct, pres_hpa, src`. `src` is `de
 - **Time:** store UTC, show local time. Calendar days follow local time; a day is 23 or 25 hours when daylight saving changes.
 - **Merge rule:** snap each reading to the sensor's interval grid (within half an interval) and treat the slot as one reading. History is append-only: the first valid reading stored for a slot stays, and later readings for that slot (sensor or import) are ignored. A reading with a missing or non-finite value does not count, so its slot stays empty. See D-0013.
 - **Device folder:** `devices/<providerId>-<address>/`, with characters that are not allowed in file names (such as `:`) replaced by `_`. `device.json` is the source of the device id, not the folder name. Month files are named by the UTC month of the reading. `settings.json` sits in the data folder and has a `version`; settings missing from the file take their defaults.
+- **State folder:** `%LOCALAPPDATA%\Deskair` holds what belongs to this PC rather than to the user's data: the logs (`logs\`) and `window.json`, the main window's last place (`left`, `top`, `width`, `height` in physical pixels, `maximized`; D-0031). It is never in the data folder, so it is not synced or backed up with it. A `window.json` without a positive size is ignored. The developer runs keep it in their own temp data folder.
 - **Interval changes:** keep the interval history in `device.json`. Coverage is readings divided by expected slots.
 - **Safety:** append to the month's file; readings files are never rewritten. A half-written last line is ignored when loading. `device.json` and settings are rewritten through a temp file and a rename. Allow one app instance.
 - **Units:** °C and hPa as received. Files use the invariant culture.

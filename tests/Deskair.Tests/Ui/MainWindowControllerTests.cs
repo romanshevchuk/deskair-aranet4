@@ -195,6 +195,64 @@ public class MainWindowControllerTests
         Assert.False(restored.stillMinimized);
     }
 
+    [Fact]
+    public void Show_brings_back_a_maximized_window_maximized_after_it_was_minimized()
+    {
+        var states = Run(() =>
+        {
+            var controller = new MainWindowController(new ShellViewModel(), () => { });
+            var window = new Window { ShowActivated = false, Width = 100, Height = 100 };
+            controller.Attach(window);
+            controller.Show();
+            window.WindowState = WindowState.Maximized;
+            var handle = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+
+            _ = ShowWindow(handle, 6);
+            controller.Show();
+            var afterWindowsMinimized = window.WindowState;
+
+            window.WindowState = WindowState.Minimized;
+            controller.Show();
+            var afterWpfMinimized = window.WindowState;
+            window.Close();
+
+            return (afterWindowsMinimized, afterWpfMinimized);
+        });
+
+        Assert.Equal(WindowState.Maximized, states.afterWindowsMinimized);
+        Assert.Equal(WindowState.Maximized, states.afterWpfMinimized);
+    }
+
+    [Fact]
+    public void Show_keeps_the_place_of_a_window_that_was_minimized_or_hidden()
+    {
+        var places = Run(() =>
+        {
+            var controller = new MainWindowController(new ShellViewModel(), () => { });
+            var window = new Window { ShowActivated = false, Width = 300, Height = 200, Left = 120, Top = 90 };
+            controller.Attach(window);
+            controller.KeepInTray();
+            controller.Show();
+            var handle = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+
+            _ = ShowWindow(handle, 6);
+            controller.Show();
+            var afterMinimized = (window.Left, window.Top);
+
+            window.WindowState = WindowState.Minimized;
+            window.Close();
+            controller.Show();
+            var afterHiddenMinimized = (window.Left, window.Top, window.WindowState);
+            controller.Quit();
+            window.Close();
+
+            return (afterMinimized, afterHiddenMinimized);
+        });
+
+        Assert.Equal((120d, 90d), places.afterMinimized);
+        Assert.Equal((120d, 90d, WindowState.Normal), places.afterHiddenMinimized);
+    }
+
     [System.Runtime.InteropServices.DllImport("user32.dll")]
     private static extern bool ShowWindow(nint window, int command);
 

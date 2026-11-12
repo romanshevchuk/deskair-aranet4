@@ -65,6 +65,7 @@ public sealed class StartupSequence : IDisposable
 
         var window = services.GetRequiredService<MainWindow>();
         services.GetRequiredService<BackdropService>().Attach(window);
+        await services.GetRequiredService<MainWindowPlaces>().AttachAsync(window, CancellationToken.None);
         var trayStarted = StartTray(window);
 
         // Windows starts the app in the background when a toast button is pressed while it is not running, and the Start with Windows entry asks for it too;

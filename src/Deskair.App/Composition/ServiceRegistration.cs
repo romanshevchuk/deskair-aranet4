@@ -138,6 +138,7 @@ public static class ServiceRegistration
         services.AddSingleton<TrayMenuViewModel>();
         services.AddSingleton<MainWindowController>();
         services.AddSingleton<IMainWindowController>(provider => provider.GetRequiredService<MainWindowController>());
+        services.AddSingleton<MainWindowPlaces>();
         services.AddSingleton<FlyoutViewModel>();
         services.AddSingleton<FlyoutController>();
         services.AddSingleton<TrayIconHost>();

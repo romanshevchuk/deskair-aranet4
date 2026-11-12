@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
             provider.GetRequiredService<ILogger<MonitoredReadingStore>>()));
         services.AddSingleton<IDeviceStore, DeviceFileStore>();
         services.AddSingleton<ISettingsStore, JsonSettingsStore>();
+        services.AddSingleton<IWindowPlaceStore, JsonWindowPlaceStore>();
         services.AddSingleton<IReadingExporter, CsvExporter>();
 
         return services;

@@ -62,7 +62,7 @@ Five projects, each depending only on the ones before it: `Domain` (types and ca
 
 - **"Not connected" or no readings:** check that Bluetooth is on and that Smart Home integration is on for the sensor in the Aranet Home app.
 - **No toasts:** Windows Do Not Disturb may be holding them; Deskair says so in Settings.
-- **Logs (running from source):** `%LOCALAPPDATA%\Deskair\logs`.
+- **Where Deskair keeps things:** readings and settings in `Documents\Deskair` (or the folder you chose in Settings → Data and storage); they stay when you uninstall. Logs and the window's position in `%LOCALAPPDATA%\Deskair` (the Store version keeps these in its own package folder, which Windows removes on uninstall).
 
 ## Acknowledgements
 
