@@ -1,6 +1,6 @@
 # Questions raised while building the skeleton
 
-*Last reviewed: 2026-10-23*
+*Last reviewed: 2026-11-12*
 
 Questions the docs did not answer, and the decisions made while building. Decisions are recorded in the doc they change and in [../decisions.md](../decisions.md); they are listed here too so the numbers cited in code comments, tests and other docs still make sense.
 
@@ -8,7 +8,7 @@ Questions the docs did not answer, and the decisions made while building. Decisi
 
 | # | Question | Where it came up | Assumption used meanwhile |
 |---|---|---|---|
-| Q7 | Phone export date order and the repeated autumn hour. A real export (tests/Deskair.Tests/TestData) has the header `Time(DD/MM/YYYY H:mm:ss)`, and the Aranet help page says the file uses the time format of the app settings, so the header names the order. Not yet built: read the order from the header (and ask only when the header is missing or unreadable); flag the repeated autumn hour in the preview. | sync-and-import.md rules 2 and 3; `PhoneExportRow` (IMPORT-02a) | Day-first only; the repeated hour maps to its first occurrence; nothing is flagged. Low priority: the preview shows the first and last date. |
+| Q7 | Phone export date order and the repeated autumn hour. A real export (tests/Deskair.Tests/TestData) has the header `Time(DD/MM/YYYY H:mm:ss)`, and the Aranet help page says the file uses the time format of the app settings, so the header names the order. The order is read from the header since FIX-03 (2026-11-12; `MM/DD` is month first, 12-hour times are read). Still open: ask the user when the header is missing; flag the repeated autumn hour in the preview. | sync-and-import.md rules 2 and 3; `PhoneExportRow` (IMPORT-02a) | Without a header, day first; the repeated hour maps to its first occurrence; nothing is flagged. Low priority: the preview shows the first and last date. |
 | Q30 | Footer signal wording: no doc gives the limits for "Signal good / fair / weak". | `FooterViewModel` (SHELL-01b) | Good at -60 dBm or stronger, fair down to -75 dBm, weak below. Tune with real Aranet4 readings (spike S1). |
 | Q32 | A connected Aranet4 does not report its signal strength (only its advertisements carry one), so the footer shows no signal for it. Should the scanner pass the last advertisement signal on to the session? | `Aranet4Sensor.ConnectAsync` (ARANET-03a); `FooterViewModel` | `SensorStatus.SignalDbm` is null and `SignalStrength` is false for the Aranet4. The footer shows no signal text (confirmed against Aranet4-Python: only scanning, not a connection, gives RSSI). |
 | Q33 | Older Aranet4 firmware may expose its characteristics under the service `f0cd1400-95da-4f4b-9ac8-aa55d312af0c` instead of `0000fce0-...`. Our sensor (firmware 2.0.7) uses `0000fce0`. Is older firmware supported? | `Aranet4Protocol.LegacyServiceId`; spike S1 | Only `0000fce0` is used. An older sensor fails to connect with a clear error. |

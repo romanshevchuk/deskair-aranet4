@@ -6,13 +6,37 @@ namespace Deskair.Sensors.Aranet4;
 /// <summary>The row layout shared by the phone app's text and .xlsx exports: time, CO₂, temperature, humidity, pressure.</summary>
 internal static class PhoneExportRow
 {
-    // Day first, always. Month-first files are not supported; the importer never guesses (sync-and-import.md rule 2).
-    private static readonly string[] timeFormats = ["dd/MM/yyyy H:mm:ss", "d/M/yyyy H:mm:ss", "d/M/yyyy H:mm"];
+    // The phone app writes dates in the order of its own settings and names that order in the header (sync-and-import.md rule 2). The 12-hour forms are for a phone set to a 12-hour clock.
+    private static readonly string[] dayFirstFormats = ["d/M/yyyy H:mm:ss", "d/M/yyyy H:mm", "d/M/yyyy h:mm:ss tt", "d/M/yyyy h:mm tt"];
+    private static readonly string[] monthFirstFormats = ["M/d/yyyy H:mm:ss", "M/d/yyyy H:mm", "M/d/yyyy h:mm:ss tt", "M/d/yyyy h:mm tt"];
 
     public const int ColumnCount = 5;
 
-    public static bool TryParseTime(string text, out DateTime wallClock)
-        => DateTime.TryParseExact(text.Trim(), timeFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out wallClock);
+    public static bool TryParseTime(string text, DateOrder order, out DateTime wallClock)
+    {
+        var formats = order == DateOrder.MonthFirst ? monthFirstFormats : dayFirstFormats;
+
+        return DateTime.TryParseExact(text.Trim(), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out wallClock);
+    }
+
+    /// <summary>The date order a header names, such as <c>Time(DD/MM/YYYY H:mm:ss)</c> or <c>Time(MM/DD/YYYY h:mm:ss A)</c>. False when the text names none.</summary>
+    public static bool TryReadDateOrder(string header, out DateOrder order)
+    {
+        if (header.Contains("DD/MM", StringComparison.OrdinalIgnoreCase))
+        {
+            order = DateOrder.DayFirst;
+            return true;
+        }
+
+        if (header.Contains("MM/DD", StringComparison.OrdinalIgnoreCase))
+        {
+            order = DateOrder.MonthFirst;
+            return true;
+        }
+
+        order = DateOrder.DayFirst;
+        return false;
+    }
 
     public static bool TryParseNumber(string text, bool commaIsDecimal, out double value)
     {

@@ -72,6 +72,39 @@ public sealed class PhoneExportImporterTests
     }
 
     [Fact]
+    public async Task Text_reads_dates_month_first_when_the_header_says_so()
+    {
+        var content = "Time(MM/DD/YYYY H:mm:ss),Carbon dioxide(ppm),Temperature(°C),Relative humidity(%),Atmospheric pressure(hPa)\n10/05/2026 12:00:00,800,21,45,1013\n10/25/2026 12:00:00,800,21,45,1013\n";
+
+        var readings = await ReadTextAsync(content);
+
+        Assert.Equal(
+            [new DateOnly(2026, 10, 5), new DateOnly(2026, 10, 25)],
+            readings.Select(reading => DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(reading.Timestamp, kyiv).DateTime)));
+    }
+
+    [Fact]
+    public async Task Text_reads_dates_day_first_when_the_header_says_so()
+    {
+        var content = "Time(DD/MM/YYYY H:mm:ss),Carbon dioxide(ppm),Temperature(°C),Relative humidity(%),Atmospheric pressure(hPa)\n05/10/2026 12:00:00,800,21,45,1013\n";
+
+        var reading = Assert.Single(await ReadTextAsync(content));
+
+        Assert.Equal(new DateOnly(2026, 10, 5), DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(reading.Timestamp, kyiv).DateTime));
+    }
+
+    [Fact]
+    public async Task Text_reads_a_12_hour_clock()
+    {
+        var content = "Time(MM/DD/YYYY h:mm:ss A),Carbon dioxide(ppm),Temperature(°C),Relative humidity(%),Atmospheric pressure(hPa)\n10/09/2026 3:41:40 PM,987,22.0,51,980.7\n";
+
+        var reading = Assert.Single(await ReadTextAsync(content));
+
+        // 15:41:40 local in October is UTC+3.
+        Assert.Equal(Samples.Utc(2026, 10, 9, 12, 41, 40), reading.Timestamp);
+    }
+
+    [Fact]
     public async Task Text_skips_a_header_blank_lines_and_rows_with_bad_values()
     {
         var content = string.Join(
