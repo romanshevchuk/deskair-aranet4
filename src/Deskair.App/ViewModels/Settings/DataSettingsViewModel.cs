@@ -82,6 +82,12 @@ public sealed partial class DataSettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void OpenLogFolder()
+    {
+        folderOpener.Open(folders.LogFolder);
+    }
+
+    [RelayCommand]
     private async Task ChangeFolderAsync()
     {
         var picked = await dialogs.PickFolderAsync(localizer.Get("Settings_Data_ChangeTitle"), CancellationToken.None);

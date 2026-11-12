@@ -103,6 +103,14 @@ public sealed class DataSettingsViewModelTests : IDisposable
     }
 
     [Fact]
+    public void Open_log_folder_shows_the_log_folder_in_the_file_browser()
+    {
+        viewModel.OpenLogFolderCommand.Execute(null);
+
+        Assert.Equal([folders.LogFolder], opener.Opened);
+    }
+
+    [Fact]
     public void Import_and_export_are_available_to_the_view()
     {
         Assert.NotNull(viewModel.Import);

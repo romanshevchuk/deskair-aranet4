@@ -68,6 +68,7 @@ public static class ServiceRegistration
         services.AddSingleton<IDataFolderChoice>(new DataFolderChoice(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Deskair", "data-folder.txt")));
         services.AddSingleton<IKnownFolders, KnownFolders>();
         services.AddSingleton<ILoggerProvider>(provider => new RollingFileLoggerProvider(provider.GetRequiredService<IKnownFolders>().LogFolder, provider.GetRequiredService<TimeProvider>()));
+        services.AddSingleton<UnhandledExceptionLogger>();
         services.AddSingleton<ISystemTheme, SystemThemeSource>();
         services.AddSingleton<IUiDispatcher, WpfUiDispatcher>();
         // The simulated app needs no Bluetooth hardware.

@@ -309,6 +309,8 @@
   <data name="Settings_Data_ExportHint" xml:space="preserve"><value>All stored readings of the selected room</value></data>
   <data name="Settings_Data_Sync" xml:space="preserve"><value>Sync history</value></data>
   <data name="Settings_Data_SyncHint" xml:space="preserve"><value>Downloads the readings the sensor stored while Deskair was not listening. Other apps cannot reach the sensor for about 20 seconds</value></data>
+  <data name="Settings_Data_Logs" xml:space="preserve"><value>Logs</value></data>
+  <data name="Settings_Data_LogsHint" xml:space="preserve"><value>Files that help find the cause of a problem. They stay on this PC</value></data>
   <data name="Action_Sync" xml:space="preserve"><value>Sync</value></data>
   <data name="Data_NoSensor" xml:space="preserve"><value>Add a sensor first.</value></data>
   <data name="Dialog_AllFiles" xml:space="preserve"><value>All files</value></data>
