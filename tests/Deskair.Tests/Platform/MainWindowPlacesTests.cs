@@ -1,5 +1,4 @@
 using System.Windows;
-using CommunityToolkit.Mvvm.Messaging;
 using Deskair.App.Platform.Tray;
 using Deskair.Services.Settings;
 using Deskair.Tests.Fakes;
@@ -90,14 +89,32 @@ public class MainWindowPlacesTests
     }
 
     [Fact]
+    public void Attaching_puts_the_window_in_the_stored_place()
+    {
+        var store = new FakeWindowPlaceStore { Stored = stored };
+        var shown = Run(() =>
+        {
+            var window = NewWindow();
+            Attach(window, store);
+
+            window.Show();
+            var place = MainWindowPlaces.Read(window);
+            window.Close();
+
+            return place;
+        });
+
+        Assert.Equal(stored, shown);
+    }
+
+    [Fact]
     public void Closing_a_shown_window_stores_where_it_was()
     {
-        var store = new FakeSettingsStore();
-        var settings = new SettingsService(store, new StrongReferenceMessenger());
+        var store = new FakeWindowPlaceStore();
         var expected = Run(() =>
         {
             var window = NewWindow();
-            new MainWindowPlaces(settings, new ListLogger<MainWindowPlaces>()).Attach(window);
+            Attach(window, store);
             window.Show();
             window.Left = 210;
             window.Top = 160;
@@ -109,18 +126,18 @@ public class MainWindowPlacesTests
         });
 
         Assert.NotNull(expected);
-        Assert.Equal(expected, store.Stored.MainWindowPlace);
+        Assert.Equal(expected, store.Stored);
     }
 
     [Fact]
-    public void Closing_a_window_that_was_never_shown_stores_nothing()
+    public void Closing_a_window_that_did_not_move_writes_nothing()
     {
-        var store = new FakeSettingsStore();
-        var settings = new SettingsService(store, new StrongReferenceMessenger());
+        var store = new FakeWindowPlaceStore { Stored = stored };
         Run(() =>
         {
             var window = NewWindow();
-            new MainWindowPlaces(settings, new ListLogger<MainWindowPlaces>()).Attach(window);
+            Attach(window, store);
+            window.Show();
 
             window.Close();
 
@@ -128,5 +145,28 @@ public class MainWindowPlacesTests
         });
 
         Assert.Empty(store.Saved);
+    }
+
+    [Fact]
+    public void Closing_a_window_that_was_never_shown_stores_nothing()
+    {
+        var store = new FakeWindowPlaceStore();
+        Run(() =>
+        {
+            var window = NewWindow();
+            Attach(window, store);
+
+            window.Close();
+
+            return 0;
+        });
+
+        Assert.Empty(store.Saved);
+    }
+
+    // The fake store answers at once, so this does not block the UI thread.
+    private static void Attach(Window window, FakeWindowPlaceStore store)
+    {
+        new MainWindowPlaces(store, new ListLogger<MainWindowPlaces>()).AttachAsync(window, CancellationToken.None).GetAwaiter().GetResult();
     }
 }

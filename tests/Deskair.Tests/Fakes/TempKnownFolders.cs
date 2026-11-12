@@ -10,11 +10,14 @@ public sealed class TempKnownFolders : IKnownFolders, IDisposable
     {
         DataFolder = Path.Combine(Path.GetTempPath(), "deskair-tests", Guid.NewGuid().ToString("N"));
         LogFolder = Path.Combine(DataFolder, "logs");
+        StateFolder = Path.Combine(DataFolder, "state");
     }
 
     public string DataFolder { get; }
 
     public string LogFolder { get; }
+
+    public string StateFolder { get; }
 
     public void Dispose()
     {

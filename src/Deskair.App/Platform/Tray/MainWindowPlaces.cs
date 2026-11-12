@@ -12,24 +12,27 @@ namespace Deskair.App.Platform.Tray;
 /// Keeps the main window's place between launches: puts the window where it was before it is first shown (also when the app starts in the tray
 /// and the window appears only later), and stores the place each time the window is hidden or closed. Uses Windows' placement calls, which work in
 /// physical pixels and move a window whose monitor is gone back onto a screen. With nothing stored the window opens in the centre of the screen.
+/// The place is kept in the state folder, not with the settings (D-0031).
 /// </summary>
 public sealed class MainWindowPlaces
 {
     private static readonly TimeSpan saveTimeout = TimeSpan.FromSeconds(2);
 
-    private readonly SettingsService settings;
+    private readonly IWindowPlaceStore store;
     private readonly ILogger<MainWindowPlaces> logger;
+    private WindowPlace? lastStored;
 
-    public MainWindowPlaces(SettingsService settings, ILogger<MainWindowPlaces> logger)
+    public MainWindowPlaces(IWindowPlaceStore store, ILogger<MainWindowPlaces> logger)
     {
-        this.settings = settings;
+        this.store = store;
         this.logger = logger;
     }
 
     /// <summary>Puts the window in its stored place and starts storing it. Call once, before the window is first shown.</summary>
-    public void Attach(Window window)
+    public async Task AttachAsync(Window window, CancellationToken cancellationToken)
     {
-        Restore(window, settings.Current.MainWindowPlace);
+        lastStored = await store.LoadAsync(cancellationToken);
+        Restore(window, lastStored);
 
         var shownOnce = false;
         window.IsVisibleChanged += (_, _) => shownOnce |= window.IsVisible;
@@ -93,7 +96,7 @@ public sealed class MainWindowPlaces
     // A window never shown has no place of its own yet, so nothing is stored for it.
     private void OnClosing(Window window, CancelEventArgs e, bool shownOnce)
     {
-        if (!shownOnce || Read(window) is not { } place)
+        if (!shownOnce || Read(window) is not { } place || place == lastStored)
         {
             return;
         }
@@ -101,7 +104,10 @@ public sealed class MainWindowPlaces
         try
         {
             // Wait here: on quit the app ends right after Closing, before an awaited save could finish. The file is a few hundred bytes.
-            Task.Run(() => settings.SaveMainWindowPlaceAsync(place, CancellationToken.None)).Wait(saveTimeout);
+            if (Task.Run(() => store.SaveAsync(place, CancellationToken.None)).Wait(saveTimeout))
+            {
+                lastStored = place;
+            }
         }
         catch (AggregateException exception) when (exception.InnerException is IOException or UnauthorizedAccessException)
         {

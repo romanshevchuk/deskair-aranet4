@@ -88,4 +88,23 @@ public class KnownFoldersTests
 
         Assert.DoesNotContain(folders.DataFolder, folders.LogFolder);
     }
+
+    [Fact]
+    public void The_real_app_keeps_its_state_in_local_app_data_next_to_the_logs_not_in_the_data_folder()
+    {
+        var folders = new KnownFolders(new AppOptions(false), new FakeDataFolderChoice { Chosen = @"D:\Air data" });
+        var local = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Deskair");
+
+        Assert.Equal(local, folders.StateFolder);
+        Assert.Equal(local, Path.GetDirectoryName(folders.LogFolder));
+    }
+
+    [Theory]
+    [MemberData(nameof(DeveloperRuns))]
+    public void Developer_runs_keep_their_state_in_their_own_temp_folder(AppOptions options)
+    {
+        var folders = new KnownFolders(options, new FakeDataFolderChoice());
+
+        Assert.Equal(folders.DataFolder, folders.StateFolder);
+    }
 }
