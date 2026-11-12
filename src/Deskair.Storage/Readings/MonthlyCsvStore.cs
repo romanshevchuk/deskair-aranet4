@@ -12,6 +12,7 @@ namespace Deskair.Storage.Readings;
 /// <summary>
 /// Stores readings in <c>devices/&lt;id&gt;/readings-YYYY-MM.csv</c> under the data folder.
 /// History is append-only: rows are only ever added to a month file (docs/decisions.md D-0013).
+/// A file that cannot be written right now keeps its new rows in memory until a later merge writes them; until then they count as stored.
 /// </summary>
 public sealed class MonthlyCsvStore : IReadingStore, IDisposable
 {
@@ -19,6 +20,7 @@ public sealed class MonthlyCsvStore : IReadingStore, IDisposable
 
     private readonly IKnownFolders folders;
     private readonly Dictionary<DeviceId, ReadingIndex> indexes = new();
+    private readonly Dictionary<string, List<string>> unwritten = new(StringComparer.OrdinalIgnoreCase);
     private readonly SemaphoreSlim gate = new(1, 1);
     private readonly ILogger<MonthlyCsvStore> logger;
     private readonly TimeProvider timeProvider;
@@ -108,27 +110,59 @@ public sealed class MonthlyCsvStore : IReadingStore, IDisposable
             var to = readings.Max(reading => reading.Timestamp) + interval + TimeSpan.FromTicks(1);
             var added = SlotMerger.Merge(index.Range(from, to), readings, interval);
 
-            if (added.Count == 0)
-            {
-                return 0;
-            }
-
-            var folder = DeviceFolders.For(folders, device);
-            Directory.CreateDirectory(folder);
-
-            foreach (var month in added.GroupBy(reading => reading.Timestamp.UtcDateTime.ToString("yyyy-MM", CultureInfo.InvariantCulture)))
-            {
-                var path = Path.Combine(folder, $"readings-{month.Key}.csv");
-                await AppendAsync(path, month.Select(reading => CsvReadingFormat.Write(reading, source)), cancellationToken);
-            }
-
             index.Add(added);
+            QueueRows(device, added, source);
+
+            // Also when nothing is new: every merge is a chance to write rows an earlier one could not.
+            await WriteQueuedRowsAsync(cancellationToken);
 
             return added.Count;
         }
         finally
         {
             gate.Release();
+        }
+    }
+
+    private void QueueRows(DeviceId device, IReadOnlyList<Reading> added, ReadingSource source)
+    {
+        var folder = DeviceFolders.For(folders, device);
+
+        foreach (var month in added.GroupBy(reading => reading.Timestamp.UtcDateTime.ToString("yyyy-MM", CultureInfo.InvariantCulture)))
+        {
+            var path = Path.Combine(folder, $"readings-{month.Key}.csv");
+
+            if (!unwritten.TryGetValue(path, out var rows))
+            {
+                rows = [];
+                unwritten[path] = rows;
+            }
+
+            rows.AddRange(month.Select(reading => CsvReadingFormat.Write(reading, source)));
+        }
+    }
+
+    /// <summary>
+    /// Appends the queued rows. A file another app holds (a month file open in Excel, OneDrive uploading it) keeps its rows queued for the next merge,
+    /// so the readings are not lost and the caller (a sync, a live reading) is not told the sensor failed.
+    /// </summary>
+    private async Task WriteQueuedRowsAsync(CancellationToken cancellationToken)
+    {
+        foreach (var (path, rows) in unwritten.ToList())
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                await AppendAsync(path, rows, cancellationToken);
+                unwritten.Remove(path);
+            }
+            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+            {
+                if (logger.IsEnabled(LogLevel.Warning))
+                {
+                    logger.LogWarning(exception, "Could not write {Count} readings to {Path}; trying again with the next reading.", rows.Count, path);
+                }
+            }
         }
     }
 
@@ -215,7 +249,7 @@ public sealed class MonthlyCsvStore : IReadingStore, IDisposable
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            foreach (var line in File.ReadLines(file))
+            foreach (var line in ReadLinesShared(file))
             {
                 if (CsvReadingFormat.TryParse(line, out var reading, out _))
                 {
@@ -225,5 +259,16 @@ public sealed class MonthlyCsvStore : IReadingStore, IDisposable
         }
 
         return loaded;
+    }
+
+    /// <summary>Reads a month file while another app may have it open for writing (Excel keeps the file it shows open), which <see cref="File.ReadLines(string)"/> refuses.</summary>
+    private static IEnumerable<string> ReadLinesShared(string path)
+    {
+        using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete));
+
+        while (reader.ReadLine() is { } line)
+        {
+            yield return line;
+        }
     }
 }

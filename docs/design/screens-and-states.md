@@ -36,7 +36,7 @@ The main window opens where it was last, at its last size and maximized if it wa
 | Connecting | The Live layout with the last values faded at 55 % opacity, a banner "Connecting to your sensor…" (no button), a grey footer dot with the same text, a grey ring and tray icon, the flyout says "Connecting to your Aranet4…". No error screen and no "Try again" until the attempt fails or 45 seconds pass |
 | Stale data | Banner "Last reading N min ago", hero at 55 % opacity, amber footer dot, Retry |
 | Low battery | Banner with Dismiss; footer battery icon red |
-| Not connected | Full-screen state with last reading and recovery steps; grey ring; grey tray icon; History stays available |
+| Not connected | Full-screen state with last reading and recovery steps; grey ring; grey tray icon; History stays available. When the sensor refuses its readings because Smart Home integration is off (D-0032): "Your Aranet4 is not sharing its readings", one short sentence, a plain "Try again" button, and that one step with the setting name in bold; no other steps, no last reading; no automatic retries until Try again |
 | First run | Onboarding (steps, nearby sensors, room name; import from the phone app comes with the import in Settings → Data); History shows "Collecting your first data" |
 
 Each condition combines with the three zones and both themes.

@@ -271,11 +271,13 @@
   <data name="Insight_MostHumid_Night" xml:space="preserve"><value>**Найвологіші години: {from}–{to}**, поки ви спите (середнє {value}). Трохи відчинене вікно допоможе.</value></data>
   <data name="Offline_Text" xml:space="preserve"><value>Датчик може бути поза зоною дії або «спати».</value></data>
   <data name="Offline_Text_BluetoothOff" xml:space="preserve"><value>Bluetooth вимкнено, тож Deskair не може зв&apos;язатися з датчиком.</value></data>
+  <data name="Offline_Title_Setup" xml:space="preserve"><value>Ваш Aranet4 не передає вимірювання</value><comment>Draft: needs native review. Title of the offline screen when Smart Home integration is off.</comment></data>
+  <data name="Offline_Text_Setup" xml:space="preserve"><value>Увімкніть одне налаштування в застосунку на телефоні й натисніть «Спробувати ще раз».</value><comment>Draft: needs native review. Text of the offline screen when Smart Home integration is off.</comment></data>
   <data name="Offline_LastReading" xml:space="preserve"><value>Останнє вимірювання: {value}, {time}.</value></data>
   <data name="Offline_HistoryHint" xml:space="preserve"><value>Історія, як і раніше, доступна.</value></data>
   <data name="Offline_Step_Range" xml:space="preserve"><value>Тримайтеся приблизно в межах 10 м від датчика</value></data>
   <data name="Offline_Step_Wake" xml:space="preserve"><value>Натисніть кнопку на Aranet4, щоб розбудити його</value></data>
-  <data name="Offline_Step_SmartHome" xml:space="preserve"><value>У застосунку Aranet Home перевірте, що інтеграцію зі «Smart Home» увімкнено</value></data>
+  <data name="Offline_Step_SmartHome" xml:space="preserve"><value>У застосунку Aranet Home увімкніть **інтеграцію зі «Smart Home»**</value><comment>Draft: needs native review. ** marks the bold part.</comment></data>
   <data name="Offline_Step_Battery" xml:space="preserve"><value>Перевірте батарею датчика ({percent} востаннє)</value></data>
   <data name="Tray_AppName" xml:space="preserve"><value>Deskair</value></data>
   <data name="Tray_AlertsPausedByWindows" xml:space="preserve"><value>Сповіщення призупинено Windows</value></data>
@@ -310,6 +312,8 @@
   <data name="Settings_Data_ExportHint" xml:space="preserve"><value>Усі збережені вимірювання вибраної кімнати</value></data>
   <data name="Settings_Data_Sync" xml:space="preserve"><value>Синхронізувати історію</value><comment>Draft: needs native review. Row title in Settings, Data and storage.</comment></data>
   <data name="Settings_Data_SyncHint" xml:space="preserve"><value>Завантажує вимірювання, які датчик зберіг, поки Deskair їх не приймав. Приблизно 20 секунд інші застосунки не бачать датчик</value><comment>Draft: needs native review. Hint under the sync row.</comment></data>
+  <data name="Settings_Data_Logs" xml:space="preserve"><value>Журнали</value><comment>Draft: needs native review. Row title in Settings, Data and storage: the app's log files.</comment></data>
+  <data name="Settings_Data_LogsHint" xml:space="preserve"><value>Файли, які допомагають знайти причину проблеми. Вони залишаються на цьому ПК</value><comment>Draft: needs native review. Hint under the logs row.</comment></data>
   <data name="Action_Sync" xml:space="preserve"><value>Синхронізувати</value><comment>Draft: needs native review. Button.</comment></data>
   <data name="Data_NoSensor" xml:space="preserve"><value>Спочатку додайте датчик.</value></data>
   <data name="Dialog_AllFiles" xml:space="preserve"><value>Усі файли</value></data>

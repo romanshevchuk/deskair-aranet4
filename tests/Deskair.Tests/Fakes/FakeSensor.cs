@@ -39,7 +39,27 @@ public sealed class FakeSensor : ISensor
 
     public int MaxConcurrentReads { get; private set; }
 
-    public async Task<SensorStatus> ConnectAsync(CancellationToken cancellationToken) { if (HangConnect) { await Task.Delay(Timeout.Infinite, cancellationToken); } return new SensorStatus(TimeSpan.FromMinutes(2), 80, -60); }
+    /// <summary>Thrown by every connect. Null means connecting works.</summary>
+    public Exception? ConnectError { get; set; }
+
+    public int ConnectCalls { get; private set; }
+
+    public async Task<SensorStatus> ConnectAsync(CancellationToken cancellationToken)
+    {
+        ConnectCalls++;
+
+        if (HangConnect)
+        {
+            await Task.Delay(Timeout.Infinite, cancellationToken);
+        }
+
+        if (ConnectError is not null)
+        {
+            throw ConnectError;
+        }
+
+        return new SensorStatus(TimeSpan.FromMinutes(2), 80, -60);
+    }
 
     public async Task<Reading> ReadCurrentAsync(CancellationToken cancellationToken)
     {

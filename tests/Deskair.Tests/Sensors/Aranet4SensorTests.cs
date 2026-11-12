@@ -52,6 +52,18 @@ public class Aranet4SensorTests
     }
 
     [Fact]
+    public async Task A_refused_current_readings_read_asks_for_Smart_Home_integration()
+    {
+        var connection = Connection();
+        connection.RefusesCurrentReadings = true;
+
+        var failure = await Assert.ThrowsAsync<SensorSetupRequiredException>(() => Sensor(connection).ConnectAsync(TestContext.Current.CancellationToken));
+
+        Assert.Equal(Aranet4Sensor.SmartHomeStepKey, failure.StepKey);
+        Assert.IsType<BleProtocolException>(failure.InnerException);
+    }
+
+    [Fact]
     public async Task The_sensor_does_not_claim_a_signal_reading()
     {
         Assert.False(Sensor(Connection()).Capabilities.SignalStrength);

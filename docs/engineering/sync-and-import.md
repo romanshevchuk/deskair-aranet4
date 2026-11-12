@@ -1,6 +1,6 @@
 # Sync and import
 
-*Last reviewed: 2026-10-23*
+*Last reviewed: 2026-11-12*
 
 ## Sensor sync
 
@@ -15,7 +15,7 @@
 
 ## Import from the phone app (.xlsx)
 
-The phone export columns are: Time (DD/MM/YYYY H:mm:ss), Carbon dioxide (ppm), Temperature (°C), Relative humidity (%), Atmospheric pressure (hPa), one row every 2 minutes.
+The phone export columns are: Time (in the order its header names, for example `DD/MM/YYYY H:mm:ss`), Carbon dioxide (ppm), Temperature (°C), Relative humidity (%), Atmospheric pressure (hPa), one row every 2 minutes.
 
 ```
 09/10/2026 12:41:40	987	22.0	51	980.7
@@ -23,7 +23,7 @@ The phone export columns are: Time (DD/MM/YYYY H:mm:ss), Carbon dioxide (ppm), T
 ```
 
 1. Match columns by position; headers may be translated.
-2. Parse the date format explicitly. The phone app writes its format in the header (for example `Time(DD/MM/YYYY H:mm:ss)`) and uses the format of its own settings, so read the order from the header. Only when the header is missing or unreadable, ask the user to confirm day-first or month-first. (Today only day-first is read; see questions.md Q7.)
+2. Parse the date format explicitly. The phone app writes its format in the header (for example `Time(DD/MM/YYYY H:mm:ss)`) and uses the format of its own settings, so read the order from the header: `DD/MM` is day first, `MM/DD` month first, and a 12-hour time with AM/PM is read too. A file without such a header is read day first (asking the user instead is still open, questions.md Q7).
 3. Times are local without an offset. Convert with the PC's time zone and flag the repeated hour at the autumn daylight-saving change.
 4. Show a preview before importing, for example "64,000 readings, 12 Jul to 9 Oct 2026 · 62,500 new · 1,500 already present".
 5. Offer import on first run and in Settings → Data and storage. Also accept CSV or tab-separated text with the same layout.

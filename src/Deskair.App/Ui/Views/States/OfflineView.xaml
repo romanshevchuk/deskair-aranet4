@@ -9,7 +9,7 @@
   <controls:EmptyStateCard VerticalAlignment="Top"
                            Icon="&#xE702;"
                            Message="{Binding Message}"
-                           Title="{loc:T Offline_Title}">
+                           Title="{Binding Title}">
     <StackPanel>
       <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
         <controls:PrimaryButton Command="{Binding TurnOnBluetoothCommand}"
@@ -24,7 +24,7 @@
                     ItemsSource="{Binding Steps}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
+            <TextBlock Style="{StaticResource Text.Secondary}" loc:InlineMarkup.Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>

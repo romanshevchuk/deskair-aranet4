@@ -1,6 +1,6 @@
 # Architecture
 
-*Last reviewed: 2026-10-23*
+*Last reviewed: 2026-11-12*
 
 Status: approved structure; details may change during M1. Behaviour is in `docs/product/`, visuals in `docs/design/`, storage in `data-model.md`, decisions in `docs/decisions.md`.
 
@@ -209,7 +209,7 @@ Each class implements an interface from `Services`. Store (packaged) and non-Sto
 - **Startup order:** single instance check, host build, settings, localization, theme, open storage and load the index, start tray, start `LiveFeed` and `SyncService`, show the window unless "start in tray".
 - **Time:** inject `TimeProvider` and `TimeZoneInfo`; never `DateTime.Now`.
 - **Threading:** services are async; view models reach the UI through an `IUiDispatcher`; long calculations (year aggregation) run off the UI thread.
-- **Logging:** `Microsoft.Extensions.Logging` with a rolling file under `%LOCALAPPDATA%\Deskair\logs`, not the data folder. No telemetry.
+- **Logging:** `Microsoft.Extensions.Logging` with a rolling file under `%LOCALAPPDATA%\Deskair\logs`, not the data folder. Exceptions nothing caught are logged too (`UnhandledExceptionLogger`), and Settings → Data and storage opens the log folder. No telemetry.
 - **Errors:** sensor and file errors become typed results or states shown by the edge-state UI. No silent catch.
 - **Repo files:** `Directory.Build.props` (nullable on, analyzers, warnings as errors), `Directory.Packages.props` (central versions), `global.json`, `.editorconfig`.
 - **File size:** one public type per file, file name equals type name; target 100 lines, hard limit 250; XAML about 120 lines; view models about 150.

@@ -40,7 +40,10 @@ public abstract partial class RetryingViewModel : ObservableObject
     }
 
     /// <summary>The label of the retry button.</summary>
-    public string RetryText => localizer?.Get(IsRetrying ? "Action_Retrying" : RetryFailed ? "Action_RetryFailed" : "Action_Retry") ?? string.Empty;
+    public string RetryText => localizer?.Get(IsRetrying ? "Action_Retrying" : RetryFailed && ShowsRetryFailed ? "Action_RetryFailed" : "Action_Retry") ?? string.Empty;
+
+    /// <summary>Whether a failed attempt may say "Still can't reach it". False where the screen already names a cause that is not about reaching the sensor.</summary>
+    protected virtual bool ShowsRetryFailed => true;
 
     [RelayCommand(CanExecute = nameof(CanRetry))]
     private void Retry()

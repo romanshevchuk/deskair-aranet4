@@ -69,6 +69,52 @@ public class OfflineViewModelTests
     }
 
     [Fact]
+    public async Task A_sensor_that_needs_a_setting_shows_that_one_step()
+    {
+        var viewModel = await CreateAsync();
+
+        messenger.Send(new SensorNeedsSetup(device, "Offline_Step_SmartHome"));
+
+        Assert.Equal("Offline_Title_Setup", viewModel.Title);
+        Assert.Equal("Offline_Text_Setup", viewModel.Message);
+        Assert.Equal(["Offline_Step_SmartHome"], viewModel.Steps);
+    }
+
+    [Fact]
+    public async Task A_refused_attempt_still_says_try_again_not_cant_reach_it()
+    {
+        var viewModel = await CreateAsync();
+
+        messenger.Send(new SensorConnectionFailed(device));
+        messenger.Send(new SensorNeedsSetup(device, "Offline_Step_SmartHome"));
+
+        Assert.Equal("Action_Retry", viewModel.RetryText);
+    }
+
+    [Fact]
+    public async Task A_connected_sensor_clears_the_setting_step()
+    {
+        var viewModel = await CreateAsync();
+        messenger.Send(new SensorNeedsSetup(device, "Offline_Step_SmartHome"));
+
+        messenger.Send(new SensorStatusUpdated(device, new SensorStatus(TimeSpan.FromMinutes(2), null, null)));
+
+        Assert.Equal("Offline_Title", viewModel.Title);
+        Assert.Equal("Offline_Text Offline_HistoryHint", viewModel.Message);
+        Assert.True(viewModel.Steps.Count > 1);
+    }
+
+    [Fact]
+    public async Task Another_sensor_needing_a_setting_is_ignored()
+    {
+        var viewModel = await CreateAsync();
+
+        messenger.Send(new SensorNeedsSetup(other, "Offline_Step_SmartHome"));
+
+        Assert.Equal("Offline_Title", viewModel.Title);
+    }
+
+    [Fact]
     public async Task Turning_Bluetooth_on_or_off_updates_the_view()
     {
         var viewModel = await CreateAsync();

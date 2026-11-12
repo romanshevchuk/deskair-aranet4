@@ -1,6 +1,6 @@
 # Localization
 
-*Last reviewed: 2026-10-19*
+*Last reviewed: 2026-11-12*
 
 ## Languages
 
@@ -71,7 +71,7 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Duration_Minutes | {min} min | {min} хв |
 | Duration_LessThanMinute | < 1 min | < 1 хв |
 | Sensor_Aranet4_Step3 | In the Aranet Home app, turn on Smart Home integration for your sensor. | У застосунку Aranet Home увімкніть для датчика інтеграцію зі «Smart Home». |
-| Offline_Step_SmartHome | In the Aranet Home app, check that Smart Home integration is on | У застосунку Aranet Home перевірте, що інтеграцію зі «Smart Home» увімкнено |
+| Offline_Step_SmartHome | In the Aranet Home app, turn on **Smart Home integration** (`**` marks bold) | У застосунку Aranet Home увімкніть **інтеграцію зі «Smart Home»** (draft: needs native review) |
 | Duration_HoursMinutes | {h} h {min} min | {h} год {min} хв |
 | Chart_Now | Now | Зараз |
 | Chart_Ideal | ideal {min}–{max} | бажано {min}–{max} |
@@ -102,6 +102,7 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Gap_DaysNoData (plural) | {count} day with no data / {count} days with no data | one: {count} день без даних; few: {count} дні без даних; many: {count} днів без даних |
 | Banner_Stale | Last reading {min} min ago | Останнє значення {min} хв тому |
 | Offline_Title | Can't reach your Aranet4 | Не вдається зв'язатися з Aranet4 |
+| Offline_Title_Setup / Text_Setup | Your Aranet4 is not sharing its readings / Turn on one setting in the phone app, then press Try again. | Ваш Aranet4 не передає вимірювання / Увімкніть одне налаштування в застосунку на телефоні й натисніть «Спробувати ще раз». (draft: needs native review) |
 | Offline_Bluetooth | Turn on Bluetooth | Увімкнути Bluetooth |
 | Action_Retry | Try again | Спробувати ще раз |
 | Footer_Connected | Connected · updated {sec} s ago | Підключено · оновлено {sec} с тому |
@@ -143,6 +144,7 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Settings_Data_Import / ImportHint / ChooseFile | Import from the phone app / Fills gaps with the readings in the phone app’s export / Choose file | Імпорт із застосунку на телефоні / Заповнює прогалини вимірюваннями з експорту застосунку на телефоні / Вибрати файл |
 | Settings_Data_Export / ExportHint | Export to CSV / All stored readings of the selected room | Експорт у CSV / Усі збережені вимірювання вибраної кімнати |
 | Settings_Data_Sync / SyncHint / Action_Sync | Sync history / Downloads the readings the sensor stored while Deskair was not listening. Other apps cannot reach the sensor for about 20 seconds / Sync | Синхронізувати історію / Завантажує вимірювання, які датчик зберіг, поки Deskair їх не приймав. Приблизно 20 секунд інші застосунки не бачать датчик / Синхронізувати (draft: needs native review) |
+| Settings_Data_Logs / LogsHint | Logs / Files that help find the cause of a problem. They stay on this PC | Журнали / Файли, які допомагають знайти причину проблеми. Вони залишаються на цьому ПК (draft: needs native review) |
 | Import_Preview (plural) | {count} reading(s), {first} to {last} · {new} new · {present} already present | {count} вимірювання/вимірювань, {first} – {last} · нових: {new} · уже є: {present} |
 | Import_Done (plural) | {count} new reading(s) added. | Додано {count} нове/нові/нових вимірювання/вимірювань. |
 | Import_Empty / Failed / Unavailable / DialogTitle | No usable readings / Could not read this file / Importing is not available for this sensor / Choose the phone app’s export | Немає придатних вимірювань / Не вдалося прочитати файл / Для цього датчика імпорт недоступний / Виберіть експорт із застосунку на телефоні |

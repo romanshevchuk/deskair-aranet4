@@ -174,6 +174,57 @@ public sealed class MonthlyCsvStoreTests : IDisposable
         Assert.Equal(800, Assert.Single(await All(reopened)).Co2Ppm);
     }
 
+    // Excel keeps the file it shows open for writing and lets others only read it.
+    private FileStream HoldLikeExcel(string month) => new(MonthFile(month), FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
+
+    [Fact]
+    public async Task Load_reads_a_month_file_another_app_holds_open()
+    {
+        WriteFile("2026-10", CsvReadingFormat.Header + "\n" + Row(noon, 1) + "\n");
+        using var excel = HoldLikeExcel("2026-10");
+
+        Assert.Single(await All(store));
+    }
+
+    [Fact]
+    public async Task Merge_into_a_file_another_app_holds_keeps_the_readings_and_writes_them_later()
+    {
+        WriteFile("2026-10", CsvReadingFormat.Header + "\n" + Row(noon, 1) + "\n");
+        await All(store);
+
+        using (HoldLikeExcel("2026-10"))
+        {
+            var added = await store.MergeAsync(office, [Samples.Co2(noon.AddMinutes(2), 900)], ReadingSource.Device, interval, CancellationToken.None);
+
+            Assert.Equal(1, added);
+            Assert.Equal(noon.AddMinutes(2), await store.GetLastReadingTimeAsync(office, CancellationToken.None));
+            Assert.Single(logger.Entries, entry => entry.Level == LogLevel.Warning);
+        }
+
+        await store.MergeAsync(office, [Samples.Co2(noon.AddMinutes(4), 950)], ReadingSource.Device, interval, CancellationToken.None);
+
+        using var reopened = Reopen();
+        Assert.Equal(new[] { 1.0, 900.0, 950.0 }, (await All(reopened)).Select(reading => reading.Co2Ppm));
+    }
+
+    [Fact]
+    public async Task A_reading_waiting_to_be_written_still_fills_its_slot()
+    {
+        WriteFile("2026-10", CsvReadingFormat.Header + "\n");
+        await All(store);
+
+        using (HoldLikeExcel("2026-10"))
+        {
+            await store.MergeAsync(office, [Samples.Co2(noon, 900)], ReadingSource.Device, interval, CancellationToken.None);
+        }
+
+        var again = await store.MergeAsync(office, [Samples.Co2(noon, 999)], ReadingSource.Device, interval, CancellationToken.None);
+
+        Assert.Equal(0, again);
+        using var reopened = Reopen();
+        Assert.Equal(900, Assert.Single(await All(reopened)).Co2Ppm);
+    }
+
     [Fact]
     public async Task Merge_never_fills_a_slot_twice_whatever_the_source()
     {

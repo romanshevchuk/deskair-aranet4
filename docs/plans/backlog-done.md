@@ -1,6 +1,6 @@
 # Backlog: finished items
 
-*Last reviewed: 2026-10-23*
+*Last reviewed: 2026-11-12*
 
 Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.md`](backlog.md).
 
@@ -94,3 +94,8 @@ Archive. Everything here is done; nothing to pick up. Open work is in [`backlog.
 | PERF-04 | No second sort of readings the store already returns oldest first: `IReadingStore.ReadRangeAsync` documents the order, `ReadingQueryService.GetRangeAsync`/`GetRecentAsync` and `ExportService` no longer sort again; `FakeReadingStore` returns sorted readings; new test `Reading_ranges_come_back_oldest_first`. Open question Q53 (the fake includes a reading at `end`). Plan: `size-and-startup.md` section 7. 2026-10-23 |
 | BLE-11 | Listening restarts when the sensor goes quiet (D-0030): `Aranet4Sensor.ListenAsync` times out after 90 s without an advertisement of the sensor, the session reconnects, syncs and listens again; the Windows scanner logs and ends on every stop. Found in the owner's test of the trimmed build, 2026-10-23. |
 | SIZE-02 | Publish trims only the Windows SDK projection (D-0029): `.msix` 65.8 → 60 MB, installed 159 → 136 MB. Checked by the owner on the unpackaged and the packaged build, 2026-10-23. See `size-and-startup.md` section 2. |
+| FIX-01 | `FakeClock` measures elapsed time in fake time (`GetTimestamp` follows `GetUtcNow`), so `MonthlyCsvStoreTests` no longer fails when loading takes 1 ms or more. Review pass of 2026-11-12. |
+| FIX-02 | Exceptions nothing caught are logged (`UnhandledExceptionLogger`: critical for a crash, error for a failed task nobody awaited; the app still closes after a crash). Settings → Data and storage has a Logs row that opens the log folder; in the Store build `ExplorerFolderOpener` opens the package's own copy of `%LOCALAPPDATA%` (`LocalCache\Local`), which File Explorer otherwise does not show. Not verified on the installed Store package. Review pass of 2026-11-12. |
+| FIX-03 | The phone export importer reads the date order from the header (`DD/MM` day first, `MM/DD` month first; `PhoneExportRow.TryReadDateOrder`) for text and .xlsx, and reads 12-hour times with AM/PM. Without a header it reads day first as before. Not verified with a real month-first or 12-hour export (none at hand). Review pass of 2026-11-12. |
+| FIX-04 | A sensor with Smart Home integration off is named (D-0032): `BleProtocolException`, `SensorSetupRequiredException`, `SensorNeedsSetup`; the session stops retrying and the offline screen shows the one step. Tested with fakes, not on the real sensor. Review pass of 2026-11-12. |
+| FIX-05 | A readings file that cannot be written is no longer a lost connection: `MonthlyCsvStore` reads month files with sharing on, keeps rows it cannot append in memory (they count as stored) and writes them at the next merge, so a sync or live reading no longer fails while Excel or OneDrive holds the file, and a failed two-month write can no longer leave duplicate rows. Review pass of 2026-11-12. |

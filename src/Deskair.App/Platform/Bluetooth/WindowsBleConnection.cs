@@ -102,6 +102,11 @@ public sealed class WindowsBleConnection : IBleConnection
 
     private static void EnsureSuccess(GattCommunicationStatus status, string message)
     {
+        if (status == GattCommunicationStatus.ProtocolError)
+        {
+            throw new BleProtocolException($"{message} ({status}).");
+        }
+
         if (status != GattCommunicationStatus.Success)
         {
             throw new IOException($"{message} ({status}).");

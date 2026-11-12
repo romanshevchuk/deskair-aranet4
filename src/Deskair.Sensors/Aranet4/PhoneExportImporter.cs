@@ -8,7 +8,7 @@ using ExcelDataReader;
 
 namespace Deskair.Sensors.Aranet4;
 
-/// <summary>Reads the phone app's export: Time (DD/MM/YYYY H:mm:ss), CO₂, temperature, humidity, pressure. Text or .xlsx.</summary>
+/// <summary>Reads the phone app's export: time, CO₂, temperature, humidity, pressure. Text or .xlsx. Dates are day first unless the header names month first.</summary>
 public sealed class PhoneExportImporter : IReadingImporter
 {
     private static readonly byte[] zipSignature = "PK"u8.ToArray();
@@ -40,14 +40,19 @@ public sealed class PhoneExportImporter : IReadingImporter
         }
 
         using var reader = new StreamReader(buffer, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
+        var order = DateOrder.DayFirst;
 
         while (await reader.ReadLineAsync(cancellationToken) is { } line)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (TryParseTextLine(line, zone, out var reading))
+            if (TryParseTextLine(line, zone, order, out var reading))
             {
                 yield return reading;
+            }
+            else if (PhoneExportRow.TryReadDateOrder(line, out var named))
+            {
+                order = named;
             }
         }
     }
@@ -61,6 +66,7 @@ public sealed class PhoneExportImporter : IReadingImporter
         RegisterCodePages();
 
         using var reader = ExcelReaderFactory.CreateOpenXmlReader(source);
+        var order = DateOrder.DayFirst;
 
         do
         {
@@ -73,9 +79,13 @@ public sealed class PhoneExportImporter : IReadingImporter
                     continue;
                 }
 
-                if (TryParseExcelRow(reader, zone, out var reading))
+                if (TryParseExcelRow(reader, zone, order, out var reading))
                 {
                     yield return reading;
+                }
+                else if (PhoneExportRow.TryReadDateOrder(Convert.ToString(reader.GetValue(0), CultureInfo.InvariantCulture) ?? string.Empty, out var named))
+                {
+                    order = named;
                 }
             }
 
@@ -100,7 +110,7 @@ public sealed class PhoneExportImporter : IReadingImporter
         return read == 2 && head[0] == zipSignature[0] && head[1] == zipSignature[1];
     }
 
-    private static bool TryParseTextLine(string line, TimeZoneInfo zone, out Reading reading)
+    private static bool TryParseTextLine(string line, TimeZoneInfo zone, DateOrder order, out Reading reading)
     {
         reading = default;
 
@@ -112,7 +122,7 @@ public sealed class PhoneExportImporter : IReadingImporter
         var tabSeparated = line.Contains('\t');
         var cells = line.Split(tabSeparated ? '\t' : ',');
 
-        if (cells.Length < PhoneExportRow.ColumnCount || !PhoneExportRow.TryParseTime(cells[0], out var wallClock))
+        if (cells.Length < PhoneExportRow.ColumnCount || !PhoneExportRow.TryParseTime(cells[0], order, out var wallClock))
         {
             return false;
         }
@@ -129,11 +139,11 @@ public sealed class PhoneExportImporter : IReadingImporter
         return true;
     }
 
-    private static bool TryParseExcelRow(IExcelDataReader reader, TimeZoneInfo zone, out Reading reading)
+    private static bool TryParseExcelRow(IExcelDataReader reader, TimeZoneInfo zone, DateOrder order, out Reading reading)
     {
         reading = default;
 
-        var wallClock = ExcelTime(reader.GetValue(0));
+        var wallClock = ExcelTime(reader.GetValue(0), order);
 
         if (wallClock is null)
         {
@@ -154,11 +164,11 @@ public sealed class PhoneExportImporter : IReadingImporter
         return true;
     }
 
-    private static DateTime? ExcelTime(object? cell) => cell switch
+    private static DateTime? ExcelTime(object? cell, DateOrder order) => cell switch
     {
         DateTime date => date,
         double serial when double.IsFinite(serial) => DateTime.FromOADate(serial),
-        string text when PhoneExportRow.TryParseTime(text, out var parsed) => parsed,
+        string text when PhoneExportRow.TryParseTime(text, order, out var parsed) => parsed,
         _ => null
     };
 

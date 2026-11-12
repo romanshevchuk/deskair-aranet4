@@ -7,4 +7,5 @@ public sealed record ConnectionInputs(
     TimeSpan Interval,
     bool RadioOn,
     int? BatteryPercent,
-    bool Attempting = false);
+    bool Attempting = false,
+    bool NeedsSetup = false);

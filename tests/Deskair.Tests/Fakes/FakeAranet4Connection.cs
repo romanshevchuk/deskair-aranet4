@@ -47,6 +47,9 @@ public sealed class FakeAranet4Connection : IBleConnection
     /// <summary>Runs before each read; a test can cancel from here.</summary>
     public Action? OnRead { get; set; }
 
+    /// <summary>Refuses the current-readings read with a protocol error, as the real sensor does with Smart Home integration off.</summary>
+    public bool RefusesCurrentReadings { get; set; }
+
     public Task ConnectAsync(string address, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -68,6 +71,11 @@ public sealed class FakeAranet4Connection : IBleConnection
         Reads++;
         OnRead?.Invoke();
         cancellationToken.ThrowIfCancellationRequested();
+
+        if (RefusesCurrentReadings && characteristic == Aranet4Protocol.CurrentReadingsId)
+        {
+            throw new BleProtocolException("Reading the current readings failed (ProtocolError).");
+        }
 
         if (characteristic == Aranet4Protocol.HistoryV2Id)
         {

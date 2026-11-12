@@ -35,6 +35,10 @@
         <controls:SecondaryButton Command="{Binding Export.ExportCommand}" Content="{loc:T Action_Export}" />
       </controls:SettingsRow>
       <TextBlock Style="{StaticResource Text.Caption}" Margin="{StaticResource Space.SettingsRow.Caption}" TextWrapping="Wrap" Text="{Binding Export.StatusText}" Visibility="{Binding Export.HasStatus, Converter={StaticResource BoolToVisibility}}" />
+
+      <controls:SettingsRow Header="{loc:T Settings_Data_Logs}" Description="{loc:T Settings_Data_LogsHint}">
+        <controls:SecondaryButton Command="{Binding OpenLogFolderCommand}" Content="{loc:T Settings_Data_OpenFolder}" />
+      </controls:SettingsRow>
     </StackPanel>
   </controls:SettingsCard>
 </UserControl>

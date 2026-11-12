@@ -1,6 +1,6 @@
 # Decisions
 
-*Last reviewed: 2026-10-23*
+*Last reviewed: 2026-11-12*
 
 A short, append-only log. Each entry: context, decision, consequences. Do not delete entries; mark them superseded. Review the statuses once a quarter so nothing stays "proposed" after it shipped. If this file grows past about 15 entries or an entry needs long reasoning, move that entry to its own file in `docs/decisions.md`.
 
@@ -314,3 +314,13 @@ The owner noticed the window "sometimes" opened somewhere else. Nothing stored i
 **Decision:** the window's normal rectangle (physical pixels, from Windows' `GetWindowPlacement`) and whether it was maximized are kept in `window.json` in the state folder, `%LOCALAPPDATA%\Deskair` (`IKnownFolders.StateFolder`, next to the logs; the developer runs use their own temp folder). Not in `settings.json`: the place belongs to this PC's monitors, and `Documents` is often synced by OneDrive, so a laptop and a desktop sharing the data folder would take each other's place, and a file written on every hide would churn the sync. This is the split Windows Terminal (`settings.json` and `state.json`) and VS Code make. `MainWindowPlaces` (`App/Platform/Tray`) applies the place with `SetWindowPlacement` before the window is first shown, and stores it from the window's `Closing`, which runs both when the window hides to the tray and when the app quits or Windows signs out. A window never shown, or one that did not move, writes nothing. With nothing stored the window opens centred.
 
 **Consequences:** physical pixels with Windows' own placement calls keep the place right across monitors with different scaling, and Windows moves a window whose monitor is gone back onto a screen. The Store build's state folder is private to the package and removed on uninstall; an unpackaged build leaves it, like the logs. If the app is killed, the place from the last hide or quit is used. A window snapped to half the screen comes back at its size before the snap (what `GetWindowPlacement` reports). Not done: a Settings option to turn this off, and one place per monitor setup.
+
+## D-0032 A sensor with Smart Home integration off is named, and not retried
+
+**Status:** accepted · Nov 2026; follows D-0026
+
+With "Smart Home integration" off, the Aranet4 accepts the connection and the interval read but refuses the current-readings read (`ProtocolError`, D-0026). Deskair counted that as "sensor out of reach": it showed the generic offline screen with three guesses and connected again every 30 seconds, for good. It is the default on a new sensor, so it is the likeliest first-run failure.
+
+**Decision:** (1) `WindowsBleConnection` throws `BleProtocolException` (still an `IOException`) for a GATT protocol error. (2) `Aranet4Sensor` turns that error on the current-readings read into `SensorSetupRequiredException` with the resource key of the step (`Offline_Step_SmartHome`); the connection itself worked, so the cause is the setting. (3) `SensorSession` then announces `SensorNeedsSetup` (and `SensorConnectionFailed`, so the screen behaves as for any failed attempt) and stops: retrying cannot help until the user changes the setting, and each try connects to the sensor. "Try again", a wake from sleep, "Sync history" or the next start begins again. (4) The connection state is "Not connected" at once (`ConnectionInputs.NeedsSetup`), not after 10 minutes of silence, and the offline screen shows "Your Aranet4 is not sharing its readings", why, and that one step. A successful connect clears it. Found in the owner's test of the packaged build on 2026-11-12: with a reading from 3 minutes earlier the screen still said "Connected".
+
+**Consequences:** two strings per language; screens-and-states.md "Not connected". Not verified on the real sensor (the refused read was seen on 2026-10-19; this code was tested with fakes). Not done: telling from the advertisements during the first-run search that the setting is off (the flag is in `Aranet4Parser.ParseAdvertisement`).

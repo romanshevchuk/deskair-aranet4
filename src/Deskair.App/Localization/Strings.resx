@@ -270,11 +270,13 @@
   <data name="Insight_MostHumid_Night" xml:space="preserve"><value>**Most humid hours: {from}–{to}**, while you sleep (avg {value}). A slightly open window helps.</value></data>
   <data name="Offline_Text" xml:space="preserve"><value>The sensor may be out of range or asleep.</value></data>
   <data name="Offline_Text_BluetoothOff" xml:space="preserve"><value>Bluetooth is off, so Deskair cannot reach the sensor.</value></data>
+  <data name="Offline_Title_Setup" xml:space="preserve"><value>Your Aranet4 is not sharing its readings</value></data>
+  <data name="Offline_Text_Setup" xml:space="preserve"><value>Turn on one setting in the phone app, then press Try again.</value></data>
   <data name="Offline_LastReading" xml:space="preserve"><value>Your last reading was {value} at {time}.</value></data>
   <data name="Offline_HistoryHint" xml:space="preserve"><value>History is still available.</value></data>
   <data name="Offline_Step_Range" xml:space="preserve"><value>Stay within about 10 m of the sensor</value></data>
   <data name="Offline_Step_Wake" xml:space="preserve"><value>Press the button on the Aranet4 to wake it</value></data>
-  <data name="Offline_Step_SmartHome" xml:space="preserve"><value>In the Aranet Home app, check that Smart Home integration is on</value></data>
+  <data name="Offline_Step_SmartHome" xml:space="preserve"><value>In the Aranet Home app, turn on **Smart Home integration**</value><comment>** marks the bold part.</comment></data>
   <data name="Offline_Step_Battery" xml:space="preserve"><value>Check the sensor battery ({percent} when last seen)</value></data>
   <data name="Tray_AppName" xml:space="preserve"><value>Deskair</value></data>
   <data name="Tray_AlertsPausedByWindows" xml:space="preserve"><value>Alerts paused by Windows</value></data>
@@ -309,6 +311,8 @@
   <data name="Settings_Data_ExportHint" xml:space="preserve"><value>All stored readings of the selected room</value></data>
   <data name="Settings_Data_Sync" xml:space="preserve"><value>Sync history</value></data>
   <data name="Settings_Data_SyncHint" xml:space="preserve"><value>Downloads the readings the sensor stored while Deskair was not listening. Other apps cannot reach the sensor for about 20 seconds</value></data>
+  <data name="Settings_Data_Logs" xml:space="preserve"><value>Logs</value></data>
+  <data name="Settings_Data_LogsHint" xml:space="preserve"><value>Files that help find the cause of a problem. They stay on this PC</value></data>
   <data name="Action_Sync" xml:space="preserve"><value>Sync</value></data>
   <data name="Data_NoSensor" xml:space="preserve"><value>Add a sensor first.</value></data>
   <data name="Dialog_AllFiles" xml:space="preserve"><value>All files</value></data>

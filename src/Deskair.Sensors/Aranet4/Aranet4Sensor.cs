@@ -6,6 +6,9 @@ namespace Deskair.Sensors.Aranet4;
 
 public sealed class Aranet4Sensor : ISensor
 {
+    /// <summary>The resource key of the step that turns on "Smart Home integration" in the phone app.</summary>
+    public const string SmartHomeStepKey = "Offline_Step_SmartHome";
+
     private static readonly TimeSpan pollDelay = TimeSpan.FromMilliseconds(100);
     private static readonly TimeSpan stallTimeout = TimeSpan.FromSeconds(20);
     private static readonly byte[] historyMetrics =
@@ -37,9 +40,25 @@ public sealed class Aranet4Sensor : ISensor
         await connection.ConnectAsync(id.Address, cancellationToken);
 
         var interval = Aranet4Parser.ParseUInt16(await ReadAsync(Aranet4Protocol.IntervalId, cancellationToken));
-        var battery = Aranet4Parser.ParseBattery(await ReadAsync(Aranet4Protocol.CurrentReadingsId, cancellationToken));
+        var battery = Aranet4Parser.ParseBattery(await ReadCurrentReadingsAsync(cancellationToken));
 
         return new SensorStatus(TimeSpan.FromSeconds(interval), battery, SignalDbm: null);
+    }
+
+    /// <summary>
+    /// With "Smart Home integration" off the sensor refuses this one read while the connection works (D-0026), so the refusal is reported as a setting to change,
+    /// not as a sensor out of reach.
+    /// </summary>
+    private async Task<byte[]> ReadCurrentReadingsAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await ReadAsync(Aranet4Protocol.CurrentReadingsId, cancellationToken);
+        }
+        catch (BleProtocolException exception)
+        {
+            throw new SensorSetupRequiredException(SmartHomeStepKey, "The sensor refused its current readings: Smart Home integration is off.", exception);
+        }
     }
 
     /// <summary>One read. The reading is stamped with the read time minus the age the sensor reports for its measurement.</summary>
@@ -47,7 +66,7 @@ public sealed class Aranet4Sensor : ISensor
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var bytes = await ReadAsync(Aranet4Protocol.CurrentReadingsId, cancellationToken);
+        var bytes = await ReadCurrentReadingsAsync(cancellationToken);
         var current = Aranet4Parser.ParseCurrent(bytes);
 
         return new Reading(timeProvider.GetUtcNow() - current.Age, current.Co2Ppm, current.TemperatureC, current.HumidityPct, current.PressureHpa);

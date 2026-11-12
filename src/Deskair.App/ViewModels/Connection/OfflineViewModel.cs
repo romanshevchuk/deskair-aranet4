@@ -45,6 +45,11 @@ public sealed partial class OfflineViewModel : RetryingViewModel
     [NotifyPropertyChangedFor(nameof(Message))]
     private string? lastReadingText;
 
+    /// <summary>The resource key of the one step that fixes the sensor's setting, when the sensor refuses to share its readings (Smart Home integration off); otherwise null.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Title), nameof(Message), nameof(RetryText))]
+    private string? setupStepKey;
+
     /// <summary>What to try, as short sentences. The battery step shows once the battery level is known.</summary>
     [ObservableProperty]
     private IReadOnlyList<string> steps = [];
@@ -73,6 +78,7 @@ public sealed partial class OfflineViewModel : RetryingViewModel
 
         messenger.Register<OfflineViewModel, ReadingReceived>(this, static (self, message) => self.OnReading(message));
         messenger.Register<OfflineViewModel, SensorStatusUpdated>(this, static (self, message) => self.OnStatus(message));
+        messenger.Register<OfflineViewModel, SensorNeedsSetup>(this, static (self, message) => self.OnNeedsSetup(message));
         messenger.Register<OfflineViewModel, DeviceSelected>(this, static (self, _) => self.OnDeviceSelected());
         messenger.Register<OfflineViewModel, ConnectionStateChanged>(this, static (self, message) => self.OnStateChanged(message));
         messenger.Register<OfflineViewModel, LanguageChanged>(this, static (self, _) => self.OnLanguageChanged());
@@ -82,11 +88,21 @@ public sealed partial class OfflineViewModel : RetryingViewModel
         UpdateSteps();
     }
 
-    /// <summary>The paragraph under the title: the likely cause, the last reading and that History still works.</summary>
-    public string Message => string.Join(
-        ' ',
-        new[] { localizer.Get(BluetoothOff ? "Offline_Text_BluetoothOff" : "Offline_Text"), LastReadingText, localizer.Get("Offline_HistoryHint") }
-            .Where(part => part is not null));
+    public string Title => localizer.Get(SetupStepKey is null ? "Offline_Title" : "Offline_Title_Setup");
+
+    /// <summary>
+    /// The paragraph under the title: the likely cause, the last reading and that History still works. A sensor that needs a setting gets one short sentence,
+    /// so the eye goes straight to the step that names the setting.
+    /// </summary>
+    public string Message => SetupStepKey is not null && !BluetoothOff
+        ? localizer.Get("Offline_Text_Setup")
+        : string.Join(
+            ' ',
+            new[] { localizer.Get(BluetoothOff ? "Offline_Text_BluetoothOff" : "Offline_Text"), LastReadingText, localizer.Get("Offline_HistoryHint") }
+                .Where(part => part is not null));
+
+    /// <summary>The sensor answered; it refused because of a setting. "Still can't reach it" would send the user looking in the wrong place.</summary>
+    protected override bool ShowsRetryFailed => SetupStepKey is null;
 
     [RelayCommand]
     private void TurnOnBluetooth()
@@ -120,6 +136,21 @@ public sealed partial class OfflineViewModel : RetryingViewModel
         {
             EndRetry();
             batteryPercent = message.Status.BatteryPercent;
+            SetupStepKey = null;
+            UpdateSteps();
+        });
+    }
+
+    private void OnNeedsSetup(SensorNeedsSetup message)
+    {
+        if (message.Device != devices.Selected)
+        {
+            return;
+        }
+
+        dispatcher.Post(() =>
+        {
+            SetupStepKey = message.StepKey;
             UpdateSteps();
         });
     }
@@ -132,6 +163,7 @@ public sealed partial class OfflineViewModel : RetryingViewModel
             lastReading = null;
             batteryPercent = null;
             LastReadingText = null;
+            SetupStepKey = null;
             UpdateSteps();
         });
     }
@@ -146,6 +178,7 @@ public sealed partial class OfflineViewModel : RetryingViewModel
             }
 
             UpdateSteps();
+            OnPropertyChanged(nameof(Title));
             OnPropertyChanged(nameof(Message));
             RefreshRetryText();
         });
@@ -200,6 +233,12 @@ public sealed partial class OfflineViewModel : RetryingViewModel
 
     private void UpdateSteps()
     {
+        if (SetupStepKey is { } key)
+        {
+            Steps = [localizer.Get(key)];
+            return;
+        }
+
         var list = new List<string> { localizer.Get("Offline_Step_Range"), localizer.Get("Offline_Step_Wake"), localizer.Get("Offline_Step_SmartHome") };
 
         if (batteryPercent is { } percent)

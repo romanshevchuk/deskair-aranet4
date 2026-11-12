@@ -41,6 +41,7 @@ public static class Program
         services.AddSingleton(instance);
 
         var provider = services.BuildServiceProvider();
+        provider.GetRequiredService<UnhandledExceptionLogger>().Attach();
 
         try
         {
