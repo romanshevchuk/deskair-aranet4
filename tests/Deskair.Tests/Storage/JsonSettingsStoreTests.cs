@@ -44,7 +44,8 @@ public sealed class JsonSettingsStoreTests : IDisposable
             QuietHoursEnd = new TimeOnly(6, 15),
             ShowValueOnTrayIcon = true,
             NightStart = new TimeOnly(23, 0),
-            NightEnd = new TimeOnly(8, 30)
+            NightEnd = new TimeOnly(8, 30),
+            MainWindowPlace = new WindowPlace(-1700, 40, 1300, 800, true)
         };
         await store.SaveAsync(saved, CancellationToken.None);
 
@@ -63,6 +64,32 @@ public sealed class JsonSettingsStoreTests : IDisposable
 
         Assert.Equal(ThemeChoice.Dark, loaded.Theme);
         Assert.Equal(AppSettings.Default with { Theme = ThemeChoice.Dark }, loaded);
+    }
+
+    [Fact]
+    public async Task Load_has_no_window_place_when_an_older_file_has_none()
+    {
+        Directory.CreateDirectory(folders.DataFolder);
+        await File.WriteAllTextAsync(SettingsPath, """{ "version": 1, "theme": "Dark" }""", TestContext.Current.CancellationToken);
+
+        var loaded = await store.LoadAsync(CancellationToken.None);
+
+        Assert.Null(loaded.MainWindowPlace);
+    }
+
+    [Theory]
+    [InlineData(0, 700)]
+    [InlineData(1200, -5)]
+    public async Task Load_ignores_a_window_place_without_a_size_and_keeps_the_other_settings(int width, int height)
+    {
+        Directory.CreateDirectory(folders.DataFolder);
+        var json = $$"""{ "theme": "Dark", "mainWindowPlace": { "left": 10, "top": 20, "width": {{width}}, "height": {{height}}, "maximized": false } }""";
+        await File.WriteAllTextAsync(SettingsPath, json, TestContext.Current.CancellationToken);
+
+        var loaded = await store.LoadAsync(CancellationToken.None);
+
+        Assert.Null(loaded.MainWindowPlace);
+        Assert.Equal(ThemeChoice.Dark, loaded.Theme);
     }
 
     [Theory]

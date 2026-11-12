@@ -304,3 +304,13 @@ After the sync Deskair only listens for the sensor's advertisements (D-0028). Ow
 **Decision:** (1) The sensor repeats its advertisement every few seconds, so `Aranet4Sensor.ListenAsync` throws a `TimeoutException` when it has heard nothing from this sensor for 90 seconds (`SilenceLimit`); advertisements of other devices do not count, repeated advertisements of this sensor do. (2) `SensorSession` already treats a failed pass as "try again": it logs a warning, tells the app (`SensorConnectionFailed`), waits 30 seconds and starts again with a connection, a sync and a new scan. (3) `WindowsBleScanner` ends the sequence with an error whenever Windows stops the scan, whatever the reason, and logs it.
 
 **Consequences:** a lost scan is noticed within 90 seconds and repaired about 30 seconds later without the user. A sensor that is really out of range goes through the same retry loop as before. Each repair is one short connection, which blocks the phone app for the roughly 20 seconds of the sync (D-0028). `Aranet4Sensor.SilenceLimit`, the log lines "Started a Passive Bluetooth scan." and "Windows stopped the Passive Bluetooth scan: …". Not done: restarting only the scan without reconnecting.
+
+## D-0031 The main window opens where it was last
+
+**Status:** accepted · Nov 2026
+
+The owner noticed the window "sometimes" opened somewhere else. Nothing stored its place, so every launch, and the first "Open Deskair" after a start in the tray, put it where Windows places new windows, which moves from one launch to the next. Within one session the place was already kept.
+
+**Decision:** `AppSettings.MainWindowPlace` holds the window's normal rectangle (physical pixels, from Windows' `GetWindowPlacement`) and whether it was maximized. `MainWindowPlaces` (`App/Platform/Tray`) applies it with `SetWindowPlacement` before the window is first shown, and stores it from the window's `Closing`, which runs both when the window hides to the tray and when the app quits or Windows signs out. A window never shown stores nothing. The save goes through `SettingsService.SaveMainWindowPlaceAsync`, which sends no `SettingsChanged`, because that message reloads Live and History. With nothing stored the window opens centred.
+
+**Consequences:** physical pixels with Windows' own placement calls keep the place right across monitors with different scaling, and Windows moves a window whose monitor is gone back onto a screen. If the app is killed, the place from the last hide or quit is used. Not done: a Settings option to turn this off.

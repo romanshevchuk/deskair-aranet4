@@ -46,6 +46,19 @@ internal static class NativeMethods
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool ShowWindow(nint window, int command);
 
+    internal const int SwHide = 0;
+    internal const int SwShowMinimized = 2;
+    internal const int SwShowMaximized = 3;
+    internal const uint WpfRestoreToMaximized = 0x0002;
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool GetWindowPlacement(nint window, ref NativeWindowPlacement placement);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool SetWindowPlacement(nint window, ref NativeWindowPlacement placement);
+
     [DllImport("shell32.dll")]
     internal static extern int Shell_NotifyIconGetRect(ref NativeIconIdentifier identifier, out NativeRect rect);
 
@@ -81,5 +94,16 @@ internal static class NativeMethods
         internal NativeRect monitor;
         internal NativeRect work;
         internal uint flags;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct NativeWindowPlacement
+    {
+        internal int length;
+        internal uint flags;
+        internal int showCmd;
+        internal NativePoint minPosition;
+        internal NativePoint maxPosition;
+        internal NativeRect normalPosition;
     }
 }

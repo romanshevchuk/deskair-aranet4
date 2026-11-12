@@ -1,6 +1,6 @@
 # Screens and states
 
-*Last reviewed: 2026-10-21*
+*Last reviewed: 2026-11-12*
 
 Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 
@@ -16,6 +16,8 @@ Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 | Toasts | Elevated, High (v1); Fresh again, Last night (later) |
 
 Left-click on the tray icon opens the flyout. Right-click opens the menu. Double-click may open the window. The flyout has a filled "Open Deskair" button, closes on click-away or Esc, and closing the main window keeps the tray running. Windows 11 hides new tray icons in the overflow, so first run shows a tip to drag the icon out.
+
+The main window opens where it was last, at its last size and maximized if it was maximized (D-0031). That holds for a new launch and for the first "Open Deskair" after a start in the tray. The place is stored each time the window is hidden to the tray and when the app quits; a place on a monitor that is gone is moved back onto a screen by Windows. With nothing stored (first launch) the window opens in the centre of the screen at its design size.
 
 ## Live
 

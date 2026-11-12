@@ -36,4 +36,21 @@ public sealed class SettingsService
         Current = updated;
         messenger.Send(new SettingsChanged(updated));
     }
+
+    /// <summary>
+    /// Stores where the main window is. No <see cref="SettingsChanged"/> is sent: nothing follows the window's place, and the message would make
+    /// the open screens reload each time the window hides.
+    /// </summary>
+    public async Task SaveMainWindowPlaceAsync(WindowPlace place, CancellationToken cancellationToken)
+    {
+        var updated = Current with { MainWindowPlace = place };
+
+        if (updated == Current)
+        {
+            return;
+        }
+
+        await store.SaveAsync(updated, cancellationToken);
+        Current = updated;
+    }
 }

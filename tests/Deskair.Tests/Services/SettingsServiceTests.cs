@@ -103,6 +103,29 @@ public class SettingsServiceTests
     }
 
     [Fact]
+    public async Task SaveMainWindowPlace_stores_the_place_without_sending_a_message()
+    {
+        var place = new WindowPlace(100, 80, 1200, 728, false);
+
+        await service.SaveMainWindowPlaceAsync(place, CancellationToken.None);
+
+        Assert.Equal(place, store.Stored.MainWindowPlace);
+        Assert.Equal(place, service.Current.MainWindowPlace);
+        Assert.Equal(["saved"], log);
+    }
+
+    [Fact]
+    public async Task SaveMainWindowPlace_does_not_write_the_same_place_twice()
+    {
+        var place = new WindowPlace(100, 80, 1200, 728, false);
+
+        await service.SaveMainWindowPlaceAsync(place, CancellationToken.None);
+        await service.SaveMainWindowPlaceAsync(place with { }, CancellationToken.None);
+
+        Assert.Equal(1, store.SaveCalls);
+    }
+
+    [Fact]
     public async Task Update_sends_no_message_and_keeps_Current_when_saving_fails()
     {
         store.FailOnSave = true;

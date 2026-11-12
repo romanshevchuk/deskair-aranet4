@@ -36,5 +36,8 @@ public sealed record AppSettings(
 
     public NightWindow Night => new(NightStart, NightEnd);
 
+    /// <summary>Where the main window was last; null until it has been shown and hidden once. Not shown in Settings.</summary>
+    public WindowPlace? MainWindowPlace { get; init; }
+
     public static AppSettings Default { get; } = new(LanguageChoice.System, ThemeChoice.System, true);
 }

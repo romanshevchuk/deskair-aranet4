@@ -105,6 +105,8 @@ public sealed class JsonSettingsStore : ISettingsStore
 
         public TimeOnly? NightEnd { get; init; }
 
+        public WindowPlace? MainWindowPlace { get; init; }
+
         public static SettingsFile From(AppSettings settings) => new()
         {
             Version = FileVersion,
@@ -120,7 +122,8 @@ public sealed class JsonSettingsStore : ISettingsStore
             QuietHoursEnd = settings.QuietHoursEnd,
             ShowValueOnTrayIcon = settings.ShowValueOnTrayIcon,
             NightStart = settings.NightStart,
-            NightEnd = settings.NightEnd
+            NightEnd = settings.NightEnd,
+            MainWindowPlace = settings.MainWindowPlace
         };
 
         public AppSettings ApplyTo(AppSettings defaults) => defaults with
@@ -137,7 +140,19 @@ public sealed class JsonSettingsStore : ISettingsStore
             QuietHoursEnd = QuietHoursEnd ?? defaults.QuietHoursEnd,
             ShowValueOnTrayIcon = ShowValueOnTrayIcon ?? defaults.ShowValueOnTrayIcon,
             NightStart = NightStart ?? defaults.NightStart,
-            NightEnd = NightEnd ?? defaults.NightEnd
+            NightEnd = NightEnd ?? defaults.NightEnd,
+            MainWindowPlace = ValidPlace(MainWindowPlace) ?? defaults.MainWindowPlace
         };
+
+        // A hand-edited or damaged file must not open a window with no size; the window then opens in its default place.
+        private static WindowPlace? ValidPlace(WindowPlace? place)
+        {
+            if (place is null || place.Width <= 0 || place.Height <= 0)
+            {
+                return null;
+            }
+
+            return place;
+        }
     }
 }
