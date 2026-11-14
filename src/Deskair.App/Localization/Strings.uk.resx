@@ -21,17 +21,17 @@
   <data name="Trend_Steady" xml:space="preserve"><value>Стабільно</value></data>
   <data name="Trend_Detail" xml:space="preserve"><value>{ppm} ppm за {min} хв</value></data>
   <data name="Advice_Good_Title" xml:space="preserve"><value>Повітря свіже, нічого робити не потрібно</value></data>
-  <data name="Advice_Good_Text" xml:space="preserve"><value>Нижче 1 000 ppm, тож концентрація та сон не страждають.</value></data>
+  <data name="Advice_Good_Text" xml:space="preserve"><value>Нижче 1000 ppm, тож концентрація та сон не страждають.</value></data>
   <data name="Advice_Good_Title_Rising" xml:space="preserve"><value>Зараз добре, але зростає</value></data>
-  <data name="Advice_Good_Text_Rising" xml:space="preserve"><value>Ще нижче 1 000 ppm. Відчиніть вікно найближчим часом, щоб так і лишилося.</value></data>
+  <data name="Advice_Good_Text_Rising" xml:space="preserve"><value>Ще нижче 1000 ppm. Відчиніть вікно найближчим часом, щоб так і лишилося.</value></data>
   <data name="Advice_Elevated_Title" xml:space="preserve"><value>Відчиніть вікно хвилин на 10</value></data>
   <data name="Advice_High_Title" xml:space="preserve"><value>Провітріть зараз: відчиніть вікна навстіж</value></data>
   <data name="Advice_Elevated_Text_Falling" xml:space="preserve"><value>Вище бажаного рівня, але знижується.</value></data>
   <data name="Advice_Elevated_Text_Steady" xml:space="preserve"><value>Вище бажаного рівня. Провітрювання допоможе.</value></data>
   <data name="Advice_Elevated_Text_Rising" xml:space="preserve"><value>Вище бажаного рівня і ще зростає. Провітріть незабаром.</value></data>
-  <data name="Advice_High_Text_Falling" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон. Знижується.</value></data>
-  <data name="Advice_High_Text_Steady" xml:space="preserve"><value>Понад 1 400 ppm страждають концентрація і сон.</value></data>
-  <data name="Advice_High_Text_Rising" xml:space="preserve"><value>Понад 1 400 ppm і зростає. Страждають концентрація і сон.</value></data>
+  <data name="Advice_High_Text_Falling" xml:space="preserve"><value>Понад 1400 ppm страждають концентрація і сон. Знижується.</value></data>
+  <data name="Advice_High_Text_Steady" xml:space="preserve"><value>Понад 1400 ppm страждають концентрація і сон.</value></data>
+  <data name="Advice_High_Text_Rising" xml:space="preserve"><value>Понад 1400 ppm і зростає. Страждають концентрація і сон.</value></data>
   <data name="Mini_Temperature_Low" xml:space="preserve"><value>Прохолодно · бажано {min}–{max}&#160;{unit}</value></data>
   <data name="Mini_Temperature_High" xml:space="preserve"><value>Занадто тепло · бажано {min}–{max}&#160;{unit}</value></data>
   <data name="Mini_Humidity_Low" xml:space="preserve"><value>Занадто сухо · бажано {min}–{max}&#160;{unit}</value></data>

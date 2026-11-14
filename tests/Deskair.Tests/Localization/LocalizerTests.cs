@@ -106,6 +106,23 @@ public class LocalizerTests
         }
     }
 
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("uk-UA")]
+    public void No_string_writes_a_ppm_value_with_a_group_separator(string cultureName)
+    {
+        // D-0020: metric values never have a group separator, so "1000 ppm" reads the same on the gauge, the axis and in the advice.
+        var culture = CultureInfo.GetCultureInfo(cultureName);
+        var manager = new ResourceManager("Deskair.App.Localization.Strings", typeof(Localizer).Assembly);
+
+        foreach (var key in Keys(culture))
+        {
+            var text = manager.GetString(key, culture)!;
+
+            Assert.DoesNotMatch(@"\d[,   ]\d{3} ppm", text);
+        }
+    }
+
     private static HashSet<string> Placeholders(string text)
     {
         return Regex.Matches(text, @"\{(\w+)\}").Select(match => match.Groups[1].Value).ToHashSet();

@@ -43,17 +43,17 @@ On first launch the app follows the Windows display language: Ukrainian if it is
 | Trend_Steady | Steady | Стабільно |
 | Trend_Detail | {ppm} ppm over {min} min | {ppm} ppm за {min} хв |
 | Advice_Good_Title | Air is fresh, nothing to do | Повітря свіже, нічого робити не потрібно |
-| Advice_Good_Text | Below 1,000 ppm, so focus and sleep quality are not affected. | Нижче 1 000 ppm, тож концентрація та якість сну не страждають. |
+| Advice_Good_Text | Below 1000 ppm, so focus and sleep quality are not affected. | Нижче 1000 ppm, тож концентрація та якість сну не страждають. |
 | Advice_Good_Title_Rising | Good now, but rising | Зараз добре, але рівень зростає |
-| Advice_Good_Text_Rising | Still below 1,000 ppm. Open a window soon to keep it that way. | Ще нижче 1 000 ppm. Відчиніть вікно найближчим часом, щоб так і лишилося. |
+| Advice_Good_Text_Rising | Still below 1000 ppm. Open a window soon to keep it that way. | Ще нижче 1000 ppm. Відчиніть вікно найближчим часом, щоб так і лишилося. |
 | Advice_Elevated_Title | Open a window for about 10 minutes | Відчиніть вікно хвилин на 10 |
 | Advice_Elevated_Text_Falling | Above the ideal level, but dropping. | Вище за ідеальний рівень, але знижується. |
 | Advice_Elevated_Text_Steady | Above the ideal level. Ventilating will help. | Вище за ідеальний рівень. Провітрювання допоможе. |
 | Advice_Elevated_Text_Rising | Above the ideal level and still rising. Ventilate soon. | Вище за ідеальний рівень і ще зростає. Провітріть незабаром. |
 | Advice_High_Title | Ventilate now: open windows fully | Провітріть зараз: відчиніть вікна навстіж |
-| Advice_High_Text_Falling | Above 1,400 ppm, concentration and sleep suffer. It is dropping now. | Понад 1 400 ppm страждають концентрація і сон. Зараз знижується. |
-| Advice_High_Text_Steady | Above 1,400 ppm, concentration and sleep suffer. | Понад 1 400 ppm страждають концентрація і сон. |
-| Advice_High_Text_Rising | Above 1,400 ppm and still rising. Concentration and sleep suffer. | Понад 1 400 ppm і ще зростає. Страждають концентрація і сон. |
+| Advice_High_Text_Falling | Above 1400 ppm, concentration and sleep suffer. It is dropping now. | Понад 1400 ppm страждають концентрація і сон. Зараз знижується. |
+| Advice_High_Text_Steady | Above 1400 ppm, concentration and sleep suffer. | Понад 1400 ppm страждають концентрація і сон. |
+| Advice_High_Text_Rising | Above 1400 ppm and still rising. Concentration and sleep suffer. | Понад 1400 ppm і ще зростає. Страждають концентрація і сон. |
 | Mini_Temperature_Low | Too cool · ideal {min}–{max} {unit} | Прохолодно · бажано {min}–{max} {unit} |
 | Mini_Temperature_High | Too warm · ideal {min}–{max} {unit} | Занадто тепло · бажано {min}–{max} {unit} |
 | Mini_Humidity_Low | Too dry · ideal {min}–{max} {unit} | Занадто сухо · бажано {min}–{max} {unit} |

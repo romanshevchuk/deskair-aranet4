@@ -20,17 +20,17 @@
   <data name="Trend_Steady" xml:space="preserve"><value>Steady</value></data>
   <data name="Trend_Detail" xml:space="preserve"><value>{ppm} ppm over {min} min</value></data>
   <data name="Advice_Good_Title" xml:space="preserve"><value>Air is fresh, nothing to do</value></data>
-  <data name="Advice_Good_Text" xml:space="preserve"><value>Below 1,000 ppm, so focus and sleep quality are not affected.</value></data>
+  <data name="Advice_Good_Text" xml:space="preserve"><value>Below 1000 ppm, so focus and sleep quality are not affected.</value></data>
   <data name="Advice_Good_Title_Rising" xml:space="preserve"><value>Good now, but rising</value></data>
-  <data name="Advice_Good_Text_Rising" xml:space="preserve"><value>Still below 1,000 ppm. Open a window soon to keep it that way.</value></data>
+  <data name="Advice_Good_Text_Rising" xml:space="preserve"><value>Still below 1000 ppm. Open a window soon to keep it that way.</value></data>
   <data name="Advice_Elevated_Title" xml:space="preserve"><value>Open a window for about 10 minutes</value></data>
   <data name="Advice_High_Title" xml:space="preserve"><value>Ventilate now: open windows fully</value></data>
   <data name="Advice_Elevated_Text_Falling" xml:space="preserve"><value>Above the ideal level, but dropping.</value></data>
   <data name="Advice_Elevated_Text_Steady" xml:space="preserve"><value>Above the ideal level. Ventilating will help.</value></data>
   <data name="Advice_Elevated_Text_Rising" xml:space="preserve"><value>Above the ideal level and still rising. Ventilate soon.</value></data>
-  <data name="Advice_High_Text_Falling" xml:space="preserve"><value>Above 1,400 ppm, concentration and sleep suffer. It is dropping now.</value></data>
-  <data name="Advice_High_Text_Steady" xml:space="preserve"><value>Above 1,400 ppm, concentration and sleep suffer.</value></data>
-  <data name="Advice_High_Text_Rising" xml:space="preserve"><value>Above 1,400 ppm and still rising. Concentration and sleep suffer.</value></data>
+  <data name="Advice_High_Text_Falling" xml:space="preserve"><value>Above 1400 ppm, concentration and sleep suffer. It is dropping now.</value></data>
+  <data name="Advice_High_Text_Steady" xml:space="preserve"><value>Above 1400 ppm, concentration and sleep suffer.</value></data>
+  <data name="Advice_High_Text_Rising" xml:space="preserve"><value>Above 1400 ppm and still rising. Concentration and sleep suffer.</value></data>
   <data name="Mini_Temperature_Low" xml:space="preserve"><value>Too cool · ideal {min}–{max} {unit}</value></data>
   <data name="Mini_Temperature_High" xml:space="preserve"><value>Too warm · ideal {min}–{max} {unit}</value></data>
   <data name="Mini_Humidity_Low" xml:space="preserve"><value>Too dry · ideal {min}–{max} {unit}</value></data>
