@@ -184,7 +184,7 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Sleep_Title | Sleep · {from} – {to} | Сон · {from} – {to} |
 | Sleep_Verdict_Good / Fair / Poor | Good night / Fair night / Poor night | Гарна ніч / Посередня ніч / Погана ніч |
 | Sleep_TimeAbove / Sleep_HoursOf | Time above {limit} {unit} / {hours} h of {total} h | Час вище {limit} {unit} / {hours} год із {total} год |
-| Sleep_Peak / Sleep_Deep | Peak at {time} / Deep sleep avg (02–05 h) | Пік о {time} / Середнє в глибокому сні (02–05) |
+| Sleep_Peak / Sleep_Deep | Peak at {time} / Middle of the night avg (02:00–05:00) | Пік о {time} / Середнє посеред ночі (02:00–05:00) |
 | Sleep_Tip_Ajar | Leaving the bedroom door ajar or a window tilted usually shortens the time above the limit. | Якщо залишити двері спальні прочиненими або вікно на провітрюванні, час вище межі зазвичай скорочується. |
 | Sleep_Tip_Fresh / Sleep_Tip_Other | Air stayed fresh through the night. / Overnight values for the night hours. | Повітря залишалося свіжим усю ніч. / Нічні значення за години ночі. |
 | Sleep_Partial | Only {recorded} of {total} hours were recorded: Deskair was not connected for the rest. | Записано лише {recorded} із {total} год: Deskair не був підключений решту часу. |

@@ -125,7 +125,7 @@
   <data name="Sleep_TimeAbove" xml:space="preserve"><value>Time above {limit} {unit}</value></data>
   <data name="Sleep_HoursOf" xml:space="preserve"><value>{hours} h of {total} h</value></data>
   <data name="Sleep_Peak" xml:space="preserve"><value>Peak at {time}</value></data>
-  <data name="Sleep_Deep" xml:space="preserve"><value>Deep sleep avg (02–05 h)</value></data>
+  <data name="Sleep_Deep" xml:space="preserve"><value>Middle of the night avg (02:00–05:00)</value></data>
   <data name="Sleep_Tip_Ajar" xml:space="preserve"><value>Leaving the bedroom door ajar or a window tilted usually shortens the time above the limit.</value></data>
   <data name="Sleep_Tip_Fresh" xml:space="preserve"><value>Air stayed fresh through the night.</value></data>
   <data name="Sleep_Tip_Other" xml:space="preserve"><value>Overnight values for the night hours.</value></data>

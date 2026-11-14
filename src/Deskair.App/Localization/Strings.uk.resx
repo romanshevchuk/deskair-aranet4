@@ -126,7 +126,7 @@
   <data name="Sleep_TimeAbove" xml:space="preserve"><value>Час вище {limit} {unit}</value></data>
   <data name="Sleep_HoursOf" xml:space="preserve"><value>{hours} год із {total} год</value></data>
   <data name="Sleep_Peak" xml:space="preserve"><value>Пік о {time}</value></data>
-  <data name="Sleep_Deep" xml:space="preserve"><value>Середнє в глибокому сні (02–05)</value></data>
+  <data name="Sleep_Deep" xml:space="preserve"><value>Середнє посеред ночі (02:00–05:00)</value><comment>Draft: needs native review (UX-08).</comment></data>
   <data name="Sleep_Tip_Ajar" xml:space="preserve"><value>Якщо залишити двері спальні прочиненими або вікно на провітрюванні, час вище межі зазвичай скорочується.</value></data>
   <data name="Sleep_Tip_Fresh" xml:space="preserve"><value>Повітря залишалося свіжим усю ніч.</value></data>
   <data name="Sleep_Tip_Other" xml:space="preserve"><value>Значення за нічні години.</value></data>
