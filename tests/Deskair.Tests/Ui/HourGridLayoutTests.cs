@@ -79,4 +79,24 @@ public class HourGridLayoutTests
         Assert.Null(layout.HitTest(new Point(300, layout.RowTop(1) + 5)));
         Assert.Null(layout.HitTest(Centre(2, 12)));
     }
+
+    [Theory]
+    [InlineData(15, new[] { 15, 17 })]
+    [InlineData(21, new[] { 21, 23 })]
+    [InlineData(22, new[] { 22, 23, 0, 0 })]
+    [InlineData(23, new[] { 23, 23, 0, 1 })]
+    public void The_worst_three_hours_are_outlined_in_one_span_or_two_across_midnight(int start, int[] expected)
+    {
+        var model = Model(7) with { WorstStart = start };
+
+        var spans = model.WorstSpans.SelectMany(span => new[] { span.First, span.Last });
+
+        Assert.Equal(expected, spans);
+    }
+
+    [Fact]
+    public void Without_a_worst_window_nothing_is_outlined()
+    {
+        Assert.Empty(Model(7).WorstSpans);
+    }
 }

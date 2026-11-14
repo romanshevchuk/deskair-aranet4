@@ -121,6 +121,17 @@ public class TypicalDayCalculatorTests
     }
 
     [Fact]
+    public void The_furthest_outside_window_may_cross_midnight()
+    {
+        var hours = Day((0, 17), (1, 19), (12, 22), (20, 20), (21, 19), (22, 17), (23, 17));
+
+        var window = TypicalDayCalculator.FurthestOutsideWindow(hours, ComfortScale.Temperature);
+
+        Assert.NotNull(window);
+        Assert.Equal(22, window.StartHour);
+    }
+
+    [Fact]
     public void The_furthest_outside_window_is_null_when_everything_is_comfortable_or_nothing_has_three_hours()
     {
         Assert.Null(TypicalDayCalculator.FurthestOutsideWindow(Day((8, 21), (9, 22), (10, 23)), ComfortScale.Temperature));

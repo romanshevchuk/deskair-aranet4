@@ -57,6 +57,30 @@ public sealed record HourGridModel(
     /// <summary>The first column of the worst three hours, outlined in the typical row; null for none.</summary>
     public int? WorstStart { get; init; }
 
+    /// <summary>
+    /// The outlined columns of the typical row as (first, last) spans: one span, or two when the three hours cross midnight,
+    /// the end of the row and its start (behaviour-rules.md "Aggregation" rules 9 and 11).
+    /// </summary>
+    public IReadOnlyList<(int First, int Last)> WorstSpans
+    {
+        get
+        {
+            if (WorstStart is not { } start)
+            {
+                return [];
+            }
+
+            var last = start + 2;
+
+            if (last < Columns)
+            {
+                return [(start, last)];
+            }
+
+            return [(start, Columns - 1), (0, last - Columns)];
+        }
+    }
+
     /// <summary>"Worst 17:00–20:00", in the end column of the typical row.</summary>
     public string? WorstText { get; init; }
 

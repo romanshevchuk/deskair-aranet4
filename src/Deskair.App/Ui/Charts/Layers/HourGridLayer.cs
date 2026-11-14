@@ -252,17 +252,22 @@ public sealed class HourGridLayer : IChartLayer
         DrawLabel(context, text, layout, -1, typical);
         DrawCells(context, area, layout, -1, typical);
 
-        if (layout.Model.WorstStart is not { } worst)
+        if (layout.Model.WorstStart is null)
         {
             return;
         }
 
-        var first = layout.Cell(-1, worst);
-        var last = layout.Cell(-1, Math.Min(worst + 2, layout.Model.Columns - 1));
-        var outline = new Rect(first.Left - 2, top - 1, last.Right - first.Left + 4, layout.RowHeight + 2);
+        var pen = new Pen(area.Brush("Accent.Brush"), 1.5);
         var radius = Math.Min(4, layout.RowHeight / 4) + 2;
 
-        context.DrawRoundedRectangle(null, new Pen(area.Brush("Accent.Brush"), 1.5), outline, radius, radius);
+        foreach (var (firstColumn, lastColumn) in layout.Model.WorstSpans)
+        {
+            var first = layout.Cell(-1, firstColumn);
+            var last = layout.Cell(-1, lastColumn);
+            var outline = new Rect(first.Left - 2, top - 1, last.Right - first.Left + 4, layout.RowHeight + 2);
+
+            context.DrawRoundedRectangle(null, pen, outline, radius, radius);
+        }
 
         if (layout.Model.WorstText is { } label)
         {
