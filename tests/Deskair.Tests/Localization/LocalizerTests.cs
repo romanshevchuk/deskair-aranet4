@@ -92,6 +92,20 @@ public class LocalizerTests
         }
     }
 
+    [Fact]
+    public void Every_History_tip_has_a_Day_wording()
+    {
+        var englishKeys = Keys(english);
+        var tipKeys = englishKeys.Where(key => key.StartsWith("Insight_", StringComparison.Ordinal)
+            && key != "Insight_Pressure"
+            && !key.EndsWith("_Day", StringComparison.Ordinal));
+
+        foreach (var key in tipKeys)
+        {
+            Assert.Contains($"{key}_Day", englishKeys);
+        }
+    }
+
     private static HashSet<string> Placeholders(string text)
     {
         return Regex.Matches(text, @"\{(\w+)\}").Select(match => match.Groups[1].Value).ToHashSet();

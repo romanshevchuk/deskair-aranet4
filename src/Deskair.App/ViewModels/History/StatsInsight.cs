@@ -3,6 +3,7 @@ using Deskair.Domain.Analytics.Comfort;
 using Deskair.Domain.Analytics.HoursFilter;
 using Deskair.Domain.Analytics.TypicalDay;
 using Deskair.Domain.Metrics;
+using Deskair.Domain.Time;
 using Deskair.Domain.Zones;
 
 namespace Deskair.App.ViewModels.History;
@@ -52,6 +53,9 @@ public sealed class StatsInsight
 
     private static string Hour(int hour) => $"{hour % 24:00}:00";
 
+    // The Day typical day comes from the 7 days before, not from the hours on the chart, so its tip says "usually" (UX-01).
+    private static string ForRange(string key, StatsInput input) => input.Range == Period.Day ? $"{key}_Day" : key;
+
     private (string Text, Zone? Zone)? Comfort(StatsInput input, ComfortScale scale)
     {
         var typical = input.TypicalDay!;
@@ -63,7 +67,7 @@ public sealed class StatsInsight
 
         if (TypicalDayCalculator.FurthestOutsideWindow(typical, scale) is not { } window)
         {
-            return (localizer.Format("Insight_Comfortable", ("range", RangeText(scale))), Zone.Good);
+            return (localizer.Format(ForRange("Insight_Comfortable", input), ("range", RangeText(scale))), Zone.Good);
         }
 
         var name = (input.Metric, scale.Side(window.Average)) switch
@@ -75,7 +79,7 @@ public sealed class StatsInsight
         };
         var night = WhileSleeping(input.Night, window.StartHour) ? "_Night" : string.Empty;
         var text = localizer.Format(
-            $"Insight_{name}{night}",
+            ForRange($"Insight_{name}{night}", input),
             ("from", Hour(window.StartHour)),
             ("to", Hour(window.StartHour + 3)),
             ("value", ValueText(window.Average, input.Metric)));
@@ -92,7 +96,7 @@ public sealed class StatsInsight
 
         var key = window.Average < ZoneThresholds.Default.ElevatedFromPpm ? "Insight_AllGood" : WhileSleeping(input.Night, window.StartHour) ? "Insight_WorstHours_Night" : "Insight_WorstHours";
         var text = localizer.Format(
-            key,
+            ForRange(key, input),
             ("from", Hour(window.StartHour)),
             ("to", Hour(window.StartHour + 3)),
             ("value", ValueText(window.Average, Metric.Co2)));

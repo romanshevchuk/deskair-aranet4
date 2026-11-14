@@ -268,6 +268,18 @@
   <data name="Insight_Driest_Night" xml:space="preserve"><value>**Driest hours: {from}–{to}**, while you sleep (avg {value}). This is usual in a heated room in winter.</value></data>
   <data name="Insight_MostHumid" xml:space="preserve"><value>**Most humid hours: {from}–{to}** (avg {value}). Airing for a few minutes after cooking or a shower brings it down.</value></data>
   <data name="Insight_MostHumid_Night" xml:space="preserve"><value>**Most humid hours: {from}–{to}**, while you sleep (avg {value}). A slightly open window helps.</value></data>
+  <data name="Insight_WorstHours_Day" xml:space="preserve"><value>**Usually worst: {from}–{to}** (previous 7 days, avg {value}). Opening a window shortly before keeps you in the good zone.</value></data>
+  <data name="Insight_WorstHours_Night_Day" xml:space="preserve"><value>**Usually worst: {from}–{to}**, while you sleep (previous 7 days, avg {value}). A window left slightly open at night keeps the bedroom fresher.</value></data>
+  <data name="Insight_AllGood_Day" xml:space="preserve"><value>**Usually all good.** Over the previous 7 days CO₂ stayed in the good zone, even at its worst around {from}–{to} (avg {value}).</value></data>
+  <data name="Insight_Comfortable_Day" xml:space="preserve"><value>**Usually comfortable around the clock.** Over the previous 7 days every hour of the typical day was inside {range}.</value></data>
+  <data name="Insight_Coolest_Day" xml:space="preserve"><value>**Usually coolest: {from}–{to}** (previous 7 days, avg {value}).</value></data>
+  <data name="Insight_Coolest_Night_Day" xml:space="preserve"><value>**Usually coolest: {from}–{to}**, while you sleep (previous 7 days, avg {value}). A slightly cooler bedroom is fine for sleep.</value></data>
+  <data name="Insight_Warmest_Day" xml:space="preserve"><value>**Usually warmest: {from}–{to}** (previous 7 days, avg {value}). Airing in the morning keeps the afternoon cooler.</value></data>
+  <data name="Insight_Warmest_Night_Day" xml:space="preserve"><value>**Usually warmest: {from}–{to}**, while you sleep (previous 7 days, avg {value}). A slightly open window helps the bedroom cool down.</value></data>
+  <data name="Insight_Driest_Day" xml:space="preserve"><value>**Usually driest: {from}–{to}** (previous 7 days, avg {value}). This is usual in a heated room in winter.</value></data>
+  <data name="Insight_Driest_Night_Day" xml:space="preserve"><value>**Usually driest: {from}–{to}**, while you sleep (previous 7 days, avg {value}). This is usual in a heated room in winter.</value></data>
+  <data name="Insight_MostHumid_Day" xml:space="preserve"><value>**Usually most humid: {from}–{to}** (previous 7 days, avg {value}). Airing for a few minutes after cooking or a shower brings it down.</value></data>
+  <data name="Insight_MostHumid_Night_Day" xml:space="preserve"><value>**Usually most humid: {from}–{to}**, while you sleep (previous 7 days, avg {value}). A slightly open window helps.</value></data>
   <data name="Offline_Text" xml:space="preserve"><value>The sensor may be out of range or asleep.</value></data>
   <data name="Offline_Text_BluetoothOff" xml:space="preserve"><value>Bluetooth is off, so Deskair cannot reach the sensor.</value></data>
   <data name="Offline_Title_Setup" xml:space="preserve"><value>Your Aranet4 is not sharing its readings</value></data>

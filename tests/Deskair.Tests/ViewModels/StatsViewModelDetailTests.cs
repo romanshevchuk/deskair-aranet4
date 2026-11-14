@@ -172,6 +172,17 @@ public class StatsViewModelDetailTests
     }
 
     [Fact]
+    public async Task The_Day_insight_says_it_is_about_the_usual_day()
+    {
+        var viewModel = await CreateAsync();
+        List<HourOfDayAverage> hours = [.. Enumerable.Range(0, 24).Select(hour => new HourOfDayAverage(hour, hour is 14 or 15 or 16 ? 1350 : 700, 1))];
+
+        viewModel.Update(Week([Day(0, 800)]) with { Range = Period.Day, TypicalDay = hours });
+
+        Assert.Equal("Insight_WorstHours_Day(from=14:00, to=17:00, value=1350 ppm)", viewModel.InsightText);
+    }
+
+    [Fact]
     public async Task The_highest_and_lowest_reading_have_their_day_and_time()
     {
         var viewModel = await CreateAsync();
@@ -370,6 +381,18 @@ public class StatsViewModelDetailTests
 
         Assert.Equal(Zone.Good, viewModel.InsightZone);
         Assert.StartsWith("Insight_Comfortable(range=", viewModel.InsightText);
+    }
+
+    [Fact]
+    public async Task The_Day_comfort_insights_say_they_are_about_the_usual_day()
+    {
+        var viewModel = await CreateAsync();
+
+        viewModel.Update(Week([Day(0, 20)], metric: Metric.Temperature) with { Range = Period.Day, TypicalDay = TypicalDay(hour => hour is >= 1 and <= 4 ? 17 : 22), Night = NightWindow.Default });
+        Assert.StartsWith("Insight_Coolest_Night_Day(from=01:00, to=04:00", viewModel.InsightText);
+
+        viewModel.Update(Week([Day(0, 22)], metric: Metric.Temperature) with { Range = Period.Day, TypicalDay = TypicalDay(_ => 22) });
+        Assert.StartsWith("Insight_Comfortable_Day(range=", viewModel.InsightText);
     }
 
     [Theory]

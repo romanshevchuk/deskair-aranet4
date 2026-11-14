@@ -1,6 +1,6 @@
 # Decisions
 
-*Last reviewed: 2026-11-12*
+*Last reviewed: 2026-11-14*
 
 A short, append-only log. Each entry: context, decision, consequences. Do not delete entries; mark them superseded. Review the statuses once a quarter so nothing stays "proposed" after it shipped. If this file grows past about 15 entries or an entry needs long reasoning, move that entry to its own file in `docs/decisions.md`.
 
@@ -324,3 +324,13 @@ With "Smart Home integration" off, the Aranet4 accepts the connection and the in
 **Decision:** (1) `WindowsBleConnection` throws `BleProtocolException` (still an `IOException`) for a GATT protocol error. (2) `Aranet4Sensor` turns that error on the current-readings read into `SensorSetupRequiredException` with the resource key of the step (`Offline_Step_SmartHome`); the connection itself worked, so the cause is the setting. (3) `SensorSession` then announces `SensorNeedsSetup` (and `SensorConnectionFailed`, so the screen behaves as for any failed attempt) and stops: retrying cannot help until the user changes the setting, and each try connects to the sensor. "Try again", a wake from sleep, "Sync history" or the next start begins again. (4) The connection state is "Not connected" at once (`ConnectionInputs.NeedsSetup`), not after 10 minutes of silence, and the offline screen shows "Your Aranet4 is not sharing its readings", why, and that one step. A successful connect clears it. Found in the owner's test of the packaged build on 2026-11-12: with a reading from 3 minutes earlier the screen still said "Connected".
 
 **Consequences:** two strings per language; screens-and-states.md "Not connected". Not verified on the real sensor (the refused read was seen on 2026-10-19; this code was tested with fakes). Not done: telling from the advertisements during the first-run search that the setting is off (the flag is in `Aranet4Parser.ParseAdvertisement`).
+
+## D-0033 The Day tip says it is about the usual day
+
+**Status:** accepted · Nov 2026 (UX-01, Q54)
+
+On History → Day the tip names the worst three hours of the typical day of the 7 days before (behaviour-rules.md "Aggregation" rules 7 and 9), but it sits under the chart of the last 24 hours. On the owner's data the chart peaked at 2884 ppm at 19:06 while the tip said "Worst hours: 20:00–23:00 (avg 1170 ppm)", so the app seemed to contradict itself.
+
+**Decision:** keep the source (the habit over a week is what is worth changing) and say it: on Day every tip has its own wording that starts with "Usually" and names "previous 7 days" (`Insight_*_Day`), for CO₂ and the comfort metrics. Week, Month and Year keep their wording, since there the typical day is from the period shown. Option A (a tip from the day shown) was not taken: one day is too few to be a habit.
+
+**Consequences:** twelve more strings per language (Ukrainian drafts need native review); `LocalizerTests` checks that every tip has a Day version.

@@ -1,6 +1,6 @@
 # Localization
 
-*Last reviewed: 2026-11-12*
+*Last reviewed: 2026-11-14*
 
 ## Languages
 
@@ -157,6 +157,7 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Stats_BestPeriod / WorstPeriod / LowestPeriod / HighestPeriod | Best {period} / Worst {period} / Lowest {period} / Highest {period} | Найкращий / Найгірший / Найнижчий / Найвищий {period} (день, тиждень and місяць are all masculine) |
 | Stats_Period_Day / Week / Month | day / week / month | день / тиждень / місяць |
 | Insight_WorstHours / AllGood | **Worst hours: {from}–{to}** (avg {value}). Opening a window shortly before keeps you in the good zone. / **All good.** On a typical day CO₂ stays in the good zone, even at its worst around {from}–{to} (avg {value}). | Найгірші години: {from}–{to} (середнє {value}). Відчинене вікно незадовго до цього тримає повітря в зеленій зоні. / Зазвичай CO₂ залишається в зеленій зоні, навіть у найгірші години, {from}–{to} (середнє {value}). | (the `**` marks a bold lead, see `InlineMarkup`)
+| Insight_*_Day | Day version of every tip above except Pressure (D-0033), e.g. **Usually worst: {from}–{to}** (previous 7 days, avg {value}). … / **Usually all good.** Over the previous 7 days CO₂ stayed in the good zone, … | **Зазвичай найгірше: {from}–{to}** (попередні 7 днів, середнє {value}). … / **Зазвичай усе добре.** За попередні 7 днів … | Draft Ukrainian, needs native review |
 | Offline_Text / Text_BluetoothOff | The sensor may be out of range or asleep. / Bluetooth is off, so Deskair cannot reach the sensor. | Датчик може бути поза зоною дії або «спати». / Bluetooth вимкнено, тож Deskair не може зв'язатися з датчиком. |
 | Offline_LastReading / HistoryHint | Your last reading was {value} at {time}. / History is still available. | Останнє вимірювання: {value}, {time}. / Історія, як і раніше, доступна. |
 | Offline_Step_Range / Wake / Battery | Stay within about 10 m of the sensor / Press the button on the Aranet4 to wake it / Check the sensor battery ({percent} when last seen) | Тримайтеся приблизно в межах 10 м від датчика / Натисніть кнопку на Aranet4, щоб розбудити його / Перевірте батарею датчика ({percent} востаннє) |
