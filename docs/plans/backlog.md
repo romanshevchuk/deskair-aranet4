@@ -1,6 +1,6 @@
 # Backlog
 
-*Last reviewed: 2026-11-12*
+*Last reviewed: 2026-11-14*
 
 **Start here.** Everything v1 needs is built. This file lists only what is left before release. Finished items are in [`backlog-done.md`](backlog-done.md) (archive, do not read unless you need history). Update this file in the same change as the work: move a row to the archive when it is done.
 
@@ -47,6 +47,19 @@ Found by reading the code after the Store release; ranked by how likely a user h
 |---|---|---|---|
 | FIX-06 | A history download that fails partway is tried again later, not only at the next start or wake | agent | todo |
 | FIX-07 | A hole the sensor cannot fill (battery change, sensor off) makes every sync download the whole history; the sensor's memory is 5040 readings × interval, not a fixed 7 days | agent | todo |
+
+### After release: UX review of 2026-11-14
+
+Detail, status per item, how to reproduce and the validate → decide → build steps: [`ux-review-2026-11.md`](ux-review-2026-11.md). Owner choices are Q54 to Q62 in `questions.md`. Do the waves in order; inside a wave, items marked `ready` can start at once.
+
+| ID | Item | Who | Status |
+|---|---|---|---|
+| UX-W1 | Trust and correctness: UX-01 to UX-08 (Day tip vs chart, uneven axis, wrapped comfort window, rounding of pills, tip colours, number and duration formats, "deep sleep" wording) | both | todo |
+| UX-W2 | Live screen: UX-09 to UX-17 (calmer CO₂ axis, stable chart height, clickable mini cards, trend text, comfort band padding, airing outliers, peak day, limit labels) | both | todo |
+| UX-W3 | History: UX-18 to UX-27 (one comfort style, lighter night band, period titles, Month grid, "worst" wording, spacing, empty cells, small labels) | both | todo |
+| UX-W4 | Not connected, Settings, About: UX-28 to UX-36 (setup screen, version and feedback, alert labels, one night setting, sync status, pressure unit, order, device row, controls) | both | todo |
+| UX-W5 | Nitpicks: UX-37 to UX-43 | agent | todo |
+| UX-W6 | Product and next pass: UX-44 (airing feedback first?), UX-45 (review the flyout, toasts, first run, banners) | owner | todo |
 
 ## R4. Release
 

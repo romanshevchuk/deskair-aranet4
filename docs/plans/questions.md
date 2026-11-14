@@ -1,6 +1,6 @@
 # Questions raised while building the skeleton
 
-*Last reviewed: 2026-11-12*
+*Last reviewed: 2026-11-14*
 
 Questions the docs did not answer, and the decisions made while building. Decisions are recorded in the doc they change and in [../decisions.md](../decisions.md); they are listed here too so the numbers cited in code comments, tests and other docs still make sense.
 
@@ -13,6 +13,15 @@ Questions the docs did not answer, and the decisions made while building. Decisi
 | Q32 | A connected Aranet4 does not report its signal strength (only its advertisements carry one), so the footer shows no signal for it. Should the scanner pass the last advertisement signal on to the session? | `Aranet4Sensor.ConnectAsync` (ARANET-03a); `FooterViewModel` | `SensorStatus.SignalDbm` is null and `SignalStrength` is false for the Aranet4. The footer shows no signal text (confirmed against Aranet4-Python: only scanning, not a connection, gives RSSI). |
 | Q33 | Older Aranet4 firmware may expose its characteristics under the service `f0cd1400-95da-4f4b-9ac8-aa55d312af0c` instead of `0000fce0-...`. Our sensor (firmware 2.0.7) uses `0000fce0`. Is older firmware supported? | `Aranet4Protocol.LegacyServiceId`; spike S1 | Only `0000fce0` is used. An older sensor fails to connect with a clear error. |
 | Q17 | Strings added by the skeleton need owner wording and a native Ukrainian review: Sensor_*_Step*, Footer_NoSensor, Nav_Main, Language_*, Gallery_*, Import_PhoneExport_Name. Cards ask for further keys (Coverage_Chip). | localization.md; Strings.resx | Short placeholder wording in both languages. |
+| Q54 | Day tip (UX-01): the tip under the last 24 hours names the worst hours of the 7 days *before*, so it can contradict the visible chart. (A) Base it on the day shown; (B) keep the source and say "Usually your worst hours are … (last 7 days)". Recommended: B. | [ux-review-2026-11.md](ux-review-2026-11.md) UX-01; behaviour-rules.md "Aggregation" rules 7 and 9 | Unchanged until decided. |
+| Q55 | Live "Peak at 19:06" (UX-15): revisit the 2026-10-17 decision and say "Peak yesterday 19:06" when the peak was before today? Recommended: yes. | UX-15; behaviour-rules.md "Live values" | Clock only, as decided. |
+| Q56 | History period titles (UX-20): (A) keep rolling windows (Q26) and title them "Last 7 days", "Last 30 days", "Last 12 months" with dates as a subtitle; (B) calendar periods, weeks from Monday. Recommended: A. | UX-20; Q26 | Rolling windows, date titles. |
+| Q57 | Quiet hours and night hours (UX-31): (A) quiet hours use the Sleep night hours, one setting; (B) keep them separate (Q46) and show the hours on the quiet-hours row. Recommended: A. | UX-31; Q46 | Separate, as Q46. |
+| Q58 | Pressure (UX-33): add a pressure unit (hPa / mm Hg / inHg; files stay in hPa) for Ukrainian users, and/or make the Live pressure card smaller? Revisits Q6. | UX-33; Q6 | hPa only, equal cards. |
+| Q59 | Live CO₂ axis (UX-09): (A) taller minimum span, for example 600 ppm; (B) always include the 1,000 ppm line while below it. Recommended: B. | UX-09; behaviour-rules.md "Live chart axis" | At least 200 ppm tall, as today. |
+| Q60 | Airing outliers (UX-14): one drop to 5.5 °C squashes the axis and becomes the lowest reading everywhere. Data is never dropped. (A) fit the axis to the 2nd–98th percentile and mark clipped peaks; (B) label such minutes as airing events (with AIR-01). Recommended: A now, B with AIR-01. Should extremes skip airing events? | UX-14 | Axis fitted to all readings. |
+| Q61 | Move AIR-01 (airing feedback) and the "Fresh again" toast ahead of the polish waves (UX-44)? | UX-44; vision-and-scope.md | After v1, as planned. |
+| Q62 | Feedback route for Settings → About (UX-29): GitHub issues, an email address, or the Store review page? | UX-29 | None shown. |
 | Q53 | `FakeReadingStore.ReadRangeAsync` includes a reading at exactly `end` (`<= end`); the real store (`ReadingIndex.Range`) and the `IReadingStore` contract exclude it (`< end`). Tests that depend on the difference would change if the fake followed the contract. | PERF-04 | The fake keeps `<= end`; make it match the real store in a separate item. |
 
 ## Decided
