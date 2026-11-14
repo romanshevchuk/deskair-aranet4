@@ -369,7 +369,8 @@ public sealed partial class StatsViewModel : ObservableObject
             return;
         }
 
-        var side = scale.Side(average);
+        var shown = formatter?.Shown(input.Metric, average) ?? average;
+        var side = scale.Side(shown);
 
         if (side == ComfortSide.Inside)
         {
@@ -378,7 +379,7 @@ public sealed partial class StatsViewModel : ObservableObject
             return;
         }
 
-        var far = scale.IsFarOutside(average) ? "Too" : "ABit";
+        var far = scale.IsFarOutside(shown) ? "Too" : "ABit";
         var word = (input.Metric, side) switch
         {
             (Metric.Temperature, ComfortSide.Low) => "Cool",

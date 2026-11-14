@@ -417,6 +417,35 @@ public class StatsViewModelDetailTests
         Assert.Equal(zone, viewModel.ComfortZone);
     }
 
+    [Theory]
+    [InlineData(Metric.Humidity, 50.4, "Comfort_Status_Comfortable")]
+    [InlineData(Metric.Humidity, 50.5, "Comfort_Status_ABitHumid")]
+    [InlineData(Metric.Humidity, 29.6, "Comfort_Status_Comfortable")]
+    [InlineData(Metric.Temperature, 24.04, "Comfort_Status_Comfortable")]
+    [InlineData(Metric.Temperature, 24.06, "Comfort_Status_ABitWarm")]
+    [InlineData(Metric.Temperature, 19.96, "Comfort_Status_Comfortable")]
+    public async Task The_comfort_pill_judges_the_average_as_shown(Metric metric, double average, string text)
+    {
+        var viewModel = await CreateAsync();
+
+        viewModel.Update(Week([Day(0, average)], metric: metric));
+
+        Assert.Equal(text, viewModel.ComfortText);
+    }
+
+    [Theory]
+    [InlineData(24.0, "Comfort_Status_Comfortable")]
+    [InlineData(24.04, "Comfort_Status_ABitWarm")]
+    public async Task In_Fahrenheit_the_comfort_pill_judges_the_Fahrenheit_number_shown(double celsius, string text)
+    {
+        // 24.0 °C is 75.2 °F, the top of the range shown; 24.04 °C is shown as 75.3 °F, above it.
+        var viewModel = await CreateAsync(TemperatureUnit.Fahrenheit);
+
+        viewModel.Update(Week([Day(0, celsius)], metric: Metric.Temperature));
+
+        Assert.Equal(text, viewModel.ComfortText);
+    }
+
     [Fact]
     public async Task Co2_and_pressure_have_no_comfort_pill()
     {

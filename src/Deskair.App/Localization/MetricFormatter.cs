@@ -1,3 +1,4 @@
+using System.Globalization;
 using Deskair.Domain.Metrics;
 using Deskair.Services.Settings;
 
@@ -21,6 +22,24 @@ public sealed class MetricFormatter
 
     public string Value(Metric metric, double stored)
         => NumberFormat.Value(metric, ToDisplay(metric, stored), localizer.Culture);
+
+    /// <summary>
+    /// The stored value (°C for temperature) of the number as shown, rounded the way <see cref="Value"/> rounds it.
+    /// Classify this, not the raw value, so a label never disagrees with the number beside it: 50.4 % is shown as "50 %" and is comfortable (UX-04).
+    /// </summary>
+    public double Shown(Metric metric, double stored)
+    {
+        var text = NumberFormat.Value(metric, ToDisplay(metric, stored), CultureInfo.InvariantCulture);
+        var shown = double.Parse(text, CultureInfo.InvariantCulture);
+
+        if (metric != Metric.Temperature)
+        {
+            return shown;
+        }
+
+        // Back from °F leaves noise (75.2 °F gives 24.000000000000004 °C) that would put a value shown on a limit outside it.
+        return Math.Round(settings.Current.TemperatureUnit.ToCelsius(shown), 6);
+    }
 
     /// <summary>The size of a difference between two stored values, without a sign, in the selected unit. A temperature difference scales but has no offset (2 °C is 3.6 °F).</summary>
     public string Difference(Metric metric, double storedDifference)

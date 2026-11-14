@@ -18,6 +18,16 @@ public class TemperatureUnitTests
     public void Celsius_leaves_the_value_alone()
     {
         Assert.Equal(22.3, TemperatureUnit.Celsius.FromCelsius(22.3));
+        Assert.Equal(22.3, TemperatureUnit.Celsius.ToCelsius(22.3));
+    }
+
+    [Theory]
+    [InlineData(32, 0)]
+    [InlineData(75.2, 24)]
+    [InlineData(-40, -40)]
+    public void Fahrenheit_converts_to_celsius(double fahrenheit, double expected)
+    {
+        Assert.Equal(expected, TemperatureUnit.Fahrenheit.ToCelsius(fahrenheit), 6);
     }
 
     [Theory]
