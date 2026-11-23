@@ -1,6 +1,6 @@
 # Decisions
 
-*Last reviewed: 2026-11-14*
+*Last reviewed: 2026-11-23*
 
 A short, append-only log. Each entry: context, decision, consequences. Do not delete entries; mark them superseded. Review the statuses once a quarter so nothing stays "proposed" after it shipped. If this file grows past about 15 entries or an entry needs long reasoning, move that entry to its own file in `docs/decisions.md`.
 

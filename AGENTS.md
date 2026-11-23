@@ -2,7 +2,7 @@
 
 Deskair is a Windows desktop app (WPF, .NET 10) that shows live and historical CO₂, temperature, humidity and pressure from an Aranet4 sensor over Bluetooth LE. It lives in the tray, alerts the user when CO₂ is high, and stores every reading locally. Languages: English (default) and Ukrainian.
 
-*Last reviewed: 2026-10-23*
+*Last reviewed: 2026-11-23*
 
 ## Data flow
 
@@ -52,6 +52,7 @@ WPF cannot be built or run on Linux or macOS. If a command here is wrong, fix it
 | Solution structure and rules | `docs/engineering/architecture.md` |
 | WPF choices and risks | `docs/engineering/wpf-mapping.md` |
 | How to do common tasks | `docs/guides/` |
+| What shipped in each Store release, and how to publish an update | `CHANGELOG.md` |
 | What to build and when | `docs/plans/roadmap.md`, `docs/plans/backlog.md` (only what is left before release; finished items are in `backlog-done.md`), `docs/plans/handoff.md` |
 | Why something was decided | `docs/decisions.md` |
 | What is undecided | `docs/plans/questions.md` |
@@ -63,7 +64,7 @@ The visual reference is the app's own renders (`artifacts/visual/`, see `docs/gu
 1. **Plan first** for anything larger than a small fix: files to touch, tests to add. Wait for approval.
 2. **One backlog item per branch.** Use the IDs from `docs/plans/backlog.md`.
 3. **Tests with every change** to data, parsing, aggregation or rules (`docs/engineering/testing-strategy.md`).
-4. **Keep docs in step.** Change behaviour, change the doc and its "Last reviewed" date in the same change. New decision: add an entry to `docs/decisions.md`.
+4. **Keep docs in step.** Change behaviour, change the doc and its "Last reviewed" date in the same change. New decision: add an entry to `docs/decisions.md`. A change a user can notice adds a line under "Unreleased" in `CHANGELOG.md` (Store text and Details).
 5. **Files use invariant culture.** The UI uses the selected language.
 6. **Gaps stay gaps.** Never interpolate missing data; averages use only readings that exist.
 7. **When you correct the same mistake twice,** propose a rule or a decision entry so it is written down.
