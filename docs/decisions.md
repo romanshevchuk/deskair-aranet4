@@ -336,3 +336,13 @@ On History → Day the tip names the worst three hours of the typical day of the
 **Decision:** keep the source (the habit over a week is what is worth changing) and say it: on Day every tip has its own wording that starts with "Usually" and names "previous 7 days" (`Insight_*_Day`), for CO₂ and the comfort metrics. Week, Month and Year keep their wording, since there the typical day is from the period shown. Option A (a tip from the day shown) was not taken: one day is too few to be a habit.
 
 **Consequences:** twelve more strings per language (Ukrainian drafts need native review); `LocalizerTests` checks that every tip has a Day version.
+
+## D-0034 The room button in the header has no dot
+
+**Status:** accepted · Nov 2026 (UX-39)
+
+The room button in the header showed a small dot in the CO₂ zone colour of the selected room (grey while not connected). The footer shows a green dot for "Connected". The owner read the header dot as a connection light, so the same green dot meant two things on one screen.
+
+**Decision:** the room button shows only the room name and the arrow. The footer stays the one place for the connection, and Live shows the zone in large type. The room menu keeps a dot beside each room's CO₂ value, because there the number explains the colour and the rooms can be compared. The menu does not show "Connected" per room: only the selected room's sensor is followed, so the others would always look disconnected.
+
+**Consequences:** `RoomChip.Zone` and `ShellViewModel.HeaderZone` are removed; components.md "Window chrome" updated.

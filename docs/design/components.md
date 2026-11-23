@@ -1,10 +1,10 @@
 # Components
 
-*Last reviewed: 2026-10-19*
+*Last reviewed: 2026-11-23*
 
 | Component | Purpose and states | WPF approach |
 |---|---|---|
-| Window chrome | Logo, text nav (Live, History, Settings) with an accent underline, room chip without border, caption buttons | Custom or native title bar; DWM backdrop on Windows 11. The nav is `NavTabs` (a `ListBox`: arrow keys move the selection) |
+| Window chrome | Logo, text nav (Live, History, Settings) with an accent underline, room chip without border (room name and arrow, no dot: the footer owns the connection dot, D-0034), caption buttons | Custom or native title bar; DWM backdrop on Windows 11. The nav is `NavTabs` (a `ListBox`: arrow keys move the selection) |
 | Segmented control | One selected option; ranges, metric (History), settings | Restyled single-selection `ListBox` (arrow keys move the selection; announced as a selectable list); the highlight is one indicator that slides to the chosen segment (`SlidingSelector`, `Motion.Selection`) |
 | Toggle switch | 38 × 22 px, knob slides in 0.15 s (not while animations are off); on = `accent` | ToggleButton template, knob animated in code through `MotionPolicy` |
 | Card | Surface, 1 px `card.border`, radius 16, neutral shadow | Border style |
@@ -21,7 +21,7 @@
 | Summary card | Average with zone pill and change, coverage line, time in each zone, Nights (or Last night with the sleep verdict), highest and lowest, worst-hours tip | Standard panels; replaces the stats card and the sleep card |
 | Banner | Stale data or low battery, with a button | Border row |
 | Empty / onboarding card | Icon, title, text, buttons | UserControl |
-| Room menu | Rooms with value and zone | Popup on the chip |
+| Room menu | Rooms with their CO₂ value and its zone dot | Popup on the chip |
 | Footer | Status dot, connection and age; sensor model, battery icon and percent (hardware ID in the tooltip of the model) | Grid |
 | Logo ring | The logo in the window header, in the brand ink (D-0022); only the tray icon takes the zone colour (grey without a zone) | Viewbox with two ellipses |
 | Toast | Snooze and Dismiss actions | Windows toast (`Windows.UI.Notifications`, no package) |

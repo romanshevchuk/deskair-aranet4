@@ -18,9 +18,7 @@
                   Padding="{TemplateBinding Padding}"
                   ToolTip="{TemplateBinding RoomName}">
             <StackPanel Orientation="Horizontal">
-              <local:StatusDot Zone="{Binding Zone, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center" />
-              <TextBlock Margin="{DynamicResource Space.Chip.Gap}"
-                         MaxWidth="{DynamicResource Size.Chip.MaxName}"
+              <TextBlock MaxWidth="{DynamicResource Size.Chip.MaxName}"
                          VerticalAlignment="Center"
                          FontWeight="{DynamicResource Font.Weight.Normal}"
                          TextTrimming="CharacterEllipsis"

@@ -1,8 +1,6 @@
 using CommunityToolkit.Mvvm.Messaging;
-using Deskair.App.ViewModels.Connection;
 using Deskair.App.ViewModels.Onboarding;
 using Deskair.App.ViewModels.Shell;
-using Deskair.Services.Connection;
 using Deskair.Services.Devices;
 using Deskair.Services.Messages;
 using Deskair.Services.Settings;
@@ -13,19 +11,6 @@ namespace Deskair.Tests.ViewModels;
 
 public class ShellViewModelTests
 {
-    [Theory]
-    [InlineData(ConnectionState.NotConnected)]
-    [InlineData(ConnectionState.FirstRun)]
-    [InlineData(ConnectionState.Normal)]
-    public void The_header_has_no_zone_without_a_reading_and_none_while_there_is_no_sensor_to_read(ConnectionState state)
-    {
-        var viewModel = new ShellViewModel { Connection = new ConnectionViewModel() };
-
-        viewModel.Connection.State = state;
-
-        Assert.Null(viewModel.HeaderZone);
-    }
-
     [Fact]
     public void Starts_on_Live()
     {
