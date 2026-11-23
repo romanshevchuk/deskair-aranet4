@@ -27,6 +27,13 @@ public class HourGridBuilderYearTests
     private HourGridModel Build(params HourGridMonth[] months) => builder.BuildYear(months, Metric.Co2, today);
 
     [Fact]
+    public void The_worst_month_tag_says_least_comfortable_for_comfort_metrics()
+    {
+        Assert.Equal("History_Grid_TagWorst", Build(Month(2026, 9, 900)).WorstTagText);
+        Assert.Equal("History_Grid_TagLeastComfortable", builder.BuildYear([Month(2026, 9, 21)], Metric.Temperature, today).WorstTagText);
+    }
+
+    [Fact]
     public void The_year_grid_has_31_columns_with_centred_day_numbers_and_no_night_or_typical_row()
     {
         var model = Build(Month(2026, 9, 900), Month(2026, 10, 900, shown: 14));

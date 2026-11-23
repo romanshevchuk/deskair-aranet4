@@ -389,6 +389,7 @@
   <data name="History_Grid_Night" xml:space="preserve"><value>Ніч · {from}–{to}</value></data>
   <data name="History_Grid_TagBest" xml:space="preserve"><value>найкращий</value><comment>Draft: needs native review. Agrees with "день".</comment></data>
   <data name="History_Grid_TagWorst" xml:space="preserve"><value>найгірший</value><comment>Draft: needs native review. Agrees with "день".</comment></data>
+  <data name="History_Grid_TagLeastComfortable" xml:space="preserve"><value>найменш комфортний</value><comment>Draft: needs native review. Agrees with "день" and "місяць".</comment></data>
   <data name="History_Grid_NoReadings" xml:space="preserve"><value>Немає вимірювань · {from} – {to}</value></data>
   <data name="History_Grid_UnitHour" xml:space="preserve"><value>Кожен квадрат — одна година</value></data>
   <data name="History_Grid_UnitDay" xml:space="preserve"><value>Кожен квадрат — один день</value></data>

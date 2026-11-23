@@ -62,6 +62,14 @@ public class HourGridBuilderTests
     }
 
     [Fact]
+    public void The_worst_tag_says_least_comfortable_for_comfort_metrics()
+    {
+        Assert.Equal("History_Grid_TagWorst", Build(Day(8, 900)).WorstTagText);
+        Assert.Equal("History_Grid_TagLeastComfortable", BuildTemperature([], ComfortDay(8, 1)).WorstTagText);
+        Assert.Equal("History_Grid_TagLeastComfortable", builder.Build([ComfortDay(8, 1)], [], Metric.Humidity, Period.Week, NightWindow.Default, today).WorstTagText);
+    }
+
+    [Fact]
     public void The_best_and_worst_day_are_tagged()
     {
         var model = Build(Day(11, 900), Day(12, 1300), Day(13, 1000));

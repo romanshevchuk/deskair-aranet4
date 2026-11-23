@@ -233,6 +233,8 @@ The review also found real flaws. Today could win "best" with 17 hours of data, 
 
 **Decision:** (1) best and worst tags go only to complete rows: not today, not the month in progress. (2) A caption over the row-end bars names them: "Time in zones" (CO₂), "Time in range" (Temperature, Humidity). (3) Temperature and Humidity have no "best" tag; "worst" appears only on the row with the least time inside the range, and only if that row has time outside it.
 
+**Amended Nov 2026 (UX-22):** on Temperature and Humidity the tag reads "least comfortable" instead of "worst"; the rule for which row gets it is unchanged.
+
 **Consequences:** `HourGridDay.IsComplete`, `HourGridMonth.IsComplete`, `HourGridCalculator.ComfortWorst` replaces `ComfortExtremes`; `HourGridModel.BarCaption` and two strings per language; behaviour-rules.md rules 5 and 10 and screens-and-states.md updated. The floating tooltip and the calendar Month view stay in the backlog under "Later" (`plans/backlog.md`).
 
 ## D-0024 Comfortable is pale green in the Temperature and Humidity grids

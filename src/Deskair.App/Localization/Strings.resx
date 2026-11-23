@@ -386,6 +386,7 @@
   <data name="History_Grid_Night" xml:space="preserve"><value>Night · {from}–{to}</value></data>
   <data name="History_Grid_TagBest" xml:space="preserve"><value>best</value><comment>Tag next to the day with the lowest average.</comment></data>
   <data name="History_Grid_TagWorst" xml:space="preserve"><value>worst</value><comment>Tag next to the day with the highest average.</comment></data>
+  <data name="History_Grid_TagLeastComfortable" xml:space="preserve"><value>least comfortable</value><comment>Tag next to the Temperature or Humidity row with the least time in the comfort range (D-0023).</comment></data>
   <data name="History_Grid_NoReadings" xml:space="preserve"><value>No readings · {from} – {to}</value></data>
   <data name="History_Grid_UnitHour" xml:space="preserve"><value>Each square is one hour</value></data>
   <data name="History_Grid_UnitDay" xml:space="preserve"><value>Each square is one day</value></data>
