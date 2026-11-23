@@ -1,6 +1,6 @@
-# Handoff (updated 2026-11-14)
+# Handoff (updated 2026-11-23)
 
-*Last reviewed: 2026-11-14*
+*Last reviewed: 2026-11-23*
 
 For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory (`AranetHomeDesktop`) unless the owner points you to it, and do not read `../deskair-legacy`.
 
@@ -18,7 +18,7 @@ One pull request, [#19](https://github.com/romanshevchuk/deskair-aranet4/pull/19
 
 **Verified:** unit and view tests; renders of Settings (light, English), History Humidity Month (the new tag fits) and Live (header without the dot). **Not verified:** the running app; the disabled Alerts rows in a render (only the test); Ukrainian renders. "найменш комфортний" is a draft for native review.
 
-**Released so far:** only 0.1.3 (package `0.1.3.0`, commit `1e64e94`, 2026-10-20). Everything after it, including FIX-01 to FIX-05 and the window place fixes, is unreleased and listed in `CHANGELOG.md` as planned 0.1.4. To publish, follow "How to publish an update" there; the older "For an update" note below is replaced by it.
+**Released so far:** 0.1.3 (package `0.1.3.0`, commit `1e64e94`) and 0.1.4 (package `0.1.4.0`, BLE-10 only), both 2026-10-20. 0.1.4 was missing from these notes until 2026-11-23. Everything after it, including FIX-01 to FIX-05 and the window place fixes, is listed in `CHANGELOG.md` as planned 0.1.5 (submitted 2026-11-23 if the owner finished the Partner Center steps). To publish, follow "How to publish an update" there; the older "For an update" note below is replaced by it.
 
 **What to do next**
 1. After the owner merges the PR: release 0.1.4 when the owner asks (CHANGELOG steps), then record it there.
