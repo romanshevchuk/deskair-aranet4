@@ -105,8 +105,8 @@
   <data name="Unit_Fahrenheit" xml:space="preserve"><value>°F</value></data>
   <data name="Settings_Alerts_Enabled" xml:space="preserve"><value>Alerts</value></data>
   <data name="Settings_Alerts_EnabledHint" xml:space="preserve"><value>A notification when the air gets worse</value></data>
-  <data name="Settings_Alerts_Elevated" xml:space="preserve"><value>Notify at Elevated</value></data>
-  <data name="Settings_Alerts_High" xml:space="preserve"><value>Notify at High</value></data>
+  <data name="Settings_Alerts_Elevated" xml:space="preserve"><value>Notify at Elevated (1000 ppm)</value></data>
+  <data name="Settings_Alerts_High" xml:space="preserve"><value>Notify at High (1400 ppm)</value></data>
   <data name="Settings_QuietHours_Hint" xml:space="preserve"><value>No notifications at night</value></data>
   <data name="Settings_QuietHours_From" xml:space="preserve"><value>From</value></data>
   <data name="Settings_QuietHours_To" xml:space="preserve"><value>Until</value></data>

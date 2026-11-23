@@ -106,8 +106,8 @@
   <data name="Unit_Fahrenheit" xml:space="preserve"><value>°F</value></data>
   <data name="Settings_Alerts_Enabled" xml:space="preserve"><value>Сповіщення</value></data>
   <data name="Settings_Alerts_EnabledHint" xml:space="preserve"><value>Сповіщення, коли повітря погіршується</value></data>
-  <data name="Settings_Alerts_Elevated" xml:space="preserve"><value>Сповіщати про підвищений рівень</value></data>
-  <data name="Settings_Alerts_High" xml:space="preserve"><value>Сповіщати про високий рівень</value></data>
+  <data name="Settings_Alerts_Elevated" xml:space="preserve"><value>Сповіщати про підвищений рівень (1000 ppm)</value></data>
+  <data name="Settings_Alerts_High" xml:space="preserve"><value>Сповіщати про високий рівень (1400 ppm)</value></data>
   <data name="Settings_QuietHours_Hint" xml:space="preserve"><value>Без сповіщень уночі</value></data>
   <data name="Settings_QuietHours_From" xml:space="preserve"><value>З</value></data>
   <data name="Settings_QuietHours_To" xml:space="preserve"><value>До</value></data>

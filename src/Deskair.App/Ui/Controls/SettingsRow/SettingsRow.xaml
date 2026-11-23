@@ -17,7 +17,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
-              <StackPanel Grid.Column="0"
+              <StackPanel x:Name="Labels"
+                          Grid.Column="0"
                           Margin="{DynamicResource Space.SettingsRow.Label}"
                           VerticalAlignment="Center">
                 <TextBlock Style="{DynamicResource Text.Body}"
@@ -40,6 +41,9 @@
             </Trigger>
             <Trigger Property="Description" Value="">
               <Setter TargetName="DescriptionText" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="Labels" Property="Opacity" Value="{DynamicResource Opacity.SettingsRow.Disabled}" />
             </Trigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>

@@ -1,6 +1,6 @@
 # Screens and states
 
-*Last reviewed: 2026-11-14*
+*Last reviewed: 2026-11-23*
 
 Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 
@@ -123,7 +123,7 @@ Good, Elevated, High: ring in zone colour. Not connected: grey dashed ring with 
 | Language (System / English / Українська) | System | Whole app, toasts, tray tooltip |
 | Theme (Light / Dark / System) | System | Whole app and flyout |
 | Temperature unit | °C | Live, History, flyout, toasts (stored data and exports stay in °C) |
-| Notify at Elevated / High | On / On | Toasts |
+| Notify at Elevated (1000 ppm) / High (1400 ppm) | On / On | Toasts. The two rows sit indented under Alerts; they and quiet hours are dimmed and cannot be changed while Alerts is off |
 | Quiet hours 22:00 to 07:00 (one row "Active between [22:00] to [07:00]") | Off | Mutes toasts only |
 | Night starts / ends (Sleep) | 22:00 / 07:00 | The night band and the Nights and Last night sections in History; typed as HH:mm, saved when valid; the start must differ from the end |
 | Devices | Rename, Add (secondary button) | Per-device data folder; the selected device is remembered |
