@@ -6,7 +6,7 @@ For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths
 
 ## Session of 2026-11-23 (read this first)
 
-One pull request from branch `feature/ux-settings-header-changelog` holds all of this session's work, one commit per item. It is **not merged** yet; the owner reviews it. Build has 0 warnings, the format check is clean, **1860 tests pass** (85 skipped: the opt-in render tests).
+One pull request, [#19](https://github.com/romanshevchuk/deskair-aranet4/pull/19), from branch `feature/ux-settings-header-changelog` holds all of this session's work, one commit per item. It is **not merged** yet; the owner reviews it. Build has 0 warnings, the format check is clean, **1860 tests pass** (85 skipped: the opt-in render tests).
 
 | Item | Result | Where |
 |---|---|---|
