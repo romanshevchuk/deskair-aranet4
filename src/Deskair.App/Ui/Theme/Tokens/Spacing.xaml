@@ -133,6 +133,9 @@
   <Thickness x:Key="Space.SettingsRow.Padding">0,4,0,4</Thickness>
   <sys:Double x:Key="Size.SettingsRow.MinHeight">40</sys:Double>
   <Thickness x:Key="Space.SettingsRow.Caption">0,0,0,6</Thickness>
+  <!-- Rows that depend on the row above (Notify at Elevated and High under Alerts) sit indented and dim while it is off. -->
+  <Thickness x:Key="Space.SettingsRow.Indent">24,0,0,0</Thickness>
+  <sys:Double x:Key="Opacity.SettingsRow.Disabled">0.5</sys:Double>
   <sys:Double x:Key="Size.Segmented.SettingsMinWidth">296</sys:Double>
   <!-- History stats card (zone share bar 10 px high, insight box padding 9 12). -->
   <sys:Double x:Key="Size.ZoneShare.Height">10</sys:Double>

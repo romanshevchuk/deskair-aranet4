@@ -1,6 +1,6 @@
 # Decisions
 
-*Last reviewed: 2026-11-14*
+*Last reviewed: 2026-11-23*
 
 A short, append-only log. Each entry: context, decision, consequences. Do not delete entries; mark them superseded. Review the statuses once a quarter so nothing stays "proposed" after it shipped. If this file grows past about 15 entries or an entry needs long reasoning, move that entry to its own file in `docs/decisions.md`.
 
@@ -233,6 +233,8 @@ The review also found real flaws. Today could win "best" with 17 hours of data, 
 
 **Decision:** (1) best and worst tags go only to complete rows: not today, not the month in progress. (2) A caption over the row-end bars names them: "Time in zones" (CO₂), "Time in range" (Temperature, Humidity). (3) Temperature and Humidity have no "best" tag; "worst" appears only on the row with the least time inside the range, and only if that row has time outside it.
 
+**Amended Nov 2026 (UX-22):** on Temperature and Humidity the tag reads "least comfortable" instead of "worst"; the rule for which row gets it is unchanged.
+
 **Consequences:** `HourGridDay.IsComplete`, `HourGridMonth.IsComplete`, `HourGridCalculator.ComfortWorst` replaces `ComfortExtremes`; `HourGridModel.BarCaption` and two strings per language; behaviour-rules.md rules 5 and 10 and screens-and-states.md updated. The floating tooltip and the calendar Month view stay in the backlog under "Later" (`plans/backlog.md`).
 
 ## D-0024 Comfortable is pale green in the Temperature and Humidity grids
@@ -334,3 +336,13 @@ On History → Day the tip names the worst three hours of the typical day of the
 **Decision:** keep the source (the habit over a week is what is worth changing) and say it: on Day every tip has its own wording that starts with "Usually" and names "previous 7 days" (`Insight_*_Day`), for CO₂ and the comfort metrics. Week, Month and Year keep their wording, since there the typical day is from the period shown. Option A (a tip from the day shown) was not taken: one day is too few to be a habit.
 
 **Consequences:** twelve more strings per language (Ukrainian drafts need native review); `LocalizerTests` checks that every tip has a Day version.
+
+## D-0034 The room button in the header has no dot
+
+**Status:** accepted · Nov 2026 (UX-39)
+
+The room button in the header showed a small dot in the CO₂ zone colour of the selected room (grey while not connected). The footer shows a green dot for "Connected". The owner read the header dot as a connection light, so the same green dot meant two things on one screen.
+
+**Decision:** the room button shows only the room name and the arrow. The footer stays the one place for the connection, and Live shows the zone in large type. The room menu keeps a dot beside each room's CO₂ value, because there the number explains the colour and the rooms can be compared. The menu does not show "Connected" per room: only the selected room's sensor is followed, so the others would always look disconnected.
+
+**Consequences:** `RoomChip.Zone` and `ShellViewModel.HeaderZone` are removed; components.md "Window chrome" updated.

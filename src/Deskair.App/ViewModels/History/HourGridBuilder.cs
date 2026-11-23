@@ -64,7 +64,7 @@ public sealed class HourGridBuilder(ILocalizer localizer, MetricFormatter format
             Night = night.IsEmpty ? null : (night.Start.Hour, night.End.Hour),
             NightText = night.IsEmpty ? null : localizer.Format("History_Grid_Night", ("from", night.Start.ToString("HH:mm", localizer.Culture)), ("to", night.End.ToString("HH:mm", localizer.Culture))),
             BestText = localizer.Get("History_Grid_TagBest"),
-            WorstTagText = localizer.Get("History_Grid_TagWorst"),
+            WorstTagText = WorstTag(metric),
             Palette = PaletteOf(metric),
             LegendGroups = LegendGroups(metric),
             NoDataText = localizer.Get("Chart_NoData"),
@@ -163,7 +163,7 @@ public sealed class HourGridBuilder(ILocalizer localizer, MetricFormatter format
             Columns = 31,
             CenterColumnLabels = true,
             BestText = localizer.Get("History_Grid_TagBest"),
-            WorstTagText = localizer.Get("History_Grid_TagWorst"),
+            WorstTagText = WorstTag(metric),
             Palette = PaletteOf(metric),
             LegendGroups = LegendGroups(metric),
             NoDataText = localizer.Get("Chart_NoData"),
@@ -203,6 +203,9 @@ public sealed class HourGridBuilder(ILocalizer localizer, MetricFormatter format
                 Comfort: month.Comfort);
         }
     }
+
+    // On Temperature and Humidity the tag marks the row with the least time in the comfort range (D-0023), which is not "worst" air.
+    private string WorstTag(Metric metric) => localizer.Get(metric == Metric.Co2 ? "History_Grid_TagWorst" : "History_Grid_TagLeastComfortable");
 
     private string BarCaption(Metric metric) => localizer.Get(metric == Metric.Co2 ? "History_Grid_BarZones" : "History_Grid_BarRange");
 

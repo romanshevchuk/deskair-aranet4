@@ -1,10 +1,64 @@
-# Handoff (updated 2026-10-20)
+# Handoff (updated 2026-11-14)
 
-*Last reviewed: 2026-10-23*
+*Last reviewed: 2026-11-14*
 
 For the next agent. Repo: `c:\Personal\Dev\Projects\Deskair` (use absolute paths there). Ignore the other project directory (`AranetHomeDesktop`) unless the owner points you to it, and do not read `../deskair-legacy`.
 
-## Session of 2026-10-20 (read this first)
+## Session of 2026-11-23 (read this first)
+
+One pull request, [#19](https://github.com/romanshevchuk/deskair-aranet4/pull/19), from branch `feature/ux-settings-header-changelog` holds all of this session's work, one commit per item. It is **not merged** yet; the owner reviews it. Build has 0 warnings, the format check is clean, **1860 tests pass** (85 skipped: the opt-in render tests).
+
+| Item | Result | Where |
+|---|---|---|
+| UX-30 | "Notify at Elevated (1000 ppm)" / "Notify at High (1400 ppm)"; the two rows are indented under Alerts; they and quiet hours are disabled while Alerts is off; a disabled `SettingsRow` dims its labels | `AlertsSettingsView`, `SettingsRow`, tokens `Space.SettingsRow.Indent`, `Opacity.SettingsRow.Disabled`; test `AlertsSettingsViewTests` |
+| UX-34 | Settings order: Alerts, Devices, Appearance and units, Sleep, Data and storage, Start-up, About | `SettingsView`, screens-and-states.md "Screens" |
+| UX-22 | Temperature and Humidity rows are tagged "least comfortable" (CO₂ keeps "worst") | `HourGridBuilder.WorstTag`, D-0023 amended |
+| UX-39 | The header room button has no dot. It was the CO₂ zone, but the owner read it as "connected" (the footer dot's meaning). The room menu keeps a dot beside each value | D-0034; `RoomChip.Zone` and `ShellViewModel.HeaderZone` removed |
+| Releases | `CHANGELOG.md` at the root: how to publish a Store update, a table of releases, and "Unreleased" with the "What's new" text to paste (under 1500 characters) and the backlog IDs. `AGENTS.md` rule 4 and the PR template ask for a line there with every change a user can notice | `CHANGELOG.md`, `release-and-distribution.md` |
+
+**Verified:** unit and view tests; renders of Settings (light, English), History Humidity Month (the new tag fits) and Live (header without the dot). **Not verified:** the running app; the disabled Alerts rows in a render (only the test); Ukrainian renders. "найменш комфортний" is a draft for native review.
+
+**Released so far:** only 0.1.3 (package `0.1.3.0`, commit `1e64e94`, 2026-10-20). Everything after it, including FIX-01 to FIX-05 and the window place fixes, is unreleased and listed in `CHANGELOG.md` as planned 0.1.4. To publish, follow "How to publish an update" there; the older "For an update" note below is replaced by it.
+
+**What to do next**
+1. After the owner merges the PR: release 0.1.4 when the owner asks (CHANGELOG steps), then record it there.
+2. Wave 1 leftovers: validate UX-05 and UX-07.
+3. Owner decisions Q55 to Q62; Q59 (keep the 1000 ppm line on the Live 1h axis, UX-09) is the best value for its cost.
+4. Other `ready` items that are cheap: UX-19 (lighter night band), UX-24 (lighter empty Year cells), UX-25 (small labels), UX-27 ("45 % all hour").
+
+**How the owner worked this session:** asked for low-effort, high-value items; questioned UX-39's proposal and wanted a reasoned alternative (the answer: the footer owns the connection, remove the header dot); asked for one PR for all the changes and the handoff kept current.
+
+## Session of 2026-11-14 (older)
+
+The owner did a UI/UX review of the released app (0.1.3 plus the 0.1.4 patch work): [`ux-review-2026-11.md`](ux-review-2026-11.md), items UX-01 to UX-45 in six waves, with backlog rows UX-W1 to UX-W6 in [`backlog.md`](backlog.md). That file says how to work: validate, then decide, then build, then close, and it holds a status per item and a "Validation notes" table. Keep both up to date.
+
+State: everything is merged and **pushed to `origin/main`** (head `66bcf15`); the work branches are deleted. Build has 0 warnings, the format check is clean, **1773 tests pass** (85 skipped: the opt-in render tests). No release was built.
+
+| Item | Result | Where |
+|---|---|---|
+| UX-01 | Day tips start with "Usually" and name "previous 7 days" (`Insight_*_Day`, 12 keys per language); Q54 answered B | `StatsInsight.ForRange`, D-0033, behaviour-rules.md rule 9 |
+| UX-02 | Dropped: the CO₂ axis labels are even (every 400 ppm above a 2000 top); 1000 and 1400 are limit lines drawn apart on purpose | screens-and-states.md "Two cards" wording corrected |
+| UX-03 | Typical-day windows may cross midnight for every metric (rule 11 changed); the grid outlines both parts | `HourGridModel.WorstSpans`, `HourGridLayer.DrawTypical` |
+| UX-04 | The comfort pill judges the average as shown (50.4 % shows "50 %" and is comfortable), in the unit shown | `MetricFormatter.Shown`, `TemperatureUnit.ToCelsius`, rule 10 |
+| UX-06 | Advice strings say "1000 ppm" and "1400 ppm" (D-0020 kept, rechecked); a test fails on any grouped ppm value | `LocalizerTests` |
+| UX-08 | "Deep sleep avg" is now "Middle of the night avg (02:00–05:00)" | `Sleep_Deep` |
+
+**Not verified:** none of this was seen in the running app or in fresh renders; it is covered by unit tests only. A render pass (History Day tip, Week grid with a window across midnight, Humidity Month pill) is worth doing before the next release. The new Ukrainian strings are drafts with a `<comment>`.
+
+**Known, left for now:** the comfort tip (`TypicalDayCalculator.FurthestOutsideWindow`) still judges the raw window mean, so a window shown exactly on a limit could still be named (rare). In °F the pill can differ from °C for the same air (24.04 °C: "Comfortable" in °C, "75.3 °F" is "A bit warm"); this follows "the pill matches the number shown".
+
+**What to do next**
+1. Wave 1 leftovers: validate UX-05 (tip colours) and UX-07 (durations: "7.9 h of 9 h" follows `Sleep_HoursOf` as specified, so it is a spec change; the Ukrainian "2 h 05" was not found in the strings).
+2. Owner decisions Q55 to Q62 in `questions.md` (each has a recommendation). Then items marked `ready` in waves 2 to 4 can be built.
+3. When Wave 1 is fully done, move its backlog row to `backlog-done.md`.
+
+**How the owner worked this session**
+- When a finding says "the code breaks rule N", first ask whether the rule itself is still right for users, and say so; some rules are workarounds (rule 11 was one). The owner wants the best overall decision, not compliance with the doc.
+- Explain technical findings in plain words; the owner asked for UX-02 again in simpler terms.
+- "Split and commit", "merge if safe", "push" were each explicit. One branch per item, stacked when they touch the same review file; fast-forward merge after build, format and tests; no Co-Authored-By trailer.
+- Owner screenshots of real data are in `artifacts/owner-screenshots/` (not in git); use them to validate.
+
+## Session of 2026-10-20 (older)
 
 **Deskair 0.1.3.0 is published in the Microsoft Store** (product ID `9N027HRZXSMH`, https://apps.microsoft.com/detail/9N027HRZXSMH; submitted and certified the same day). Local `main` is ahead of `origin/main` until the owner pushes; CI is on GitHub and passed.
 
@@ -143,7 +197,7 @@ How the owner likes to work (from this session): be efficient, make real progres
 Tooling notes from this session:
 
 - `dotnet test` can report zero tests; run the exe directly: `tests\Deskair.Tests\bin\Release\net10.0-windows10.0.19041.0\Deskair.Tests.exe` (add `-class "Deskair.Tests.Ui.SettingsRenderTests"` for one class). Build in Release (the running app can lock Debug output). Renders: set `DESKAIR_RENDER=1` and run the exe; images go to `artifacts\visual`.
-- There is no Python on this machine. In the shell tool, a heredoc or `sed` text with an apostrophe can break parsing; write files with the Write tool and keep `sed` edits short. Check every splice afterwards.
+- Python is available (it was used on 2026-11-14; an older note said it was not). In the shell tool, a heredoc or `sed` text with an apostrophe can break parsing; write files with the Write tool and keep `sed` edits short. Check every splice afterwards.
 - `AGENTS.md` mentions `.github/instructions/csharp.instructions.md`; it does not exist. The C# style guide is `docs/engineering/csharp-instructions.md`.
 
 
@@ -181,7 +235,7 @@ Q7 (read the date order from the export header; flag the repeated autumn hour), 
 | BLE protocol as seen on the sensor | `Aranet4Protocol.cs`, `tests/Deskair.Tests/TestData/aranet4-history-capture.txt` |
 | Colours and sizes | `docs/design/design-tokens.md` |
 | Adding a control, string, setting, sensor | `docs/guides/` and the skills in `.claude/skills/` |
-| Why something was decided | `docs/decisions.md` (latest: D-0026) and the decided entries in `docs/plans/questions.md` |
+| Why something was decided | `docs/decisions.md` (latest: D-0033) and the decided entries in `docs/plans/questions.md` |
 | Dependency rules | `docs/engineering/architecture.md` section 3, `tests/Deskair.Tests/Architecture` |
 | Startup and wiring | `src/Deskair.App/Composition/` (`AppServicesStarter`, `StartupSequence`, `ServiceRegistration`, `SettingsApplier`, `AppOptions`) |
 | Test helpers | `tests/Deskair.Tests/Fakes/` (`FakeClock`, `FakeAranet4Connection`, `FakeBleScanner`, `Aranet4TestData`, `ThreadSafeLog`, `ListProgress`, `Wait`) |

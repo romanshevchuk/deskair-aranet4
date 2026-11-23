@@ -54,8 +54,7 @@
       <controls:RoomChip AutomationProperties.HelpText="{loc:T Room_Chip_Help}"
                          AutomationProperties.Name="{Binding SelectedRoom.Name}"
                          IsOpen="{Binding IsOpen, Mode=TwoWay}"
-                         RoomName="{Binding SelectedRoom.Name}"
-                         Zone="{Binding DataContext.HeaderZone, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+                         RoomName="{Binding SelectedRoom.Name}" />
       <controls:RoomMenu IsOpen="{Binding IsOpen, Mode=TwoWay}"
                          ItemsSource="{Binding Rooms}"
                          RoomChosenCommand="{Binding ChooseRoomCommand}" />

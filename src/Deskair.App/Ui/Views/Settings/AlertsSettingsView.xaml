@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Deskair.App.Ui.Controls"
              xmlns:loc="clr-namespace:Deskair.App.Ui.Markup">
-  <!-- DataContext: AlertsSettingsViewModel. The switches save at once. The quiet hours times show while quiet hours are on, and a time is saved as soon as it reads as HH:mm.
+  <!-- DataContext: AlertsSettingsViewModel. The switches save at once. Notify at Elevated and High sit indented under Alerts; they and quiet hours are disabled while Alerts is off (UX-30). The quiet hours times show while quiet hours are on, and a time is saved as soon as it reads as HH:mm.
        The "paused by Windows" row shows only while Windows Do Not Disturb holds the alerts. -->
   <controls:SettingsCard Header="{loc:T Settings_Alerts}">
     <StackPanel>
@@ -13,16 +13,18 @@
       <controls:SettingsRow Header="{loc:T Settings_Alerts_Enabled}" Description="{loc:T Settings_Alerts_EnabledHint}">
         <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_Enabled}" IsChecked="{Binding AlertsEnabled, Mode=TwoWay}" />
       </controls:SettingsRow>
-      <controls:SettingsRow Header="{loc:T Settings_Alerts_Elevated}">
-        <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_Elevated}" IsChecked="{Binding NotifyAtElevated, Mode=TwoWay}" />
-      </controls:SettingsRow>
-      <controls:SettingsRow Header="{loc:T Settings_Alerts_High}">
-        <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_High}" IsChecked="{Binding NotifyAtHigh, Mode=TwoWay}" />
-      </controls:SettingsRow>
-      <controls:SettingsRow Header="{loc:T Settings_QuietHours}" Description="{loc:T Settings_QuietHours_Hint}">
+      <StackPanel Margin="{StaticResource Space.SettingsRow.Indent}" IsEnabled="{Binding AlertsEnabled}">
+        <controls:SettingsRow Header="{loc:T Settings_Alerts_Elevated}">
+          <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_Elevated}" IsChecked="{Binding NotifyAtElevated, Mode=TwoWay}" />
+        </controls:SettingsRow>
+        <controls:SettingsRow Header="{loc:T Settings_Alerts_High}">
+          <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_Alerts_High}" IsChecked="{Binding NotifyAtHigh, Mode=TwoWay}" />
+        </controls:SettingsRow>
+      </StackPanel>
+      <controls:SettingsRow Header="{loc:T Settings_QuietHours}" Description="{loc:T Settings_QuietHours_Hint}" IsEnabled="{Binding AlertsEnabled}">
         <controls:ToggleSwitch AutomationProperties.Name="{loc:T Settings_QuietHours}" IsChecked="{Binding QuietHoursEnabled, Mode=TwoWay}" />
       </controls:SettingsRow>
-      <StackPanel Visibility="{Binding QuietHoursEnabled, Converter={StaticResource BoolToVisibility}}">
+      <StackPanel Visibility="{Binding QuietHoursEnabled, Converter={StaticResource BoolToVisibility}}" IsEnabled="{Binding AlertsEnabled}">
         <controls:SettingsRow Header="{loc:T Settings_QuietHours_Between}">
           <StackPanel Orientation="Horizontal">
             <controls:TextInput Width="{StaticResource Size.TimeField.Width}" MinWidth="0" Padding="4,3" HorizontalContentAlignment="Center"

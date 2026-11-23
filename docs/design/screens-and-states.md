@@ -1,6 +1,6 @@
 # Screens and states
 
-*Last reviewed: 2026-11-14*
+*Last reviewed: 2026-11-23*
 
 Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 
@@ -10,7 +10,7 @@ Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 |---|---|
 | Live | Hero (CO₂) left; chart card right with its title and summary ("CO₂ · last hour", Low / Avg / High), 1h / 6h / 24h, and the 24 h ribbon; three mini cards below (Temperature, Humidity, Pressure, always in that order). The hero and the mini cards choose the chart's metric; there are no metric tabs |
 | History | Toolbar (metric, ‹ period ›, range, export icon); main view (Day: line chart; Week and Month: days × hours grid; Year: months × days grid); summary card on the right at full height |
-| Settings | One centred column, at most 720 px: Appearance and units, Alerts, Devices, Data and storage, Sleep, Start-up; section titles above the cards |
+| Settings | One centred column, at most 720 px: Alerts, Devices, Appearance and units, Sleep, Data and storage, Start-up, About (alerts first: they are the main reason to open Settings); section titles above the cards |
 | Flyout | 360 px, one surface (no card inside it): see "Flyout" |
 | Tray menu | Open, status line, Snooze 1 h, Snooze until tomorrow (and Resume alerts while snoozed), Show CO₂ on tray icon, Settings, Quit |
 | Toasts | Elevated, High (v1); Fresh again, Last night (later) |
@@ -76,7 +76,7 @@ There is no Hours filter and no Group by. The night hours show as a band and in 
 | Metric | Week, Month, Year | Day | Summary card |
 |---|---|---|---|
 | CO₂ | The zones grid, as above | As above | As above |
-| Temperature, Humidity | The same grid in the comfort scale (design-tokens.md "Comfort scales"). Row end: average, a below / inside / above bar and a "worst" tag on the row with the least time inside the range (no "best"; D-0023). The typical row outlines the three hours furthest outside the range ("Coolest 03:00–06:00") | Line in the metric colour, the comfort range as a soft band, the typical line and the night band; no area fill | Average with a comfort pill, time in the comfort range, nights, highest and lowest, one tip |
+| Temperature, Humidity | The same grid in the comfort scale (design-tokens.md "Comfort scales"). Row end: average, a below / inside / above bar and a "least comfortable" tag on the row with the least time inside the range (no "best"; D-0023, UX-22). The typical row outlines the three hours furthest outside the range ("Coolest 03:00–06:00") | Line in the metric colour, the comfort range as a soft band, the typical line and the night band; no area fill | Average with a comfort pill, time in the comfort range, nights, highest and lowest, one tip |
 | Pressure | One line (hourly means; daily means for Year), fitted axis, the biggest 24 hour change shaded and labelled | Line, fitted axis, no night band, no typical line | Average, change as neutral text, biggest change in 24 hours, the range, "Pressure follows the weather, not the room" |
 
 **Built (POL-18):** the comfort tokens and rules (design-tokens.md, behaviour-rules.md rules 10 to 12); the Temperature and Humidity hour grid with the comfort share and the "coolest/driest hours" tip; the Day comfort band; the Pressure line with the shaded biggest 24 hour change; and the Pressure summary card (average, change, highest and lowest, biggest change in 24 hours with its start, range of the period, one line about the weather). CO₂ typical day and sleep no longer show on the other metrics.
@@ -123,7 +123,7 @@ Good, Elevated, High: ring in zone colour. Not connected: grey dashed ring with 
 | Language (System / English / Українська) | System | Whole app, toasts, tray tooltip |
 | Theme (Light / Dark / System) | System | Whole app and flyout |
 | Temperature unit | °C | Live, History, flyout, toasts (stored data and exports stay in °C) |
-| Notify at Elevated / High | On / On | Toasts |
+| Notify at Elevated (1000 ppm) / High (1400 ppm) | On / On | Toasts. The two rows sit indented under Alerts; they and quiet hours are dimmed and cannot be changed while Alerts is off |
 | Quiet hours 22:00 to 07:00 (one row "Active between [22:00] to [07:00]") | Off | Mutes toasts only |
 | Night starts / ends (Sleep) | 22:00 / 07:00 | The night band and the Nights and Last night sections in History; typed as HH:mm, saved when valid; the start must differ from the end |
 | Devices | Rename, Add (secondary button) | Per-device data folder; the selected device is remembered |

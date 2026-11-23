@@ -14,6 +14,21 @@ public class LiveControlsTests
         where T : class
         => (T)control.Template.FindName(name, control);
 
+    private static IEnumerable<DependencyObject> Descendants(DependencyObject element)
+    {
+        for (var index = 0; index < System.Windows.Media.VisualTreeHelper.GetChildrenCount(element); index++)
+        {
+            var child = System.Windows.Media.VisualTreeHelper.GetChild(element, index);
+
+            yield return child;
+
+            foreach (var nested in Descendants(child))
+            {
+                yield return nested;
+            }
+        }
+    }
+
     private sealed class ClickableRoomChip : RoomChip
     {
         public void Press() => OnClick();
@@ -181,6 +196,22 @@ public class LiveControlsTests
             chip.Press();
             Assert.False(chip.IsOpen);
         });
+    }
+
+    [Fact]
+    public void Room_chip_has_no_status_dot()
+    {
+        // The footer owns the connection dot; a coloured dot here was read as "connected" (UX-39). The room menu keeps a dot beside each value.
+        var dots = UiHost.Run(() =>
+        {
+            var chip = UiHost.Prepare(new RoomChip { RoomName = "Office", ValueText = "612 ppm" });
+            chip.Measure(new Size(300, 40));
+            chip.Arrange(new Rect(0, 0, 300, 40));
+
+            return Descendants(chip).OfType<StatusDot>().Count();
+        });
+
+        Assert.Equal(0, dots);
     }
 
     [Fact]

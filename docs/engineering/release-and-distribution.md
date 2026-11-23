@@ -1,10 +1,10 @@
 # Release and distribution
 
-*Last reviewed: 2026-10*
+*Last reviewed: 2026-11-23*
 
 1. **Microsoft Store first** (MSIX; the step-by-step plan is `docs/plans/store-packaging.md`). Declare Bluetooth and full-trust capabilities, listing languages en-US and uk-UA, a privacy statement (no data leaves the PC), screenshots in both languages.
 2. **GitHub releases** and **winget** later, with the same data folder (`Documents\Deskair`).
-3. Versioning: SemVer. Keep a `CHANGELOG.md`.
+3. Versioning: SemVer; the Store package adds a fourth number that is always 0 (`0.1.4` is package `0.1.4.0`). `CHANGELOG.md` lists every release, holds the "What's new" text to paste into Partner Center, and says how to publish an update.
 4. Code signing is needed for the non-Store builds.
 5. Store and non-Store builds differ in toast setup (package identity). Keep that difference in one place.
 6. No telemetry in v1.

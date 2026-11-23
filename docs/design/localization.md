@@ -1,6 +1,6 @@
 # Localization
 
-*Last reviewed: 2026-11-14*
+*Last reviewed: 2026-11-23*
 
 ## Languages
 
@@ -134,7 +134,8 @@ Ukrainian uses one phrase ("У цій зоні", "in this zone") for all three `
 | Onboarding_Room_DefaultName | My room | Моя кімната |
 | Onboarding_PairFailed | Could not add the sensor. Try again. | Не вдалося додати датчик. Спробуйте ще раз. |
 | Settings_Appearance / Settings_Unit | Appearance and units / Temperature unit | Вигляд і одиниці / Одиниця температури |
-| Settings_Alerts_Enabled / Elevated / High | Alerts / Notify at Elevated / Notify at High | Сповіщення / Сповіщати при підвищеному / Сповіщати при високому |
+| Settings_Alerts_Enabled / Elevated / High | Alerts / Notify at Elevated (1000 ppm) / Notify at High (1400 ppm) | Сповіщення / Сповіщати про підвищений рівень (1000 ppm) / Сповіщати про високий рівень (1400 ppm) |
+| History_Grid_TagBest / TagWorst / TagLeastComfortable | best / worst / least comfortable (Temperature and Humidity rows; UX-22) | найкращий / найгірший / найменш комфортний |
 | Settings_Startup_Windows | Start with Windows | Запускати з Windows |
 | Settings_Devices_RoomName / None / Add | Room name / No sensors yet / Add a sensor | Назва кімнати / Датчиків ще немає / Додати датчик |
 | Action_Add / Action_Cancel | Add / Cancel | Додати / Скасувати |
