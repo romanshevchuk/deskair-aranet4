@@ -10,7 +10,7 @@ Sizes and colours: `design-tokens.md`. Rules: `docs/product/behaviour-rules.md`.
 |---|---|
 | Live | Hero (CO₂) left; chart card right with its title and summary ("CO₂ · last hour", Low / Avg / High), 1h / 6h / 24h, and the 24 h ribbon; three mini cards below (Temperature, Humidity, Pressure, always in that order). The hero and the mini cards choose the chart's metric; there are no metric tabs |
 | History | Toolbar (metric, ‹ period ›, range, export icon); main view (Day: line chart; Week and Month: days × hours grid; Year: months × days grid); summary card on the right at full height |
-| Settings | One centred column, at most 720 px: Appearance and units, Alerts, Devices, Data and storage, Sleep, Start-up; section titles above the cards |
+| Settings | One centred column, at most 720 px: Alerts, Devices, Appearance and units, Sleep, Data and storage, Start-up, About (alerts first: they are the main reason to open Settings); section titles above the cards |
 | Flyout | 360 px, one surface (no card inside it): see "Flyout" |
 | Tray menu | Open, status line, Snooze 1 h, Snooze until tomorrow (and Resume alerts while snoozed), Show CO₂ on tray icon, Settings, Quit |
 | Toasts | Elevated, High (v1); Fresh again, Last night (later) |

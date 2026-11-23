@@ -2,15 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:settings="clr-namespace:Deskair.App.Ui.Views.Settings">
-  <!-- DataContext: SettingsViewModel. One centred column, at most 720 px: Appearance and units, Alerts, Devices, Data and storage, Sleep, Start-up, About (the Windows 11 Settings pattern). -->
+  <!-- DataContext: SettingsViewModel. One centred column, at most 720 px: Alerts, Devices, Appearance and units, Sleep, Data and storage, Start-up, About: alerts first, because they are the main reason to open Settings (UX-34). -->
   <ScrollViewer VerticalScrollBarVisibility="Auto">
     <!-- Stretch with a maximum width: WPF centres the column once the window is wider than 720 px. -->
     <StackPanel MaxWidth="{StaticResource Size.Settings.MaxWidth}">
-      <settings:AppearanceSettingsView Margin="0,0,0,16" DataContext="{Binding Appearance}" />
       <settings:AlertsSettingsView Margin="0,0,0,16" DataContext="{Binding Alerts}" />
       <settings:DevicesSettingsView Margin="0,0,0,16" DataContext="{Binding Devices}" />
-      <settings:DataSettingsView Margin="0,0,0,16" DataContext="{Binding Data}" />
+      <settings:AppearanceSettingsView Margin="0,0,0,16" DataContext="{Binding Appearance}" />
       <settings:SleepSettingsView Margin="0,0,0,16" DataContext="{Binding Sleep}" />
+      <settings:DataSettingsView Margin="0,0,0,16" DataContext="{Binding Data}" />
       <settings:StartupSettingsView Margin="0,0,0,16" DataContext="{Binding Startup}" />
       <settings:AboutSettingsView />
     </StackPanel>
